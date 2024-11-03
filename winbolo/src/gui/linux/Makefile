@@ -61,9 +61,7 @@ linbolo:    global.o bases.o util.o crc.o pillbox.o lgm.o shells.o tank.o \
 	servercore.o servermessages.o debug_file_output.o \
 	servernet.o servertransport.o threads.o \
 	bigd.o bigdigits.o bigdigitsRand.o bigdRand.o 
-	${CC} -o ${APPNAME} `sdl-config --libs` `gtk-config --libs` ${CFLAGS} \
-	-lSDL_ttf -lSDL_mixer `glib-config --libs gthread` \
-	-L -L/usr/X11/lib -lX11 \
+	${CC} \
 	global.o bases.o util.o crc.o pillbox.o lgm.o \
 	shells.o tank.o allience.o bolo_map.o building.o \
 	explosions.o floodfill.o gametype.o grass.o labels.o \
@@ -86,7 +84,10 @@ linbolo:    global.o bases.o util.o crc.o pillbox.o lgm.o shells.o tank.o \
 	unzip.o zip.o zutil.o bigd.o bigdigits.o bigdigitsRand.o bigdRand.o \
 	mathWinbolo.o debug_file_output.o \
 	servercore.o servermessages.o \
-	servernet.o servertransport.o threads.o 
+	servernet.o servertransport.o threads.o \
+	-o ${APPNAME} `sdl-config --libs` `gtk-config --libs` ${CFLAGS} \
+	-lSDL_ttf -lSDL_mixer `glib-config --libs gthread` \
+	-L -L/usr/X11/lib -lX11
 
 
 winbolonet.o: ${WBNETDIR}winbolonet.c ${WBNETDIR}winbolonet.h
