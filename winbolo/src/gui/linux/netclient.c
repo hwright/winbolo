@@ -1132,10 +1132,9 @@ bool netClientFindBroadcastGames(HWND *hWnd, currentGames *cg) {
   }
   /* Broadcast socket option */
   if (returnValue == TRUE) {
-    char c;
-    char d[10];
+    int c;
     c =1;
-    ret = setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &c ,d);
+    ret = setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &c , sizeof(c));
     if (ret != 0) {
       returnValue = FALSE;
       gtk_label_set_text(GTK_LABEL(hWnd), "Status: Error setting socket options");
