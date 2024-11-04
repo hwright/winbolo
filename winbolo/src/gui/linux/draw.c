@@ -1340,7 +1340,7 @@ void drawStartDelay(long srtDelay) {
   SDL_FillRect(lpBackBuffer, NULL, SDL_MapRGB(lpBackBuffer->format, 0, 0, 0)); 
   /* Prepare the string */
   srtDelay /= GAME_NUMGAMETICKS_SEC; /* Convert ticks back to seconds */
-  sprintf(strNum, "%d", srtDelay);
+  sprintf(strNum, "%ld", srtDelay);
   strcpy(str, langGetText(STR_DRAW_GAMESTARTSIN));
   strcat(str, strNum);
   lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
@@ -1561,7 +1561,7 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
 time = SDL_GetTicks() - g_dwFrameTime;
 if( time > 1000) {
 g_dwFrameTotal = g_dwFrameCount;
-sprintf(str, "%d", g_dwFrameTotal);
+sprintf(str, "%ld", g_dwFrameTotal);
 g_dwFrameTime = SDL_GetTicks();
 g_dwFrameCount = 0;
 }

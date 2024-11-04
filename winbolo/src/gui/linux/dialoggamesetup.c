@@ -226,7 +226,7 @@ gboolean dialogGameSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer
   if (tlimit != UNLIMITED_GAME_TIME && tlimit > 0) {
     tlimit /= GAME_NUMGAMETICKS_SEC;
     tlimit /= NUM_SECONDS;
-    sprintf(password, "%d", tlimit);
+    sprintf(password, "%ld", tlimit);
     gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(idc_gamesetuptimelimit), TRUE);
     gtk_widget_set_sensitive(idc_gamesetuptxtlimit, TRUE);
     gtk_entry_set_text(GTK_ENTRY(idc_gamesetuptxtlimit), password);
@@ -238,7 +238,7 @@ gboolean dialogGameSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer
 
   if (sd > 0) {
     sd /= GAME_NUMGAMETICKS_SEC;
-    sprintf(password, "%i", sd);
+    sprintf(password, "%ld", sd);
     gtk_widget_set_sensitive (idc_gamesetuptxtstartdelay, TRUE);
     gtk_entry_set_text(GTK_ENTRY(idc_gamesetuptxtstartdelay), password);
     gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(idc_gamesetupstartdelay), TRUE);
