@@ -39,7 +39,7 @@ gboolean on_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
 
   *ptr = gdk_keyval_to_upper(event->keyval);
   gtk_entry_set_text(GTK_ENTRY(widget), gdk_keyval_name(gdk_keyval_to_upper(event->keyval)));
-  gtk_signal_emit_stop_by_name (widget, "key_press_event");
+  gtk_signal_emit_stop_by_name (GTK_OBJECT(widget), "key_press_event");
   return FALSE;
 }
 
