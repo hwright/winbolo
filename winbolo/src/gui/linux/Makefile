@@ -14,8 +14,8 @@
 # GNU General Public License for more details.
 
 
-CC = gcc
 CFLAGS = -g `sdl-config --cflags` `gtk-config --cflags` 
+LDFLAGS = `sdl-config --libs` `gtk-config --libs` `glib-config --libs gthread`
 #-s
 #CFLAGS = -s -O3 -ffast-math -fomit-frame-pointer -mpentium -march=pentium `sdl-config --cflags` `gtk-config --cflags` `glib-config --cflags` 
 BOLODIR = ../../bolo/
@@ -85,8 +85,7 @@ linbolo:    global.o bases.o util.o crc.o pillbox.o lgm.o shells.o tank.o \
 	mathWinbolo.o debug_file_output.o \
 	servercore.o servermessages.o \
 	servernet.o servertransport.o threads.o \
-	-o ${APPNAME} `sdl-config --libs` `gtk-config --libs` ${CFLAGS} \
-	-lSDL_ttf -lSDL_mixer `glib-config --libs gthread` \
+	-o ${APPNAME} ${LDFLAGS} -lSDL_ttf -lSDL_mixer \
 	-L -L/usr/X11/lib -lX11
 
 
