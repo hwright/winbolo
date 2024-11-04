@@ -40,6 +40,7 @@
 #include "minesexp.h"
 #include "netmt.h"
 #include "network.h"
+#include "netplayers.h"
 #include "players.h"
 #include "rubble.h"
 #include "screen.h"
@@ -52,6 +53,9 @@
 
 /* Protos */
 void netErrorOccured();
+void tankResetHitCount(tank *value);
+void tankAddHit(tank *value, int amount);
+netPlayers *serverNetGetNetPlayers();
 
 /*********************************************************
 *NAME:          netMNTCreate
@@ -152,12 +156,12 @@ void netMNTAdd(netMntContext *nmtc, BYTE event, BYTE itemNum, BYTE owner, BYTE o
 int netMNTMake(netMntContext *nmtc, BYTE *buff) {
   int returnValue; /* Value to return */
   BYTE *pnt;       /* Pointer to the buffer */
-  bool isServer;   /* Are we the server */
+  //bool isServer;   /* Are we the server */
   int count;       /* Looping variable */
   netMnt q;
 
   
-  isServer = threadsGetContext();
+  //isServer = threadsGetContext();
   returnValue = 0;
   pnt = buff;
   count = 1;
@@ -450,9 +454,9 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs, tank 
   BYTE opt2;
   bool testCalc;    /* Does the screen need a recalc? */
   bool needCalc;    /* Does the screen need a recalc? */
-  BYTE id;          /* Item ID */
+  //BYTE id;          /* Item ID */
   BYTE owner;       /* Who owns this */
-  BYTE eventNibble; 
+  //BYTE eventNibble; 
   bool isServer;    /* Are we server */
   bool errOccurred; /* Has an packet avert error occurred? */
 
@@ -464,11 +468,11 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs, tank 
 
   while (count < dataLen) {
     utilGetNibbles(buff[count],&event, &itemNum);
-    eventNibble = buff[count];
+    //eventNibble = buff[count];
     count++;
     owner = buff[count];
     count++;
-    id = buff[count];
+    //id = buff[count];
     count++;
     opt1 = buff[count];
     count++;

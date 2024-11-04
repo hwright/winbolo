@@ -19,6 +19,7 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <pwd.h>
+#include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include "../../bolo/global.h"

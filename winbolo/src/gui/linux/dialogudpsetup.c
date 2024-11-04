@@ -131,6 +131,7 @@ gboolean dialogUdpSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer 
   gtk_entry_set_text(GTK_ENTRY(idc_udpmachinename), add);
 
   gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(idc_updsetupremembername), gameFrontGetRemeber());
+  return FALSE;
 }
 
 gboolean dialogUdpSetupReJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {

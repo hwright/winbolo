@@ -264,18 +264,18 @@ int mathAngleTravelUsingComponents(float speedX, float speedY)
  */
 void mathUpdateVectorBody(struct vectorBody *vB, SPEEDTYPE speed, WORLD currentX, WORLD currentY, WORLD prevX, WORLD prevY, TURNTYPE angle)
 {
-	int i;
+	//int i;
 	float actualTankSpeed;
 
 	/* This is just here for debugging purposes.  It allows me to
-	 * catch the tanks speed, angle, and component speeds. */
+	 * catch the tanks speed, angle, and component speeds. 
 	if (speed > 10.0)
 	{
 		if ((currentX - prevX < 0) || ((*vB).speedX < 0))
 		{
 			i = 0;
 		}
-	}
+	}*/
 
 	actualTankSpeed = mathGetDistanceBetweenTwoPoints(currentX, currentY, prevX, prevY);
 

@@ -292,7 +292,7 @@ void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4, un
       logMemSize++;
       *(logMem+logMemSize) = (BYTE) short1 ^ logKey;
       logMemSize++;
-      logAddToMemory((logMem+logMemSize), words, (BYTE) (words[0]+1));
+      logAddToMemory((logMem+logMemSize), (BYTE *) words, (BYTE) (words[0]+1));
 //      memcpy((logMem+logMemSize), words, words[0]+1);
       logMemSize += (BYTE) (words[0]+1);
       break;
@@ -323,7 +323,7 @@ void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4, un
       logMemSize++;
       *(logMem+logMemSize) = opt1 ^ logKey;
       logMemSize++;
-      logAddToMemory((logMem+logMemSize), words, (BYTE) (words[0]+1));
+      logAddToMemory((logMem+logMemSize), (BYTE *) words, (BYTE) (words[0]+1));
 //      memcpy((logMem+logMemSize), words, words[0]+1);
       logMemSize += (BYTE) (words[0]+1);
       break;
@@ -441,7 +441,7 @@ void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4, un
       logMemSize++;
       *(logMem+logMemSize) = opt2 ^ logKey;
       logMemSize++;
-      logAddToMemory((logMem+logMemSize), words, (BYTE) (words[0]+1));
+      logAddToMemory((logMem+logMemSize), (BYTE *) words, (BYTE) (words[0]+1));
       logMemSize += (BYTE) (words[0]+1);
       break;
     case log_MessageAll:
@@ -450,14 +450,14 @@ void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4, un
       *(logMem+logMemSize) = opt1 ^ logKey;
       logMemSize++;
       //FIXTHIS
-      logAddToMemory((logMem+logMemSize), words, (BYTE) (words[0]+1));
+      logAddToMemory((logMem+logMemSize), (BYTE *) words, (BYTE) (words[0]+1));
       //memcpy((logMem+logMemSize), words, words[0]+1);
       logMemSize += (BYTE) (words[0]+1);
       break;
     case log_MessageServer:
       *(logMem+logMemSize) = log_MessageServer ^ logKey;
       logMemSize++;
-      logAddToMemory((logMem+logMemSize), words, (BYTE) (words[0]+1));
+      logAddToMemory((logMem+logMemSize), (BYTE *) words, (BYTE) (words[0]+1));
       //memcpy((logMem+logMemSize), words, words[0]+1);
       logMemSize += (BYTE) (words[0]+1);
       break;
@@ -719,8 +719,8 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
   if (ret != Z_OK) {
     returnValue = FALSE;
   } else {
-    strcpy(data, LOG_HEADER);
-    ret = zipWriteInFileInZip(logFile, data, (unsigned int) strlen(data));
+    strcpy((char *) data, LOG_HEADER);
+    ret = zipWriteInFileInZip(logFile, data, (unsigned int) strlen((char *) data));
     if (ret != Z_OK) {
       returnValue = FALSE;
     }
@@ -738,8 +738,8 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
 
   /* Write Map Name */
   if (returnValue == TRUE) {
-    serverCoreGetMapName(data+1);
-    data[0] = (BYTE) strlen(data+1);
+    serverCoreGetMapName((char *) data+1);
+    data[0] = (BYTE) strlen((char *) data+1);
     ret = zipWriteInFileInZip(logFile, data, data[0]+1);
     if (ret != Z_OK) {
       returnValue = FALSE;

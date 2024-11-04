@@ -107,6 +107,7 @@ time_t sTimeStart;
 bool serverCoreGameRunning = FALSE;
 
 void serverMessagesSetLogFile(char *logFile);
+void tankResetHitCount(tank *value);
 
 /*********************************************************
 *NAME:          serverCoreCreate

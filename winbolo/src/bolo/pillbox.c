@@ -1092,7 +1092,7 @@ bool pillsMoveView(pillboxes *value, BYTE *mx, BYTE *my, int xMove, int yMove) {
   myPlayerNum = playersGetSelf(screenGetPlayers());
   while (count < (*value)->numPills) {
     if (count != oldPill && (playersIsAllie(screenGetPlayers(), myPlayerNum, (*value)->item[count].owner) == TRUE) && ((*value)->item[count].armour) > 0 && ((*value)->item[count].inTank) == FALSE) {
-      if ((yMove == 0 && (xMove < 0 && (*value)->item[count].x < *mx) || (xMove > 0 && (*value)->item[count].x > *mx)) || (xMove == 0 && (yMove < 0 && (*value)->item[count].y < *my) || (yMove > 0 && (*value)->item[count].y > *my))) {
+      if (((yMove == 0 && xMove < 0 && (*value)->item[count].x < *mx) || (xMove > 0 && (*value)->item[count].x > *mx)) || ((xMove == 0 && yMove < 0 && (*value)->item[count].y < *my) || (yMove > 0 && (*value)->item[count].y > *my))) {
         if (utilIsItemInRange(*mx, *my, (*value)->item[count].x, (*value)->item[count].y, (WORLD) nearest, &dist) == TRUE) {
           nearest = dist;
           found = count;
@@ -1469,10 +1469,8 @@ void pillsMigrate(pillboxes *value, BYTE oldOwner, BYTE newOwner) {
 *********************************************************/
 void pillsMigratePlanted(pillboxes *value, BYTE oldOwner, BYTE newOwner) {
   BYTE count;    /* Looping Variable */
-  bool isServer; /* Are we a server */
 
   count = 0;
-  isServer = threadsGetContext();
   while (count < ((*value)->numPills)) {
 	if (((*value)->item[count].owner) == oldOwner) {
  	  if((*value)->item[count].inTank == FALSE){

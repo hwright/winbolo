@@ -109,7 +109,6 @@ GtkWidget* dialogGameInfoCreate(void) {
   char mapName[FILENAME_MAX];  /* Map Name */
   int temp;                    /* Used to hold various values */
   bool bTemp;                  /* Used for holding misc bool variables */
-  char *text;
   gameType *t;
 	
   dialogGameInfo = gtk_window_new (GTK_WINDOW_DIALOG);

@@ -485,7 +485,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 /*								} else { */
 								/* Was player get self for first owner parameter all the time */
 /*						            netMNTAdd(NMNT_KILLME, owner, screenGetTankPlayer(&(tk[count])), 0xFF, 0xFF);
-/*								 }*/
+								 }*/
 							}
 						}
 						break;

@@ -35,6 +35,9 @@ static struct timeval start_time;
 #endif
 
 bool threadsGetContext();
+void serverCoreCenterTank();
+void clientSoundDist(sndEffects value, BYTE mx, BYTE my);
+void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my);
 
 /* Current building item selected */
 buildSelect BsCurrent = BsTrees;

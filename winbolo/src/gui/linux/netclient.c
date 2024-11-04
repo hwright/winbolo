@@ -209,7 +209,7 @@ void netClientSendUdpServer(BYTE *buff, int len) {
 *  port - Port of that corresponds to the address
 *********************************************************/
 void netClientGetServerAddress(struct in_addr *dest, unsigned short *port) {
-  memcpy(dest, &(addrServer.sin_addr.s_addr), sizeof(dest));
+  memcpy(dest, &(addrServer.sin_addr.s_addr), sizeof(*dest));
   *port = ntohs(addrServer.sin_port);
 }
 
@@ -248,7 +248,7 @@ void netClientGetServerAddressString(char *dest) {
 *  port - Port of that corresponds to the address
 *********************************************************/
 void netClientSetServerAddress(struct in_addr *src, unsigned short port) {
-  memcpy(&(addrServer.sin_addr.s_addr), src, sizeof(src)); 
+  memcpy(&(addrServer.sin_addr.s_addr), src, sizeof(*src)); 
   addrServer.sin_port = htons(port);
 }
 
@@ -608,7 +608,6 @@ void netClientUdpCheck(void) {
 *  on - TRUE for non-block, FALSE for blocking
 *********************************************************/
 bool netClientSetUdpAsync(bool on) {
-  u_long noBlock;   /* Used to set blocking state */
   int ret;          /* Function return value */
   bool returnValue; /* Value to return */
   
@@ -959,7 +958,6 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
   int len = 0;
   int new_bytes_read;
   char strBuff[FILENAME_MAX];
-  long noBlock;     /* Used to set blocking state */
   bool done;
   DWORD tick, timeOut;
   char txt[256];
@@ -974,7 +972,7 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
   strcat(buff, langGetText(STR_NETCLIENT_TRACKERCONNECT));
   sprintf(strBuff, "%s:%d", trackerAddress, port);
   strcat(buff, strBuff);
-  gtk_label_set_text(GTK_LABEL(hWnd), buff);
+  gtk_label_set_text(GTK_LABEL(hWnd), (char *) buff);
   GDK_THREADS_LEAVE();
   while(g_main_iteration(FALSE));
   GDK_THREADS_ENTER();
@@ -1016,7 +1014,6 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
     }
   }
 
-  noBlock = NO_BLOCK_SOCK;
   if (returnValue == TRUE) {
     ret = fcntl(sock, F_SETFL, O_NONBLOCK | fcntl(sock, F_GETFL));
     if (ret == SOCKET_ERROR) {
@@ -1087,7 +1084,6 @@ bool netClientFindBroadcastGames(HWND *hWnd, currentGames *cg) {
   BYTE *ptr;               /* Buffer pointer */
   int len = 0;
   char buff[MAX_UDPPACKET_SIZE] = INFOREQUESTHEADER; /* Data Buffer */
-  long noBlock;     /* Used to set blocking state */
   int timeOut;
   DWORD tick;
   int fromlen;
@@ -1122,7 +1118,6 @@ bool netClientFindBroadcastGames(HWND *hWnd, currentGames *cg) {
 
   /* Set to non blocking */
   if (returnValue == TRUE) {
-    noBlock = NO_BLOCK_SOCK;
      ret = fcntl(sock, F_SETFL, O_NONBLOCK | fcntl(sock, F_GETFL));
      if (ret == SOCKET_ERROR) {
       returnValue = FALSE;

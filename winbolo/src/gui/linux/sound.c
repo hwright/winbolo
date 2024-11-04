@@ -106,10 +106,8 @@ Mix_Chunk *soundLoad(char *tempFile, FILE *fp, BYTE *buff, int len) {
 bool soundSetup() {
   bool returnValue;       /* Value to return */
   bool dsLoadOK;
-  gchar *tmpPath;
   char fileName[FILENAME_MAX];
   char inFile[FILENAME_MAX];
-  char *tf;
   FILE *in;
   BYTE *buff;
 

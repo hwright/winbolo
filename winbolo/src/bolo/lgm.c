@@ -134,7 +134,6 @@ void lgmUpdate(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
 	BYTE my= 0;
 	WORLD wx;
 	WORLD wy;
-	WORLD t;
 
 	/* Single player or server instance */
 	if (netGetType() == netSingle || threadsGetContext() == TRUE) {
@@ -732,7 +731,7 @@ void lgmMoveAway(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
     noGo = TRUE;
     newbmy = bmy;
   }
-  if (((mapGetManSpeed(mp, pb, bs, newbmx, newbmy,(*lgman)->playerNum) )) > 0 && xAdd != 0 || onBoat == TRUE) {
+  if ((((mapGetManSpeed(mp, pb, bs, newbmx, newbmy,(*lgman)->playerNum) )) > 0 && xAdd != 0) || onBoat == TRUE) {
     (*lgman)->x = (WORLD) ((*lgman)->x + xAdd);
   } else if (newbmx == (*lgman)->blessX && bmy == (*lgman)->blessY && lgmCheckBlessedSquare(newbmx, newbmy, (*lgman)->action, mp, pb, bs, tnk) == TRUE) {
     (*lgman)->x = (WORLD) ((*lgman)->x + xAdd);

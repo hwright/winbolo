@@ -110,7 +110,6 @@ GtkWidget* dialogOpeningCreate(void) {
   GtkWidget *idc_openok;
   GdkPixmap *pixmap_data;
   GdkPixmap *pixmap_mask;
-  GtkWidget *pixw;
 
   
   dialogOpening = gtk_window_new (GTK_WINDOW_DIALOG);

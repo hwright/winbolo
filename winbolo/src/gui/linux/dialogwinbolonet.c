@@ -36,6 +36,8 @@ GtkWidget *dialogWbnUse;
 GtkWidget *dialogWbnSavePass;
 GtkWidget *dialogWbnPassword;
 
+void gameFrontGetPlayerName(char *pn);
+
 void dialogWinboloNetCloseBox(GtkWidget *widget, gpointer user_data) {
   gtk_widget_destroy(dialogWbnUs);
   gtk_main_quit();

@@ -41,6 +41,8 @@
 
 #include "../server/servercore.h"
 
+void tankAddHit(tank *value, int amount);
+
 
 /*********************************************************
 *NAME:          netPNBCreate
@@ -144,11 +146,11 @@ void netPNBAdd(netPnbContext *pnbc, BYTE event, BYTE itemNum, BYTE owner, BYTE o
 int netPNBMake(netPnbContext *pnbc, BYTE *buff) {
   int returnValue; /* Value to return */
   BYTE *pnt;       /* Pointer to the buffer */
-  bool isServer;   /* Are we the server */
+  //bool isServer;   /* Are we the server */
   int count;       /* Looping variable */
   netPnb q;
 
-  isServer = threadsGetContext();
+  //isServer = threadsGetContext();
   returnValue = 0;
   pnt = buff;
   count = 1;
@@ -547,14 +549,14 @@ bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb, BYTE 
   BYTE event;       /* Event Type */
   BYTE itemNum;     /* Item Number */
   BYTE owner;       /* Owner       */
-  BYTE id;          /* item Id     */
+  //BYTE id;          /* item Id     */
   BYTE opt1;        /* Optional Data */
   BYTE opt2;
   BYTE opt3;
   bool needCalc;    /* Does the screen need a recalc? */
   bool testCalc;    /* Does the screen need a recalc? */
   bool isServer;    /* Are we a server */
-  BYTE eventNibble; 
+  //BYTE eventNibble; 
   bool errOccurred; /* Has an packet avert error occurred? */
 
   errOccurred = FALSE;
@@ -565,11 +567,11 @@ bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb, BYTE 
 
   while (count < dataLen) {
     utilGetNibbles(buff[count],&event, &itemNum);
-    eventNibble = buff[count];
+    //eventNibble = buff[count];
     count++;
     owner = buff[count];
     count++;
-    id = buff[count];
+    //id = buff[count];
     count++;
     opt1 = buff[count];
     count++;

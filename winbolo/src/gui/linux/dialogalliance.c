@@ -27,6 +27,7 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include "../../bolo/global.h"
+#include "../../bolo/network.h"
 #include "../linresource.h"
 #include "../lang.h"
 

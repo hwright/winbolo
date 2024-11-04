@@ -178,8 +178,6 @@ tankButton inputGetKeys(bool isMenu) {
 *  isMenu  - True if we are in a menu
 *********************************************************/
 void inputScroll(bool isMenu) {
-  bool proceed; /* Ok to proceed */
-
   scrollKeyCount++;
   if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && isMenu == FALSE) {
     scrollKeyCount = 0;

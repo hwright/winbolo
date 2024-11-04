@@ -217,12 +217,12 @@ bool cursorPos(int mouseX, int mouseY, BYTE *xValue, BYTE *yValue) {
 *  rcWindow - Rect with the windows co-ordinates
 *********************************************************/
 void cursorAcquireCursor() {
-  int xPos;        /* X and Y positions of the mouse adjusted */ 
-  int yPos;        /* to the window */
-  BYTE zoomFactor; /* The zooming factor */
-
   return;
   /* FIXME: Is relevent?
+  int xPos;        // X and Y positions of the mouse adjusted
+  int yPos;        // to the window
+  BYTE zoomFactor; // The zooming factor
+
   GetCursorPos(&mousePos);
   zoomFactor = windowGetZoomFactor();
 

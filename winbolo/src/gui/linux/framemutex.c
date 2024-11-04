@@ -52,7 +52,6 @@ HANDLE hFrameMutexHandle = NULL;
 *
 *********************************************************/
 bool frameMutexCreate(void) {
-  char name[FILENAME_MAX];
   bool returnValue; /* Value to return */
 
   returnValue = TRUE;

@@ -75,6 +75,12 @@
 #include "../winbolonet/winbolonet.h"
 #include "network.h"
 
+void windowAllowPlayerNameChange(bool allow);
+bool windowShowAllianceRequest();
+void gameFrontGetPlayerName(char *pn);
+void gameFrontSetAIType(aiType ait);
+void gameFrontGetPassword(char *pword);
+
 /* The type of game we are playing */
 netType networkGameType = netNone;
 /* Password in netgames */
@@ -144,13 +150,13 @@ int lzwdecoding(char *src, char *dest, int len);
 *********************************************************/
 bool netSetup(netType value, unsigned short myPort, char *targetIp, unsigned short targetPort, char *password, bool usCreate, char *trackerAddr, unsigned short trackerPort, bool useTracker, bool wantRejoin, bool useWinboloNet, char *wbnPassword) {
   bool returnValue; /* Value to return */
-  time_t startTime; /* Start Time if we created the game */
+  //time_t startTime; /* Start Time if we created the game */
 
   returnValue = TRUE;
   inNetShutdown = FALSE;
   netRetransmissions = 0;
   netStat = netRunning;
-  startTime = 0;
+  //startTime = 0;
   networkGameType = value;
   strcpy(netPassword, password);
   udpp = udpPacketsCreate();
@@ -185,7 +191,7 @@ bool netSetup(netType value, unsigned short myPort, char *targetIp, unsigned sho
         netYPos = 241;
         startTime = time(NULL);
         screenSetTimeGameCreated(startTime);
-        /*FIXME: netClientSetServerUs(); *
+        /FIXME: netClientSetServerUs(); *
         netStat = netRunning;
       } else { */
        /* Try and join the game */
@@ -293,7 +299,6 @@ void netUdpPacketArrive(BYTE *buff, int len, unsigned short port) {
   static BYTE crcA;  /* First CRC Byte */
   static BYTE crcB;  /* Second CRC Byte */
   static BYTE sequenceNumber; /* Sequence number */
-  static int delete = 0;
   DWORD tick;     /* Number of ticks passed */
 
   
@@ -326,9 +331,7 @@ void netUdpPacketArrive(BYTE *buff, int len, unsigned short port) {
 
       if (pp->inPacket != pos) {
         /* Recover - Send server missing packets */
-        BYTE upto;
         BYTE high;
-        upto = pp->inPacket;
         high = udpPacketsGetOutSequenceNumber(&udpp);
         high++;
         if (high == MAX_UDP_SEQUENCE) {
@@ -679,7 +682,7 @@ void netMakeInfoRespsonse(INFO_PACKET *buff) {
 *  packetType - The packet type to make
 *********************************************************/
 void netMakePacketHeader(BOLOHEADER *hdr, BYTE packetType) {
-  strncpy(hdr->signature, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE);
+  strncpy((char *) hdr->signature, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE);
   hdr->versionMajor = BOLO_VERSION_MAJOR;
   hdr->versionMinor = BOLO_VERSION_MINOR;
   hdr->versionRevision = BOLO_VERSION_REVISION;
@@ -743,7 +746,7 @@ bool netWinBoloNetSetup(char *userName, char *password) {
 
   done  = netClientUdpPingServer(buff, &packetLen, TRUE, TRUE);
   while (done == TRUE && numTries < MAX_RETRIES) {
-    if (packetLen == sizeof(bh)+32 && (strncmp(buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_SERVERKEYRESPONSE) {
+    if (packetLen == sizeof(bh)+32 && (strncmp((char *) buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_SERVERKEYRESPONSE) {
       /* Password is correct */
       numTries = MAX_RETRIES;
       done2 = TRUE;
@@ -798,7 +801,7 @@ bool netWinBoloNetSetup(char *userName, char *password) {
 *********************************************************/
 bool netJoinInit(char *ip, unsigned short port, bool usCreate, char *gamePassword) {
   bool returnValue;   /* Value to return */
-  char buff[MAX_UDPPACKET_SIZE]; /* Data Buffer */
+  BYTE buff[MAX_UDPPACKET_SIZE]; /* Data Buffer */
   char sendBuff[MAX_UDPPACKET_SIZE]; /* Buffer that is sent */
   BOLOHEADER bh;        /* Header packet   */
   INFO_PACKET inf;      /* Info packet */
@@ -839,8 +842,8 @@ bool netJoinInit(char *ip, unsigned short port, bool usCreate, char *gamePasswor
 #endif
     } else {
       /* Extract map name, AI Type and hidden mines and game start and originator */
-      utilPtoCString(inf.mapname, buff);
-      screenSetMapName(buff);
+      utilPtoCString(inf.mapname, (char *) buff);
+      screenSetMapName((char *) buff);
       gameFrontSetAIType((aiType) (inf.allow_AI));
       if (inf.allow_mines == HIDDEN_MINES) {
         screenSetAllowHiddenMines(TRUE);
@@ -879,10 +882,10 @@ bool netJoinInit(char *ip, unsigned short port, bool usCreate, char *gamePasswor
       numTries = 0;
       returnValue = netClientUdpPing(buff, &packetLen, ip, port, TRUE, TRUE);
       while (returnValue == TRUE && numTries < MAX_RETRIES) {
-        if (packetLen == sizeof(bh) + BOLO_PACKET_CRC_SIZE && (strncmp(buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_PASSWORDACCEPT) {
+        if (packetLen == sizeof(bh) + BOLO_PACKET_CRC_SIZE && (strncmp((char *) buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_PASSWORDACCEPT) {
           /* Password is correct */
           numTries = MAX_RETRIES;
-        } else if (packetLen == sizeof(bh) + BOLO_PACKET_CRC_SIZE && (strncmp(buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_PASSWORDFAIL) {
+        } else if (packetLen == sizeof(bh) + BOLO_PACKET_CRC_SIZE && (strncmp((char *) buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_PASSWORDFAIL) {
           returnValue = FALSE;
           #ifdef _WIN32
           MessageBox(NULL, langGetText(NETERR_PASSWORDWRONG), DIALOG_BOX_TITLE, MB_OK);
@@ -935,18 +938,18 @@ bool netJoinInit(char *ip, unsigned short port, bool usCreate, char *gamePasswor
   /* Check for player name availability */
   if (returnValue == TRUE) {
     netMakePacketHeader(&(pn.h), BOLOPACKET_NAMECHECK);
-    gameFrontGetPlayerName(buff);
-    utilStripNameReplace(buff);
-    utilCtoPString(buff, pn.playerName);
+    gameFrontGetPlayerName((char *) buff);
+    utilStripNameReplace((char *) buff);
+    utilCtoPString((char *) buff, pn.playerName);
     packetLen = sizeof(pn);
     memcpy(sendBuff, &pn, packetLen);
     memcpy(buff, sendBuff, packetLen);
     numTries = 0;
     returnValue = netClientUdpPing(buff, &packetLen, ip, port, TRUE, TRUE);
     while (returnValue == TRUE && numTries < MAX_RETRIES) {
-      if (packetLen == sizeof(bh) + BOLO_PACKET_CRC_SIZE && (strncmp(buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_NAMEACCEPT) {
+      if (packetLen == sizeof(bh) + BOLO_PACKET_CRC_SIZE && (strncmp((char *) buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_NAMEACCEPT) {
         numTries = MAX_RETRIES;
-      } else if (packetLen == sizeof(bh) + BOLO_PACKET_CRC_SIZE && (strncmp(buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && (buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_NAMEFAIL || buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_GAMELOCKED || buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_MAXPLAYERS)) {
+      } else if (packetLen == sizeof(bh) + BOLO_PACKET_CRC_SIZE && (strncmp((char *) buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && (buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_NAMEFAIL || buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_GAMELOCKED || buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_MAXPLAYERS)) {
         /* Player Name is incorrect */
         returnValue = FALSE;
         if (buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_GAMELOCKED) {
@@ -954,8 +957,8 @@ bool netJoinInit(char *ip, unsigned short port, bool usCreate, char *gamePasswor
         } else if (buff[BOLOPACKET_REQUEST_TYPEPOS] ==  BOLOPACKET_NAMEFAIL) {
           msg = langGetText(NETERR_PLAYERNAMEINUSE);
         } else {
-	        strcpy(buff, "Sorry, the server player limit has been reached");
-          msg = buff;
+	        strcpy((char *) buff, "Sorry, the server player limit has been reached");
+          msg = (char *) buff;
 	      }
         #ifdef _WIN32
           MessageBox(NULL, msg, DIALOG_BOX_TITLE, MB_OK);
@@ -1033,8 +1036,6 @@ bool netJoinFinalise(char *targetip, unsigned short port, bool wantRejoin, char 
   PLAYERNUM_REQ_PACKET prp;   /* Player Number request packet */
   PLAYERDATA_REQPACKET pdr;   /* Player data request packet   */
   PLAYERDATA_PACKET pdres;    /* Player data response packet  */
-  BYTE maxPlayers;            /* Maximum players in the game  */
-  BYTE lowPlayers;            /* Lowest playernumber          */
   BYTE count;                 /* Looping variable             */
   BYTE crcA, crcB;            /* CRC Bytes                    */
   BYTE numTries;              /* Number of tries              */
@@ -1056,8 +1057,8 @@ bool netJoinFinalise(char *targetip, unsigned short port, bool wantRejoin, char 
     memset(&pdres, 0, sizeof(PLAYERDATA_PACKET));
     netMakePacketHeader(&(prp.h), BOLOPACKET_PLAYERNUMREQUEST);
     netClientGetUs(&dummy, &(prp.port));
-    gameFrontGetPlayerName(buff);
-    utilCtoPString(buff, prp.playerName);
+    gameFrontGetPlayerName((char *) buff);
+    utilCtoPString((char *) buff, prp.playerName);
     if (useWbn == TRUE) {
       winboloNetGetMyClientKey((BYTE *) &(prp.key));
     } else {
@@ -1094,7 +1095,7 @@ bool netJoinFinalise(char *targetip, unsigned short port, bool wantRejoin, char 
     memcpy(buff, sendBuff, sizeof(prp));
     returnValue = netClientUdpPingServer(buff, &buffLen, TRUE, TRUE);
     while (returnValue == TRUE && numTries < MAX_RETRIES) {
-      if (buffLen == sizeof(PLAYERNUM_PACKET) + BOLO_PACKET_CRC_SIZE && (strncmp(buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_PLAYERNUMRESPONSE && buff[BOLOPACKET_PLAYERNUMPOS] < MAX_TANKS) {
+      if (buffLen == sizeof(PLAYERNUM_PACKET) + BOLO_PACKET_CRC_SIZE && (strncmp((char *) buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_PLAYERNUMRESPONSE && buff[BOLOPACKET_PLAYERNUMPOS] < MAX_TANKS) {
         crcA = buff[sizeof(PLAYERNUM_PACKET)];
         crcB = buff[sizeof(PLAYERNUM_PACKET)+1];
         if (CRCCheck(buff, sizeof(PLAYERNUM_PACKET), crcA, crcB) == TRUE) {
@@ -1107,8 +1108,6 @@ bool netJoinFinalise(char *targetip, unsigned short port, bool wantRejoin, char 
           strcat(newName, name);
           playersSetSelf(screenGetPlayers(), buff[BOLOPACKET_PLAYERNUMPOS], newName);
 		  basesUpdateTimer(buff[BOLOPACKET_PLAYERNUMPOS]);
-          lowPlayers = buff[BOLOPACKET_PLAYERNUMPOSLOW];
-          maxPlayers = buff[BOLOPACKET_PLAYERNUMPOSMAX];
           numTries = MAX_RETRIES;
         } else {
           returnValue = FALSE;
@@ -1160,14 +1159,14 @@ bool netJoinFinalise(char *targetip, unsigned short port, bool wantRejoin, char 
     numTries = 0;
     returnValue = netClientUdpPingServer(buff, &buffLen, TRUE, TRUE); 
     while (returnValue == TRUE && numTries < MAX_RETRIES) {
-      if (returnValue == TRUE && buffLen == sizeof(PLAYERDATA_PACKET) + BOLO_PACKET_CRC_SIZE && (strncmp(buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_PLAYERDATARESPONSE) {
+      if (returnValue == TRUE && buffLen == sizeof(PLAYERDATA_PACKET) + BOLO_PACKET_CRC_SIZE && (strncmp((char *) buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_PLAYERDATARESPONSE) {
         /* Get the info from it */
         memcpy(&pdres, buff, sizeof(PLAYERDATA_PACKET));
         for (count=0;count<MAX_TANKS;count++) {
           if (pdres.items[count].inUse == TRUE) {      
-            utilPtoCString(pdres.items[count].playerName ,buff);
+            utilPtoCString(pdres.items[count].playerName , (char *) buff);
             ip = inet_ntoa(pdres.items[count].addr);
-            playersSetPlayer(screenGetPlayers(), count, buff, ip, 0, 0, 0, 0, 0, 0, pdres.items[count].numAllies, pdres.items[count].allies);
+            playersSetPlayer(screenGetPlayers(), count, (char *) buff, ip, 0, 0, 0, 0, 0, 0, pdres.items[count].numAllies, pdres.items[count].allies);
             dnsLookupsAddRequest(ip, netProcessedDnsLookup);
             /* One day add stuff to do with each players address */
           }
@@ -1588,7 +1587,7 @@ void netSecond(void) {
     count = 0;
     netMakePingRespsonse(&pp);
     tknTime = winboloTimer();
-    netClientSendUdpServer((char *) &pp, sizeof(pp));
+    netClientSendUdpServer((BYTE *) &pp, sizeof(pp));
     netPacketsPerSecond++;
   }
 }
@@ -1960,7 +1959,7 @@ void netSendTrackerUpdate() {
   if (networkGameType == netUdp && netUseTracker == TRUE) {
     memset(&h, 0, sizeof(INFO_PACKET));
     netMakeInfoRespsonse(&h);
-    netClientSendUdpTracker((char *) &h, sizeof(h));
+    netClientSendUdpTracker((BYTE *) &h, sizeof(h));
     netPacketsPerSecond++;
   }
 }

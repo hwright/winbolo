@@ -167,7 +167,6 @@ gboolean dialogGameSetupStartDelay(GtkWidget *widget,  GdkEventButton *event, gp
 }
 
 gboolean dialogGameSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
-  char fileName[FILENAME_MAX]; /* Name of the map              */
   char password[FILENAME_MAX]; /* Dialog Options               */
   gameType gt;
   bool hm;
@@ -250,6 +249,7 @@ gboolean dialogGameSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer
 
   }
   gtk_label_set_text(GTK_LABEL(idc_gamesetupselectedmap), "Selected Map: Everard Island (inbuilt)");
+  return FALSE;
 }
 
 gboolean dialogGameSetupOK(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {

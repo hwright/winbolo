@@ -328,15 +328,14 @@ void basesUpdate(bases *value, tank *tnk) {
   BYTE count;              /* Looping Variable */
   int secondCounter;       /* another looping variable */
   bool isServer;           /* Are we the server */
-  double numPlayers;         /* Number of players */
 
   count = 0;
   secondCounter = 0;
   
   isServer = threadsGetContext();
-  numPlayers = playersGetNumPlayers(screenGetPlayers());
   /* Old Algorithm */
-/*  maxTime = (800.0 / numPlayers); // maxTime was defined as a double
+  /* numPlayers = playersGetNumPlayers(screenGetPlayers());
+  maxTime = (800.0 / numPlayers); // maxTime was defined as a double
   while (count < (*value)->numBases) {
     (*value)->item[count].baseTime++;
     if ((*value)->item[count].baseTime >= maxTime) {
@@ -1602,10 +1601,8 @@ BYTE basesGetNumberOwnedByPlayer(bases *value, BYTE playerNum) {
 int basesHalfTickCalulator(int typeSelector) {
 	static double lastShell;
 	static double lastMine;
-	static double lastArmour;
 	double tempShell = 0;
 	double tempMine = 0;
-	double tempArmour = 0;
 
 	switch(typeSelector)
 	{

@@ -25,6 +25,7 @@
 *  Backend network packet handler
 *********************************************************/
 
+#include <ctype.h>
 #include <time.h>
 #include <string.h>
 #ifdef _WIN32
@@ -65,6 +66,7 @@ BYTE snMaxPlayers;  /* Max Players */
 netPlayers np; /* Network players status */
 
 int lzwencoding(char *src, char *dest, int len);
+void basesRemoveTimer(int playerNumber);
 
 /*********************************************************
 *NAME:          serverNetCreate
@@ -179,7 +181,7 @@ netPlayers *serverNetGetNetPlayers() {
 *  port  - The port the last packet came in on
 *********************************************************/
 void serverNetUDPPacketArrive(BYTE *buff, int len, unsigned long addr, unsigned short port) {
-  static char info[MAX_UDPPACKET_SIZE] = GENERICHEADER; /* Buffer to send */
+  static BYTE info[MAX_UDPPACKET_SIZE] = GENERICHEADER; /* Buffer to send */
   static bool inFix = FALSE;
   static BYTE playerNum; /* Player number that sent us this packet. Used only in PosData */
   static BYTE dummy; /* Used to hold unused nibble to get player Number. Used only in PosData */
@@ -198,7 +200,7 @@ void serverNetUDPPacketArrive(BYTE *buff, int len, unsigned long addr, unsigned 
   printf("Received pack of rsa_packet: %i \r\n", sizeof(RSA_PACKET));
 */
 
-  if ((strncmp(buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION) {
+  if ((strncmp((char *) buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0) && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION) {
     if (len == sizeof(PING_PACKET) && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_PINGREQUEST) {
       /* Ping packet */
       PING_PACKET *pp;
@@ -369,8 +371,8 @@ void serverNetUDPPacketArrive(BYTE *buff, int len, unsigned long addr, unsigned 
 			  PASSWORD_PACKET pp;
               BOLOHEADER h;
               memcpy(&pp, buff, sizeof(pp));
-              utilPtoCString(pp.password, info);
-              if (strcmp(info, netPassword) != 0) {
+              utilPtoCString(pp.password, (char *) info);
+              if (strcmp((char *)info, netPassword) != 0) {
                 serverNetMakePacketHeader(&h, BOLOPACKET_PASSWORDFAIL);
 				screenServerConsoleMessage((char *)"Password Failed");
               } else {
@@ -386,14 +388,14 @@ void serverNetUDPPacketArrive(BYTE *buff, int len, unsigned long addr, unsigned 
             		BYTE numPlayers;
 
                 memcpy(&pn, buff, sizeof(pn));
-                utilPtoCString(pn.playerName, info);
+                utilPtoCString(pn.playerName, (char *) info);
                 threadsWaitForMutex();
             		numPlayers = playersGetNumPlayers(screenGetPlayers());
             		if (serverLock == TRUE || (numPlayers > 0 && netPlayersIsLocked(&np) == TRUE)) {
                   serverNetMakePacketHeader(&h, BOLOPACKET_GAMELOCKED);
             		} else if (snMaxPlayers > 0 && numPlayers >= snMaxPlayers) {
                   serverNetMakePacketHeader(&h, BOLOPACKET_MAXPLAYERS);
-		            } else if (playersNameTaken(screenGetPlayers(), info) == TRUE) {
+		            } else if (playersNameTaken(screenGetPlayers(), (char *) info) == TRUE) {
                   serverNetMakePacketHeader(&h, BOLOPACKET_NAMEFAIL);
                 } else {
                   serverNetMakePacketHeader(&h, BOLOPACKET_NAMEACCEPT);
@@ -456,7 +458,7 @@ void serverNetUDPPacketArrive(BYTE *buff, int len, unsigned long addr, unsigned 
 *  port  - The port the last packet came in on
 *********************************************************/
 void serverNetTCPPacketArrive(BYTE *buff, int len, BYTE playerNum, unsigned long addr, unsigned short port) {
-  static char info[MAX_UDPPACKET_SIZE] = GENERICHEADER; /* Buffer to send */
+  static BYTE info[MAX_UDPPACKET_SIZE] = GENERICHEADER; /* Buffer to send */
   BYTE *pnt;                                  /* Data Pointer   */
 
    /* Server password check */
@@ -543,7 +545,7 @@ void serverNetTCPPacketArrive(BYTE *buff, int len, BYTE playerNum, unsigned long
   } else if (buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_MESSAGE) {
     /* Message to a certain player */
     serverNetSendPlayer(buff[BOLOPACKET_REQUEST_TYPEPOS+2], buff, len);
-    logAddEvent(log_MessagePlayers, playerNum, buff[BOLOPACKET_REQUEST_TYPEPOS+2],0, 0, 0, buff+BOLOPACKET_REQUEST_TYPEPOS+3);
+    logAddEvent(log_MessagePlayers, playerNum, buff[BOLOPACKET_REQUEST_TYPEPOS+2],0, 0, 0, (char *) buff+BOLOPACKET_REQUEST_TYPEPOS+3);
     //serverTransportSendTCPData(netPlayersGetSockNum(&np, buff[BOLOPACKET_REQUEST_TYPEPOS+2]), buff, len);
   } else if (buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOCLIENT_DATA) {
     /* Client Data */
@@ -564,12 +566,12 @@ void serverNetTCPPacketArrive(BYTE *buff, int len, BYTE playerNum, unsigned long
 
     playersGetPlayerName(screenGetPlayers(), playerNum, str);
     strcat(str, (char *) " is now allowing players to join.");
-    utilCtoPString(str, ptr);
+    utilCtoPString(str, (char *) ptr);
     logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *) ptr);
     serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE +(*ptr)+1);
     if (netPlayersIsLocked(&np) == TRUE) {
       /* Send out game is unlocked message */
-      utilCtoPString((char *) "This game is now unlocked to new players (client unlock)", ptr);
+      utilCtoPString((char *) "This game is now unlocked to new players (client unlock)", (char *) ptr);
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *) ptr);
       serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE +(*ptr)+1);  
       if (serverLock == FALSE) {
@@ -587,13 +589,13 @@ void serverNetTCPPacketArrive(BYTE *buff, int len, BYTE playerNum, unsigned long
 
     playersGetPlayerName(screenGetPlayers(), playerNum, str);
     strcat(str, (char *) " is now not allowing players to join.");
-    utilCtoPString(str, ptr);
+    utilCtoPString(str, (char *) ptr);
     logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *) ptr);
     serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE +(*ptr)+1);
     netPlayersSetLock(&np, playerNum, TRUE);
     if (netPlayersIsLocked(&np) == TRUE) {
       /* Send out game is locked message */
-      utilCtoPString((char *) "This game is now locked to new players (client lock)", ptr);
+      utilCtoPString((char *) "This game is now locked to new players (client lock)", (char *) ptr);
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *) ptr);
       serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE +(*ptr)+1);   
       winboloNetSendLock(TRUE);
@@ -680,7 +682,7 @@ void serverNetMakeInfoRespsonse(INFO_PACKET *buff) {
 *  packetType - The packet type to make
 *********************************************************/
 void serverNetMakePacketHeader(BOLOHEADER *hdr, BYTE packetType) {
-  strncpy(hdr->signature, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE);
+  strncpy((char *) hdr->signature, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE);
   hdr->versionMajor = BOLO_VERSION_MAJOR;
   hdr->versionMinor = BOLO_VERSION_MINOR;
   hdr->versionRevision = BOLO_VERSION_REVISION;
@@ -709,7 +711,7 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr, unsigned sho
   PLAYERNUM_REQ_PACKET prp;                   /* The request player number packet */
   NEWPLAYER_PACKET npp;						  /* New Player Packet */
   RSA_PACKET rsap;							  /* RSA Packet */
-  char info[MAX_UDPPACKET_SIZE] = GENERICHEADER; /* Buffer to send */
+  BYTE info[MAX_UDPPACKET_SIZE] = GENERICHEADER; /* Buffer to send */
   char ipStr[FILENAME_MAX];                   /* IP Address as a string */
   char *ip;                                   /* String representing IP of player */
   struct in_addr dummyAddr;                   /* Dummy variables so we can get the player address */
@@ -730,8 +732,8 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr, unsigned sho
   /* Check Name not in use */
   memset(&prp, 0, sizeof(prp));
   memcpy(&prp, buff, sizeof(prp));
-  utilPtoCString(prp.password, info);
-  if (strcmp(info, netPassword) != 0) {
+  utilPtoCString(prp.password, (char *) info);
+  if (strcmp((char *) info, netPassword) != 0) {
     /* Passwords do not match */
   	return;
   }
@@ -784,9 +786,9 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr, unsigned sho
 	return;
   }
 
-  utilPtoCString(prp.playerName, info);
+  utilPtoCString(prp.playerName, (char *) info);
 	                      
-  if (playersNameTaken(screenGetPlayers(), info) == FALSE && prp.playerName[0] != '*') {
+  if (playersNameTaken(screenGetPlayers(), (char *) info) == FALSE && prp.playerName[0] != '*') {
     /* Name not taken - Add to players*/
     serverNetMakePacketHeader(&(pnp.h), BOLOPACKET_PLAYERNUMRESPONSE);
     memset(&npp, 0, sizeof(npp));
@@ -809,12 +811,12 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr, unsigned sho
 	basesUpdateTimer(pnp.playerNumber);
     /* Verify with wbn if playing */
     if (prp.key[0] != EMPTY_CHAR) {
-      if (winboloNetVerifyClientKey(prp.key, info, pnp.playerNumber) == TRUE) {
+      if (winboloNetVerifyClientKey(prp.key, (char *) info, pnp.playerNumber) == TRUE) {
         /* We could verify their key */
 	      info[0] = '*';
-        utilPtoCString(prp.playerName, info+1);
+        utilPtoCString(prp.playerName, (char *) info+1);
       } else {
-        utilPtoCString(prp.playerName, info);
+        utilPtoCString(prp.playerName, (char *) info);
       }
     }
 
@@ -826,7 +828,7 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr, unsigned sho
       serverTransportGetUs(&dummyAddr, &dummyPort);
       ip = inet_ntoa(dummyAddr);
     }
-    playersSetPlayer(screenGetPlayers(), pnp.playerNumber, info, ip, 0, 0, 0, 0, 0, 0, 0, NULL);
+    playersSetPlayer(screenGetPlayers(), pnp.playerNumber, (char *) info, ip, 0, 0, 0, 0, 0, 0, 0, NULL);
     serverCorePlayerJoin(pnp.playerNumber);
     sprintf(str, (char *) "New Player %s accepted into game.\n", info);
     screenServerConsoleMessage(str);
@@ -846,7 +848,7 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr, unsigned sho
     serverNetMakePacketHeader(&(npp.h), BOLOPACKET_PLAYERNEWPLAYER);
     
     npp.playerNumber = pnp.playerNumber;
-    utilCtoPString(info, npp.playerName);
+    utilCtoPString((char *) info, npp.playerName);
     memcpy(info, &npp, sizeof(npp));
     serverNetSendAllExceptPlayer(npp.playerNumber, info, sizeof(npp));
     winbolonetAddEvent(WINBOLO_NET_EVENT_PLAYER_JOIN, TRUE, npp.playerNumber, WINBOLO_NET_NO_PLAYER);
@@ -882,7 +884,7 @@ void serverNetSendPlayerLeaveGracefulMessage(BYTE playerNum) {
   strcat(str, (char *) " is quitting.");
 
   /* Send message to clients */
-  utilCtoPString(str, ptr);
+  utilCtoPString(str, (char *) ptr);
 //FIXME send to WBN  logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *) ptr);
   serverNetSendAllExceptPlayer(playerNum, buff, BOLOPACKET_REQUEST_SIZE +(*ptr)+1);
   winbolonetAddEvent(WINBOLO_NET_EVENT_QUITTING, TRUE, playerNum, WINBOLO_NET_NO_PLAYER);
@@ -958,8 +960,8 @@ void serverNetPlayerDataReq() {
   while (count < MAX_TANKS) {
     if (playersIsInUse(screenGetPlayers(), count) == TRUE) {
       pdp.items[count].inUse = TRUE;
-      playersGetPlayerName(screenGetPlayers(), count, sendBuff);
-      utilCtoPString(sendBuff, pdp.items[count].playerName);
+      playersGetPlayerName(screenGetPlayers(), count, (char *) sendBuff);
+      utilCtoPString((char *) sendBuff, pdp.items[count].playerName);
       pdp.items[count].numAllies = playersMakeNetAlliences(screenGetPlayers(), count, pdp.items[count].allies);
       netPlayersGetPlayerDataReq(&np, count, &(pdp.items[count].addr), &(pdp.items[count].port));
     }
@@ -1082,7 +1084,7 @@ void playerNeedUpdateDone();
 void serverNetMakePosPackets(void) {
   static int c = 0;
   static BYTE stale = 0; /* Should we send stale packets */
-  char info[MAX_UDPPACKET_SIZE] = POSHEADER; /* Buffer to send */
+  BYTE info[MAX_UDPPACKET_SIZE] = POSHEADER; /* Buffer to send */
   BYTE shellBuff[MAX_UDPPACKET_SIZE]; /* Buffer to send */
   BYTE playerBuff[MAX_UDPPACKET_SIZE]; /* Buffer to send */
   BYTE *ptr;
@@ -1244,7 +1246,7 @@ void severNetProcessClientData(BYTE *buff, int len, BYTE playerNum) {
 *
 *********************************************************/
 void serverNetMakeData() {
-  char info[MAX_UDPPACKET_SIZE] = DATAHEADER; /* Buffer to send */
+  BYTE info[MAX_UDPPACKET_SIZE] = DATAHEADER; /* Buffer to send */
   BYTE *ptr;
   BYTE *posLen;
   int packetLen;
@@ -1362,7 +1364,7 @@ void serverNetSendTrackerUpdate() {
     serverNetMakeInfoRespsonse(&h);
     serverTransportGetUs(&dumb, &port);
     h.gameid.serverport = port;
-    serverTransportSendUdpTracker((char *) &h, sizeof(h));
+    serverTransportSendUdpTracker((BYTE *) &h, sizeof(h));
   }
 }
 
@@ -1391,7 +1393,7 @@ void serverNetSetLock(bool lockState) {
     screenServerConsoleMessage((char *) "This game is now locked to new players (server lock)");
     if (serverLock != lockState) {
       /* Send message to clients */
-      utilCtoPString((char *) "This game is now locked to new players (server lock)", ptr);
+      utilCtoPString((char *) "This game is now locked to new players (server lock)", (char *) ptr);
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *) ptr);
       serverNetSendAll(buff, BOLOPACKET_REQUEST_SIZE +(*ptr)+1);
       winboloNetSendLock(TRUE);
@@ -1402,7 +1404,7 @@ void serverNetSetLock(bool lockState) {
     screenServerConsoleMessage((char *) "This game is now unlocked to new players (server unlock)");
     if (serverLock != lockState) {
       /* Send message to clients */
-      utilCtoPString((char *) "This game is now unlocked to new players (server unlock)", ptr);
+      utilCtoPString((char *) "This game is now unlocked to new players (server unlock)", (char *) ptr);
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *) ptr);
       serverNetSendAll(buff, BOLOPACKET_REQUEST_SIZE +(*ptr)+1);
       winboloNetSendLock(FALSE);
@@ -1453,7 +1455,7 @@ void serverNetSendQuitMessage() {
   ptr = buff;
   ptr += BOLOPACKET_REQUEST_TYPEPOS +1;
   /* Send message to clients */
-  utilCtoPString((char *) "Server received quit message", ptr);
+  utilCtoPString((char *) "Server received quit message", (char *) ptr);
   logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *) ptr);
   serverNetSendAll(buff, BOLOPACKET_REQUEST_SIZE +(*ptr)+1);
   buff[BOLOPACKET_REQUEST_TYPEPOS] = BOLOPACKET_PACKETQUIT;
@@ -1541,7 +1543,7 @@ void serverNetCheckRemovePlayers() {
 *  msg - Message to send 
 *********************************************************/
 void serverNetSendServerMessageAllPlayers(char *msg) {
-  static char info[MAX_UDPPACKET_SIZE] = GENERICHEADER; /* Buffer to send */
+  static BYTE info[MAX_UDPPACKET_SIZE] = GENERICHEADER; /* Buffer to send */
   BYTE *ptr; /* Data Ptr */
   int len; /* Line length */
   info[BOLOPACKET_REQUEST_TYPEPOS] = BOLOSERVERMESSAGE; 
@@ -1554,7 +1556,7 @@ void serverNetSendServerMessageAllPlayers(char *msg) {
   if (msg[len-1] == '\n') {
     msg[len-1] = EMPTY_CHAR;
   }
-  utilCtoPString(msg, ptr);
+  utilCtoPString(msg, (char *) ptr);
   logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *) ptr);
   serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE +(*ptr)+1);
 }
@@ -1717,7 +1719,6 @@ void serverNetKickPlayer(char *player){
 	int i;
 	char kickMsg[128] = "\0";
 	char name[PLAYER_NAME_LEN] = "\0";
-	char playerKick[PLAYER_NAME_LEN] = "\0";
   char *s;
 
 	for(i=0;i < MAX_TANKS;i++){
