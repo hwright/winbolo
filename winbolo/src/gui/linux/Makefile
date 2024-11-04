@@ -14,7 +14,8 @@
 # GNU General Public License for more details.
 
 
-CFLAGS = -g `sdl-config --cflags` `gtk-config --cflags` 
+CFLAGS = -g
+BOLO_CFLAGS = ${CFLAGS} `sdl-config --cflags` `gtk-config --cflags` -Wall
 LDFLAGS = `sdl-config --libs` `gtk-config --libs` `glib-config --libs gthread`
 #-s
 #CFLAGS = -s -O3 -ffast-math -fomit-frame-pointer -mpentium -march=pentium `sdl-config --cflags` `gtk-config --cflags` `glib-config --cflags` 
@@ -90,238 +91,238 @@ linbolo:    global.o bases.o util.o crc.o pillbox.o lgm.o shells.o tank.o \
 
 
 winbolonet.o: ${WBNETDIR}winbolonet.c ${WBNETDIR}winbolonet.h
-	${CC} ${CFLAGS} -c ${WBNETDIR}winbolonet.c
+	${CC} ${BOLO_CFLAGS} -c ${WBNETDIR}winbolonet.c
 
 winbolonetthread.o: ${WBNETDIR}winbolonetthread.c ${WBNETDIR}winbolonetthread.h
-	${CC} ${CFLAGS} -c ${WBNETDIR}winbolonetthread.c
+	${CC} ${BOLO_CFLAGS} -c ${WBNETDIR}winbolonetthread.c
 
 http.o: ${WBNETDIR}http.c ${WBNETDIR}http.h
-	${CC} ${CFLAGS} -c ${WBNETDIR}http.c
+	${CC} ${BOLO_CFLAGS} -c ${WBNETDIR}http.c
 
 winbolonetevents.o: ${WBNETDIR}winbolonetevents.c ${WBNETDIR}winbolonetevents.h
-	${CC} ${CFLAGS} -c ${WBNETDIR}winbolonetevents.c
+	${CC} ${BOLO_CFLAGS} -c ${WBNETDIR}winbolonetevents.c
 
 debug_file_output.o: ${BOLODIR}debug_file_output.c ${BOLODIR}debug_file_output.h
-	${CC} ${CFLAGS} -c ${BOLODIR}debug_file_output.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}debug_file_output.c
 
 
 main.o: main.c 
-	${CC} ${CFLAGS} -c main.c
+	${CC} ${BOLO_CFLAGS} -c main.c
 
 dialogkeysetup.o: dialogkeysetup.c dialogkeysetup.h 
-	${CC} ${CFLAGS} -c dialogkeysetup.c
+	${CC} ${BOLO_CFLAGS} -c dialogkeysetup.c
 
 dnslookups.o: dnslookups.c 
-	${CC} ${CFLAGS} -c dnslookups.c
+	${CC} ${BOLO_CFLAGS} -c dnslookups.c
 
 brainshandler.o: brainshandler.c
-	${CC} ${CFLAGS} -c brainshandler.c
+	${CC} ${BOLO_CFLAGS} -c brainshandler.c
 
 preferences.o: preferences.c preferences.h
-	${CC} ${CFLAGS} -c preferences.c
+	${CC} ${BOLO_CFLAGS} -c preferences.c
 
 currentgames.o: ../win32/currentgames.c ../currentgames.h
-	${CC} ${CFLAGS} -c ../win32/currentgames.c
+	${CC} ${BOLO_CFLAGS} -c ../win32/currentgames.c
 
 dialogalliance.o: dialogalliance.c dialogalliance.h
-	${CC} ${CFLAGS} -c dialogalliance.c
+	${CC} ${BOLO_CFLAGS} -c dialogalliance.c
 
 dialoggamefinder.o: dialoggamefinder.c dialoggamefinder.h
-	${CC} ${CFLAGS} -c dialoggamefinder.c
+	${CC} ${BOLO_CFLAGS} -c dialoggamefinder.c
 	
 dialogpassword.o: dialogpassword.c
-	${CC} ${CFLAGS} -c dialogpassword.c
+	${CC} ${BOLO_CFLAGS} -c dialogpassword.c
 
 dialogsetname.o: dialogsetname.c dialogsetname.h
-	${CC} ${CFLAGS} -c dialogsetname.c
+	${CC} ${BOLO_CFLAGS} -c dialogsetname.c
 
 dialoggamesetup.o: dialoggamesetup.c dialoggamesetup.h
-	${CC} ${CFLAGS} -c dialoggamesetup.c
+	${CC} ${BOLO_CFLAGS} -c dialoggamesetup.c
 
 dialogtrackersetup.o: dialogtrackersetup.c dialogtrackersetup.h
-	${CC} ${CFLAGS} -c dialogtrackersetup.c
+	${CC} ${BOLO_CFLAGS} -c dialogtrackersetup.c
 
 dialogudpsetup.o: dialogudpsetup.c
-	${CC} ${CFLAGS} -c dialogudpsetup.c
+	${CC} ${BOLO_CFLAGS} -c dialogudpsetup.c
 
 messagebox.o: messagebox.c messagebox.h
-	${CC} ${CFLAGS} -c messagebox.c
+	${CC} ${BOLO_CFLAGS} -c messagebox.c
 
 dialogsysteminfo.o: dialogsysteminfo.c dialogsysteminfo.h
-	${CC} ${CFLAGS} -c dialogsysteminfo.c
+	${CC} ${BOLO_CFLAGS} -c dialogsysteminfo.c
 
 dialogabout.o: dialogabout.c dialogabout.h
-	${CC} ${CFLAGS} -c dialogabout.c
+	${CC} ${BOLO_CFLAGS} -c dialogabout.c
 
 dialogopening.o: dialogopening.c
-	${CC} ${CFLAGS} -c dialogopening.c
+	${CC} ${BOLO_CFLAGS} -c dialogopening.c
 
 dialogmessages.o: dialogmessages.c dialogmessages.h
-	${CC} ${CFLAGS} -c dialogmessages.c
+	${CC} ${BOLO_CFLAGS} -c dialogmessages.c
 
 dialognetworkinfo.o: dialognetworkinfo.c dialognetworkinfo.h
-	${CC} ${CFLAGS} -c dialognetworkinfo.c
+	${CC} ${BOLO_CFLAGS} -c dialognetworkinfo.c
 
 dialogwinbolonet.o: dialogwinbolonet.c dialogwinbolonet.h
-	${CC} ${CFLAGS} -c dialogwinbolonet.c
+	${CC} ${BOLO_CFLAGS} -c dialogwinbolonet.c
 
 dialoggameinfo.o: dialoggameinfo.c dialoggameinfo.h
-	${CC} ${CFLAGS} -c dialoggameinfo.c
+	${CC} ${BOLO_CFLAGS} -c dialoggameinfo.c
 
 draw.o: draw.c draw.h
-	${CC} ${CFLAGS} -c draw.c
+	${CC} ${BOLO_CFLAGS} -c draw.c
 
 input.o: input.c input.h
-	${CC} ${CFLAGS} -c input.c
+	${CC} ${BOLO_CFLAGS} -c input.c
 
 sound.o: sound.c sound.h
-	${CC} ${CFLAGS} -c sound.c
+	${CC} ${BOLO_CFLAGS} -c sound.c
 
 cursor.o: cursor.c cursor.h
-	${CC} ${CFLAGS} -c cursor.c
+	${CC} ${BOLO_CFLAGS} -c cursor.c
 
 lang.o: ${GUIDIRLINUX}lang.c
 	${CC} ${CFLGS} -c ${GUIDIRLINUX}lang.c
 
 netclient.o: netclient.c
-	${CC} ${CFLAGS} -c netclient.c
+	${CC} ${BOLO_CFLAGS} -c netclient.c
 dcodlzw.o: ${COMPRESSDIR}dcodlzw.c
-	${CC} ${CFLAGS} -c ${COMPRESSDIR}dcodlzw.c
+	${CC} ${BOLO_CFLAGS} -c ${COMPRESSDIR}dcodlzw.c
 
 ecodlzw.o: ${COMPRESSDIR}ecodlzw.c
-	${CC} ${CFLAGS} -c ${COMPRESSDIR}ecodlzw.c
+	${CC} ${BOLO_CFLAGS} -c ${COMPRESSDIR}ecodlzw.c
 
 framemutex.o: framemutex.c framemutex.h
-	${CC} ${CFLAGS} -c framemutex.c
+	${CC} ${BOLO_CFLAGS} -c framemutex.c
 
 clientmutex.o: clientmutex.c ${GUIDIR}clientmutex.h
-	${CC} ${CFLAGS} -c clientmutex.c
+	${CC} ${BOLO_CFLAGS} -c clientmutex.c
 global.o: ${BOLODIR}global.c ${BOLODIR}global.h
-	${CC} ${CFLAGS} -c ${BOLODIR}global.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}global.c
 
 util.o:	${BOLODIR}util.c ${BOLODIR}util.h
-	${CC} ${CFLAGS} -c ${BOLODIR}util.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}util.c
 
 crc.o: ${BOLODIR}crc.c ${BOLODIR}crc.h
-	${CC} ${CFLAGS} -c ${BOLODIR}crc.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}crc.c
 
 backend.o: ${BOLODIR}backend.c ${BOLODIR}backend.h
-	${CC} ${CFLAGS} -c ${BOLODIR}backend.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}backend.c
 
 
 log.o: ${BOLODIR}log.c ${BOLODIR}log.h
-	${CC} ${CFLAGS} -c ${BOLODIR}log.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}log.c
 
 udppackets.o: ${BOLODIR}udppackets.c ${BOLODIR}udppackets.h
-	${CC} ${CFLAGS} -c ${BOLODIR}udppackets.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}udppackets.c
 
 bases.o: ${BOLODIR}bases.h ${BOLODIR}bases.c
-	${CC} ${CFLAGS} -c ${BOLODIR}bases.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}bases.c
 
 lgm.o: ${BOLODIR}lgm.c ${BOLODIR}lgm.h
-	${CC} ${CFLAGS} -c ${BOLODIR}lgm.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}lgm.c
 
 pillbox.o: ${BOLODIR}pillbox.c ${BOLODIR}pillbox.h
-	${CC} ${CFLAGS} -c ${BOLODIR}pillbox.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}pillbox.c
 
 shells.o: ${BOLODIR}shells.c ${BOLODIR}shells.h
-	${CC} ${CFLAGS} -c ${BOLODIR}shells.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}shells.c
 
 tank.o: ${BOLODIR}tank.c ${BOLODIR}tank.h
-	${CC} ${CFLAGS} -c ${BOLODIR}tank.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}tank.c
 
 allience.o: ${BOLODIR}allience.c ${BOLODIR}allience.h
-	${CC} ${CFLAGS} -c ${BOLODIR}allience.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}allience.c
 
 bolo_map.o: ${BOLODIR}bolo_map.c ${BOLODIR}bolo_map.h
-	${CC} ${CFLAGS} -c ${BOLODIR}bolo_map.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}bolo_map.c
 
 building.o: ${BOLODIR}building.c ${BOLODIR}building.h
-	${CC} ${CFLAGS} -c ${BOLODIR}building.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}building.c
 
 explosions.o: ${BOLODIR}explosions.c ${BOLODIR}explosions.h
-	${CC} ${CFLAGS} -c ${BOLODIR}explosions.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}explosions.c
 
 floodfill.o: ${BOLODIR}floodfill.c ${BOLODIR}floodfill.h
-	${CC} ${CFLAGS} -c ${BOLODIR}floodfill.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}floodfill.c
 
 gametype.o: ${BOLODIR}gametype.c ${BOLODIR}gametype.h
-	${CC} ${CFLAGS} -c ${BOLODIR}gametype.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}gametype.c
 
 grass.o: ${BOLODIR}grass.c ${BOLODIR}grass.h
-	${CC} ${CFLAGS} -c ${BOLODIR}grass.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}grass.c
 
 labels.o: ${BOLODIR}labels.c ${BOLODIR}labels.h
-	${CC} ${CFLAGS} -c ${BOLODIR}labels.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}labels.c
 
 messages.o: ${BOLODIR}messages.c ${BOLODIR}messages.h
-	${CC} ${CFLAGS} -c ${BOLODIR}messages.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}messages.c
 	
 mines.o: ${BOLODIR}mines.c ${BOLODIR}mines.h
-	${CC} ${CFLAGS} -c ${BOLODIR}mines.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}mines.c
 
 minesexp.o: ${BOLODIR}minesexp.c ${BOLODIR}minesexp.h
-	${CC} ${CFLAGS} -c ${BOLODIR}minesexp.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}minesexp.c
 
 netmt.o: ${BOLODIR}netmt.c ${BOLODIR}netmt.h
-	${CC} ${CFLAGS} -c ${BOLODIR}netmt.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}netmt.c
 	
 netpnb.o: ${BOLODIR}netpnb.c ${BOLODIR}netpnb.h
-	${CC} ${CFLAGS} -c ${BOLODIR}netpnb.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}netpnb.c
 
 players.o: ${BOLODIR}players.c ${BOLODIR}players.h
-	${CC} ${CFLAGS} -c ${BOLODIR}players.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}players.c
 	
 rubble.o: ${BOLODIR}rubble.c ${BOLODIR}rubble.h
-	${CC} ${CFLAGS} -c ${BOLODIR}rubble.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}rubble.c
 	
 screenbrainmap.o: ${BOLODIR}screenbrainmap.c ${BOLODIR}screenbrainmap.h
-	${CC} ${CFLAGS} -c ${BOLODIR}screenbrainmap.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}screenbrainmap.c
 	
 screenbullet.o: ${BOLODIR}screenbullet.c ${BOLODIR}screenbullet.h
-	${CC} ${CFLAGS} -c ${BOLODIR}screenbullet.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}screenbullet.c
 	
 screencalc.o: ${BOLODIR}screencalc.c ${BOLODIR}screencalc.h
-	${CC} ${CFLAGS} -c ${BOLODIR}screencalc.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}screencalc.c
 	
 screenlgm.o: ${BOLODIR}screenlgm.c ${BOLODIR}screenlgm.h
-	${CC} ${CFLAGS} -c ${BOLODIR}screenlgm.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}screenlgm.c
 
 screentank.o: ${BOLODIR}screentank.c ${BOLODIR}screentank.h
-	${CC} ${CFLAGS} -c ${BOLODIR}screentank.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}screentank.c
 
 scroll.o: ${BOLODIR}scroll.c ${BOLODIR}scroll.h
-	${CC} ${CFLAGS} -c ${BOLODIR}scroll.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}scroll.c
 	
 sounddist.o: ${BOLODIR}sounddist.c ${BOLODIR}sounddist.h
-	${CC} ${CFLAGS} -c ${BOLODIR}sounddist.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}sounddist.c
 
 starts.o: ${BOLODIR}starts.c ${BOLODIR}starts.h
-	${CC} ${CFLAGS} -c ${BOLODIR}starts.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}starts.c
 
 swamp.o: ${BOLODIR}swamp.c ${BOLODIR}swamp.h
-	${CC} ${CFLAGS} -c ${BOLODIR}swamp.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}swamp.c
 
 tankexp.o: ${BOLODIR}tankexp.c ${BOLODIR}tankexp.h
-	${CC} ${CFLAGS} -c ${BOLODIR}tankexp.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}tankexp.c
 
 treegrow.o: ${BOLODIR}treegrow.c ${BOLODIR}treegrow.h
-	${CC} ${CFLAGS} -c ${BOLODIR}treegrow.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}treegrow.c
 
 playersrejoin.o: ${BOLODIR}playersrejoin.c ${BOLODIR}playersrejoin.h
-	${CC} ${CFLAGS} -c ${BOLODIR}playersrejoin.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}playersrejoin.c
 
 network.o: ${BOLODIR}network.c ${BOLODIR}network.h
-	${CC} ${CFLAGS} -c ${BOLODIR}network.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}network.c
 
 screen.o: ${BOLODIR}screen.c ${BOLODIR}screen.h
-	${CC} ${CFLAGS} -c ${BOLODIR}screen.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}screen.c
 
 mathWinbolo.o: ${BOLODIR}mathWinbolo.c ${BOLODIR}mathWinbolo.h
-	${CC} ${CFLAGS} -c ${BOLODIR}mathWinbolo.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}mathWinbolo.c
 
 netplayers.o: ${BOLODIR}netplayers.c ${BOLODIR}netplayers.h
-	${CC} ${CFLAGS} -c ${BOLODIR}netplayers.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}netplayers.c
 
 
 
@@ -386,15 +387,15 @@ bigdRand.o: $(BDDIR)bigdRand.h
 
 # Server
 servercore.o: ${SERVERDIR}servercore.c ${SERVERDIR}servercore.h
-	${CC} ${CFLAGS} -c ${SERVERDIR}servercore.c
+	${CC} ${BOLO_CFLAGS} -c ${SERVERDIR}servercore.c
 
 servermessages.o: ${SERVERDIR}servermessages.c ${BOLODIR}messages.h
-	${CC} ${CFLAGS} -c ${SERVERDIR}servermessages.c
+	${CC} ${BOLO_CFLAGS} -c ${SERVERDIR}servermessages.c
 servernet.o: ${SERVERDIR}servernet.c ${SERVERDIR}servernet.h ${SERVERDIR}rsaalgorithm.h
-	${CC}  ${CFLAGS} -c ${SERVERDIR}servernet.c
+	${CC}  ${BOLO_CFLAGS} -c ${SERVERDIR}servernet.c
 servertransport.o: ${SERVERDIR}servertransport.c ${SERVERDIR}servertransport.h
-	${CC}  ${CFLAGS} -c ${SERVERDIR}servertransport.c
+	${CC}  ${BOLO_CFLAGS} -c ${SERVERDIR}servertransport.c
 
 threads.o: ${SERVERDIR}threads.c ${SERVERDIR}threads.h
-	${CC}  ${CFLAGS} -c ${SERVERDIR}threads.c
+	${CC}  ${BOLO_CFLAGS} -c ${SERVERDIR}threads.c
 
