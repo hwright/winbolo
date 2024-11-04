@@ -133,9 +133,7 @@ bool drawSetup(GtkWidget *appWnd) {
   
   buff = malloc(80438);
   /* Get tmp file */
-  strcpy(fileName, g_get_tmp_dir());
-  tf = tempnam(fileName, "lb");
-  strcpy(fileName, tf);
+  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX", g_get_tmp_dir());
   ret = lzwdecoding(TILES_IMAGE, buff, 36499);
   if (ret != 80438) {
     free(buff);
@@ -1596,9 +1594,7 @@ bool drawBackground(int width, int height) {
   
   buff = malloc(168778);
   /* Get tmp file */
-  strcpy(fileName, g_get_tmp_dir());
-  tf = tempnam(fileName, "lb");
-  strcpy(fileName, tf);
+  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX", g_get_tmp_dir());
   ret = lzwdecoding(B_IMAGE, buff, 17099);
   if (ret != 168778) {
     free(buff);

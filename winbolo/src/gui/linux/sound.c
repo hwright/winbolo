@@ -116,8 +116,7 @@ bool soundSetup() {
   buff = malloc(1024 * 100);
   /* Get tmp file */
   strcpy(fileName, g_get_tmp_dir());
-  tf = tempnam(fileName, "lb");
-  strcpy(fileName, tf);
+  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX", g_get_tmp_dir());
 
   /* Get in path */
   strcpy(inFile, applicationPath);
