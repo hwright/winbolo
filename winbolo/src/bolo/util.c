@@ -400,7 +400,7 @@ bool utilIsTankInTrees(map *mp, pillboxes *pb, bases *bs, WORLD wx, WORLD wy) {
           terrain = mapGetPos(mp, (BYTE) (bmx+1), (BYTE) (bmy-1));
           terrain2 = mapGetPos(mp, bmx, (BYTE) (bmy-1));
         }
-        if (returnValue == TRUE && (terrain != FOREST && terrain != MINE_FOREST) || (terrain2 != FOREST && terrain2 != MINE_FOREST)) {
+        if (returnValue == TRUE && ((terrain != FOREST && terrain != MINE_FOREST) || (terrain2 != FOREST && terrain2 != MINE_FOREST))) {
           returnValue = FALSE;
         }
       }
