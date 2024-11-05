@@ -56,6 +56,9 @@
 #include "util.h"
 
 
+int tankCalcCRCSetup(tank *value);
+netPlayers *serverNetGetNetPlayers();
+BYTE serverCoreGetTankPlayer(tank *value);
 
 bool tankShuttingDown = FALSE; // Enourmouse HACK. Please Fix Me FIXME
 BYTE ct[50];

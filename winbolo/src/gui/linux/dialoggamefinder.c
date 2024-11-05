@@ -72,6 +72,8 @@ GtkWidget *idc_gamefindmapname;
 bool dialogGameFinderClosing = FALSE;
 
 gboolean dialogGameFinderSelect(GtkWidget *widget, gpointer user_data);
+bool netClientFindBroadcastGames(GtkWidget *hWnd, currentGames *cg);
+bool netClientFindTrackedGames(GtkWidget *hWnd, currentGames *cg, char *trackerAddress, unsigned short port, char *motd);
 
 
 /*********************************************************

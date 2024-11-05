@@ -139,6 +139,7 @@ char brainsMessage[FILENAME_MAX]; /* Message to send */
 unsigned short brainsNumObjects;  /* Number of brain objects */
 ObjectInfo brainObjects[1024];    /* Array of brain objects  */
 
+void moveMousePointer(updateType value);
 
 /* Cursor Positions */
 int cursorPosX, cursorPosY;
@@ -2825,13 +2826,13 @@ void screenGetLgmStatus(bool *isOut, bool *isDead, TURNTYPE *angle) {
 bool screenTankScroll() {
   BYTE x;  /* Tank X and Y Co-ordinated       */
   BYTE y;
-  BYTE px; /* Pixel X and Y co-ords of the tank */
-  BYTE py;
+  //BYTE px; /* Pixel X and Y co-ords of the tank */
+  //BYTE py;
 
   x = tankGetScreenMX(&mytk);
   y = tankGetScreenMY(&mytk);
-  px = tankGetScreenPX(&mytk);
-  py = tankGetScreenPY(&mytk);
+  //px = tankGetScreenPX(&mytk);
+  //py = tankGetScreenPY(&mytk);
 /*  if (px >3 || (x - xOffset -1) == 0) {
     x++;
   }
@@ -3031,11 +3032,11 @@ void screenMakeBrainInfo(BrainInfo *value, bool first) {
 
   /* Message */
   if (messageIsNewMessage() == TRUE) {
-    unsigned long *ul;
+    //unsigned long *ul;
     value->message = (MessageInfo*) malloc(sizeof(MessageInfo));
     value->message->receivers = malloc(sizeof(value->message->receivers));
     value->message->message = malloc(512);
-    ul = value->message->receivers;
+    //ul = value->message->receivers;
     value->message->sender = messageGetNewMessage((char *) value->message->message, &(value->message->receivers)); /* FIXME: Second parameter? */
   } else {
     value->message = NULL;

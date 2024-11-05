@@ -53,6 +53,8 @@
 #include <ctype.h>
 #include <time.h>
 
+bool httpSendLogFile(char *fileName, BYTE *key, bool wantFeedback);
+
 DWORD oldTick;     /* Number of ticks passed */
 bool quitOnWinFlag = FALSE;
 bool autoClose = FALSE;
@@ -221,7 +223,6 @@ void processKeys() {
 
 	char playerKick[33] = "\0";
 
-	int i=0;
 	size_t newbuflen;
 
   timer.tv_sec = 1;
@@ -340,7 +341,6 @@ void CALLBACK serverGameTimer(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWOR
       oldTick += SERVER_TICK_LENGTH;
     }
     if (quitOnWinFlag == TRUE || autoClose == TRUE || (winbolonetIsRunning() == TRUE && serverCoreGetActualGameType() != gameOpen)) {
-		BYTE key[64];
       threadsWaitForMutex();
       if (quitOnWinFlag == TRUE && isGameOver == FALSE){
 		isGameOver = serverCoreCheckGameWin(printGameWinners);
@@ -674,7 +674,7 @@ int main(int argc, char **argv) {
 
   /* Debugging file stuff */
   setWriteToDebugFileStream(-1);
-  setFileName(&debugFileName);
+  setFileName(debugFileName);
   if (openDebugFile() == -1) {
 	setWriteToDebugFileStream(-1);
   }

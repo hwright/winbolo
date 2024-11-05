@@ -69,7 +69,7 @@ time_t winboloNetLastSent;
 * startTime - Game start time
 *********************************************************/
 bool winbolonetCreateServer(char *mapName, unsigned short port, BYTE gameType, BYTE ai, bool mines, bool password, BYTE numBases, BYTE numPills, BYTE freeBases, BYTE freePills, BYTE numPlayers, long startTime) {
-  char buff[FILENAME_MAX]; /* Send buffer */
+  BYTE buff[FILENAME_MAX]; /* Send buffer */
   int ans;                 /* Function return */
   BYTE count;              /* Looping Variable */
 
@@ -101,11 +101,11 @@ bool winbolonetCreateServer(char *mapName, unsigned short port, BYTE gameType, B
         fprintf(stderr, "Error: %s\n", winboloNetBuff+1);
         winbolonetDestroy();
       } else if (winboloNetBuff[0] == 1) {
-        sprintf(buff, "\tWinBolo.net Available: Version: %d.%d.%d", winboloNetBuff[1], winboloNetBuff[2], winboloNetBuff[3]);
+        sprintf((char *) buff, "\tWinBolo.net Available: Version: %d.%d.%d", winboloNetBuff[1], winboloNetBuff[2], winboloNetBuff[3]);
         screenServerConsoleMessage((char *) buff);
         if (ans > 4) {
           winboloNetBuff[ans] = '\0';
-          sprintf(buff, "\tMOTD: %s", winboloNetBuff+4);
+          sprintf((char *) buff, "\tMOTD: %s", winboloNetBuff+4);
           screenServerConsoleMessage((char *) buff);
           /* Get a server key */
           if (winbolonetRequestServerKey(mapName, port, gameType, ai, mines, password, numBases, numPills, freeBases, freePills, numPlayers, startTime) == FALSE) {
@@ -150,17 +150,12 @@ bool winbolonetCreateServer(char *mapName, unsigned short port, BYTE gameType, B
 * errorMsg  - Buffer to hold Error message if required
 *********************************************************/
 bool winbolonetCreateClient(char *userName, char *password, BYTE *serverKey, char *errorMsg) {
-  bool ownServer;          /* Is this client running the server too */
-  char buff[FILENAME_MAX]; /* Send buffer */
+  BYTE buff[FILENAME_MAX]; /* Send buffer */
   int ret;                 /* Function return */
 
-  ownServer = FALSE;
-  
   if (winboloNetRunning == FALSE) {
     winboloNetRunning = httpCreate();
     winboloNetServerKey[0] = '\0';
-  } else {
-    ownServer = TRUE;
   }
   if (winboloNetRunning == TRUE) {
     buff[0] = WINBOLO_NET_VERSION_MAJOR;
@@ -175,7 +170,7 @@ bool winbolonetCreateClient(char *userName, char *password, BYTE *serverKey, cha
       if (winboloNetBuff[0] == 0) {
         /* Error */
         winboloNetBuff[ret] = '\0';
-        strcpy(errorMsg, winboloNetBuff+1);
+        strcpy(errorMsg, (char *) winboloNetBuff+1);
         winbolonetDestroy();
       } else {
         /* Get a Client key */
@@ -277,7 +272,6 @@ void winbolonetServerSendTeams(BYTE *array, BYTE length, BYTE numTeams) {
   BYTE *ptr;     /* Our memory pointer */
   BYTE arrayPos; /* Position in the array */
   int pos;       /* Pointer inside the buffer */
-  int ret;       /* Function return value */
 
   ptr = malloc(4 /* Header */ +  (length * (WINBOLONET_KEY_LEN+1)) + WINBOLONET_KEY_LEN);
   ptr[0] = WINBOLO_NET_VERSION_MAJOR;
@@ -311,7 +305,7 @@ void winbolonetServerSendTeams(BYTE *array, BYTE length, BYTE numTeams) {
   } 
   
   /* Send it */
-  ret = httpSendMessage(ptr, pos, winboloNetBuff, WINBOLONET_BUFFSIZE);
+  httpSendMessage(ptr, pos, winboloNetBuff, WINBOLONET_BUFFSIZE);
   free(ptr);
 }
 
@@ -390,7 +384,7 @@ void winbolonetServerUpdate(BYTE numPlayers, BYTE numFreeBases, BYTE numFreePill
         *(ptr + pos) = winbolonetEventsRemove((ptr+pos+1), (ptr+pos+1+WINBOLONET_KEY_LEN));
         if (*(ptr + pos) != WINBOLONET_EVENT_NOITEM) {
           if (*(ptr + pos) == WINBOLO_NET_EVENT_ALLY_JOIN || *(ptr + pos) == WINBOLO_NET_EVENT_ALLY_LEAVE) {
-            /* Both keys are used *
+            * Both keys are used *
             pos += WINBOLONET_KEY_LEN;
           }
           pos += 1 + WINBOLONET_KEY_LEN;
@@ -472,7 +466,7 @@ bool winbolonetRequestServerKey(char *mapName, unsigned short port, BYTE gameTyp
 
 
   buffPos = 13;
-  utilCtoPString(mapName, buff+13);
+  utilCtoPString(mapName, (char *) buff+13);
   buffPos = 14 + buff[13];
 
   memcpy(buff+buffPos, &port, sizeof(port));
@@ -527,16 +521,16 @@ bool winbolonetRequestClientKey(char *userName, char *password, BYTE *serverKey,
   buff[3] = WINBOLO_NET_MESSAGE_CLIENTKEY_REQ;
   memcpy(buff+4, serverKey, WINBOLONET_KEY_LEN);
   buffPos = 4 + WINBOLONET_KEY_LEN;
-  utilCtoPString(userName, buff+buffPos);
+  utilCtoPString(userName, (char *) buff+buffPos);
   buffPos = buffPos + buff[buffPos] + 1;
-  utilCtoPString(password, buff+buffPos);
+  utilCtoPString(password, (char *) buff+buffPos);
   buffPos = buffPos + buff[buffPos] + 1;
   ret = httpSendMessage(buff, buffPos, winboloNetBuff, WINBOLONET_BUFFSIZE);
   if (ret > 0) {
     if (winboloNetBuff[0] == 0) {
       /* Error */
       winboloNetBuff[ret] = EMPTY_CHAR;
-      strcpy(errorMsg, winboloNetBuff+1);
+      strcpy(errorMsg, (char *) winboloNetBuff+1);
     } else if (ret == 33) {
       memcpy(winboloNetServerKey, serverKey, WINBOLONET_KEY_LEN);
       memcpy(winboloNetPlayerKey[0], winboloNetBuff+1, WINBOLONET_KEY_LEN);
@@ -642,7 +636,7 @@ bool winboloNetVerifyClientKey(BYTE *keyBuff, char *userName, BYTE playerNum) {
     buff[3] = WINBOLO_NET_MESSAGE_VERIFYCLIENTKEY_REQ;
     memcpy(buff+4, winboloNetServerKey, WINBOLONET_KEY_LEN);
     buffPos = 4 + WINBOLONET_KEY_LEN;
-    utilCtoPString(userName, buff+buffPos);
+    utilCtoPString(userName, (char *) buff+buffPos);
     buffPos = buffPos + buff[buffPos] + 1;
     memcpy(buff+buffPos, keyBuff, WINBOLONET_KEY_LEN);
 

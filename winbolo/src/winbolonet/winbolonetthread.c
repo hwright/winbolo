@@ -35,6 +35,7 @@
 	typedef SDL_mutex *HANDLE;
   	typedef int DWORD; /* Not used by required by windows code */
 #endif
+#include <unistd.h>
 #include <string.h>
 #include "../bolo/global.h"
 #include "http.h"
@@ -66,7 +67,6 @@ bool wbnFinished;
 *********************************************************/
 bool winbolonetThreadCreate(void) {
   bool returnValue;        /* Value to return */
-  char name[FILENAME_MAX]; /* Used in Mutex creation */
 
   returnValue = TRUE;
   wbnProcessing = NULL;
@@ -75,6 +75,7 @@ bool winbolonetThreadCreate(void) {
   wbnFinished = FALSE;
   
 #ifdef _WIN32
+  char name[FILENAME_MAX]; /* Used in Mutex creation */
   sprintf(name, "%s%d", "WBNUPDATE", GetTickCount());
   hWbnMutexHandle = CreateMutex(NULL, FALSE, (LPCTSTR ) name);
 #else
@@ -121,7 +122,6 @@ bool winbolonetThreadCreate(void) {
 *********************************************************/
 void winbolonetThreadDestroy(void) {
   wbnList del;   /* Use to delete our queues */
-  DWORD val = 0; /* Thread Exit Value for WIN32 */
 
   if (hWbnMutexHandle != NULL) { /* FIXME: Will be non null if we started it OK. Is there a better way? (threadid?) */
     /* Wait for all events to be sent... */
@@ -146,6 +146,7 @@ void winbolonetThreadDestroy(void) {
 
     /* End Thread */
 #ifdef _WIN32
+    DWORD val = 0; /* Thread Exit Value for WIN32 */
     WaitForSingleObject(hWbnThread, WBN_WAIT_THREAD_EXIT);
     GetExitCodeThread(hWbnThread, &val);
     if (val == STILL_ACTIVE) {
@@ -256,7 +257,7 @@ int winbolonetThreadRun() {
       /* Get last entry */
       if (wbnProcessing->next == NULL) {
         /* Only one entry */
-        httpSendMessage(wbnProcessing->data, wbnProcessing->len, dest, 512);
+        httpSendMessage(wbnProcessing->data, wbnProcessing->len, (BYTE *) dest, 512);
         Dispose(wbnProcessing);
 	wbnProcessing = NULL; 
       } else {
@@ -268,7 +269,7 @@ int winbolonetThreadRun() {
         }
         /* Got last entry */
         prev->next = NULL;
-        httpSendMessage(q->data, q->len, dest, 512);
+        httpSendMessage(q->data, q->len, (BYTE *) dest, 512);
         Dispose(q);
       }
     }

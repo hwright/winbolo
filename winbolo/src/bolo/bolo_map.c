@@ -1735,7 +1735,7 @@ int mapMakeNetRun(map *value, BYTE *buff, BYTE yPos) {
     count++;
   }
   /* Compress it */
-  return lzwencoding(array, buff, 6*(MAP_MINE_EDGE_RIGHT-(MAP_MINE_EDGE_LEFT+1)));
+  return lzwencoding((char*)array, (char*)buff, 6*(MAP_MINE_EDGE_RIGHT-(MAP_MINE_EDGE_LEFT+1)));
 }
 
 /*********************************************************
@@ -1762,7 +1762,7 @@ void mapSetNetRun(map *value, BYTE *buff, BYTE yPos, int dataLen) {
   count = 0;
   arrayPtr = array;
   /* Compress it */
-  lzwdecoding(buff, array, dataLen);
+  lzwdecoding((char*)buff, (char*)array, dataLen);
   /* Store it */
   while (count < 6) {
     for (xPos=MAP_MINE_EDGE_LEFT+1;xPos < MAP_MINE_EDGE_RIGHT;xPos++) {
@@ -1877,7 +1877,7 @@ int mapSaveCompressedMap(map *value, pillboxes *pb, bases *bs, starts *ss, BYTE 
 
   /* Map */
   ptr2 = (BYTE *) (*value)->mapItem;
-  returnValue += lzwencoding((char *) (ptr2), ptr, sizeof(**value));
+  returnValue += lzwencoding((char *) (ptr2), (char*)ptr, sizeof(**value));
   return returnValue;
 }
 
@@ -1925,7 +1925,7 @@ bool mapLoadCompressedMap(map *value, pillboxes *pb, bases *bs, starts *ss, BYTE
 
   /* Map */
   ptr2 = (BYTE *) (*value)->mapItem;
-  mapSize = lzwdecoding(ptr, ptr2, inputLen);
+  mapSize = lzwdecoding((char*)ptr, (char*)ptr2, inputLen);
   if (mapSize != sizeof(**value) - 2 * sizeof(mapNet)) {
     returnValue = FALSE;
   }

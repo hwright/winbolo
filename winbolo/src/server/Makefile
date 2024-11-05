@@ -27,7 +27,8 @@ REM = rm
 # Flags for gcc and rm
 REMFLAGS = -f
 LDFLAGS = `sdl-config --libs` -lm
-CFLAGS = `sdl-config --cflags` -DHAVE_C99INCLUDES -DHAVE_SYS_TYPES
+CFLAGS =
+BOLO_CFLAGS = $(CFLAGS) `sdl-config --cflags` -DHAVE_C99INCLUDES -DHAVE_SYS_TYPES -Wall
 BDFLAGS = -DHAVE_C99INCLUDES -std=c99 -pedantic -Wall -Wpointer-arith -Wstrict-prototypes -O2
 
 # directories
@@ -154,124 +155,124 @@ zutil.o: ${ZLIBDIR}zutil.c
 # gui lang
 #
 lang.o: ${GUIDIRLINUX}lang.c ${GUIDIR}lang.h
-	${CC} ${CFLAGS} -c ${GUIDIRLINUX}lang.c
+	${CC} ${BOLO_CFLAGS} -c ${GUIDIRLINUX}lang.c
 preferences.o: ${GUIDIRLINUX}preferences.c ${GUIDIRLINUX}preferences.h
-	${CC} ${CFLAGS} -c ${GUIDIRLINUX}preferences.c
+	${CC} ${BOLO_CFLAGS} -c ${GUIDIRLINUX}preferences.c
 
 # winbolonet
 winbolonet.o: ${WBNETDIR}winbolonet.c ${WBNETDIR}winbolonet.h
-	${CC} ${CFLAGS} -c ${WBNETDIR}winbolonet.c
+	${CC} ${BOLO_CFLAGS} -c ${WBNETDIR}winbolonet.c
 winbolonetevents.o: ${WBNETDIR}winbolonetevents.c ${WBNETDIR}winbolonetevents.h
-	${CC} ${CFLAGS} -c ${WBNETDIR}winbolonetevents.c
+	${CC} ${BOLO_CFLAGS} -c ${WBNETDIR}winbolonetevents.c
 winbolonetthread.o: ${WBNETDIR}winbolonetthread.c ${WBNETDIR}winbolonetthread.h
-	${CC} ${CFLAGS} -c ${WBNETDIR}winbolonetthread.c
+	${CC} ${BOLO_CFLAGS} -c ${WBNETDIR}winbolonetthread.c
 
 
 http.o: ${WBNETDIR}http.c ${WBNETDIR}http.h
-	${CC} ${CFLAGS} -c ${WBNETDIR}http.c
+	${CC} ${BOLO_CFLAGS} -c ${WBNETDIR}http.c
 
 # Bolo
 global.o: ${BOLODIR}global.c ${BOLODIR}global.h
-	${CC} ${CFLAGS} -c ${BOLODIR}global.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}global.c
 
 backend.o: ${BOLODIR}backend.c 
-	${CC} ${CFLAGS} -c ${BOLODIR}backend.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}backend.c
 
 util.o: ${BOLODIR}util.c ${BOLODIR}util.h
-	${CC} ${CFLAGS} -c ${BOLODIR}util.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}util.c
 
 crc.o: ${BOLODIR}crc.c ${BOLODIR}crc.h
-	${CC} ${CFLAGS} -c ${BOLODIR}crc.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}crc.c
 
 shells.o: ${BOLODIR}shells.c ${BOLODIR}shells.h
-	${CC} ${CFLAGS} -c ${BOLODIR}shells.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}shells.c
 
 screenbullet.o: ${BOLODIR}screenbullet.c ${BOLODIR}screenbullet.h
-	${CC} ${CFLAGS} -c ${BOLODIR}screenbullet.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}screenbullet.c
 
 playersrejoin.o: ${BOLODIR}playersrejoin.c ${BOLODIR}playersrejoin.h
-	${CC} ${CFLAGS} -c ${BOLODIR}playersrejoin.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}playersrejoin.c
 
 bases.o: ${BOLODIR}bases.h ${BOLODIR}bases.c
-	${CC} ${CFLAGS} -c ${BOLODIR}bases.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}bases.c
 bolo_map.o: ${BOLODIR}bolo_map.c ${BOLODIR}bolo_map.h
-	${CC} ${CFLAGS} -c ${BOLODIR}bolo_map.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}bolo_map.c
 building.o: ${BOLODIR}building.c ${BOLODIR}building.h
-	${CC} ${CFLAGS} -c ${BOLODIR}building.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}building.c
 explosions.o: ${BOLODIR}explosions.c ${BOLODIR}explosions.h
-	${CC} ${CFLAGS} -c ${BOLODIR}explosions.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}explosions.c
 floodfill.o: ${BOLODIR}floodfill.c ${BOLODIR}floodfill.h
-	${CC} ${CFLAGS} -c ${BOLODIR}floodfill.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}floodfill.c
 gametype.o: ${BOLODIR}gametype.c ${BOLODIR}gametype.h
-	${CC} ${CFLAGS} -c ${BOLODIR}gametype.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}gametype.c
 grass.o: ${BOLODIR}grass.c ${BOLODIR}grass.h
-	${CC} ${CFLAGS} -c ${BOLODIR}grass.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}grass.c
 labels.o: ${BOLODIR}labels.c ${BOLODIR}labels.h
-	${CC} ${CFLAGS} -c ${BOLODIR}labels.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}labels.c
 lgm.o: ${BOLODIR}lgm.c ${BOLODIR}lgm.h
-	${CC} ${CFLAGS} -c ${BOLODIR}lgm.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}lgm.c
 log.o: ${BOLODIR}log.c ${BOLODIR}log.h
-	${CC} ${CFLAGS} -c ${BOLODIR}log.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}log.c
 mathWinbolo.o: ${BOLODIR}mathWinbolo.c ${BOLODIR}mathWinbolo.h
-	${CC} ${CFLAGS} -c ${BOLODIR}mathWinbolo.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}mathWinbolo.c
 
 messages.o: ${BOLODIR}messages.c ${BOLODIR}messages.h
-	${CC} ${CFLAGS} -c ${BOLODIR}messages.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}messages.c
 
 mines.o: ${BOLODIR}mines.c ${BOLODIR}mines.h
-	${CC} ${CFLAGS} -c ${BOLODIR}mines.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}mines.c
 minesexp.o: ${BOLODIR}minesexp.c ${BOLODIR}minesexp.h
-	${CC} ${CFLAGS} -c ${BOLODIR}minesexp.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}minesexp.c
 netmt.o: ${BOLODIR}netmt.c ${BOLODIR}netmt.h
-	${CC} ${CFLAGS} -c ${BOLODIR}netmt.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}netmt.c
 
 netplayers.o: ${BOLODIR}netplayers.c ${BOLODIR}netplayers.h
-	${CC} ${CFLAGS} -c ${BOLODIR}netplayers.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}netplayers.c
 
 netpnb.o: ${BOLODIR}netpnb.c ${BOLODIR}netpnb.h
-	${CC} ${CFLAGS} -c ${BOLODIR}netpnb.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}netpnb.c
 
 network.o: ${BOLODIR}network.c ${BOLODIR}network.h ${SERVERDIR}rsaalgorithm.h
-	${CC} ${CFLAGS} -c ${BOLODIR}network.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}network.c
 pillbox.o: ${BOLODIR}pillbox.c ${BOLODIR}pillbox.h
-	${CC} ${CFLAGS} -c ${BOLODIR}pillbox.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}pillbox.c
 players.o: ${BOLODIR}players.c ${BOLODIR}players.h
-	${CC} ${CFLAGS} -c ${BOLODIR}players.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}players.c
 
 rubble.o: ${BOLODIR}rubble.c ${BOLODIR}rubble.h
-	${CC} ${CFLAGS} -c ${BOLODIR}rubble.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}rubble.c
 
 screenbrainmap.o: ${BOLODIR}screenbrainmap.c ${BOLODIR}screenbrainmap.h
-	${CC} ${CFLAGS} -c ${BOLODIR}screenbrainmap.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}screenbrainmap.c
 
 screencalc.o: ${BOLODIR}screencalc.c ${BOLODIR}screencalc.h
-	${CC} ${CFLAGS} -c ${BOLODIR}screencalc.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}screencalc.c
 
 screenlgm.o: ${BOLODIR}screenlgm.c ${BOLODIR}screenlgm.h
-	${CC} ${CFLAGS} -c ${BOLODIR}screenlgm.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}screenlgm.c
 screentank.o: ${BOLODIR}screentank.c ${BOLODIR}screentank.h
-	${CC} ${CFLAGS} -c ${BOLODIR}screentank.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}screentank.c
 scroll.o: ${BOLODIR}scroll.c ${BOLODIR}scroll.h
-	${CC} ${CFLAGS} -c ${BOLODIR}scroll.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}scroll.c
 
 sounddist.o: ${BOLODIR}sounddist.c ${BOLODIR}sounddist.h
-	${CC} ${CFLAGS} -c ${BOLODIR}sounddist.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}sounddist.c
 starts.o: ${BOLODIR}starts.c ${BOLODIR}starts.h
-	${CC} ${CFLAGS} -c ${BOLODIR}starts.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}starts.c
 swamp.o: ${BOLODIR}swamp.c ${BOLODIR}swamp.h
-	${CC} ${CFLAGS} -c ${BOLODIR}swamp.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}swamp.c
 tank.o: ${BOLODIR}tank.c ${BOLODIR}tank.h
-	${CC} ${CFLAGS} -c ${BOLODIR}tank.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}tank.c
 allience.o: ${BOLODIR}allience.c ${BOLODIR}allience.h
-	${CC} ${CFLAGS} -c ${BOLODIR}allience.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}allience.c
 tankexp.o: ${BOLODIR}tankexp.c ${BOLODIR}tankexp.h
-	${CC} ${CFLAGS} -c ${BOLODIR}tankexp.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}tankexp.c
 treegrow.o: ${BOLODIR}treegrow.c ${BOLODIR}treegrow.h
-	${CC} ${CFLAGS} -c ${BOLODIR}treegrow.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}treegrow.c
 udppackets.o: ${BOLODIR}udppackets.c ${BOLODIR}udppackets.h
-	${CC} ${CFLAGS} -c ${BOLODIR}udppackets.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}udppackets.c
 debug_file_output.o: ${BOLODIR}debug_file_output.c ${BOLODIR}debug_file_output.h
-	${CC} ${CFLAGS} -c ${BOLODIR}debug_file_output.c
+	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}debug_file_output.c
 
 #
 # LZW
@@ -283,21 +284,21 @@ ecodlzw.o: ${COMPRESSDIR}ecodlzw.c
 
 # Server 
 servercore.o: ${SERVERDIR}servercore.c ${SERVERDIR}servercore.h
-	${CC} ${CFLAGS} -c ${SERVERDIR}servercore.c
+	${CC} ${BOLO_CFLAGS} -c ${SERVERDIR}servercore.c
 
 servermessages.o: ${SERVERDIR}servermessages.c ${BOLODIR}messages.h
-	 ${CC} ${CFLAGS} -c ${SERVERDIR}servermessages.c
+	 ${CC} ${BOLO_CFLAGS} -c ${SERVERDIR}servermessages.c
 
 serverfrontend.o: ${SERVERDIR}serverfrontend.c 
-	${CC} ${CFLAGS} -c ${SERVERDIR}serverfrontend.c
+	${CC} ${BOLO_CFLAGS} -c ${SERVERDIR}serverfrontend.c
 
 servermain.o: ${SERVERDIR}servermain.c
-	${CC} ${CFLAGS} -c ${SERVERDIR}servermain.c
+	${CC} ${BOLO_CFLAGS} -c ${SERVERDIR}servermain.c
 servernet.o: ${SERVERDIR}servernet.c ${SERVERDIR}servernet.h ${SERVERDIR}rsaalgorithm.h
-	${CC}  ${CFLAGS} -c ${SERVERDIR}servernet.c
+	${CC}  ${BOLO_CFLAGS} -c ${SERVERDIR}servernet.c
 servertransport.o: ${SERVERDIR}servertransport.c ${SERVERDIR}servertransport.h
-	${CC}  ${CFLAGS} -c ${SERVERDIR}servertransport.c
+	${CC}  ${BOLO_CFLAGS} -c ${SERVERDIR}servertransport.c
 
 threads.o: ${SERVERDIR}threads.c ${SERVERDIR}threads.h
-	${CC}  ${CFLAGS} -c ${SERVERDIR}threads.c
+	${CC}  ${BOLO_CFLAGS} -c ${SERVERDIR}threads.c
 

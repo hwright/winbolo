@@ -61,6 +61,8 @@ typedef GtkWidget HWND;
 #include "../../bolo/network.h"
 #include "../../bolo/netpacks.h"
 #include "../../bolo/udppackets.h"
+#include "../../bolo/crc.h"
+#include "../../bolo/util.h"
 #include "../linresource.h"
 #include "../lang.h"
 #include "../netclient.h"
@@ -135,7 +137,7 @@ bool netClientCreate(unsigned short port) {
       MessageBox(NULL, langGetText(STR_NETCLIENTERR_BINDUDPFAIL), DIALOG_BOX_TITLE, MB_ICONINFORMATION);
     } else {
       /* Get what port we were assigned */
-      if (getsockname(myUdpSock, (struct sockaddr*) &name, &nameLen) == 0) {
+      if (getsockname(myUdpSock, (struct sockaddr*) &name, (socklen_t *)&nameLen) == 0) {
         myPort = ntohs(name.sin_port);
       }
     }
@@ -209,7 +211,7 @@ void netClientSendUdpServer(BYTE *buff, int len) {
 *  port - Port of that corresponds to the address
 *********************************************************/
 void netClientGetServerAddress(struct in_addr *dest, unsigned short *port) {
-  memcpy(dest, &(addrServer.sin_addr.s_addr), sizeof(dest));
+  memcpy(dest, &(addrServer.sin_addr.s_addr), sizeof(*dest));
   *port = ntohs(addrServer.sin_port);
 }
 
@@ -248,7 +250,7 @@ void netClientGetServerAddressString(char *dest) {
 *  port - Port of that corresponds to the address
 *********************************************************/
 void netClientSetServerAddress(struct in_addr *src, unsigned short port) {
-  memcpy(&(addrServer.sin_addr.s_addr), src, sizeof(src)); 
+  memcpy(&(addrServer.sin_addr.s_addr), src, sizeof(*src)); 
   addrServer.sin_port = htons(port);
 }
 
@@ -391,7 +393,7 @@ bool netClientUdpPingServer(BYTE *buff, int *len, bool wantCrc, bool addNonRelia
   sendto(myUdpSock, (char *) buff, *len, 0, (struct sockaddr *)&addrServer, sizeof(addrServer));
   *len = 0;
   while (*len <= 0 && timeOut <= TIME_OUT) {
-    *len = recvfrom(myUdpSock, (char *) buff, MAX_UDPPACKET_SIZE, 0, (struct sockaddr *)&from, &fromlen);
+    *len = recvfrom(myUdpSock, (char *) buff, MAX_UDPPACKET_SIZE, 0, (struct sockaddr *)&from, (socklen_t*)&fromlen);
 /*      if (*len == SOCKET_ERROR) {
       if (WSAGetLastError() != WSAEWOULDBLOCK ) {
 Do we want to bail out? I don't think so
@@ -465,7 +467,7 @@ bool netClientUdpPing(BYTE *buff, int *len, char *dest, unsigned short port, boo
     sendto(myUdpSock, (char *) buff, *len, 0, (struct sockaddr *)&addr, sizeof(addr));
     *len = 0;
     while (*len <= 0 && timeOut <= TIME_OUT) {
-      *len = recvfrom(myUdpSock, (char *) buff, MAX_UDPPACKET_SIZE, 0, (struct sockaddr *)&from, &fromlen);
+      *len = recvfrom(myUdpSock, (char *) buff, MAX_UDPPACKET_SIZE, 0, (struct sockaddr *)&from, (socklen_t*)&fromlen);
 /*      if (*len == SOCKET_ERROR) {
         if (WSAGetLastError() != WSAEWOULDBLOCK ) {
  Do we want to bail out? I don't think so
@@ -585,13 +587,13 @@ void netClientUdpCheck(void) {
   struct sockaddr_in from;
   int fromlen = sizeof(from);
 
-  packetLen = recvfrom(myUdpSock, info, MAX_UDPPACKET_SIZE, 0, (struct sockaddr *)&from, &fromlen);
+  packetLen = recvfrom(myUdpSock, info, MAX_UDPPACKET_SIZE, 0, (struct sockaddr *)&from, (socklen_t *)&fromlen);
   while (packetLen > 0) {
     /* We have data - Yah! */
     memcpy(&addrLast, &from, (size_t) sizeof(from));
     lastPort = from.sin_port;
     netUdpPacketArrive((BYTE *) info, packetLen, lastPort);
-    packetLen = recvfrom(myUdpSock, info, sizeof(info), 0, (struct sockaddr *)&from, &fromlen);
+    packetLen = recvfrom(myUdpSock, info, sizeof(info), 0, (struct sockaddr *)&from, (socklen_t *)&fromlen);
   }
 }
 
@@ -608,7 +610,6 @@ void netClientUdpCheck(void) {
 *  on - TRUE for non-block, FALSE for blocking
 *********************************************************/
 bool netClientSetUdpAsync(bool on) {
-  u_long noBlock;   /* Used to set blocking state */
   int ret;          /* Function return value */
   bool returnValue; /* Value to return */
   
@@ -761,7 +762,6 @@ bool gameFinderYesNoToBool(char *str) {
 void gameFinderProcessV1(currentGames *cg, char *buff, int len, char *motd) {
   char param[1024];
   char *ptr;
-  char *ptr2;
   int numMotdLines = 0;
   int count = 0;
   int numGames;
@@ -780,7 +780,6 @@ void gameFinderProcessV1(currentGames *cg, char *buff, int len, char *motd) {
   aiType ai;
 
   ptr = buff;
-  ptr2 = buff;
   if (gameFinderGetParamFromLine(buff, param, "MOTDL") != -1) {
     /* Process Message of the day */
     numMotdLines = atoi(param);
@@ -959,7 +958,6 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
   int len = 0;
   int new_bytes_read;
   char strBuff[FILENAME_MAX];
-  long noBlock;     /* Used to set blocking state */
   bool done;
   DWORD tick, timeOut;
   char txt[256];
@@ -970,11 +968,11 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
   ptr = b;
 
 
-  strcpy(buff, "Status: ");
-  strcat(buff, langGetText(STR_NETCLIENT_TRACKERCONNECT));
+  strcpy((char *) buff, "Status: ");
+  strcat((char *) buff, langGetText(STR_NETCLIENT_TRACKERCONNECT));
   sprintf(strBuff, "%s:%d", trackerAddress, port);
-  strcat(buff, strBuff);
-  gtk_label_set_text(GTK_LABEL(hWnd), buff);
+  strcat((char *) buff, strBuff);
+  gtk_label_set_text(GTK_LABEL(hWnd), (char *) buff);
   GDK_THREADS_LEAVE();
   while(g_main_iteration(FALSE));
   GDK_THREADS_ENTER();
@@ -1016,7 +1014,6 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
     }
   }
 
-  noBlock = NO_BLOCK_SOCK;
   if (returnValue == TRUE) {
     ret = fcntl(sock, F_SETFL, O_NONBLOCK | fcntl(sock, F_GETFL));
     if (ret == SOCKET_ERROR) {
@@ -1057,7 +1054,7 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
     } else {
       sprintf(txt, "Status: %s", langGetText(STR_NETCLIENT_TRACKERPROCESSRESPONSE));
       gtk_label_set_text(GTK_LABEL(hWnd), txt);
-      gameFinderProcess(hWnd, cg, b, len, motd);
+      gameFinderProcess(hWnd, cg, (char *)b, len, motd);
     }
  }
 
@@ -1086,8 +1083,7 @@ bool netClientFindBroadcastGames(HWND *hWnd, currentGames *cg) {
   SOCKET sock;             /* Socket to use    */
   BYTE *ptr;               /* Buffer pointer */
   int len = 0;
-  char buff[MAX_UDPPACKET_SIZE] = INFOREQUESTHEADER; /* Data Buffer */
-  long noBlock;     /* Used to set blocking state */
+  BYTE buff[MAX_UDPPACKET_SIZE] = INFOREQUESTHEADER; /* Data Buffer */
   int timeOut;
   DWORD tick;
   int fromlen;
@@ -1122,7 +1118,6 @@ bool netClientFindBroadcastGames(HWND *hWnd, currentGames *cg) {
 
   /* Set to non blocking */
   if (returnValue == TRUE) {
-    noBlock = NO_BLOCK_SOCK;
      ret = fcntl(sock, F_SETFL, O_NONBLOCK | fcntl(sock, F_GETFL));
      if (ret == SOCKET_ERROR) {
       returnValue = FALSE;
@@ -1159,12 +1154,12 @@ bool netClientFindBroadcastGames(HWND *hWnd, currentGames *cg) {
     /* Get responses */
     sprintf(txt, "Status: %s", langGetText(STR_NETCLIENT_GETRESPONSES));
     gtk_label_set_text(GTK_LABEL(hWnd), txt);
-    len = recvfrom(sock, ptr+len, sizeof(buff)-len, 0, (struct sockaddr *) &last, &szlast);
+    len = recvfrom(sock, ptr+len, sizeof(buff)-len, 0, (struct sockaddr *) &last, (socklen_t*)&szlast);
     timeOut = 0;
     tick = timeGetTime();
     while (timeOut <= 10000) { //TIME_OUT
       if (len == sizeof(INFO_PACKET)) {
-        if (strncmp(buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0 && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_INFORESPONSE) {
+        if (strncmp((char *) buff, BOLO_SIGNITURE, BOLO_SIGNITURE_SIZE) == 0 && buff[BOLO_VERSION_MAJORPOS] == BOLO_VERSION_MAJOR && buff[BOLO_VERSION_MINORPOS] == BOLO_VERSION_MINOR && buff[BOLO_VERSION_REVISIONPOS] == BOLO_VERSION_REVISION && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_INFORESPONSE) {
         /* Process response */
           gameFinderProcessBroadcast(cg, (INFO_PACKET *) buff, &(last.sin_addr));
         }
@@ -1174,7 +1169,7 @@ bool netClientFindBroadcastGames(HWND *hWnd, currentGames *cg) {
       GDK_THREADS_ENTER();
       usleep(50);
       timeOut = timeGetTime() - tick;
-      len = recvfrom(sock, buff, MAX_UDPPACKET_SIZE, 0, (struct sockaddr *)&from, &fromlen);
+      len = recvfrom(sock, buff, MAX_UDPPACKET_SIZE, 0, (struct sockaddr *)&from, (socklen_t*)&fromlen);
     }
   }
   if (sock != INVALID_SOCKET) {

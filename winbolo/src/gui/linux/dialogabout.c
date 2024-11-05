@@ -41,6 +41,7 @@ gboolean dialogAboutFunc(GtkWidget *widget,  GdkEventButton *event, gpointer use
   gtk_grab_remove(dialogAboutUs);
   gtk_widget_destroy(dialogAboutUs);
   gtk_main_quit();
+  return FALSE;
 }
 
 GtkWidget* dialogAboutCreate(void) {

@@ -33,6 +33,7 @@
 	#include "SDL_thread.h"
 	typedef SDL_mutex *HANDLE;
 #endif
+#include <unistd.h>
 #include <string.h>
 #include "../../bolo/global.h"
 #include "../netclient.h"
@@ -171,7 +172,6 @@ void dnsLookupsAddRequest(char *ip, void *func) {
 int dnsLookupsRun() {
   char dest[512]; /* Destination address space */
   dnsList q;      /* Used to iterate through the list */
-  void *func;   /* Function to call */
 
   while (dnsShouldRun == TRUE) {
     SDL_mutexP(hDnsMutexHandle);

@@ -25,6 +25,8 @@
 *  Responsable for sending/receiving http messages
 *********************************************************/
 
+#include <ctype.h>
+#include <unistd.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
@@ -208,7 +210,6 @@ int httpDecodeData(BYTE *buff, int len) {
 * maxLen - Maximum length of the byte buffer
 *********************************************************/
 int httpEncodeData(BYTE *src, int len, BYTE *dest, int maxLen) {
-  int returnValue; /* Value to return */
   int count;
   int encodeCount;
   char temp[3];
@@ -241,7 +242,7 @@ int httpEncodeData(BYTE *src, int len, BYTE *dest, int maxLen) {
   }
 
   if (encodeCount > maxLen) {
-    returnValue = -1;
+    //returnValue = -1;
   }
   return encodeCount;
 }
@@ -420,13 +421,12 @@ int httpSendMessage(BYTE *message, int len, BYTE *response, int maxSize) {
 long httpGetFileLength(char *fileName) {
   long returnValue = -1; /* Value to return */
   FILE *fp;
-  char temp;
 
   fp = fopen(fileName, "rb");
   if (fp) {
     returnValue = 0;
     while (!feof(fp)) {
-      temp = fgetc(fp);
+      fgetc(fp);
       returnValue++;
     }
     fclose(fp);

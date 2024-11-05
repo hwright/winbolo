@@ -2109,9 +2109,9 @@ bool playersPrepareLogSnapshotForPlayer(players *value, BYTE playerNum, BYTE *bu
     buff[9] = utilPutNibble(lgmGetPX(lgm), lgmGetPY(lgm));
     buff[10] = lgmGetFrame(lgm);
     *len = 11;
-    utilCtoPString((*value)->item[playerNum].playerName, buff+11);
+    utilCtoPString((*value)->item[playerNum].playerName, (char*) buff+11);
     *len += buff[11]+1; /* Add 1 for len prefix */
-    utilCtoPString((*value)->item[playerNum].location, buff+*len);
+    utilCtoPString((*value)->item[playerNum].location, (char*) buff+*len);
     *len += *(buff+*len) + 1;
     *len += allianceMakeLogAlliance(&((*value)->item[playerNum].allie), buff+*len);
   }

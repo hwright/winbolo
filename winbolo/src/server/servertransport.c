@@ -25,6 +25,7 @@
 *  WinBolo Server Transport layer.
 *********************************************************/
 
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #ifdef _WIN32
@@ -98,7 +99,6 @@ bool serverTransportCreate(unsigned short port, char *addrToUse) {
   bool returnValue = TRUE; /* Value to return */
   int ret;                 /* Function returns */
   struct sockaddr_in addr; /* Socket structure */
-  u_long noBlock;            /* Used to set blocking state */
   unsigned long ad;        /* Address */
 
   screenServerConsoleMessage((char *) "Server Transport Startup");
@@ -137,7 +137,6 @@ bool serverTransportCreate(unsigned short port, char *addrToUse) {
 
   /* Set to non blocking */
   if (returnValue == TRUE) {
-    noBlock = NO_BLOCK_SOCK;
     ret = fcntl(sockUdp, F_SETFL, O_NONBLOCK | fcntl(sockUdp, F_GETFL));
     if (ret == SOCKET_ERROR) {
       returnValue = FALSE;
@@ -185,7 +184,7 @@ void serverTransportListenUDP(void) {
   BYTE info[512 /*MAX_PACKET_SIZE */];  /* The packet                 */
   int packetLen;               /* Size of the packet         */
   struct sockaddr_in from;     /* Where the packet came from */
-  int fromlen;                 /* size of the from struct    */
+  unsigned int fromlen;                 /* size of the from struct    */
   
   fromlen = sizeof(from);
   packetLen = recvfrom(sockUdp, info, 512 /* MAX_PACKET_SIZE*/ , 0, (struct sockaddr *)&from, &fromlen);
@@ -268,7 +267,6 @@ void serverTransportGetUs(struct in_addr *dest, unsigned short *port) {
 *********************************************************/
 void serverTransportSendUDPLast(BYTE *buff, int len, bool wantCrc) {
   BYTE crcA, crcB;
-  int i;
 
   if (wantCrc == TRUE) {
     CRCCalcBytes(buff, len, &crcA, &crcB);
@@ -276,7 +274,7 @@ void serverTransportSendUDPLast(BYTE *buff, int len, bool wantCrc) {
     buff[len+1] = crcB;
     len+=2;
   }
-  i = sendto(sockUdp, (char *) buff, len, 0, (struct sockaddr *)&addrLast, sizeof(addrLast));
+  sendto(sockUdp, (char *) buff, len, 0, (struct sockaddr *)&addrLast, sizeof(addrLast));
 }
 
 // FIXME: Prototype

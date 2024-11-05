@@ -70,6 +70,7 @@
   /* Print it */
   gtk_label_set_text(GTK_LABEL(idc_label), output);
 
+  return FALSE;
 } 
 
 
@@ -124,6 +125,7 @@ gboolean dialogMessagesClose(GtkWidget *widget,  GdkEventButton *event, gpointer
   }
   windowMessagesClose();
   gtk_widget_destroy(widget);
+  return FALSE;
 }
 
 GtkWidget*

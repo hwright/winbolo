@@ -92,7 +92,6 @@ bool brainsHandlerStart(HWND hWnd, char *str, char *name);
 
 void brainsHandlerSelect(GtkWidget *widget, gpointer user_data) {
   char str[MAX_PATH];  /* Path to the brain to run */
-  int ret;             /* Function return value    */
   FILE *fp;
   gchar *menuStr;
 
@@ -314,7 +313,7 @@ void brainsHandlerSet(HWND hWnd, bool enabled) {
   int    nIndex;
   GSList *node;
   GtkWidget *w;
-  for (nIndex = 0; node = g_slist_nth (brainsLoadedList, nIndex); nIndex++) {
+  for (nIndex = 0; (node = g_slist_nth (brainsLoadedList, nIndex)); nIndex++) {
     w = (GtkWidget *) node->data;
     gtk_widget_set_sensitive(w, enabled);
   }
