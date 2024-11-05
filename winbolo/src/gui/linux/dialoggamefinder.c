@@ -183,7 +183,7 @@ gboolean dialogGameFinderJoinByAddress(GtkWidget *widget,  GdkEventButton *event
   char address[FILENAME_MAX];       /* Address of the machine to join */
   char playerName[PLAYER_NAME_LEN]; /* Player Name */
   unsigned short port;              /* Port of the machine to join    */
-  gchar *str;
+  gchar *str = "";
 
   if (strlen(str) > 0 ) {
     gtk_label_get(GTK_LABEL(idc_gamefindport), &str);
