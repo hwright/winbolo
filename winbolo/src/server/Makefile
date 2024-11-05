@@ -28,8 +28,8 @@ REM = rm
 REMFLAGS = -f
 LDFLAGS = `sdl-config --libs` -lm
 CFLAGS =
-BOLO_CFLAGS = $(CFLAGS) `sdl-config --cflags` -DHAVE_C99INCLUDES -DHAVE_SYS_TYPES -Wall
-BDFLAGS = -DHAVE_C99INCLUDES -std=c99 -pedantic -Wall -Wpointer-arith -Wstrict-prototypes -O2
+BOLO_CFLAGS = $(CFLAGS) `sdl-config --cflags` -DHAVE_C99INCLUDES -DHAVE_SYS_TYPES -Wall -Wno-missing-braces
+BDFLAGS = -DHAVE_C99INCLUDES -std=c99 -pedantic -Wpointer-arith -Wstrict-prototypes -O2
 
 # directories
 BOLODIR = ../bolo/
