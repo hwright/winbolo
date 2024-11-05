@@ -187,10 +187,10 @@ lang.o: ${GUIDIRLINUX}lang.c
 netclient.o: netclient.c
 	${CC} ${BOLO_CFLAGS} -c netclient.c
 dcodlzw.o: ${COMPRESSDIR}dcodlzw.c
-	${CC} ${BOLO_CFLAGS} -c ${COMPRESSDIR}dcodlzw.c
+	${CC} ${CFLAGS} -c ${COMPRESSDIR}dcodlzw.c
 
 ecodlzw.o: ${COMPRESSDIR}ecodlzw.c
-	${CC} ${BOLO_CFLAGS} -c ${COMPRESSDIR}ecodlzw.c
+	${CC} ${CFLAGS} -c ${COMPRESSDIR}ecodlzw.c
 
 framemutex.o: framemutex.c framemutex.h
 	${CC} ${BOLO_CFLAGS} -c framemutex.c

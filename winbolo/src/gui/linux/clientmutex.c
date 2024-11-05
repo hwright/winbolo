@@ -52,7 +52,6 @@ HANDLE hClientMutexHandle = NULL;
 *
 *********************************************************/
 bool clientMutexCreate(void) {
-  char name[FILENAME_MAX];
   bool returnValue; /* Value to return */
 
   returnValue = TRUE;

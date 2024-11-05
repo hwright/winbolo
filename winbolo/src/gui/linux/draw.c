@@ -99,6 +99,9 @@ int drawPosY[255];
 
 void drawSetupArrays(BYTE zoomFactor);
 void drawDownloadScreen(bool justBlack);
+int lzwdecoding(char *src, char *dest, int len);
+void clientMutexWaitFor(void);
+void clientMutexRelease(void);
 
 int drawGetFrameRate() {
   return g_dwFrameTotal;
@@ -128,13 +131,12 @@ bool drawSetup(GtkWidget *appWnd) {
   SDL_Surface *lpTemp;       /* Used temporarily before calling SDL_DisplayFormat() */
   BYTE *buff;
   char fileName[FILENAME_MAX];
-  char *tf;
   FILE *fp;
   
   buff = malloc(80438);
   /* Get tmp file */
   snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX", g_get_tmp_dir());
-  ret = lzwdecoding(TILES_IMAGE, buff, 36499);
+  ret = lzwdecoding((char*) TILES_IMAGE, (char* )buff, 36499);
   if (ret != 80438) {
     free(buff);
     MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
@@ -395,13 +397,12 @@ void drawSetManClear() {
 *  angle  - The angle the item is facing
 *********************************************************/
 void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
-  TURNTYPE oldAngle; /* Copy of the angle parameter */
+  //TURNTYPE oldAngle; /* Copy of the angle parameter */
   double dbAngle;    /* Angle in radians */
   double dbTemp;
   BYTE zoomFactor;   /* Zooming factor */
   int addX;          /* X And and Y co-ordinates */
   int addY;
-  int midx, midy;
   int left, top;
   int width, height;
   zoomFactor = 1; //FIXME windowGetZoomFactor();
@@ -409,7 +410,7 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   
   //drawSetManClear(menuHeight); /* Clear the display */
 
-  oldAngle = angle;
+  //oldAngle = angle;
   angle += BRADIANS_SOUTH;
   if (angle >= BRADIANS_MAX) {
     angle -= BRADIANS_MAX;
@@ -520,8 +521,6 @@ void drawShells(screenBullets *sBullets) {
   BYTE frame;
   BYTE mx;
   BYTE my;
-  int x;
-  int y;
   BYTE zf;
   SDL_Rect dest;
 
@@ -706,8 +705,6 @@ Draws the tank label if required.
 void drawTankLabel(char *str, int mx, int my, BYTE px, BYTE py) {
   int len;        /* Length of the string */
   SDL_Rect dest;  /* Defines the text rectangle */
-  int x;          /* X And Y Locations on the back buffer to do the drawing */
-  int y;
   BYTE zf;
   SDL_Surface *lpTextSurface;
    
@@ -757,8 +754,6 @@ textRect.bottom = zf * ((MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y) - y);
 *  tks - The screen Tanks data structure 
 *********************************************************/
 void drawTanks(screenTanks *tks) {
-  int x;       /* X and Y Co-ordinates */
-  int y;
   SDL_Rect output; /* Source Rectangle */
   SDL_Rect dest;
   BYTE count;  /* Looping Variable */
@@ -1210,8 +1205,6 @@ void drawLGMs(screenLgm *lgms) {
   BYTE my;
   BYTE px;
   BYTE py;
-  int x;       /* X and Y Co-ordinates */
-  int y;
   SDL_Rect output; /* Source Rectangle */
   SDL_Rect dest;   /* Destination rect */
   BYTE count;  /* Looping variable */
@@ -1394,7 +1387,6 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
   SDL_Rect output;     /* Output Rectangle */
   SDL_Rect textOutput; /* Text Output Rect */
   bool done;       /* Finished Looping */
-  int count;       /* Looping Variable */
   BYTE x;          /* X and Y co-ordinates */
   BYTE y;
   int outputX;     /* X and Y co-ordinates in the tile image */
@@ -1407,10 +1399,8 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
   bool isBase;     /* Is the square a base */
   BYTE labelNum;   /* Returns the label number */
   SDL_Rect in;
-  int  ret;
   SDL_Surface *lpTextSurface;
 
-  count = 0;
   x = 0;
   y = 0;
   done = FALSE;
@@ -1448,7 +1438,7 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
     in.y = outputY;
     output.x = x * zoomFactor * TILE_SIZE_X;
     output.y = y * zoomFactor * TILE_SIZE_Y;
-    ret = SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
+    SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
     
     /* Draw Mines */
     if ((screenIsMine(mineView,x,y)) == TRUE) {
@@ -1551,7 +1541,7 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
     drawNetFailed();
   }
 
-  ret = SDL_BlitSurface(lpBackBuffer, &in, lpScreen, &output);
+  SDL_BlitSurface(lpBackBuffer, &in, lpScreen, &output);
   SDL_UpdateRect(lpScreen, output.x, output.y, output.w, output.h);
 
   /* Frame rate counting stuff */
@@ -1583,25 +1573,23 @@ g_dwFrameCount = 0;
 *********************************************************/
 bool drawBackground(int width, int height) {
   bool returnValue;   /* Value to return */
-  BYTE zoomFactor;    /* Scaling Factor */
   SDL_Surface *bg;    /* Background */
   SDL_Rect destRect;  /* Copying rect */
   BYTE *buff;
   char fileName[FILENAME_MAX];
-  char *tf;
   FILE *fp;
   int ret;
   
   buff = malloc(168778);
   /* Get tmp file */
   snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX", g_get_tmp_dir());
-  ret = lzwdecoding(B_IMAGE, buff, 17099);
+  ret = lzwdecoding((char* )B_IMAGE, (char *)buff, 17099);
   if (ret != 168778) {
     free(buff);
     return FALSE;
   }
   returnValue = FALSE;
-  zoomFactor = 1; //FIXME: windowGetZoomFactor();
+  //zoomFactor = 1; //FIXME: windowGetZoomFactor();
   fp = fopen(fileName, "wb");
   fwrite(buff, 168778, 1, fp);
   fflush(fp);

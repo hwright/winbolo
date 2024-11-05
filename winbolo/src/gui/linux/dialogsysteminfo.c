@@ -52,6 +52,12 @@ GtkWidget *lblFPS;
 
 int sysInfoTimer;
 
+int drawGetFrameRate();
+int windowGetDrawTime(void);
+int windowGetSimTime(void);
+int windowGetNetTime(void);
+int windowGetAiTime(void);
+
 /*********************************************************
 *NAME:          dialogSysInfoUpdate
 *AUTHOR:        John Morrison
