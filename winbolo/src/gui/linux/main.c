@@ -182,8 +182,8 @@ labelLen labelMsg = lblShort;
 labelLen labelTank = lblShort;
 
 
-#define itoa(X, Y, Z) (sprintf(Y, "%i", X))
-#define ltoa(X, Y, Z) (sprintf(Y, "%l", X))
+#define itoa(X, Y, Z) (sprintf(Y, "%d", X))
+#define ltoa(X, Y, Z) (sprintf(Y, "%ld", X))
 
 /* The Window scaling */
 BYTE zoomFactor = 1; //FIXME: ZOOM_FACTOR_NORMAL;
@@ -831,7 +831,7 @@ bool gameFrontSetupServer() {
   } else {
     l = 0;
   }
-  sprintf(tmp, "%d ", l);
+  sprintf(tmp, "%ld ", l);
   strcat(cmdLine, tmp);
   strcat(cmdLine, " -limit ");
   if (timeLen > 0) {
@@ -841,7 +841,7 @@ bool gameFrontSetupServer() {
   } else {
     l = timeLen;
   } 
-  sprintf(tmp, "%d ", l);
+  sprintf(tmp, "%ld ", l);
   strcat(cmdLine, tmp); 
   if (gameFrontTrackerEnabled == TRUE && dlgState != openLanSetup) {
     /* Add on the tracker info */
@@ -2161,7 +2161,7 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   gametype = atoi(buff);
   GetPrivateProfileString("GAME OPTIONS", "Start Delay", "0", buff, FILENAME_MAX, prefs);
   startDelay = atoi(buff);
-  ltoa(UNLIMITED_GAME_TIME, def, 10);
+  itoa(UNLIMITED_GAME_TIME, def, 10);
   GetPrivateProfileString("GAME OPTIONS", "Time Length", def, buff, FILENAME_MAX, prefs);
   timeLen = atol(buff);
   GetPrivateProfileString("GAME OPTIONS", "Auto Slowdown", "No", buff, FILENAME_MAX, prefs);

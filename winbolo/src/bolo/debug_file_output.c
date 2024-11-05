@@ -10,7 +10,7 @@ void getFileName(char *file) {
 	if (writeToDebugFileStream == 1) {
 		strncpy(file,fileName,strlen(fileName));
 	} else {
-		strncpy(file,'\0',strlen('\0'));
+		*file = 0;
 	}
 }
 

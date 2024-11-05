@@ -22,12 +22,11 @@
 
 ########## VARIABLES ##########
 # Executables
-CC = gcc
 REM = rm
 
 # Flags for gcc and rm
 REMFLAGS = -f
-LDFLAGS = `sdl-config --libs`
+LDFLAGS = `sdl-config --libs` -lm
 CFLAGS = `sdl-config --cflags` -DHAVE_C99INCLUDES -DHAVE_SYS_TYPES
 BDFLAGS = -DHAVE_C99INCLUDES -std=c99 -pedantic -Wall -Wpointer-arith -Wstrict-prototypes -O2
 
@@ -71,7 +70,7 @@ zlib: 	adler32.o compress.o crc32.o deflate.o gzio.o \
 bigdigits: bigd.o bigdigits.o bigdigitsRand.o bigdRand.o
 	
 $(SERVERNAME): zlib b server bigdigits
-	$(CC) $(LDFLAGS) \
+	$(CC) \
 	global.o bases.o util.o crc.o pillbox.o lgm.o shells.o tank.o \
 	allience.o bolo_map.o building.o explosions.o floodfill.o \
 	gametype.o grass.o labels.o mines.o minesexp.o  netmt.o netplayers.o \
@@ -83,7 +82,7 @@ $(SERVERNAME): zlib b server bigdigits
 	backend.o adler32.o compress.o crc32.o deflate.o gzio.o  \
 	inffast.o inflate.o inftrees.o trees.o ioapi.o uncompr.o \
 	unzip.o zip.o zutil.o bigd.o bigdigits.o bigdigitsRand.o bigdRand.o \
-	mathWinbolo.o debug_file_output.o -o $(SERVERNAME)
+	mathWinbolo.o debug_file_output.o $(LDFLAGS) -o $(SERVERNAME)
 
 tidy: 
 	$(REM) $(REMFLAGS) *.o
@@ -199,16 +198,12 @@ bolo_map.o: ${BOLODIR}bolo_map.c ${BOLODIR}bolo_map.h
 	${CC} ${CFLAGS} -c ${BOLODIR}bolo_map.c
 building.o: ${BOLODIR}building.c ${BOLODIR}building.h
 	${CC} ${CFLAGS} -c ${BOLODIR}building.c
-crc.o: ${BOLODIR}crc.c ${BOLODIR}crc.h
-	${CC} ${CFLAGS} -c ${BOLODIR}crc.c
 explosions.o: ${BOLODIR}explosions.c ${BOLODIR}explosions.h
 	${CC} ${CFLAGS} -c ${BOLODIR}explosions.c
 floodfill.o: ${BOLODIR}floodfill.c ${BOLODIR}floodfill.h
 	${CC} ${CFLAGS} -c ${BOLODIR}floodfill.c
 gametype.o: ${BOLODIR}gametype.c ${BOLODIR}gametype.h
 	${CC} ${CFLAGS} -c ${BOLODIR}gametype.c
-global.o: ${BOLODIR}global.c ${BOLODIR}global.h
-	${CC} ${CFLAGS} -c ${BOLODIR}global.c
 grass.o: ${BOLODIR}grass.c ${BOLODIR}grass.h
 	${CC} ${CFLAGS} -c ${BOLODIR}grass.c
 labels.o: ${BOLODIR}labels.c ${BOLODIR}labels.h
@@ -275,8 +270,6 @@ treegrow.o: ${BOLODIR}treegrow.c ${BOLODIR}treegrow.h
 	${CC} ${CFLAGS} -c ${BOLODIR}treegrow.c
 udppackets.o: ${BOLODIR}udppackets.c ${BOLODIR}udppackets.h
 	${CC} ${CFLAGS} -c ${BOLODIR}udppackets.c
-util.o:	${BOLODIR}util.c ${BOLODIR}util.h
-	${CC} ${CFLAGS} -c ${BOLODIR}util.c
 debug_file_output.o: ${BOLODIR}debug_file_output.c ${BOLODIR}debug_file_output.h
 	${CC} ${CFLAGS} -c ${BOLODIR}debug_file_output.c
 
@@ -300,8 +293,6 @@ serverfrontend.o: ${SERVERDIR}serverfrontend.c
 
 servermain.o: ${SERVERDIR}servermain.c
 	${CC} ${CFLAGS} -c ${SERVERDIR}servermain.c
-servermessages.o: ${SERVERDIR}servermessages.c ${BOLODIR}messages.h
-	 ${CC} ${CFLAGS} -c ${SERVERDIR}servermessages.c
 servernet.o: ${SERVERDIR}servernet.c ${SERVERDIR}servernet.h ${SERVERDIR}rsaalgorithm.h
 	${CC}  ${CFLAGS} -c ${SERVERDIR}servernet.c
 servertransport.o: ${SERVERDIR}servertransport.c ${SERVERDIR}servertransport.h

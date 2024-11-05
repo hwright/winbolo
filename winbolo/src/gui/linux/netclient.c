@@ -295,7 +295,7 @@ void netClientSetUs(void) {
     ipb = hd->h_addr_list[IP_ARRAY0][IP_ARRAY1];
     ipc = hd->h_addr_list[IP_ARRAY0][IP_ARRAY2];
     ipd = hd->h_addr_list[IP_ARRAY0][IP_ARRAY3];
-    sprintf(str, "%d.%d.%d.%d\0",ipa,ipb,ipc,ipd);
+    sprintf(str, "%d.%d.%d.%d",ipa,ipb,ipc,ipd);
   } else {
     strcpy(str, "127.0.0.1\0");
   }
@@ -1132,10 +1132,9 @@ bool netClientFindBroadcastGames(HWND *hWnd, currentGames *cg) {
   }
   /* Broadcast socket option */
   if (returnValue == TRUE) {
-    char c;
-    char d[10];
+    int c;
     c =1;
-    ret = setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &c ,d);
+    ret = setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &c , sizeof(c));
     if (ret != 0) {
       returnValue = FALSE;
       gtk_label_set_text(GTK_LABEL(hWnd), "Status: Error setting socket options");
