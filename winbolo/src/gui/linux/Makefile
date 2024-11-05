@@ -16,7 +16,7 @@
 
 CFLAGS = -g -std=c11
 BOLO_CFLAGS = ${CFLAGS} `sdl-config --cflags` `pkg-config gtk+-2.0 minizip --cflags` -Wall  -Wno-missing-braces
-LDFLAGS = `sdl-config --libs` `gtk-config --libs` `pkg-config minizip gtk+-2.0 gmodule-2.0 gthread-2.0 --libs`
+LDFLAGS = `sdl-config --libs` `pkg-config minizip gtk+-2.0 gmodule-2.0 gthread-2.0 --libs`
 #-s
 #CFLAGS = -s -O3 -ffast-math -fomit-frame-pointer -mpentium -march=pentium `sdl-config --cflags` `gtk-config --cflags` `glib-config --cflags` 
 BOLODIR = ../../bolo/
