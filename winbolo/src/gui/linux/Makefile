@@ -15,7 +15,7 @@
 
 
 CFLAGS = -g
-BOLO_CFLAGS = ${CFLAGS} `sdl-config --cflags` `gtk-config --cflags` -Wall
+BOLO_CFLAGS = ${CFLAGS} `sdl-config --cflags` `gtk-config --cflags` -Wall  -Wno-missing-braces
 LDFLAGS = `sdl-config --libs` `gtk-config --libs` `glib-config --libs gthread`
 #-s
 #CFLAGS = -s -O3 -ffast-math -fomit-frame-pointer -mpentium -march=pentium `sdl-config --cflags` `gtk-config --cflags` `glib-config --cflags` 

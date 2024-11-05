@@ -183,7 +183,7 @@ gboolean dialogGameFinderJoinByAddress(GtkWidget *widget,  GdkEventButton *event
   char address[FILENAME_MAX];       /* Address of the machine to join */
   char playerName[PLAYER_NAME_LEN]; /* Player Name */
   unsigned short port;              /* Port of the machine to join    */
-  gchar *str;
+  gchar *str = "";
 
   if (strlen(str) > 0 ) {
     gtk_label_get(GTK_LABEL(idc_gamefindport), &str);
@@ -250,7 +250,7 @@ void dialogGameFinderBuildList() {
     while (count <= total) {
       currentGamesGetServerName(&cg, count, server);
       item = gtk_list_item_new_with_label(server);
-      gtk_signal_connect (GTK_OBJECT (item), "select", GTK_SIGNAL_FUNC(dialogGameFinderSelect), (gpointer) count);
+      gtk_signal_connect (GTK_OBJECT (item), "select", GTK_SIGNAL_FUNC(dialogGameFinderSelect), (gpointer) (size_t) count);
       gtk_container_add (GTK_CONTAINER (list1), item);
       gtk_widget_show(item);
       count++;
@@ -386,7 +386,7 @@ gboolean dialogGameFinderRefresh(GtkWidget *widget,  GdkEventButton *event, gpoi
   bool password;
   int itemNum;
 
-  itemNum = (int) user_data;
+  itemNum = (size_t) user_data;
   currentGamesGetItem(&cg, itemNum, address, &port, mapName, str, &numPlayers, &numBases, &numPills, &mines, &game, &ai, &password);
   /* Remove '\r''s */
   if (mapName[strlen(mapName)-1] == '\r') {
