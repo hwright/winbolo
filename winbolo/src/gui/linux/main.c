@@ -309,7 +309,7 @@ void saveFileCancel(GtkWidget *w, GtkFileSelection *fs) {
 }
 
 void saveFileOK(GtkWidget *w, GtkFileSelection *fs) {
-  gchar *sTempFile;
+  const gchar *sTempFile;
   sTempFile = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
   strcpy(saveFileName, sTempFile);
   gtk_widget_destroy(saveFileW);

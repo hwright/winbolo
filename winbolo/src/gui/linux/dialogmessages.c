@@ -83,7 +83,7 @@ gint dialogMessagesEnableButton(gpointer data) {
 
 gboolean dialogMessagesSend(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   char message[256]; /* Message to send */
-  gchar* gc;
+  const gchar* gc;
   
   gc = gtk_entry_get_text(GTK_ENTRY(idc_textmessage));
   
