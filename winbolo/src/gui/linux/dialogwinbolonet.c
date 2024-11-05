@@ -50,7 +50,7 @@ void dialogWinbolonetOK(GtkWidget *widget, gpointer user_data) {
   char password[FILENAME_MAX];
   bool useWbn = FALSE;
   bool savePass = FALSE;
-  gchar *str;
+  const gchar *str;
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialogWbnUse)) == TRUE) {
     useWbn = TRUE;
   }

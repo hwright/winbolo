@@ -39,7 +39,7 @@ GtkWidget *idc_passwordtxt;
 
 gboolean dialogPasswordClose(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   char pass[MAP_STR_SIZE]; /* Tracker address   */
-  gchar *str;
+  const gchar *str;
 
   str = gtk_entry_get_text(GTK_ENTRY(idc_passwordtxt));
   strncpy(pass, str, MAP_STR_SIZE);
@@ -66,19 +66,14 @@ GtkWidget* dialogPasswordCreate(void) {
   GtkWidget *hbox1;
   GtkWidget *button1;
 
-  dailogPassword = gtk_window_new (GTK_WINDOW_DIALOG);
+  dailogPassword = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dailogPassword), "dailogPassword", dailogPassword);
   gtk_container_set_border_width (GTK_CONTAINER (dailogPassword), 7);
   gtk_window_set_title (GTK_WINDOW (dailogPassword), "Password");
   gtk_window_set_modal (GTK_WINDOW (dailogPassword), TRUE);
   gtk_window_set_policy (GTK_WINDOW (dailogPassword), FALSE, FALSE, FALSE);
 
-  vbox1 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dailogPassword), "vbox1", vbox1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox1);
-  gtk_container_add (GTK_CONTAINER (dailogPassword), vbox1);
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dailogPassword));
   gtk_container_set_border_width (GTK_CONTAINER (vbox1), 4);
 
   label1 = gtk_label_new ("This game is password protected.\nEnter the correct password to join:");

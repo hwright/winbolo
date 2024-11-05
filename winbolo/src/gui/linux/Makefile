@@ -15,8 +15,8 @@
 
 
 CFLAGS = -g -std=c11
-BOLO_CFLAGS = ${CFLAGS} `sdl-config --cflags` `gtk-config --cflags` `pkg-config minizip --cflags` -Wall  -Wno-missing-braces
-LDFLAGS = `sdl-config --libs` `gtk-config --libs` `glib-config --libs gthread` `pkg-config minizip --libs`
+BOLO_CFLAGS = ${CFLAGS} `sdl-config --cflags` `pkg-config gtk+-2.0 minizip --cflags` -Wall  -Wno-missing-braces
+LDFLAGS = `sdl-config --libs` `gtk-config --libs` `pkg-config minizip gtk+-2.0 gmodule-2.0 gthread-2.0 --libs`
 #-s
 #CFLAGS = -s -O3 -ffast-math -fomit-frame-pointer -mpentium -march=pentium `sdl-config --cflags` `gtk-config --cflags` `glib-config --cflags` 
 BOLODIR = ../../bolo/
@@ -80,7 +80,7 @@ linbolo:    global.o bases.o util.o crc.o pillbox.o lgm.o shells.o tank.o \
 	servercore.o servermessages.o \
 	servernet.o servertransport.o threads.o \
 	-o ${APPNAME} ${LDFLAGS} -lSDL_ttf -lSDL_mixer \
-	-L -L/usr/X11/lib -lX11
+	-L -L/usr/X11/lib -lX11 -lm
 
 
 winbolonet.o: ${WBNETDIR}winbolonet.c ${WBNETDIR}winbolonet.h

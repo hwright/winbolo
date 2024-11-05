@@ -105,18 +105,13 @@ dialogNetworkInformationCreate(void)
   GtkWidget *label29;
   char str[FILENAME_MAX]; /* Strings to display */
 
-  dialogNetworkInformation = gtk_window_new (GTK_WINDOW_DIALOG);
+  dialogNetworkInformation = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dialogNetworkInformation), "dialogNetworkInformation", dialogNetworkInformation);
   gtk_widget_set_usize (dialogNetworkInformation, 300, 150);
   gtk_container_set_border_width (GTK_CONTAINER (dialogNetworkInformation), 15);
   gtk_window_set_title (GTK_WINDOW (dialogNetworkInformation), "LinBolo Network Information");
   gtk_window_set_policy(GTK_WINDOW(dialogNetworkInformation), FALSE, FALSE, FALSE);
-  vbox1 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "vbox1", vbox1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox1);
-  gtk_container_add (GTK_CONTAINER (dialogNetworkInformation), vbox1);
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogNetworkInformation));
 
   hbox13 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox13);

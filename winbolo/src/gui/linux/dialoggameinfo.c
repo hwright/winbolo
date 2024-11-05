@@ -111,18 +111,13 @@ GtkWidget* dialogGameInfoCreate(void) {
   bool bTemp;                  /* Used for holding misc bool variables */
   gameType *t;
 	
-  dialogGameInfo = gtk_window_new (GTK_WINDOW_DIALOG);
+  dialogGameInfo = gtk_dialog_new ();
   gtk_object_set_data (GTK_OBJECT (dialogGameInfo), "dialogGameInfo", dialogGameInfo);
   gtk_widget_set_usize (dialogGameInfo, 300, 150);
   gtk_container_set_border_width (GTK_CONTAINER (dialogGameInfo), 15);
   gtk_window_set_title (GTK_WINDOW (dialogGameInfo), "LinBolo Game Information");
     gtk_window_set_policy(GTK_WINDOW(dialogGameInfo), FALSE, FALSE, FALSE);
-  vbox1 = gtk_vbox_new (FALSE, 0);
-  gtk_widget_ref (vbox1);
-  gtk_object_set_data_full (GTK_OBJECT (dialogGameInfo), "vbox1", vbox1,
-                            (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_show (vbox1);
-  gtk_container_add (GTK_CONTAINER (dialogGameInfo), vbox1);
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogGameInfo));
 
   hbox6 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox6);
