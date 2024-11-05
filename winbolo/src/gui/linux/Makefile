@@ -15,8 +15,8 @@
 
 
 CFLAGS = -g
-BOLO_CFLAGS = ${CFLAGS} `sdl-config --cflags` `gtk-config --cflags` -Wall  -Wno-missing-braces
-LDFLAGS = `sdl-config --libs` `gtk-config --libs` `glib-config --libs gthread`
+BOLO_CFLAGS = ${CFLAGS} `sdl-config --cflags` `gtk-config --cflags` `pkg-config minizip --cflags` -Wall  -Wno-missing-braces
+LDFLAGS = `sdl-config --libs` `gtk-config --libs` `glib-config --libs gthread` `pkg-config minizip --libs`
 #-s
 #CFLAGS = -s -O3 -ffast-math -fomit-frame-pointer -mpentium -march=pentium `sdl-config --cflags` `gtk-config --cflags` `glib-config --cflags` 
 BOLODIR = ../../bolo/
@@ -26,7 +26,6 @@ GUIDIRLINUX = ./
 SERVERDIR = ../../server/
 COMPRESSDIR = ../../lzw/
 APPNAME = linbolo
-ZLIBDIR = ../../zlib/
 BDDIR = ../../server/BigDigits/
 
 # added for BigDigits
@@ -38,10 +37,6 @@ clean:
 	rm *.o
 	rm linbolo
 	
-zlib:   adler32.o compress.o crc32.o deflate.o gzio.o \
-	inffast.o inflate.o inftrees.o trees.o ioapi.o uncompr.o \
-	unzip.o zip.o zutil.o
-
 
 linbolo:    global.o bases.o util.o crc.o pillbox.o lgm.o shells.o tank.o \
 	allience.o bolo_map.o building.o explosions.o floodfill.o \
@@ -58,7 +53,7 @@ linbolo:    global.o bases.o util.o crc.o pillbox.o lgm.o shells.o tank.o \
 	messagebox.o dialogpassword.o dialogsetname.o dialogalliance.o \
 	currentgames.o dialoggamefinder.o brainshandler.o dialogkeysetup.o \
 	log.o winbolonet.o udppackets.o winbolonetevents.o  \
-	http.o dnslookups.o dialogwinbolonet.o zlib mathWinbolo.o \
+	http.o dnslookups.o dialogwinbolonet.o mathWinbolo.o \
 	servercore.o servermessages.o debug_file_output.o \
 	servernet.o servertransport.o threads.o \
 	bigd.o bigdigits.o bigdigitsRand.o bigdRand.o 
@@ -80,9 +75,7 @@ linbolo:    global.o bases.o util.o crc.o pillbox.o lgm.o shells.o tank.o \
 	currentgames.o dialoggamefinder.o brainshandler.o dialogkeysetup.o \
 	log.o http.o winbolonet.o winbolonetevents.o udppackets.o \
 	dnslookups.o dialogwinbolonet.o \
-	adler32.o compress.o crc32.o deflate.o gzio.o  \
-	inffast.o inflate.o inftrees.o trees.o ioapi.o uncompr.o \
-	unzip.o zip.o zutil.o bigd.o bigdigits.o bigdigitsRand.o bigdRand.o \
+	bigd.o bigdigits.o bigdigitsRand.o bigdRand.o \
 	mathWinbolo.o debug_file_output.o \
 	servercore.o servermessages.o \
 	servernet.o servertransport.o threads.o \
@@ -325,52 +318,6 @@ netplayers.o: ${BOLODIR}netplayers.c ${BOLODIR}netplayers.h
 	${CC} ${BOLO_CFLAGS} -c ${BOLODIR}netplayers.c
 
 
-
-# zlib
-adler32.o: ${ZLIBDIR}adler32.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}adler32.c
-
-compress.o: ${ZLIBDIR}compress.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}compress.c
-
-crc32.o: ${ZLIBDIR}crc32.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}crc32.c
-
-deflate.o: ${ZLIBDIR}deflate.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}deflate.c
-
-gzio.o: ${ZLIBDIR}gzio.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}gzio.c
-
-infback.o: ${ZLIBDIR}infback.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}infback.c
-
-inffast.o: ${ZLIBDIR}inffast.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}inffast.c
-
-inflate.o: ${ZLIBDIR}inflate.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}inflate.c
-
-inftrees.o: ${ZLIBDIR}inftrees.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}inftrees.c
-
-trees.o: ${ZLIBDIR}trees.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}trees.c
-
-ioapi.o: ${ZLIBDIR}ioapi.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}ioapi.c
-
-uncompr.o: ${ZLIBDIR}uncompr.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}uncompr.c
-
-unzip.o: ${ZLIBDIR}unzip.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}unzip.c
-
-zip.o: ${ZLIBDIR}zip.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}zip.c
-
-zutil.o: ${ZLIBDIR}zutil.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}zutil.c
 
 # bigdigits
 bigd.o: $(BDDIR)bigd.h

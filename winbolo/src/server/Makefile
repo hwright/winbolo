@@ -26,9 +26,9 @@ REM = rm
 
 # Flags for gcc and rm
 REMFLAGS = -f
-LDFLAGS = `sdl-config --libs` -lm
+LDFLAGS = `sdl-config --libs` `pkg-config minizip --libs` -lm
 CFLAGS =
-BOLO_CFLAGS = $(CFLAGS) `sdl-config --cflags` -DHAVE_C99INCLUDES -DHAVE_SYS_TYPES -Wall -Wno-missing-braces
+BOLO_CFLAGS = $(CFLAGS) `sdl-config --cflags` `pkg-config minizip --cflags` -DHAVE_C99INCLUDES -DHAVE_SYS_TYPES -Wall -Wno-missing-braces
 BDFLAGS = -DHAVE_C99INCLUDES -std=c99 -pedantic -Wpointer-arith -Wstrict-prototypes -O2
 
 # directories
@@ -38,7 +38,6 @@ WBNETDIR = ../winbolonet/
 GUIDIRLINUX = ../gui/linux/
 SERVERDIR = ./
 COMPRESSDIR = ../lzw/
-ZLIBDIR = ../zlib/
 BDDIR = BigDigits/
 
 # added for BigDigits
@@ -63,14 +62,10 @@ b: global.o bases.o util.o crc.o pillbox.o lgm.o shells.o tank.o \
 server: servercore.o servermessages.o serverfrontend.o servermain.o \
 	servernet.o servertransport.o threads.o log.o udppackets.o \
 	winbolonet.o http.o preferences.o
-	
-zlib: 	adler32.o compress.o crc32.o deflate.o gzio.o \
-	inffast.o inflate.o inftrees.o trees.o ioapi.o uncompr.o \
-	unzip.o zip.o zutil.o 
 
 bigdigits: bigd.o bigdigits.o bigdigitsRand.o bigdRand.o
 	
-$(SERVERNAME): zlib b server bigdigits
+$(SERVERNAME): b server bigdigits
 	$(CC) \
 	global.o bases.o util.o crc.o pillbox.o lgm.o shells.o tank.o \
 	allience.o bolo_map.o building.o explosions.o floodfill.o \
@@ -80,9 +75,7 @@ $(SERVERNAME): zlib b server bigdigits
 	serverfrontend.o servermain.o servernet.o servertransport.o threads.o \
 	dcodlzw.o ecodlzw.o lang.o log.o udppackets.o winbolonetevents.o \
 	winbolonet.o http.o screenbullet.o preferences.o winbolonetthread.o \
-	backend.o adler32.o compress.o crc32.o deflate.o gzio.o  \
-	inffast.o inflate.o inftrees.o trees.o ioapi.o uncompr.o \
-	unzip.o zip.o zutil.o bigd.o bigdigits.o bigdigitsRand.o bigdRand.o \
+	backend.o bigd.o bigdigits.o bigdigitsRand.o bigdRand.o \
 	mathWinbolo.o debug_file_output.o $(LDFLAGS) -o $(SERVERNAME)
 
 tidy: 
@@ -105,51 +98,6 @@ bigdigitsRand.o: $(BDDIR)bigdigitsRand.h
 
 bigdRand.o: $(BDDIR)bigdRand.h
 	$(CC) $(BDFLAGS) -c $(BDDIR)bigdRand.c
-
-# zlib
-adler32.o: ${ZLIBDIR}adler32.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}adler32.c
-
-compress.o: ${ZLIBDIR}compress.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}compress.c
-
-crc32.o: ${ZLIBDIR}crc32.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}crc32.c
-
-deflate.o: ${ZLIBDIR}deflate.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}deflate.c
-
-gzio.o: ${ZLIBDIR}gzio.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}gzio.c
-
-infback.o: ${ZLIBDIR}infback.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}infback.c
-inffast.o: ${ZLIBDIR}inffast.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}inffast.c
-
-inflate.o: ${ZLIBDIR}inflate.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}inflate.c
-
-inftrees.o: ${ZLIBDIR}inftrees.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}inftrees.c
-
-trees.o: ${ZLIBDIR}trees.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}trees.c
-
-ioapi.o: ${ZLIBDIR}ioapi.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}ioapi.c
-
-uncompr.o: ${ZLIBDIR}uncompr.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}uncompr.c
-
-unzip.o: ${ZLIBDIR}unzip.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}unzip.c
-
-zip.o: ${ZLIBDIR}zip.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}zip.c
-
-zutil.o: ${ZLIBDIR}zutil.c
-	${CC} ${CFLAGS} -c ${ZLIBDIR}zutil.c
 
 #
 # gui lang
