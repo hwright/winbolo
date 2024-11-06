@@ -2266,7 +2266,17 @@ void screenExtractPlayerData(BYTE *buff, int buffLen) {
   pos = 0;
   myPlayerNum = playersGetSelf(screenGetPlayers());
   while (pos < buffLen) {
-    mx = my = px = py = frame = onBoat = lgmMX = lgmMY = lgmPX = lgmPY = lgmFrame = 0;
+    mx = 0;
+    my = 0;
+    px = 0;
+    py = 0;
+    frame = 0;
+    onBoat = 0;
+    lgmMX = 0;
+    lgmMY = 0;
+    lgmPX = 0;
+    lgmPY = 0;
+    lgmFrame = 0;
     utilGetNibbles(buff[pos], &playerNum, &options);
     pos++;
     if (options != 0xF) { /* Stale check */
@@ -2281,7 +2291,7 @@ void screenExtractPlayerData(BYTE *buff, int buffLen) {
         pos++;
         utilGetNibbles(buff[pos], &px, &py);
         pos++;
-        utilGetNibbles(buff[pos], &onBoat, &frame);
+        utilGetNibbles(buff[pos], (BYTE *) &onBoat, &frame);
         pos++;
       }
 

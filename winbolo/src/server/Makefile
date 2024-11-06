@@ -27,9 +27,9 @@ REM = rm
 # Flags for gcc and rm
 REMFLAGS = -f
 LDFLAGS = `sdl-config --libs` `pkg-config minizip --libs` -lm
-CFLAGS =
+CFLAGS = -std=c11
 BOLO_CFLAGS = $(CFLAGS) `sdl-config --cflags` `pkg-config minizip --cflags` -DHAVE_C99INCLUDES -DHAVE_SYS_TYPES -Wall -Wno-missing-braces
-BDFLAGS = -DHAVE_C99INCLUDES -std=c99 -pedantic -Wpointer-arith -Wstrict-prototypes -O2
+BDFLAGS = $(CFLAGS) -pedantic -Wpointer-arith -Wstrict-prototypes -O2
 
 # directories
 BOLODIR = ../bolo/

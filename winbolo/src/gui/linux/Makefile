@@ -14,7 +14,7 @@
 # GNU General Public License for more details.
 
 
-CFLAGS = -g
+CFLAGS = -g -std=c11
 BOLO_CFLAGS = ${CFLAGS} `sdl-config --cflags` `gtk-config --cflags` `pkg-config minizip --cflags` -Wall  -Wno-missing-braces
 LDFLAGS = `sdl-config --libs` `gtk-config --libs` `glib-config --libs gthread` `pkg-config minizip --libs`
 #-s
