@@ -106,7 +106,7 @@ bool netClientCreate(unsigned short port) {
   int nameLen;             /* Used to set size of name */
   
   nameLen = sizeof(name);
-  returnValue = TRUE;
+  returnValue = true;
   myPort = port;
 
   addrServer.sin_family = AF_INET;
@@ -114,26 +114,26 @@ bool netClientCreate(unsigned short port) {
   addrUs.sin_family = AF_INET;
   
   /* Create socket */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     myUdpSock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (myUdpSock == INVALID_SOCKET) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox(NULL, langGetText(STR_NETCLIENTERR_CREATEUDPFAIL), DIALOG_BOX_TITLE, MB_ICONEXCLAMATION);
     } 
   }
 
-  if (returnValue == TRUE) {
-    returnValue = netClientSetUdpAsync(TRUE);
+  if (returnValue == true) {
+    returnValue = netClientSetUdpAsync(true);
   }
 
   /* Bind to port */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = INADDR_ANY;
     ret = bind(myUdpSock, (struct sockaddr *)&addr, sizeof(addr));
     if (ret != 0) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox(NULL, langGetText(STR_NETCLIENTERR_BINDUDPFAIL), DIALOG_BOX_TITLE, MB_ICONINFORMATION);
     } else {
       /* Get what port we were assigned */
@@ -376,12 +376,12 @@ bool netClientUdpPingServer(BYTE *buff, int *len, bool wantCrc, bool addNonRelia
   unsigned int timeOut;       /* Time out */
   BYTE crcA, crcB; /* CRC Bytes */
 
-  returnValue = TRUE;
-  if (addNonReliable == TRUE) {
+  returnValue = true;
+  if (addNonReliable == true) {
     buff[(*len)] = UDP_NON_RELIABLE_PACKET;
     (*len)++;
   }
-  if (wantCrc == TRUE) {
+  if (wantCrc == true) {
     CRCCalcBytes(buff, *len, &crcA, &crcB);
     buff[*len] = crcA;
     buff[(*len)+1] = crcB;
@@ -404,7 +404,7 @@ Do we want to bail out? I don't think so
   }
 
   if (*len <= 0) {
-    returnValue = FALSE;
+    returnValue = false;
   }
   return returnValue;
 }
@@ -416,14 +416,14 @@ Do we want to bail out? I don't think so
 *LAST MODIFIED: 19/08/02
 *PURPOSE:
 * Sends a packet and waits till a repsonse packet arrives
-* Returns FALSE if it times out.
+* Returns false if it times out.
 *
 *ARGUMENTS:
 *  buff - Packet to send (also returned)
 *  len  - Length of the packet (also returned)
 *  dest - Destination address
 *  port - Destination port
-*  wantCrc - TRUE if we should add a CRC to this packet
+*  wantCrc - true if we should add a CRC to this packet
 *  addNoReliable - If true adds the non-reliable packet
 *                  marker to the packet
 *********************************************************/
@@ -437,7 +437,7 @@ bool netClientUdpPing(BYTE *buff, int *len, char *dest, unsigned short port, boo
   unsigned int timeOut;       /* Time out */
   BYTE crcA, crcB; /* CRC Bytes */
 
-  returnValue = TRUE;
+  returnValue = true;
   addr.sin_family = AF_INET;
   addr.sin_port = htons(port);
   addr.sin_addr.s_addr = inet_addr(dest);
@@ -445,17 +445,17 @@ bool netClientUdpPing(BYTE *buff, int *len, char *dest, unsigned short port, boo
     /* Do hostname lookup */
     phe= gethostbyname(dest);
     if (phe == 0) {
-      returnValue = FALSE;
+      returnValue = false;
     } else {
       addr.sin_addr.s_addr = *((u_long*)phe->h_addr_list[0]);
     }
   }
-  if (returnValue == TRUE) {
-    if (addNonReliable == TRUE) {
+  if (returnValue == true) {
+    if (addNonReliable == true) {
       buff[(*len)] = UDP_NON_RELIABLE_PACKET;
       (*len)++;
     }
-    if (wantCrc == TRUE) {
+    if (wantCrc == true) {
       CRCCalcBytes(buff, (*len), &crcA, &crcB);
       buff[(*len)] = crcA;
       buff[(*len)+1] = crcB;
@@ -480,7 +480,7 @@ bool netClientUdpPing(BYTE *buff, int *len, char *dest, unsigned short port, boo
     }
 
     if (*len <= 0) {
-      returnValue = FALSE;
+      returnValue = false;
     }
   }
   return returnValue;
@@ -560,11 +560,11 @@ bool netClientSetUseEvents(void) {
   bool returnValue; /* Value to return */
   int ret;          /* Function return */
 
-  returnValue = TRUE;
+  returnValue = true;
   ret = 0;
 /*  ret = WSAAsyncSelect( mySock, windowWnd(), WSA_READ, FD_READ); */
   if (ret < 0) {
-    returnValue = FALSE;
+    returnValue = false;
     MessageBox(NULL, langGetText(STR_NETCLIENTERR_CHAINFAIL), DIALOG_BOX_TITLE, MB_ICONINFORMATION);
   }
   return returnValue;
@@ -607,21 +607,21 @@ void netClientUdpCheck(void) {
 * Returns success.
 *
 *ARGUMENTS:
-*  on - TRUE for non-block, FALSE for blocking
+*  on - true for non-block, false for blocking
 *********************************************************/
 bool netClientSetUdpAsync(bool on) {
   int ret;          /* Function return value */
   bool returnValue; /* Value to return */
   
-  returnValue = TRUE;
-  if (on == TRUE) {
+  returnValue = true;
+  if (on == true) {
     ret = fcntl(myUdpSock, F_SETFL, O_NONBLOCK | fcntl(myUdpSock, F_GETFL));
   } else {
     ret = fcntl(myUdpSock, F_SETFL, ~O_NONBLOCK | fcntl(myUdpSock, F_GETFL));
   }
 
   if (ret == SOCKET_ERROR) {
-    returnValue = FALSE;
+    returnValue = false;
   }
   return returnValue;
 }
@@ -642,7 +642,7 @@ bool netClientSetTracker(char *address, unsigned short port) {
   bool returnValue;    /* Value to return      */
   struct hostent *phe; /* Used for DNS lookups */
   
-  returnValue = TRUE;
+  returnValue = true;
   addrTracker.sin_family = AF_INET;
   addrTracker.sin_port = htons(port);
   addrTracker.sin_addr.s_addr = inet_addr(address);
@@ -650,7 +650,7 @@ bool netClientSetTracker(char *address, unsigned short port) {
     /* Not an IP Address. Do a hostname lookup */
     phe= gethostbyname(address);
     if (phe == 0) {
-      returnValue = FALSE;
+      returnValue = false;
     } else {
       addrTracker.sin_addr.s_addr = *((u_long*)phe->h_addr_list[0]);
     }
@@ -752,9 +752,9 @@ unsigned short gameFrontGameLocation(char *argItem, char *trackerAddr) {
 
 bool gameFinderYesNoToBool(char *str) {
   bool returnValue;
-  returnValue = FALSE;
+  returnValue = false;
   if (str[0] == 'Y' || str[0] == 'y') {
-    returnValue = TRUE;
+    returnValue = true;
   }
   return returnValue;
 }
@@ -907,13 +907,13 @@ void gameFinderProcessBroadcast(currentGames *cg, INFO_PACKET *info, struct in_a
   char address[FILENAME_MAX];
 
   utilPtoCString(info->mapname, mapName);
-  password = TRUE;
+  password = true;
   if (info->has_password == 0) {
-    password = FALSE;
+    password = false;
   }
-  mines = FALSE;
+  mines = false;
   if (info->allow_mines & 0x80) {
-    mines = TRUE;
+    mines = true;
   }
   if (info->gameid.serveraddress.s_addr == 0) {
     strcpy(address, inet_ntoa(*pack));
@@ -963,7 +963,7 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
   char txt[256];
 
   sock = INVALID_SOCKET;
-  returnValue = TRUE;
+  returnValue = true;
   b = malloc(128*1024);
   ptr = b;
 
@@ -974,20 +974,20 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
   strcat((char *) buff, strBuff);
   gtk_label_set_text(GTK_LABEL(hWnd), (char *) buff);
   GDK_THREADS_LEAVE();
-  while(g_main_iteration(FALSE));
+  while(g_main_iteration(false));
   GDK_THREADS_ENTER();
  
   /* Create TCP Socket*/
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (sock == INVALID_SOCKET) {
-      returnValue = FALSE;
+      returnValue = false;
       sprintf(txt, "Status: %s", langGetText(STR_NETCLIENTERR_CREATETCPFAIL));
       gtk_label_set_text(GTK_LABEL(hWnd), txt);
     }
   }
 
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     con.sin_family = AF_INET;
     con.sin_port = htons(port);
     con.sin_addr.s_addr = inet_addr(trackerAddress);
@@ -995,7 +995,7 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
       /* Not an IP Address. Do a hostname lookup */
       phe = gethostbyname(trackerAddress);
       if (phe == 0) {
-        returnValue = FALSE;
+        returnValue = false;
       sprintf(txt, "Status: %s", langGetText(STR_NETCLIENTERR_TRACKERDNSFAIL));
         gtk_label_set_text(GTK_LABEL(hWnd), txt);
       } else {
@@ -1005,23 +1005,23 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
   }
 
   /* Connect */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     ret = connect(sock, (struct sockaddr *) &con, sizeof(con));
     if (ret == SOCKET_ERROR) {
       sprintf(txt, "Status: %s", langGetText(STR_NETCLIENTERR_TRACKERCONNECTFAIL));
       gtk_label_set_text(GTK_LABEL(hWnd), txt);
-     returnValue = FALSE;
+     returnValue = false;
     }
   }
 
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     ret = fcntl(sock, F_SETFL, O_NONBLOCK | fcntl(sock, F_GETFL));
     if (ret == SOCKET_ERROR) {
       gtk_label_set_text(GTK_LABEL(hWnd), "Status: Error setting socket to non blocking mode.");
-      returnValue = FALSE;
+      returnValue = false;
     }
   }
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     sprintf(txt, "Status: %s", langGetText(STR_NETCLIENT_TRACKERGETRESPONSE));
     gtk_label_set_text(GTK_LABEL(hWnd), txt);
     len = 0;
@@ -1029,28 +1029,28 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
     new_bytes_read = recv(sock, ptr+len, 1024*128-len, 0);
     tick = timeGetTime();
     timeOut = 0;
-    done = FALSE;
-    while (timeOut <= 10000 && done == FALSE) {
+    done = false;
+    while (timeOut <= 10000 && done == false) {
  
       if (new_bytes_read > 0) {
         len += new_bytes_read;
       } else if (new_bytes_read == SOCKET_ERROR) {
         if (errno != EAGAIN) {
-          done = TRUE;
+          done = true;
         }
       } else if (new_bytes_read == 0) {
-        done = TRUE;
+        done = true;
       }
       timeOut = timeGetTime() - tick;
         GDK_THREADS_LEAVE();
-      while(g_main_iteration(FALSE));
+      while(g_main_iteration(false));
       GDK_THREADS_ENTER(); 
       new_bytes_read = recv(sock, ptr+len, 1024*128-len, 0);
     }
     if (len == 0) {
       sprintf(txt, "Status: %s", langGetText(STR_NETCLIENTERR_TRACKERNODATA));
       gtk_label_set_text(GTK_LABEL(hWnd), txt);
-      returnValue = FALSE;
+      returnValue = false;
     } else {
       sprintf(txt, "Status: %s", langGetText(STR_NETCLIENT_TRACKERPROCESSRESPONSE));
       gtk_label_set_text(GTK_LABEL(hWnd), txt);
@@ -1093,51 +1093,51 @@ bool netClientFindBroadcastGames(HWND *hWnd, currentGames *cg) {
 
   szlast = sizeof(last);
   sock = INVALID_SOCKET;
-  returnValue = TRUE;
+  returnValue = true;
   ptr = buff;
   /* Create UDP Socket*/
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (sock == INVALID_SOCKET) {
-      returnValue = FALSE;
+      returnValue = false;
       sprintf(txt, "Status: %s", langGetText(STR_NETCLIENTERR_CREATEUDPFAIL));
       gtk_label_set_text(GTK_LABEL(hWnd), txt);
     }
   }
   /* Bind to port */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     addr.sin_family = AF_INET;
     addr.sin_port = INADDR_ANY;
     addr.sin_addr.s_addr = INADDR_ANY;
     ret = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
     if (ret != 0) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox(NULL, langGetText(STR_NETCLIENTERR_BINDUDPFAIL), DIALOG_BOX_TITLE, MB_OK);
     }
   }
 
   /* Set to non blocking */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
      ret = fcntl(sock, F_SETFL, O_NONBLOCK | fcntl(sock, F_GETFL));
      if (ret == SOCKET_ERROR) {
-      returnValue = FALSE;
+      returnValue = false;
       sprintf(txt, "Status: %s",  langGetText(STR_NETCLIENTERR_TRACKERNOBLOCK));
       gtk_label_set_text(GTK_LABEL(hWnd), txt);
     }
   }
   /* Broadcast socket option */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     int c;
     c =1;
     ret = setsockopt(sock, SOL_SOCKET, SO_BROADCAST, &c , sizeof(c));
     if (ret != 0) {
-      returnValue = FALSE;
+      returnValue = false;
       gtk_label_set_text(GTK_LABEL(hWnd), "Status: Error setting socket options");
     }
   }
 
   /* Do Broadcast */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     con.sin_family = AF_INET;
     con.sin_port = htons(27500); /* Fixme: Run time settable? */
     con.sin_addr.s_addr = INADDR_BROADCAST;
@@ -1145,12 +1145,12 @@ bool netClientFindBroadcastGames(HWND *hWnd, currentGames *cg) {
     if (ret == SOCKET_ERROR) {
       sprintf(txt, "Status: %s", langGetText(STR_NETCLIENTERR_BROADCAST));
       gtk_label_set_text(GTK_LABEL(hWnd), txt); 
-      returnValue = FALSE;
+      returnValue = false;
     }
   }
 
   usleep(50);
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     /* Get responses */
     sprintf(txt, "Status: %s", langGetText(STR_NETCLIENT_GETRESPONSES));
     gtk_label_set_text(GTK_LABEL(hWnd), txt);
@@ -1165,7 +1165,7 @@ bool netClientFindBroadcastGames(HWND *hWnd, currentGames *cg) {
         }
       }
       GDK_THREADS_LEAVE();
-      while(g_main_iteration(FALSE));
+      while(g_main_iteration(false));
       GDK_THREADS_ENTER();
       usleep(50);
       timeOut = timeGetTime() - tick;

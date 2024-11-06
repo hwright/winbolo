@@ -32,14 +32,14 @@ GtkWidget *entry2;
 GtkWidget *dialogTrackerUs;
 
 gboolean dialogTrackerUseFunc(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)) == TRUE) {
-    gtk_widget_set_sensitive (entry2, TRUE);
-    gtk_widget_set_sensitive (entry1, TRUE);
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)) == true) {
+    gtk_widget_set_sensitive (entry2, true);
+    gtk_widget_set_sensitive (entry1, true);
   } else {
-    gtk_widget_set_sensitive (entry2, FALSE);
-    gtk_widget_set_sensitive (entry1, FALSE);
+    gtk_widget_set_sensitive (entry2, false);
+    gtk_widget_set_sensitive (entry1, false);
   }
-  return FALSE;
+  return false;
 }
 
 
@@ -49,9 +49,9 @@ gboolean dialogTrackerOK(GtkWidget *widget,  GdkEventButton *event, gpointer use
   unsigned short port;     /* Port              */
   bool enabled;            /* Use of tracker enabled */
 
-  enabled = FALSE;
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialogTrackerUse)) == TRUE) {
-    enabled = TRUE;
+  enabled = false;
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialogTrackerUse)) == true) {
+    enabled = true;
   }
   str = gtk_entry_get_text(GTK_ENTRY(entry2));
   port = atoi(str);
@@ -61,7 +61,7 @@ gboolean dialogTrackerOK(GtkWidget *widget,  GdkEventButton *event, gpointer use
   gtk_grab_remove(dialogTrackerUs);
   gtk_widget_destroy(dialogTrackerUs);
   gtk_main_quit();
-  return FALSE;
+  return false;
 }
 
 gboolean dialogTrackerCancel(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
@@ -69,7 +69,7 @@ gboolean dialogTrackerCancel(GtkWidget *widget,  GdkEventButton *event, gpointer
   gtk_widget_destroy(dialogTrackerUs);
   gtk_main_quit();
 
-  return FALSE;
+  return false;
 }
 
 GtkWidget* dialogTrackerCreate(void) {
@@ -93,8 +93,8 @@ GtkWidget* dialogTrackerCreate(void) {
   gtk_container_set_border_width (GTK_CONTAINER (dialogTracker), 10);
   gtk_window_set_title (GTK_WINDOW (dialogTracker), "Tracker Config");
   gtk_window_set_position (GTK_WINDOW (dialogTracker), GTK_WIN_POS_CENTER);
-  gtk_window_set_modal (GTK_WINDOW (dialogTracker), TRUE);
-  gtk_window_set_policy (GTK_WINDOW (dialogTracker), FALSE, FALSE, FALSE);
+  gtk_window_set_modal (GTK_WINDOW (dialogTracker), true);
+  gtk_window_set_policy (GTK_WINDOW (dialogTracker), false, false, false);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
@@ -103,12 +103,12 @@ GtkWidget* dialogTrackerCreate(void) {
   gtk_widget_show (vbox1);
   gtk_container_add (GTK_CONTAINER (dialogTracker), vbox1);
 
-  table1 = gtk_table_new (2, 2, FALSE);
+  table1 = gtk_table_new (2, 2, false);
   gtk_widget_ref (table1);
   gtk_object_set_data_full (GTK_OBJECT (dialogTracker), "table1", table1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table1);
-  gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), table1, true, true, 0);
 
   label1 = gtk_label_new ("Tracker Address: ");
   gtk_widget_ref (label1);
@@ -148,55 +148,55 @@ GtkWidget* dialogTrackerCreate(void) {
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  hbox1 = gtk_hbox_new (FALSE, 0);
+  hbox1 = gtk_hbox_new (false, 0);
   gtk_widget_ref (hbox1);
   gtk_object_set_data_full (GTK_OBJECT (dialogTracker), "hbox1", hbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox1);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 6);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, true, true, 6);
 
   label3 = gtk_label_new ("");
   gtk_widget_ref (label3);
   gtk_object_set_data_full (GTK_OBJECT (dialogTracker), "label3", label3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label3);
-  gtk_box_pack_start (GTK_BOX (hbox1), label3, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), label3, true, true, 0);
 
   dialogTrackerUse = gtk_check_button_new_with_label ("Use Tracker");
   gtk_widget_ref (dialogTrackerUse);
   gtk_object_set_data_full (GTK_OBJECT (dialogTracker), "dialogTrackerUse", dialogTrackerUse,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (dialogTrackerUse);
-  gtk_box_pack_start (GTK_BOX (hbox1), dialogTrackerUse, FALSE, FALSE, 0);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialogTrackerUse), TRUE);
+  gtk_box_pack_start (GTK_BOX (hbox1), dialogTrackerUse, false, false, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (dialogTrackerUse), true);
 
   label4 = gtk_label_new ("");
   gtk_widget_ref (label4);
   gtk_object_set_data_full (GTK_OBJECT (dialogTracker), "label4", label4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label4);
-  gtk_box_pack_start (GTK_BOX (hbox1), label4, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), label4, true, true, 0);
 
-  hbox2 = gtk_hbox_new (FALSE, 0);
+  hbox2 = gtk_hbox_new (false, 0);
   gtk_widget_ref (hbox2);
   gtk_object_set_data_full (GTK_OBJECT (dialogTracker), "hbox2", hbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox2);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, FALSE, 8);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox2, false, false, 8);
 
   dialogTrackerok = gtk_button_new_with_label ("OK");
   gtk_widget_ref (dialogTrackerok);
   gtk_object_set_data_full (GTK_OBJECT (dialogTracker), "dialogTrackerok", dialogTrackerok,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (dialogTrackerok);
-  gtk_box_pack_start (GTK_BOX (hbox2), dialogTrackerok, TRUE, TRUE, 10);
+  gtk_box_pack_start (GTK_BOX (hbox2), dialogTrackerok, true, true, 10);
 
   dialogTrackercancel = gtk_button_new_with_label ("Cancel");
   gtk_widget_ref (dialogTrackercancel);
   gtk_object_set_data_full (GTK_OBJECT (dialogTracker), "dialogTrackercancel", dialogTrackercancel,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (dialogTrackercancel);
-  gtk_box_pack_start (GTK_BOX (hbox2), dialogTrackercancel, TRUE, TRUE, 10);
+  gtk_box_pack_start (GTK_BOX (hbox2), dialogTrackercancel, true, true, 10);
  
   
   
@@ -205,15 +205,15 @@ GtkWidget* dialogTrackerCreate(void) {
   gtk_entry_set_text(GTK_ENTRY(entry1), addr);
   sprintf(addr, "%i", port);
   gtk_entry_set_text(GTK_ENTRY(entry2), addr);
-  if (enabled == TRUE) {
-    gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(dialogTrackerUse), TRUE);
-    gtk_widget_set_sensitive (entry2, TRUE);
-    gtk_widget_set_sensitive (entry1, TRUE);
+  if (enabled == true) {
+    gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(dialogTrackerUse), true);
+    gtk_widget_set_sensitive (entry2, true);
+    gtk_widget_set_sensitive (entry1, true);
 
   } else {
-    gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(dialogTrackerUse), FALSE);
-    gtk_widget_set_sensitive (entry2, FALSE);
-    gtk_widget_set_sensitive (entry1, FALSE);
+    gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(dialogTrackerUse), false);
+    gtk_widget_set_sensitive (entry2, false);
+    gtk_widget_set_sensitive (entry1, false);
   }
   dialogTrackerUs = dialogTracker;
   gtk_signal_connect(GTK_OBJECT(dialogTracker), "delete_event", GTK_SIGNAL_FUNC (dialogTrackerCancel), NULL);

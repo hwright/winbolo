@@ -29,7 +29,7 @@
 #include "global.h"
 #include "labels.h"
 
-bool labelOwnTank = TRUE; /* Should own tank be labeled? */
+bool labelOwnTank = true; /* Should own tank be labeled? */
 labelLen labelMessage = lblShort; /* Should message labels be short? */
 labelLen labelTankLabel = lblShort; /* Should tank labels be short? */
 
@@ -42,7 +42,7 @@ labelLen labelTankLabel = lblShort; /* Should tank labels be short? */
 * Sets the message sender length item (short/long)
 *
 *ARGUMENTS:
-*  isLengthShort - TRUE if the length is to be short
+*  isLengthShort - true if the length is to be short
 *********************************************************/
 void labelSetSenderLength(labelLen isLengthShort) {
   labelMessage = isLengthShort;
@@ -57,7 +57,7 @@ void labelSetSenderLength(labelLen isLengthShort) {
 * Sets the tank label length (short/long)
 *
 *ARGUMENTS:
-*  isLengthShort - TRUE if the length is to be short
+*  isLengthShort - true if the length is to be short
 *********************************************************/
 void labelSetTankLength(labelLen isLengthShort) {
   labelTankLabel = isLengthShort;
@@ -72,7 +72,7 @@ void labelSetTankLength(labelLen isLengthShort) {
 * Sets the tank label length (short/long)
 *
 *ARGUMENTS:
-*  labelOwn - TRUE if you should label your own tank
+*  labelOwn - true if you should label your own tank
 *********************************************************/
 void labelSetLabelOwnTank(bool labelOwn) {
   labelOwnTank = labelOwn;
@@ -118,7 +118,7 @@ void labelMakeMessage(char *res, char *name, char *loc) {
 *********************************************************/
 void labelMakeTankLabel(char *res, char *name, char *loc, bool isOwn) {
   res[0] = '\0';
-  if (labelTankLabel != lblNone && (isOwn == FALSE || (isOwn == TRUE && labelOwnTank == TRUE))) {
+  if (labelTankLabel != lblNone && (isOwn == false || (isOwn == true && labelOwnTank == true))) {
     strcat(res, name);
     if (labelTankLabel == lblLong) {
       strcat(res, LABEL_AT_SYMBOL);

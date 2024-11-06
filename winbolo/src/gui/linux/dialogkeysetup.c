@@ -40,7 +40,7 @@ gboolean on_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   *ptr = gdk_keyval_to_upper(event->keyval);
   gtk_entry_set_text(GTK_ENTRY(widget), gdk_keyval_name(gdk_keyval_to_upper(event->keyval)));
   gtk_signal_emit_stop_by_name (GTK_OBJECT(widget), "key_press_event");
-  return FALSE;
+  return false;
 }
 
 void
@@ -139,8 +139,8 @@ GtkWidget* dialogKeySetupCreate(keyItems *value) {
   gtk_container_set_border_width (GTK_CONTAINER (dialogKeySetup), 15);
   gtk_window_set_title (GTK_WINDOW (dialogKeySetup), "Choose Key Settings");
   gtk_window_set_position (GTK_WINDOW (dialogKeySetup), GTK_WIN_POS_CENTER);
-  gtk_window_set_modal (GTK_WINDOW (dialogKeySetup), TRUE);
-  gtk_window_set_policy (GTK_WINDOW (dialogKeySetup), FALSE, FALSE, FALSE);
+  gtk_window_set_modal (GTK_WINDOW (dialogKeySetup), true);
+  gtk_window_set_policy (GTK_WINDOW (dialogKeySetup), false, false, false);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
@@ -154,16 +154,16 @@ GtkWidget* dialogKeySetupCreate(keyItems *value) {
   gtk_object_set_data_full (GTK_OBJECT (dialogKeySetup), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label1);
-  gtk_box_pack_start (GTK_BOX (vbox1), label1, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), label1, false, false, 0);
   gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (label1), 7.45058e-09, 0.5);
 
-  table1 = gtk_table_new (17, 4, FALSE);
+  table1 = gtk_table_new (17, 4, false);
   gtk_widget_ref (table1);
   gtk_object_set_data_full (GTK_OBJECT (dialogKeySetup), "table1", table1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table1);
-  gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), table1, true, true, 0);
   gtk_container_set_border_width (GTK_CONTAINER (table1), 6);
 
   label2 = gtk_label_new ("Drive tank");

@@ -55,11 +55,11 @@ static int debug = 0; /* <= ALWAYS ZERO */
 #endif
 
 /* Useful definitions */
-#ifndef FALSE
-#define FALSE               0
+#ifndef false
+#define false               0
 #endif
-#ifndef TRUE
-#define TRUE                1
+#ifndef true
+#define true                1
 #endif
 #ifndef max
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
@@ -332,19 +332,19 @@ int bdIsEqual(T a, T b)
 	nb = mpSizeof(b->digits, b->ndigits);
 	
 	if (na != nb)
-		return FALSE;
+		return false;
 	if (na == 0 && nb == 0)
-		return TRUE;
+		return true;
 
 	/* Otherwise we have equal lengths */
 	n = na;
 	while (n--)
 	{
 		if (a->digits[n] != b->digits[n])
-			return FALSE;
+			return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 int bdIsZero(T a)

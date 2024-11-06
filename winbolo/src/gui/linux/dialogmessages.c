@@ -42,7 +42,7 @@
   GtkWidget *idc_selection;
   GtkWidget *idc_textmessage;
   GtkWidget *idc_sendbutton;
-  bool dialogMessagesEnabled = TRUE;
+  bool dialogMessagesEnabled = true;
   guint dialogMessagesTimeoutId;
 
   
@@ -51,11 +51,11 @@
   int numSend;      /* Number of players to send to */
 
   /* Get the number of selected players */
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allplayers)) == TRUE) {
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allplayers)) == true) {
     numSend = screenGetNumPlayers();
-  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allallies)) == TRUE) {
+  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allallies)) == true) {
     numSend = screenNumAllies();
-  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allnearby)) == TRUE) {
+  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allnearby)) == true) {
     numSend = screenNumNearbyTanks();
   } else {
     numSend = screenNumCheckedPlayers();
@@ -70,15 +70,15 @@
   /* Print it */
   gtk_label_set_text(GTK_LABEL(idc_label), output);
 
-  return FALSE;
+  return false;
 } 
 
 
 gint dialogMessagesEnableButton(gpointer data) {
-  gtk_widget_set_sensitive (idc_sendbutton, TRUE);
+  gtk_widget_set_sensitive (idc_sendbutton, true);
   gtk_timeout_remove(dialogMessagesTimeoutId);
-  dialogMessagesEnabled = TRUE;
-  return FALSE;
+  dialogMessagesEnabled = true;
+  return false;
 }
 
 gboolean dialogMessagesSend(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
@@ -89,11 +89,11 @@ gboolean dialogMessagesSend(GtkWidget *widget,  GdkEventButton *event, gpointer 
   
   if (gc != NULL) {
     strcpy(message, gc);
-    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allplayers)) == TRUE) {
+    if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allplayers)) == true) {
       screenSendMessageAllPlayers(message);
-    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allallies)) == TRUE) {
+    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allallies)) == true) {
       screenSendMessageAllAllies(message);
-    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allnearby)) == TRUE) {
+    } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allnearby)) == true) {
       screenSendMessageAllNearby(message);
     } else {
       screenSendMessageAllSelected(message);
@@ -101,31 +101,31 @@ gboolean dialogMessagesSend(GtkWidget *widget,  GdkEventButton *event, gpointer 
   }
   dialogMessagesTimeoutId = gtk_timeout_add (WAIT_TIME, dialogMessagesEnableButton, 0);
   gtk_editable_select_region(GTK_EDITABLE(idc_textmessage), 0, -1);
-  dialogMessagesEnabled = FALSE;
-  gtk_widget_set_sensitive (idc_sendbutton, FALSE);
-  return TRUE; 
+  dialogMessagesEnabled = false;
+  gtk_widget_set_sensitive (idc_sendbutton, false);
+  return true; 
 }
 
 
 gboolean dialogMessagesKey (GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   if (event->keyval == 65293) {
-    if (dialogMessagesEnabled == TRUE) {
+    if (dialogMessagesEnabled == true) {
       dialogMessagesSend(NULL, NULL, NULL);
-      return FALSE;
+      return false;
     }
   }
-  return TRUE;
+  return true;
 }
 
 void windowMessagesClose();
 
 gboolean dialogMessagesClose(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
-  if (dialogMessagesEnabled == FALSE) {
+  if (dialogMessagesEnabled == false) {
     gtk_timeout_remove(dialogMessagesTimeoutId);
   }
   windowMessagesClose();
   gtk_widget_destroy(widget);
-  return FALSE;
+  return false;
 }
 
 GtkWidget*
@@ -136,15 +136,15 @@ dialogMessagesCreate(void)
   GSList *vbox1_group = NULL;
  GtkWidget *hbox1;
   
-  dialogMessagesEnabled = TRUE;
+  dialogMessagesEnabled = true;
   dialogMessages = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   gtk_object_set_data (GTK_OBJECT (dialogMessages), "dialogMessages", dialogMessages);
   gtk_container_set_border_width (GTK_CONTAINER (dialogMessages), 20);
   gtk_window_set_title (GTK_WINDOW (dialogMessages), "Send Message");
-  gtk_window_set_policy (GTK_WINDOW (dialogMessages), FALSE, FALSE, FALSE);
+  gtk_window_set_policy (GTK_WINDOW (dialogMessages), false, false, false);
   gtk_window_set_position (GTK_WINDOW (dialogMessages), GTK_WIN_POS_CENTER);
     
-  vbox1 = gtk_vbox_new (FALSE, 0);
+  vbox1 = gtk_vbox_new (false, 0);
   gtk_widget_ref (vbox1);
   gtk_object_set_data_full (GTK_OBJECT (dialogMessages), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -157,7 +157,7 @@ dialogMessagesCreate(void)
   gtk_object_set_data_full (GTK_OBJECT (dialogMessages), "idc_allplayers", idc_allplayers,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_allplayers);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_allplayers, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_allplayers, false, false, 0);
 
   idc_allallies = gtk_radio_button_new_with_label (vbox1_group, "All allies");
   vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (idc_allallies));
@@ -165,7 +165,7 @@ dialogMessagesCreate(void)
   gtk_object_set_data_full (GTK_OBJECT (dialogMessages), "idc_allallies", idc_allallies,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_allallies);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_allallies, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_allallies, false, false, 0);
 
   idc_allnearby = gtk_radio_button_new_with_label (vbox1_group, "All nearby tanks");
   vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (idc_allnearby));
@@ -173,7 +173,7 @@ dialogMessagesCreate(void)
   gtk_object_set_data_full (GTK_OBJECT (dialogMessages), "idc_allnearby", idc_allnearby,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_allnearby);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_allnearby, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_allnearby, false, false, 0);
 
   idc_selection = gtk_radio_button_new_with_label (vbox1_group, "Selection on the Players menu");
   vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (idc_selection));
@@ -181,28 +181,28 @@ dialogMessagesCreate(void)
   gtk_object_set_data_full (GTK_OBJECT (dialogMessages), "idc_selection", idc_selection,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_selection);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_selection, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_selection, false, false, 0);
 
   idc_label = gtk_label_new ("Sending message to 1 player");
   gtk_widget_ref (idc_label);
   gtk_object_set_data_full (GTK_OBJECT (dialogMessages), "idc_label", idc_label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_label);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_label, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_label, false, false, 0);
 
-  hbox1 = gtk_hbox_new (FALSE, 0);
+  hbox1 = gtk_hbox_new (false, 0);
   gtk_widget_ref (hbox1);
   gtk_object_set_data_full (GTK_OBJECT (dialogMessages), "hbox1", hbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox1);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, true, true, 0);
 
   idc_textmessage = gtk_entry_new ();
   gtk_widget_ref (idc_textmessage);
   gtk_object_set_data_full (GTK_OBJECT (dialogMessages), "idc_textmessage", idc_textmessage,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_textmessage);
-  gtk_box_pack_start (GTK_BOX (hbox1), idc_textmessage, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), idc_textmessage, true, true, 0);
   gtk_widget_set_usize (idc_textmessage, -2, 22);
 
   idc_sendbutton = gtk_button_new_with_label ("Send");
@@ -210,7 +210,7 @@ dialogMessagesCreate(void)
   gtk_object_set_data_full (GTK_OBJECT (dialogMessages), "idc_sendbutton", idc_sendbutton,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_sendbutton);
-  gtk_box_pack_end (GTK_BOX (hbox1), idc_sendbutton, FALSE, FALSE, 1);
+  gtk_box_pack_end (GTK_BOX (hbox1), idc_sendbutton, false, false, 1);
   gtk_widget_set_usize (idc_sendbutton, -2, 22);
 
   gtk_widget_grab_focus (idc_textmessage);
