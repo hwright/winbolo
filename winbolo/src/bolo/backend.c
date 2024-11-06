@@ -54,7 +54,7 @@ buildSelect BsCurrent = BsTrees;
 *
 *********************************************************/
 BYTE screenGetNumNeutralBases(void) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetNumNeutralBases();
   }
   return serverCoreGetNumNeutralBases();
@@ -73,7 +73,7 @@ BYTE screenGetNumNeutralBases(void) {
 *  bmy - Map X position
 *********************************************************/
 bool screenMapIsMine(BYTE bmx, BYTE bmy) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientMapIsMine(bmx, bmy);
   }
   return serverCoreMapIsMine(bmx, bmy);
@@ -92,7 +92,7 @@ bool screenMapIsMine(BYTE bmx, BYTE bmy) {
 *
 *********************************************************/
 players *screenGetPlayers() {
-  if (threadsGetContext() == true||clientGetPlayers()==NULL) {
+  if (threadsGetContext() == TRUE||clientGetPlayers()==NULL) {
     return serverCoreGetPlayers();
   }
   return clientGetPlayers();
@@ -111,7 +111,7 @@ players *screenGetPlayers() {
 *
 *********************************************************/
 void screenBasesMigrate(BYTE playerNumOldOwner, BYTE playerNumNewOwner) {
-  if (threadsGetContext() == true) {
+  if (threadsGetContext() == TRUE) {
     serverCoreBasesMigrate(playerNumOldOwner, playerNumNewOwner);
   }
   clientBasesMigrate(playerNumOldOwner, playerNumNewOwner);
@@ -130,7 +130,7 @@ void screenBasesMigrate(BYTE playerNumOldOwner, BYTE playerNumNewOwner) {
 * playerNumNewOwner - new owner
 *********************************************************/
 void screenPillsMigratePlanted(BYTE playerNumOldOwner, BYTE playerNumNewOwner){
-  if (threadsGetContext() == true) {
+  if (threadsGetContext() == TRUE) {
     serverCorePillsMigratePlanted(playerNumOldOwner, playerNumNewOwner);
   }
   clientPillsMigratePlanted(playerNumOldOwner, playerNumNewOwner);
@@ -149,7 +149,7 @@ void screenPillsMigratePlanted(BYTE playerNumOldOwner, BYTE playerNumNewOwner){
 *  playerNum - Tank to get for this player number
 *********************************************************/
 tank* screenGetTankFromPlayer(BYTE playerNum) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetTankFromPlayer(playerNum);
   }
   return serverCoreGetTankFromPlayer(playerNum);
@@ -167,7 +167,7 @@ tank* screenGetTankFromPlayer(BYTE playerNum) {
 *  value - Pointer to the tank
 *********************************************************/
 BYTE screenGetTankPlayer(tank *value) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetTankPlayer(value);
   }
   return serverCoreGetTankPlayer(value);
@@ -186,7 +186,7 @@ BYTE screenGetTankPlayer(tank *value) {
 *
 *********************************************************/
 BYTE screenNumBases(void) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientNumBases();
   }
   return serverCoreNumBases();
@@ -204,7 +204,7 @@ BYTE screenNumBases(void) {
 *
 *********************************************************/
 BYTE screenNumPills(void) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientNumPills();
   }
   return serverCoreNumPills();
@@ -223,7 +223,7 @@ BYTE screenNumPills(void) {
 *  playerNum - the player numbers lgm to get
 *********************************************************/
 lgm *screenGetLgmFromPlayerNum(BYTE playerNum) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetLgmFromPlayerNum(playerNum);
   }
   return serverCoreGetLgmFromPlayerNum(playerNum);
@@ -244,7 +244,7 @@ lgm *screenGetLgmFromPlayerNum(BYTE playerNum) {
 *  y      - Pointer to hold World Y Co-ordinates
 *********************************************************/
 void screenGetTankWorldFromLgm(lgm *lgmans, WORLD *x, WORLD *y) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     clientGetTankWorldFromLgm(lgmans, x, y);
   } else {
     serverCoreGetTankWorldFromLgm(lgmans, x, y);
@@ -265,7 +265,7 @@ void screenGetTankWorldFromLgm(lgm *lgmans, WORLD *x, WORLD *y) {
 *  dir - Direction facing
 *********************************************************/
 void screenGetRandStart(BYTE *mx, BYTE *my, TURNTYPE *dir) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     clientGetRandStart(mx, my, dir);
   } else {
     serverCoreGetRandStart(mx, my, dir);
@@ -279,16 +279,16 @@ void screenGetRandStart(BYTE *mx, BYTE *my, TURNTYPE *dir) {
 *LAST MODIFIED: 11/04/01
 *PURPOSE:
 * Checks to see if there is enemy tank within range
-* supplied. Returns true if we are in the clear
+* supplied. Returns TRUE if we are in the clear
 *
 *ARGUMENTS:
 *  xValue    - X Value
 *  yValue    - Y Value
 *  playerNum - Player number to check against
-*  distance  - Distance to be less then to return false
+*  distance  - Distance to be less then to return FALSE
 *********************************************************/
 bool screenCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientCheckTankRange(x, y, playerNum, distance);
   }
   return serverCoreCheckTankRange(x, y, playerNum, distance);
@@ -301,7 +301,7 @@ bool screenCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
 *LAST MODIFIED: 9/04/01
 *PURPOSE:
 * Checks to see if there is enemy pill within range
-* supplied. Returns true if we are in the clear
+* supplied. Returns TRUE if we are in the clear
 *
 *ARGUMENTS:
 *  xValue    - X Value
@@ -310,7 +310,7 @@ bool screenCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
 *  distance  - Distance to be less then to return true
 *********************************************************/
 bool screenCheckPillsRange(BYTE xValue, BYTE yValue, BYTE playerNum, double distance) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientCheckPillsRange(xValue, yValue, playerNum, distance);
   }
   return serverCoreCheckPillsRange(xValue, yValue, playerNum, distance);
@@ -328,7 +328,7 @@ bool screenCheckPillsRange(BYTE xValue, BYTE yValue, BYTE playerNum, double dist
 *  mode - Server mode
 ********************************************************/
 void screenServerConsoleMessage(char *msg) {
-  if (threadsGetContext() == true) {
+  if (threadsGetContext() == TRUE) {
     serverCoreServerConsoleMessage(msg);
   }
 }
@@ -349,7 +349,7 @@ void screenServerConsoleMessage(char *msg) {
 *  bottom  - The message to print in the bottom line
 *********************************************************/
 void messageAdd(messageType msgType, char *top, char *bottom) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     clientMessageAdd(msgType, top, bottom);
   } else {
     serverMessageAdd(msgType, top, bottom);
@@ -371,7 +371,7 @@ void messageAdd(messageType msgType, char *top, char *bottom) {
 * checkY    - Y Position to check
 *********************************************************/
 bool screenTankInView(BYTE playerNum, BYTE checkX, BYTE checkY) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientTankInView(playerNum, checkX, checkY);
   } else {
     return serverCoreTankInView(playerNum, checkX, checkY);
@@ -390,7 +390,7 @@ bool screenTankInView(BYTE playerNum, BYTE checkX, BYTE checkY) {
 *
 *********************************************************/
 void screenCenterTank() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     clientCenterTank();
   } else {
     serverCoreCenterTank();
@@ -412,7 +412,7 @@ void screenCenterTank() {
 *  my    - Map Y co-ordinatate for the sound origin
 *********************************************************/
 void soundDist(sndEffects value, BYTE mx, BYTE my) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     clientSoundDist(value, mx, my);
   } else {
     serverCoreSoundDist(value, mx, my);
@@ -432,7 +432,7 @@ void soundDist(sndEffects value, BYTE mx, BYTE my) {
 *
 *********************************************************/
 building *screenGetBuildings() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetBuildings();
   }
 
@@ -451,7 +451,7 @@ building *screenGetBuildings() {
 *
 *********************************************************/
 explosions *screenGetExplosions() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetExplosions();
   }
 
@@ -470,7 +470,7 @@ explosions *screenGetExplosions() {
 *
 *********************************************************/
 floodFill *screenGetFloodFill() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetFloodFill();
   }
 
@@ -489,7 +489,7 @@ floodFill *screenGetFloodFill() {
 *
 *********************************************************/
 grass *screenGetGrass() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetGrass();
   }
 
@@ -508,7 +508,7 @@ grass *screenGetGrass() {
 *
 *********************************************************/
 mines *screenGetMines() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetMines();
   }
 
@@ -527,7 +527,7 @@ mines *screenGetMines() {
 *
 *********************************************************/
 minesExp *screenGetMinesExp() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetMinesExp();
   }
   return serverGetMinesExp();
@@ -545,7 +545,7 @@ minesExp *screenGetMinesExp() {
 *
 *********************************************************/
 rubble *screenGetRubble() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetRubble();
   }
   return serverCoreGetRubble();
@@ -563,7 +563,7 @@ rubble *screenGetRubble() {
 *
 *********************************************************/
 swamp *screenGetSwamp() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetSwamp();
   }
   return serverCoreGetSwamp();
@@ -581,7 +581,7 @@ swamp *screenGetSwamp() {
 *
 *********************************************************/
 tkExplosion *screenGetTankExplosions() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetTankExplosions();
   }
   return serverCoreGetTankExplosions();
@@ -599,7 +599,7 @@ tkExplosion *screenGetTankExplosions() {
 *
 *********************************************************/
 netPnbContext *screenGetNetPnb() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetNetPnb();
   }
   return serverCoreGetNetPnb();
@@ -617,7 +617,7 @@ netPnbContext *screenGetNetPnb() {
 *
 *********************************************************/
 netMntContext *screenGetNetMnt() {
-if (threadsGetContext() == false) {
+if (threadsGetContext() == FALSE) {
     return clientGetNetMnt();
   }
   return serverCoreGetNetMnt();
@@ -633,10 +633,10 @@ if (threadsGetContext() == false) {
 *  position
 *
 *ARGUMENTS:
-*  entering - true if entering, false if leaving
+*  entering - TRUE if entering, FALSE if leaving
 *********************************************************/
 void screenSetInStartFind(bool entering) {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     clientSetInStartFind(entering);
   }
 }
@@ -654,10 +654,10 @@ void screenSetInStartFind(bool entering) {
 *
 *********************************************************/
 bool screenGetInStartFind() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetInStartFind();
   }
-  return false;
+  return FALSE;
 }
 
 /*********************************************************
@@ -672,7 +672,7 @@ bool screenGetInStartFind() {
 *
 *********************************************************/
 gameType *screenGetGameType() {
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     return clientGetGameType();
   }
   return serverCoreGetGameType();

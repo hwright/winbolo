@@ -48,19 +48,19 @@ void gameFrontGetWinbolonetSettings(char *password, bool *useWbn, bool *savePass
 
 void dialogWinbolonetOK(GtkWidget *widget, gpointer user_data) {
   char password[FILENAME_MAX];
-  bool useWbn = false;
-  bool savePass = false;
+  bool useWbn = FALSE;
+  bool savePass = FALSE;
   gchar *str;
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialogWbnUse)) == true) {
-    useWbn = true;
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialogWbnUse)) == TRUE) {
+    useWbn = TRUE;
   }
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialogWbnSavePass)) == true) {
-    savePass = true;
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialogWbnSavePass)) == TRUE) {
+    savePass = TRUE;
   }
 
   str = gtk_entry_get_text(GTK_ENTRY(dialogWbnPassword));
   strcpy(password, str);
-  if (password[0] == EMPTY_CHAR && useWbn == true) {
+  if (password[0] == EMPTY_CHAR && useWbn == TRUE) {
     MessageBox("Sorry, you must enter password if you wish to participate in WinBolo.net", DIALOG_BOX_TITLE);
   } else {
     gameFrontSetWinbolonetSettings(password, useWbn, savePass);
@@ -95,34 +95,34 @@ GtkWidget* dialogWinboloNetCreate() {
   gtk_object_set_data (GTK_OBJECT (Winbolo_net_settings), "Winbolo_net_settings", Winbolo_net_settings);
   gtk_container_set_border_width (GTK_CONTAINER (Winbolo_net_settings), 10);
   gtk_window_set_title (GTK_WINDOW (Winbolo_net_settings), "Winbolo.net settings");
-  gtk_window_set_policy (GTK_WINDOW (Winbolo_net_settings), false, false, false);
+  gtk_window_set_policy (GTK_WINDOW (Winbolo_net_settings), FALSE, FALSE, FALSE);
   gtk_window_set_position (GTK_WINDOW (Winbolo_net_settings), GTK_WIN_POS_CENTER);
-  gtk_window_set_modal (GTK_WINDOW (Winbolo_net_settings), true);
+  gtk_window_set_modal (GTK_WINDOW (Winbolo_net_settings), TRUE);
 
   dialog_vbox1 = GTK_DIALOG (Winbolo_net_settings)->vbox;
   gtk_object_set_data (GTK_OBJECT (Winbolo_net_settings), "dialog_vbox1", dialog_vbox1);
   gtk_widget_show (dialog_vbox1);
 
-  vbox1 = gtk_vbox_new (false, 0);
+  vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
   gtk_object_set_data_full (GTK_OBJECT (Winbolo_net_settings), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
-  gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (dialog_vbox1), vbox1, TRUE, TRUE, 0);
 
-  hbox4 = gtk_hbox_new (false, 0);
+  hbox4 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox4);
   gtk_object_set_data_full (GTK_OBJECT (Winbolo_net_settings), "hbox4", hbox4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox4);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox4, true, true, 7);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox4, TRUE, TRUE, 7);
 
   label2 = gtk_label_new ("Password: ");
   gtk_widget_ref (label2);
   gtk_object_set_data_full (GTK_OBJECT (Winbolo_net_settings), "label2", label2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label2);
-  gtk_box_pack_start (GTK_BOX (hbox4), label2, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (hbox4), label2, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label2), GTK_JUSTIFY_RIGHT);
 
   password = gtk_entry_new_with_max_length (32);
@@ -131,8 +131,8 @@ GtkWidget* dialogWinboloNetCreate() {
   gtk_object_set_data_full (GTK_OBJECT (Winbolo_net_settings), "password", password,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (password);
-  gtk_box_pack_start (GTK_BOX (hbox4), password, true, true, 0);
-  gtk_entry_set_visibility (GTK_ENTRY (password), false);
+  gtk_box_pack_start (GTK_BOX (hbox4), password, TRUE, TRUE, 0);
+  gtk_entry_set_visibility (GTK_ENTRY (password), FALSE);
   dialogWbnPassword = password;
 
   checkbutton1 = gtk_check_button_new_with_label ("Use Winbolo.net");
@@ -142,7 +142,7 @@ GtkWidget* dialogWinboloNetCreate() {
   gtk_widget_show (checkbutton1);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton1), useWbn);
   dialogWbnUse = checkbutton1;
-  gtk_box_pack_start (GTK_BOX (vbox1), checkbutton1, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), checkbutton1, FALSE, FALSE, 0);
 
   checkbutton2 = gtk_check_button_new_with_label ("Save My Winbolo.net Password");
   gtk_widget_ref (checkbutton2);
@@ -150,7 +150,7 @@ GtkWidget* dialogWinboloNetCreate() {
   gtk_widget_show (checkbutton2);
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(checkbutton2), savePass);
   dialogWbnSavePass = checkbutton2;
-  gtk_box_pack_start (GTK_BOX (vbox1), checkbutton2, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), checkbutton2, FALSE, FALSE, 0);
 
 
   label1 = gtk_label_new ("Winbolo.net is a free real time game tracking and player statisitics website. To signup or for more informaton please visit http://www.winbolo.net");
@@ -158,8 +158,8 @@ GtkWidget* dialogWinboloNetCreate() {
   gtk_object_set_data_full (GTK_OBJECT (Winbolo_net_settings), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label1);
-  gtk_box_pack_start (GTK_BOX (vbox1), label1, false, false, 0);
-  gtk_label_set_line_wrap (GTK_LABEL (label1), true);
+  gtk_box_pack_start (GTK_BOX (vbox1), label1, FALSE, FALSE, 0);
+  gtk_label_set_line_wrap (GTK_LABEL (label1), TRUE);
   gtk_misc_set_padding (GTK_MISC (label1), 0, 23);
 
   dialog_action_area1 = GTK_DIALOG (Winbolo_net_settings)->action_area;
@@ -167,12 +167,12 @@ GtkWidget* dialogWinboloNetCreate() {
   gtk_widget_show (dialog_action_area1);
   gtk_container_set_border_width (GTK_CONTAINER (dialog_action_area1), 10);
 
-  hbox3 = gtk_hbox_new (false, 0);
+  hbox3 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox3);
   gtk_object_set_data_full (GTK_OBJECT (Winbolo_net_settings), "hbox3", hbox3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox3);
-  gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbox3, true, true, 111);
+  gtk_box_pack_start (GTK_BOX (dialog_action_area1), hbox3, TRUE, TRUE, 111);
   gtk_container_set_border_width (GTK_CONTAINER (hbox3), 3);
 
   button3 = gtk_button_new_with_label ("OK");
@@ -180,14 +180,14 @@ GtkWidget* dialogWinboloNetCreate() {
   gtk_object_set_data_full (GTK_OBJECT (Winbolo_net_settings), "button3", button3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button3);
-  gtk_box_pack_start (GTK_BOX (hbox3), button3, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (hbox3), button3, FALSE, FALSE, 0);
 
   button4 = gtk_button_new_with_label ("Cancel");
   gtk_widget_ref (button4);
   gtk_object_set_data_full (GTK_OBJECT (Winbolo_net_settings), "button4", button4,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button4);
-  gtk_box_pack_start (GTK_BOX (hbox3), button4, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (hbox3), button4, FALSE, FALSE, 0);
 
   gtk_signal_connect(GTK_OBJECT(Winbolo_net_settings), "delete_event", GTK_SIGNAL_FUNC(dialogWinboloNetCloseBox), 0);
   gtk_signal_connect(GTK_OBJECT(button4), "clicked", GTK_SIGNAL_FUNC(dialogWinboloNetCloseBox), 0);

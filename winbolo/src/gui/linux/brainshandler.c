@@ -69,9 +69,9 @@ int brainsNum; /* Number of brains */
 bool brainsRunning; /* Is a brain running */
 HINSTANCE brainsInst; /* Brains Instance */
 bool bIsFirst;        /* Is this the first time a brain will be called */
-bool brainsProcExecuting = false; /* Is the brain proc in execution */
+bool brainsProcExecuting = FALSE; /* Is the brain proc in execution */
 BrainInfo bInfo; /* The Brain Info */
-bool brainsLoadedOnce = false; /* We only want this to be displayed once */
+bool brainsLoadedOnce = FALSE; /* We only want this to be displayed once */
 short (*brainsProc)(BrainInfo*);
 
 G_MODULE_IMPORT short BrainMain(BrainInfo *bi); 
@@ -95,12 +95,12 @@ void brainsHandlerSelect(GtkWidget *widget, gpointer user_data) {
   FILE *fp;
   gchar *menuStr;
 
-  if (GTK_CHECK_MENU_ITEM(widget)->active == true && isInMenu == false) {
-    isInMenu = true;
+  if (GTK_CHECK_MENU_ITEM(widget)->active == TRUE && isInMenu == FALSE) {
+    isInMenu = TRUE;
     gtk_label_get(GTK_LABEL(GTK_BIN(widget)->child), &menuStr); 
     
     /* First shut down the last brain if it is running */
-    if (brainsRunning == true) {
+    if (brainsRunning == TRUE) {
       brainsHandlerManual(NULL);
     }
  
@@ -123,15 +123,15 @@ void brainsHandlerSelect(GtkWidget *widget, gpointer user_data) {
     /* Try starting the new brain */
     brainsRunning = brainsHandlerStart(NULL, str, menuStr);
 
-    if (brainsRunning == true) {
-      bIsFirst = true;
+    if (brainsRunning == TRUE) {
+      bIsFirst = TRUE;
     } else {
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(manual1), true);
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(manual1), TRUE);
     }
-    isInMenu = false;
+    isInMenu = FALSE;
   }
 
-//  if (id != brainsRunningId || brainsRunning == false) {
+//  if (id != brainsRunningId || brainsRunning == FALSE) {
 //  FIXME
  
 
@@ -161,7 +161,7 @@ bool brainsHandlerLoadBrainMenuItems(GtkWidget *menu) {
   GtkWidget *item;
   char fileName[FILENAME_MAX];
   
-  returnValue = true;
+  returnValue = TRUE;
   strcpy(checkPath, brainsLocalDir);
   
  
@@ -230,9 +230,9 @@ bool winUtilWBSubDirExist(char *path) {
   DIR *dir;
 
   dir = opendir(path);
-  returnValue = false;
+  returnValue = FALSE;
   if (dir) {
-    returnValue = true;
+    returnValue = TRUE;
     closedir(dir);
   }
 
@@ -271,24 +271,24 @@ bool brainsHandlerLoadBrains(HWND hWnd) {
   
   brainsNum = 0;
   brainsInst = NULL;
-  brainsRunning = false;
-  returnValue = true;
+  brainsRunning = FALSE;
+  returnValue = TRUE;
 
   returnValue = g_module_supported();
-  if (returnValue == false) {
+  if (returnValue == FALSE) {
     MessageBox("Sorry, dynamic loading of modules isn't supported\n on this platform", DIALOG_BOX_TITLE);
   }
 
   /* Look for the 'Brains' directories */
-  if (returnValue == true) {
-    if (winUtilWBSubDirExist(brainsDir) == false && winUtilWBSubDirExist(brainsLocalDir) == false && brainsLoadedOnce == false) {
-      returnValue = false;
+  if (returnValue == TRUE) {
+    if (winUtilWBSubDirExist(brainsDir) == FALSE && winUtilWBSubDirExist(brainsLocalDir) == FALSE && brainsLoadedOnce == FALSE) {
+      returnValue = FALSE;
       MessageBox(langGetText(STR_BRAINERR_BRAINDIR), DIALOG_BOX_TITLE);
-      brainsLoadedOnce = true;
+      brainsLoadedOnce = TRUE;
     }
   }
   /* Load the brains */
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     returnValue = brainsHandlerLoadBrainMenuItems(NULL);
   }
 
@@ -306,7 +306,7 @@ bool brainsHandlerLoadBrains(HWND hWnd) {
 *
 *ARGUMENTS:
 *  hWnd    - Handle to the main window
-*  enabled - true if we should enable the items else
+*  enabled - TRUE if we should enable the items else
 *            disable them
 *********************************************************/
 void brainsHandlerSet(HWND hWnd, bool enabled) {
@@ -332,21 +332,21 @@ void brainsHandlerSet(HWND hWnd, bool enabled) {
 *********************************************************/
 void brainsHandlerManual(HWND hWnd) {
 
-  if (brainsRunning == true) {
+  if (brainsRunning == TRUE) {
     /* Shut that brain down! */
     while(brainsProcExecuting) {} /* Loop until it isn't running */
     /* Prepare brain */
     clientMutexWaitFor();
-    brainsProcExecuting = true;
-    brainsRunning = false;
+    brainsProcExecuting = TRUE;
+    brainsRunning = FALSE;
     bInfo.operation = BRAIN_CLOSE;
     bInfo.userdata = menu_bar;
     brainsProc(&bInfo);
-    brainsProcExecuting = false;
+    brainsProcExecuting = FALSE;
     FreeLibrary(brainsInst);
     brainsInst = NULL;
     clientMutexRelease();
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(manual1), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(manual1), TRUE);
   }
 } 
 
@@ -368,34 +368,34 @@ bool brainsHandlerStart(HWND hWnd, char *str, char *name) {
   short ret;
 
   clientMutexWaitFor();
-  returnValue = true;
+  returnValue = TRUE;
   brainsInst = LoadLibrary(str);
   if (brainsInst == NULL) {
     MessageBox(langGetText(STR_BRAINERR_LAUNCH), DIALOG_BOX_TITLE);
-    returnValue = false;
+    returnValue = FALSE;
   }
 
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     ret = GetProcAddress(brainsInst, BRAINMAIN_PROC);
-    if (ret == false) {
+    if (ret == FALSE) {
       MessageBox(langGetText(STR_BRAINERR_LAUNCHMAIN), DIALOG_BOX_TITLE);
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
   /* Try to send the initial launch message */
-  if (returnValue == true) {
-    screenMakeBrainInfo(&bInfo, true);
+  if (returnValue == TRUE) {
+    screenMakeBrainInfo(&bInfo, TRUE);
     bInfo.userdata = menu_bar;
     while(brainsProcExecuting) {} /* Loop until it isn't running */
-    brainsProcExecuting = true;
+    brainsProcExecuting = TRUE;
     bInfo.operation = BRAIN_OPEN;
     ret = brainsProc(&bInfo);
-    brainsProcExecuting = false;
+    brainsProcExecuting = FALSE;
     if (ret != 0) {
       /* Shut it down */
       FreeLibrary(brainsInst);
       brainsInst = NULL;
-      returnValue = false;
+      returnValue = FALSE;
       MessageBox(langGetText(STR_BRAINERR_INIT), DIALOG_BOX_TITLE);
     }
   }
@@ -430,7 +430,7 @@ int brainsHandlerGetNum() {
 *  hWnd - Pointer to the main window
 *********************************************************/
 void brainsHandlerShutdown(HWND hWnd) {
-  if (brainsRunning == true) {
+  if (brainsRunning == TRUE) {
     /* Shut it down */
     brainsHandlerManual(hWnd);
   }
@@ -466,19 +466,19 @@ bool brainHandlerIsBrainRunning() {
 void brainHandlerRun(HWND hWnd) {
   unsigned short ret; /* Brain return value */
   clientMutexWaitFor();
-  if (brainsRunning == true && brainsProcExecuting == false) {
+  if (brainsRunning == TRUE && brainsProcExecuting == FALSE) {
     /* Prepare brain */
-    brainsProcExecuting = true;
-    if (bIsFirst == true) {
-      screenMakeBrainInfo(&bInfo, true);
-      bIsFirst = false;
+    brainsProcExecuting = TRUE;
+    if (bIsFirst == TRUE) {
+      screenMakeBrainInfo(&bInfo, TRUE);
+      bIsFirst = FALSE;
     } else {
-      screenMakeBrainInfo(&bInfo, false);
+      screenMakeBrainInfo(&bInfo, FALSE);
     }
     /* Call brain */
 
     bInfo.operation = BRAIN_THINK;
-    if (brainsRunning == true) {
+    if (brainsRunning == TRUE) {
       ret = brainsProc(&bInfo);
     } else {
       ret = -1;
@@ -490,8 +490,8 @@ void brainHandlerRun(HWND hWnd) {
       /* Operation succeeded */
       screenExtractBrainInfo(&bInfo);
     }
-    brainsProcExecuting = false;
-  } else if (brainsRunning == true) {
+    brainsProcExecuting = FALSE;
+  } else if (brainsRunning == TRUE) {
   }
   clientMutexRelease(); 
 }

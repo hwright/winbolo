@@ -130,17 +130,17 @@ void explosionsUpdate(explosions *expl) {
   position = *expl;
 
   while (NonEmpty(position)) {
-    needUpdate = true;
+    needUpdate = TRUE;
     if (position->length > EXPLODE_DEATH) {
         position->length--;
     } else {
       /* Remove from data structure */
-      needUpdate = false;
+      needUpdate = FALSE;
       explosionDeleteItem(expl, &position);
     }
     
     /* Get the next Item */
-    if (*expl != NULL && needUpdate == true) {
+    if (*expl != NULL && needUpdate == TRUE) {
       position = ExplosionsTail(position);
     }
   }

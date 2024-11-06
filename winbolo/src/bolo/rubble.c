@@ -88,27 +88,27 @@ BYTE rubbleAddItem(rubble *rbl, BYTE x, BYTE y) {
   rubble inc;
 
   inc = *rbl;
-  found = false;
+  found = FALSE;
   returnValue = RUBBLE;
   count = 0;
   
-  while (found == false && NonEmpty(inc)) {
+  while (found == FALSE && NonEmpty(inc)) {
     count++;
     if (inc->x == x && inc->y == y) {
-      found = true;
+      found = TRUE;
       inc->life--;
       if (inc->life == RUBBLE_DEATH) {
         returnValue = RIVER;
         rubbleDeleteItem(rbl, count);
       } 
     }
-    if (found == false) {
+    if (found == FALSE) {
       inc = RubbleTail(inc);
 	  }
   }
 
   /* If not found add a new item */
-  if (found == false) {
+  if (found == FALSE) {
     New (q);
     q->x = x;
     q->y = y;
@@ -176,19 +176,19 @@ void rubbleRemovePos(rubble *rbl, BYTE x, BYTE y) {
   rubble inc;
 
   inc = *rbl;
-  found = false;
+  found = FALSE;
   count = 0;
   
-  while (found == false && NonEmpty(inc)) {
+  while (found == FALSE && NonEmpty(inc)) {
     count++;
     if (inc->x == x && inc->y == y) {
-      found = true;
+      found = TRUE;
     }
     inc = RubbleTail(inc);
   }
 
   /* If found remove item */
-  if (found == true) {
+  if (found == TRUE) {
     rubbleDeleteItem(rbl, count);
   }
 }

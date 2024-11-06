@@ -118,13 +118,13 @@ bool CRCCheck(BYTE *buff, int buffLen, BYTE crcA, BYTE crcB) {
   BYTE testA;       /* Test CRC Byte A */
   BYTE testB;       /* Test CRC Byte B */
 
-  returnValue = true;
+  returnValue = TRUE;
   /* Generate the CRC */
   CRCCalcBytes(buff, buffLen, &testA, &testB);
 
   /* Perform the check */
   if (testA != crcA || testB != crcB) {
-    returnValue = false;
+    returnValue = FALSE;
   }
 
   return returnValue;

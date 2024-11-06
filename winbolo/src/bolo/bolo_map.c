@@ -135,15 +135,15 @@ bool mapReadPills(FILE *fp, pillboxes *value) {
   
   count = 1;
   total = pillsGetNumPills(value);
-  returnValue = true;
-  readInto.inTank = false;
+  returnValue = TRUE;
+  readInto.inTank = FALSE;
 
-  while (count <= total && returnValue == true && !feof(fp)) {
+  while (count <= total && returnValue == TRUE && !feof(fp)) {
     ret = fread(&readInto, SIZEOFBMAP_PILL_INFO, 1, fp);
     if (ret != 1) {
-      returnValue = false;
+      returnValue = FALSE;
     } else {
-      readInto.justSeen = false;
+      readInto.justSeen = FALSE;
       pillsSetPill(value,&readInto,(BYTE) count);
     }
     count++;
@@ -174,12 +174,12 @@ bool mapReadBases(FILE *fp, bases *value) {
 
   count = 1;
   total = basesGetNumBases(value);
-  returnValue = true;
+  returnValue = TRUE;
 
-  while (count <= total && returnValue == true && !feof(fp)) {
+  while (count <= total && returnValue == TRUE && !feof(fp)) {
     ret = fread(&readInto,SIZEOFBAMP_BASE_INFO,1,fp);
     if (ret != 1) {
-      returnValue = false;
+      returnValue = FALSE;
     } else {
       readInto.baseTime = 0;     /* Time between stock updates */
       basesSetBase(value,&readInto,(BYTE) count);
@@ -212,11 +212,11 @@ bool mapReadStarts(FILE *fp, starts *value) {
 
   count = 1;
   total = startsGetNumStarts(value);
-  returnValue = true;
-  while (count <= total && returnValue == true && !feof(fp)) {
+  returnValue = TRUE;
+  while (count <= total && returnValue == TRUE && !feof(fp)) {
     ret = fread(&readInto,SIZEOFBMAP_START_INFO,1,fp);
     if (ret != 1) {
-      returnValue = false;
+      returnValue = FALSE;
     } else {
       startsSetStart(value, &readInto, (BYTE) count);
     }
@@ -256,21 +256,21 @@ bool mapProcessRun(FILE *fp,map *value,BYTE elems, MAP_Y yValue, BYTE startX, BY
   int count2;
   
   count = 0;
-  returnValue = true;
+  returnValue = TRUE;
   state = highLen;
   mapPos = startX;
   len = 0;
 
   item = (BYTE) fgetc(fp);
   while (count < elems && !ferror(fp)) {
-    needRead = false;
+    needRead = FALSE;
     highNibble = lowNibble = item;
     /* Extract Nibbles */
     highNibble >>= MAP_SHIFT_SIZE;
     lowNibble <<= MAP_SHIFT_SIZE;
     lowNibble >>= MAP_SHIFT_SIZE;
 
-    while (needRead == false) {
+    while (needRead == FALSE) {
       switch (state) {
       
       case highLen:
@@ -291,7 +291,7 @@ bool mapProcessRun(FILE *fp,map *value,BYTE elems, MAP_Y yValue, BYTE startX, BY
         } else {
           state = highSame;
         }
-        needRead = true;
+        needRead = TRUE;
         break;
       
       case lowDiff:
@@ -303,7 +303,7 @@ bool mapProcessRun(FILE *fp,map *value,BYTE elems, MAP_Y yValue, BYTE startX, BY
         } else {
           state = highDiff;
         }
-        needRead = true;
+        needRead = TRUE;
         break;
 
       case highDiff:
@@ -325,7 +325,7 @@ bool mapProcessRun(FILE *fp,map *value,BYTE elems, MAP_Y yValue, BYTE startX, BY
         }
         mapPos = (BYTE) (mapPos + count2);
         state = highLen;
-        needRead = true;
+        needRead = TRUE;
         break;
 
       case highSame:
@@ -345,7 +345,7 @@ bool mapProcessRun(FILE *fp,map *value,BYTE elems, MAP_Y yValue, BYTE startX, BY
   count2 = ungetc(item, fp);
   /* Check all read correctly */
   if (count != elems || mapPos != endX || count2 == EOF)  { /*  || mapPos != endX */ 
-    returnValue = false;
+    returnValue = FALSE;
   }
   return returnValue;
 }
@@ -371,26 +371,26 @@ bool mapReadRuns(FILE *fp, map *value) {
   bool done;             /* Is all the runs read */
   bool ret;              /* Function return Value */
 
-  returnValue = true;
-  done = false;
+  returnValue = TRUE;
+  done = FALSE;
 
   bytesRead = fread(&runHead,SIZEOFBMAP_RUN_HEADER,1,fp);
 
-  while (!feof(fp) && done == false) {
+  while (!feof(fp) && done == FALSE) {
     if (bytesRead != 1) {
     /* Something bad happened reading */
-      done = true;
-      returnValue = false;
+      done = TRUE;
+      returnValue = FALSE;
     } else if (runHead.datalen == 4  &&  runHead.y == MAP_ARRAY_LAST && runHead.startx == MAP_ARRAY_LAST && runHead.endx == MAP_ARRAY_LAST) {
     /* Finished reading */
-      done = true;
-      returnValue = true;
+      done = TRUE;
+      returnValue = TRUE;
     } else {
       ret = mapProcessRun(fp,value,(BYTE) ((runHead.datalen)- SIZEOFBMAP_RUN_HEADER),runHead.y, runHead.startx, runHead.endx);
-      if (ret == false) {
+      if (ret == FALSE) {
         /* Function return failed */
-        done = true;
-        returnValue = false;
+        done = TRUE;
+        returnValue = FALSE;
       }
     }
     bytesRead = fread(&runHead,SIZEOFBMAP_RUN_HEADER,1,fp);
@@ -423,24 +423,24 @@ bool mapRead(char *fileName, map *value, pillboxes *pb, bases *bs, starts *ss) {
   BYTE current;       /* Item being read */
   char *str;          /* return value of fgets */
 
-  returnValue = true;
+  returnValue = TRUE;
   fp = fopen(fileName,"rb");
   if (!fp) {
-    returnValue = false;
+    returnValue = FALSE;
   }
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     str = fgets(id, (LENGTH_ID+1), fp);
     if (str == NULL || strcmp(id,MAP_HEADER) != 0) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     mapVersion = (BYTE) fgetc(fp);
     if (mapVersion != CURRENT_MAP_VERSION) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     current = (BYTE) fgetc(fp);
     pillsSetNumPills(pb,current);
     current = (BYTE) fgetc(fp);
@@ -448,23 +448,23 @@ bool mapRead(char *fileName, map *value, pillboxes *pb, bases *bs, starts *ss) {
     current = (BYTE) fgetc(fp);
     startsSetNumStarts(ss,current);
     if (pillsGetNumPills(pb) > MAX_PILLS || basesGetNumBases(bs) > MAX_BASES || startsGetNumStarts(ss) > MAX_STARTS) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     returnValue = mapReadPills(fp,pb);
   }
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     returnValue = mapReadBases(fp,bs);
   }
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     returnValue = mapReadStarts(fp,ss);
   }
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     returnValue = mapReadRuns(fp,value);
   }
 
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     mapCenter(value, pb, bs, ss);
   }
   if (fp) {
@@ -522,23 +522,23 @@ BYTE mapGetSpeed(map *value, pillboxes *pb, bases *bs, BYTE xValue, BYTE yValue,
   bool done;        /* Are we done ? */
 
   returnValue = MAP_SPEED_TDEEPSEA;
-  done = false;
-  if ((pillsExistPos(pb,xValue,yValue)) == true) {
+  done = FALSE;
+  if ((pillsExistPos(pb,xValue,yValue)) == TRUE) {
     /* Check for PB */
-    if (pillsDeadPos(pb, xValue, yValue) == false) {
+    if (pillsDeadPos(pb, xValue, yValue) == FALSE) {
       returnValue = MAP_SPEED_TPILLBOX;
-      done = true;
+      done = TRUE;
     }
-  } else if ((basesExistPos(bs,xValue,yValue)) == true) {
+  } else if ((basesExistPos(bs,xValue,yValue)) == TRUE) {
     /* Check for owned base */
-    if (basesCantDrive(bs, xValue, yValue, playerNum) == false) {
+    if (basesCantDrive(bs, xValue, yValue, playerNum) == FALSE) {
       returnValue = MAP_MANSPEED_TREFBASE;
     } else {
       returnValue = 0;
     }	  
-	done = true;
+	done = TRUE;
   }
-  if (done == false) {
+  if (done == FALSE) {
     terrain = (*value)->mapItem[xValue][yValue];
     if (terrain >= MINE_START && terrain <= MINE_END) {
       terrain = terrain - MINE_SUBTRACT;
@@ -546,7 +546,7 @@ BYTE mapGetSpeed(map *value, pillboxes *pb, bases *bs, BYTE xValue, BYTE yValue,
     switch (terrain) {
     case DEEP_SEA:
       returnValue = MAP_SPEED_TDEEPSEA;
-      if (onBoat == true) {
+      if (onBoat == TRUE) {
         returnValue = MAP_SPEED_TBOAT;
       }
       break;
@@ -555,7 +555,7 @@ BYTE mapGetSpeed(map *value, pillboxes *pb, bases *bs, BYTE xValue, BYTE yValue,
       break;
     case RIVER:
       returnValue = MAP_SPEED_TRIVER;
-      if (onBoat == true) {
+      if (onBoat == TRUE) {
         returnValue = MAP_SPEED_TBOAT;
       }
       break;
@@ -613,23 +613,23 @@ BYTE mapGetManSpeed(map *value, pillboxes *pb, bases *bs, BYTE xValue, BYTE yVal
   bool done;        /* Are we done ? */
 
   returnValue = MAP_MANSPEED_TDEEPSEA;
-  done = false;
-  if ((pillsExistPos(pb,xValue,yValue)) == true) {
+  done = FALSE;
+  if ((pillsExistPos(pb,xValue,yValue)) == TRUE) {
     /* Check for PB */
-    if (pillsDeadPos(pb, xValue, yValue) == false) {
+    if (pillsDeadPos(pb, xValue, yValue) == FALSE) {
       returnValue = MAP_MANSPEED_TPILLBOX;
-      done = true;
+      done = TRUE;
     }
-  } else if ((basesExistPos(bs,xValue,yValue)) == true) {
+  } else if ((basesExistPos(bs,xValue,yValue)) == TRUE) {
     /* Check for owned base */
-    if (basesCantDrive(bs, xValue, yValue, playerNum) == false) {
+    if (basesCantDrive(bs, xValue, yValue, playerNum) == FALSE) {
       returnValue = MAP_MANSPEED_TREFBASE;
     } else {
       returnValue = 0;
     }
-    done = true;
+    done = TRUE;
   } 
-  if (done == false) {
+  if (done == FALSE) {
     terrain = (*value)->mapItem[xValue][yValue];
     if (terrain >= MINE_START && terrain <= MINE_END) {
       terrain = terrain - MINE_SUBTRACT;
@@ -697,23 +697,23 @@ TURNTYPE mapGetTurnRate(map *value, pillboxes *pb, bases *bs, BYTE xValue, BYTE 
   bool done;            /* Are we done ? */
 
   returnValue = MAP_TURN_TDEEPSEA;
-  done = false;
-  if ((pillsExistPos(pb,xValue,yValue)) == true) {
+  done = FALSE;
+  if ((pillsExistPos(pb,xValue,yValue)) == TRUE) {
     /* Check for PB */
-    if ((pillsDeadPos(pb,xValue, yValue)) == false) {
+    if ((pillsDeadPos(pb,xValue, yValue)) == FALSE) {
       returnValue = MAP_TURN_TPILLBOX;
-      done = true;
+      done = TRUE;
     }
-  } else if ((basesExistPos(bs,xValue,yValue)) == true) {
+  } else if ((basesExistPos(bs,xValue,yValue)) == TRUE) {
     /* Check for owned base */
-    if (basesCantDrive(bs, xValue, yValue, playerNum) == false) {
+    if (basesCantDrive(bs, xValue, yValue, playerNum) == FALSE) {
       returnValue = MAP_TURN_TREFBASE;
     } else {
       returnValue = 0;
     }
-    done = true;
+    done = TRUE;
   }
-  if (done == false) {
+  if (done == FALSE) {
     terrain = (*value)->mapItem[xValue][yValue];
     if (terrain >= MINE_START && terrain <= MINE_END) {
       terrain = terrain - MINE_SUBTRACT;
@@ -721,7 +721,7 @@ TURNTYPE mapGetTurnRate(map *value, pillboxes *pb, bases *bs, BYTE xValue, BYTE 
     switch (terrain) {
     case DEEP_SEA:
       returnValue = MAP_TURN_TDEEPSEA;
-      if (onBoat == true) {
+      if (onBoat == TRUE) {
         returnValue = MAP_TURN_TBOAT;
       }
       break;
@@ -730,7 +730,7 @@ TURNTYPE mapGetTurnRate(map *value, pillboxes *pb, bases *bs, BYTE xValue, BYTE 
       break;
     case RIVER:
       returnValue = MAP_TURN_TRIVER;
-      if (onBoat == true) {
+      if (onBoat == TRUE) {
         returnValue = MAP_TURN_TBOAT;
       }
       break;
@@ -781,7 +781,7 @@ bool mapIsPassable(map *value, BYTE xValue, BYTE yValue, bool onBoat) {
   bool returnValue; /* Value to return */
   BYTE pos;         /* The current position */
 
-  returnValue = false;
+  returnValue = FALSE;
 
   pos = (*value)->mapItem[xValue][yValue];
   if (pos >= MINE_START && pos <= MINE_END) {
@@ -789,45 +789,45 @@ bool mapIsPassable(map *value, BYTE xValue, BYTE yValue, bool onBoat) {
   }
   switch (pos) {
   case DEEP_SEA:
-    returnValue = true;
+    returnValue = TRUE;
     break;
   case BUILDING:
-    returnValue = false;
+    returnValue = FALSE;
     break;
   case RIVER:
-    returnValue = true;
+    returnValue = TRUE;
     break;
   case SWAMP:
-    if (onBoat == false) {
-      returnValue = true;
+    if (onBoat == FALSE) {
+      returnValue = TRUE;
     }
     break;
   case CRATER:
-    returnValue = true;
+    returnValue = TRUE;
     break;
   case ROAD:
-    if (onBoat == false) {
-      returnValue = true;
+    if (onBoat == FALSE) {
+      returnValue = TRUE;
     }
     break;
   case FOREST:
-    returnValue = false;
+    returnValue = FALSE;
     break;
   case RUBBLE:
-    if (onBoat == false) {
-      returnValue = true;
+    if (onBoat == FALSE) {
+      returnValue = TRUE;
     }
     break;
   case GRASS:
-    if (onBoat == false) {
-      returnValue = true;
+    if (onBoat == FALSE) {
+      returnValue = TRUE;
     }
     break;
   case HALFBUILDING:
-    returnValue = false;
+    returnValue = FALSE;
     break;
   case BOAT:
-    returnValue = false;
+    returnValue = FALSE;
     break;
   }
   return returnValue;
@@ -849,12 +849,12 @@ bool mapIsPassable(map *value, BYTE xValue, BYTE yValue, bool onBoat) {
 *  needSend - Used in network. True if we should
 *             request the server make this change
 *             False indicates the server should make it
-* mineClear - Set to true if we should just set the map
+* mineClear - Set to TRUE if we should just set the map
 *             to the terrain. This is to remove the mines
 *             from under bases on start up
 *********************************************************/
 void mapSetPos(map *value, BYTE xValue, BYTE yValue, BYTE terrain, bool needSend, bool mineClear) {
-  if (netGetType() == netSingle || mineClear == true) {
+  if (netGetType() == netSingle || mineClear == TRUE) {
     /* Single player game */
       (*value)->mapItem[xValue][yValue] = terrain;
       screenBrainMapSetPos(xValue, yValue, terrain, minesExistPos(screenGetMines(), xValue, yValue));
@@ -883,11 +883,11 @@ void mapSetPos(map *value, BYTE xValue, BYTE yValue, BYTE terrain, bool needSend
 bool mapIsLand(map *value, pillboxes *pb, bases *bs, BYTE xValue, BYTE yValue) {
   bool returnValue; /* Value to return */
   
-  returnValue = true;
+  returnValue = TRUE;
   
   if ((((*value)->mapItem[xValue][yValue]) == RIVER) || (*value)->mapItem[xValue][yValue] == DEEP_SEA) {
-    if ((basesExistPos(bs, xValue, yValue) == false)) { /* (pillsExistPos(pb, xValue, yValue) == false) &&  */
-      returnValue = false;
+    if ((basesExistPos(bs, xValue, yValue) == FALSE)) { /* (pillsExistPos(pb, xValue, yValue) == FALSE) &&  */
+      returnValue = FALSE;
     }
   }
   return returnValue;
@@ -909,15 +909,15 @@ bool mapIsLand(map *value, pillboxes *pb, bases *bs, BYTE xValue, BYTE yValue) {
 bool mapIsMine(map *value, BYTE xValue, BYTE yValue) {
   bool returnValue; /* Value to return */
   
-  returnValue = false;
+  returnValue = FALSE;
   
   if (xValue <= MAP_MINE_EDGE_LEFT || xValue >= MAP_MINE_EDGE_RIGHT || yValue <= MAP_MINE_EDGE_TOP || yValue >= MAP_MINE_EDGE_BOTTOM) {
-    returnValue = true;
+    returnValue = TRUE;
   } else if ((*value)->mapItem[xValue][yValue] >= MINE_START && (*value)->mapItem[xValue][yValue] <= MINE_END) {
-    returnValue = true;
+    returnValue = TRUE;
   }
   /* Check network game if required */
-  if (returnValue == false) {
+  if (returnValue == FALSE) {
     if (netGetType() != netSingle) {
       /* Is a network game - Check its not waiting to be placed */
 //        returnValue = mapNetIsMine(xValue, yValue);
@@ -950,69 +950,69 @@ bool mapWrite(char *fileName, map *value, pillboxes *pb, bases *bs, starts *ss) 
   BYTE numBases;      /* Number of bases on the map */
   BYTE numStarts;     /* Number of starts on the map */
 
-  returnValue = true;
+  returnValue = TRUE;
   numPills = pillsGetNumPills(pb);
   numBases = basesGetNumBases(bs);
   numStarts = startsGetNumStarts(ss);
 
   fp = fopen(fileName,"wb");
   if (fp == NULL) {
-    returnValue = false;
+    returnValue = FALSE;
   }
   /* Write header */
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     ret = fputs(MAP_HEADER, fp);
     if (ret == EOF) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
   
   /* Write map version */
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     ret = fputc(CURRENT_MAP_VERSION, fp);
     if (ret == EOF) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   /* Put number of pills */
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     ret = fputc(numPills, fp);
     if (ret == EOF) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   /* Put number of bases */
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     ret = fputc(numBases, fp);
     if (ret == EOF) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   /* Put number of starts */
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     ret = fputc(numStarts, fp);
     if (ret == EOF) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   /* Write pill locations */
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     returnValue = mapWritePills(fp, pb, numPills);
   }
   /* Write bases locations */
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     returnValue = mapWriteBases(fp, bs, numBases);
   }
   /* Write starts locations */
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     returnValue = mapWriteStarts(fp, ss, numStarts);
   }
 
-  if (returnValue == true && fp) {
+  if (returnValue == TRUE && fp) {
     returnValue = mapWriteRuns(fp,value);
   }
   if (fp) {
@@ -1042,37 +1042,37 @@ bool mapWritePills(FILE *fp, pillboxes *pb, BYTE total) {
   pillbox item;     /* Pillbox information */
   int ret;          /* Function return Value */
   
-  returnValue = true;
+  returnValue = TRUE;
   count = 1;
-  while (count <= total && returnValue == true) {
+  while (count <= total && returnValue == TRUE) {
     pillsGetPill(pb, &item, count);
     /* Write each pill out */
     ret = fputc(item.x, fp);
     if (ret != item.x) {
-      returnValue = false;
+      returnValue = FALSE;
     }
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       ret = fputc(item.y, fp);
       if (ret != item.y) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       ret = fputc(item.owner, fp);
       if (ret != item.owner) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       ret = fputc(item.armour, fp);
       if (ret != item.armour) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       ret = fputc(item.speed, fp);
       if (ret != item.speed) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
     count++;
@@ -1101,43 +1101,43 @@ bool mapWriteBases(FILE *fp, bases *bs, BYTE total) {
   base item;        /* The base item being saved */
   int ret;          /* Function return */
 
-  returnValue = true;
+  returnValue = TRUE;
   count = 1;
-  while (count <= total && returnValue == true) {
+  while (count <= total && returnValue == TRUE) {
     basesGetBase(bs, &item, count);
     /* Write each base out */
     ret = fputc(item.x, fp);
     if (ret != item.x) {
-      returnValue = false;
+      returnValue = FALSE;
     }
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       ret = fputc(item.y, fp);
       if (ret != item.y) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       ret = fputc(item.owner, fp);
       if (ret != item.owner) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       ret = fputc(item.armour, fp);
       if (ret != item.armour) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       ret = fputc(item.shells, fp);
       if (ret != item.shells) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       ret = fputc(item.mines, fp);
       if (ret != item.mines) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
     count++;
@@ -1166,26 +1166,26 @@ bool mapWriteStarts(FILE *fp, starts *ss, BYTE total) {
   start item;       /* Item being saved */
   int ret;          /* Function return */
 
-  returnValue = true;
+  returnValue = TRUE;
   count = 1;
   
-  while (count <= total && returnValue == true) {
+  while (count <= total && returnValue == TRUE) {
     startsGetStartStruct(ss, &item, count);
     /* Write each start out */
     ret = fputc(item.x, fp);
     if (ret != item.x) {
-      returnValue = false;
+      returnValue = FALSE;
     }
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       ret = fputc(item.y, fp);
       if (ret != item.y) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       ret = fputc(item.dir, fp);
       if (ret != item.dir) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
     count++;
@@ -1216,23 +1216,23 @@ bool mapWriteRuns(FILE *fp, map *value) {
   long len;                 /* Length of the run to write */
   size_t ret;                  /* Function return */
 
-  returnValue = true;
+  returnValue = TRUE;
   xPos = 0;
   yPos = 0;
-  while (yPos < 0xFF && returnValue == true) {
+  while (yPos < 0xFF && returnValue == TRUE) {
     /* Process runs */
     len = mapPrepareRun(value, &run, &xPos, &yPos);
     /* Write the run out */
     ret = fwrite(&run, (size_t) len, 1, fp);
     if (ret !=  1) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   return returnValue;
 }
 
-#define put_nibble(X) (!nibble_flag ? (nibble_flag = true,  *nibble_data = (X)<<4) : (nibble_flag = false, *nibble_data++ |= (X) & 0xF))
+#define put_nibble(X) (!nibble_flag ? (nibble_flag = TRUE,  *nibble_data = (X)<<4) : (nibble_flag = FALSE, *nibble_data++ |= (X) & 0xF))
 
 /*********************************************************
 *NAME:          mapPrepareRun
@@ -1257,7 +1257,7 @@ long mapPrepareRun(map *value, bmapRun *run, BYTE *xPos, BYTE *yPos) {
 	bool nibble_flag; /* High/Low nibble filter */
 	BYTE *nibble_data; /* Holds run->data for nibble calculations */
   
-  nibble_flag = false;
+  nibble_flag = FALSE;
   x = *xPos;
   y = *yPos;
   nibble_data = run->data;
@@ -1301,7 +1301,7 @@ long mapPrepareRun(map *value, bmapRun *run, BYTE *xPos, BYTE *yPos) {
       }
       terrain = mapGetPos(value, x, y);
 		}
-    if (nibble_flag == true) {
+    if (nibble_flag == TRUE) {
       put_nibble(0);	/* round it up to whole number of bytes */
     }
   }
@@ -1334,11 +1334,11 @@ void mapNetAdd(map *value, BYTE mx, BYTE my, BYTE terrain, bool needSend) {
   bool done;
 
 
-  done = false;
+  done = FALSE;
   /* Check to see it is in the incoming buffer */
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     q = (*value)->mninc;
-    while (NonEmpty(q) && done == false) {
+    while (NonEmpty(q) && done == FALSE) {
       if (q->mx == mx && q->my == my && q->terrain == terrain) {
         /* Exists */
         (*value)->mapItem[mx][my] = terrain;
@@ -1355,7 +1355,7 @@ void mapNetAdd(map *value, BYTE mx, BYTE my, BYTE terrain, bool needSend) {
           q->next->prev = q->prev;
         }
         Dispose(q);
-        done = true;
+        done = TRUE;
       } else {
         q = MapNetTail(q);
       }
@@ -1364,24 +1364,24 @@ void mapNetAdd(map *value, BYTE mx, BYTE my, BYTE terrain, bool needSend) {
       floodAddItem(mx, my);
   } */
 
-  if (done == false && (*value)->mapItem[mx][my] == RIVER && (terrain == CRATER || terrain == MINE_CRATER)) {
+  if (done == FALSE && (*value)->mapItem[mx][my] == RIVER && (terrain == CRATER || terrain == MINE_CRATER)) {
     return;
   } 
 
   
   if ((*value)->mapItem[mx][my] != terrain) {
     q = (*value)->mn;
-    while (NonEmpty(q) && done == false) {
+    while (NonEmpty(q) && done == FALSE) {
       if (q->mx == mx && q->my == my) {
         q->terrain = terrain;
         q->length = 0;
         q->needSend = needSend;
-        done = true;
+        done = TRUE;
       }
       q = MapNetTail(q);
     } 
     /* If not found then add it */
-    if (done == false) {
+    if (done == FALSE) {
       New(q);
       q->mx = mx;
       q->my = my;
@@ -1422,12 +1422,12 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
   bool needRedraw; /* Do we need a redraw */
   mapNet del;
   
-  needRedraw = false;
+  needRedraw = FALSE;
 
   q = (*value)->mn;
   while (NonEmpty(q)) {
     q->length = q->length +1;
-    if (q->length > MAP_MAX_SERVER_WAIT && q->needSend == false) {
+    if (q->length > MAP_MAX_SERVER_WAIT && q->needSend == FALSE) {
       messageAdd(networkMessage, (char *) "\0", (char *) "at");
       if (q->oldTerrain >= MINE_START && q->oldTerrain <= MINE_END) {
         q->oldTerrain -= MINE_SUBTRACT;
@@ -1438,7 +1438,7 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
 //        if (q->oldTerrain == CRATER) {
 //          floodAddItem(q->mx, q->my);
 //        }
-      needRedraw = true;
+      needRedraw = TRUE;
       if (q->prev != NULL) {
         q->prev->next = q->next;
       } else {
@@ -1466,7 +1466,7 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
       (*value)->mapItem[q->mx][q->my] = q->terrain;
       mapNetCheckWater(value, pb, bs, q->mx, q->my);
       screenBrainMapSetPos(q->mx, q->my, (*value)->mapItem[q->mx][q->my], minesExistPos(screenGetMines(), q->mx, q->my));
-      needRedraw = true;
+      needRedraw = TRUE;
       if (q->prev != NULL) {
         q->prev->next = q->next;
       } else {
@@ -1487,7 +1487,7 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
 
   }
 
-  if (needRedraw == true) {
+  if (needRedraw == TRUE) {
     screenReCalc();
   }
 }
@@ -1515,9 +1515,9 @@ void mapNetIncomingItem(map *value, BYTE mx, BYTE my, BYTE terrain) {
 
   /* Check for exists in waiting for confirmation buffer */
   q = (*value)->mn;
-  done = false;
+  done = FALSE;
 
-  while (NonEmpty(q) && done == false) {
+  while (NonEmpty(q) && done == FALSE) {
     if (q->mx == mx && q->my == my) { /* && q->terrain == terrain */
       /* Its in our structure */
       if (q->prev != NULL) {
@@ -1531,10 +1531,10 @@ void mapNetIncomingItem(map *value, BYTE mx, BYTE my, BYTE terrain) {
       if (q->next != NULL) {
         q->next->prev = q->prev;
       }
-      done = true;
+      done = TRUE;
       if ((*value)->mapItem[mx][my] == RIVER || (*value)->mapItem[mx][my] == BOAT) {
         minesRemoveItem(screenGetMines(), mx, my);
-        screenBrainMapSetPos(q->mx, q->my, (*value)->mapItem[mx][my], false);
+        screenBrainMapSetPos(q->mx, q->my, (*value)->mapItem[mx][my], FALSE);
       }
       del = q;
       q = MapNetTail(q);
@@ -1548,16 +1548,16 @@ void mapNetIncomingItem(map *value, BYTE mx, BYTE my, BYTE terrain) {
   /* Check for exists in the incoming buffer packet */
   q = (*value)->mninc;
 
-  while (NonEmpty(q) && done == false) {
+  while (NonEmpty(q) && done == FALSE) {
     if (q->mx == mx && q->my == my && q->terrain == terrain) {
-      done = true;
+      done = TRUE;
     } else {
       q = MapNetTail(q);
     }
   }
 
   /* If it isn't added */
-  if (done == false) {
+  if (done == FALSE) {
 //      if (terrain != BUILDING && terrain != BOAT && terrain != ROAD && terrain < MINE_START) {
       New(q);
       q->mx = mx;
@@ -1596,9 +1596,9 @@ void mapNetPacket(map *value, BYTE mx, BYTE my, BYTE terrain) {
   bool done; /* Finished looping */
   
   q = (*value)->mn;
-  done = false;
+  done = FALSE;
 
-  while (NonEmpty(q) && done == false) {
+  while (NonEmpty(q) && done == FALSE) {
     if (q->mx == mx && q->my == my && q->terrain == terrain) {
       (*value)->mapItem[mx][my] = terrain;
       screenBrainMapSetPos(mx, my, (*value)->mapItem[mx][my], minesExistPos(screenGetMines(), mx, my));
@@ -1616,13 +1616,13 @@ void mapNetPacket(map *value, BYTE mx, BYTE my, BYTE terrain) {
       del = q;
       q = MapNetTail(q);
       Dispose(del);
-      done = true;
+      done = TRUE;
     } else {
       q = MapNetTail(q);
     }
   }
 
-  if (done == false) {
+  if (done == FALSE) {
     (*value)->mapItem[mx][my] = terrain;
     screenBrainMapSetPos(mx, my, (*value)->mapItem[mx][my], minesExistPos(screenGetMines(), mx, my));
     if (terrain == BUILDING || terrain == ROAD) {
@@ -1686,8 +1686,8 @@ BYTE mapNetClientPacket(map *value, BYTE *buff) {
   returnValue = 0;
   q = (*value)->mn;
   while (NonEmpty(q)) {
-   if (q->needSend == true) {
-      q->needSend = false;
+   if (q->needSend == TRUE) {
+      q->needSend = FALSE;
       q->length = 0;
       buff[returnValue] = (*value)->mn->mx;
       returnValue++;
@@ -1802,27 +1802,27 @@ void mapNetCheckWater(map *value, pillboxes *pb, bases *bs, BYTE xValue, BYTE yV
     rightPos = (*value)->mapItem[(BYTE) (xValue+1)][yValue];
 
     /* Check for pills, bases etc. If found change to non crater / water */
-    if (pillsExistPos(pb, xValue, (BYTE) (yValue-1)) == true) {
+    if (pillsExistPos(pb, xValue, (BYTE) (yValue-1)) == TRUE) {
       above = ROAD;
-    } else if (basesExistPos(bs, xValue, (BYTE) (yValue-1)) == true) {
+    } else if (basesExistPos(bs, xValue, (BYTE) (yValue-1)) == TRUE) {
       above = ROAD;
     }
 
-    if (pillsExistPos(pb, xValue, (BYTE) (yValue+1)) == true) {
+    if (pillsExistPos(pb, xValue, (BYTE) (yValue+1)) == TRUE) {
       below  = ROAD;
-    } else if (basesExistPos(bs, xValue, (BYTE) (yValue+1)) == true) {
+    } else if (basesExistPos(bs, xValue, (BYTE) (yValue+1)) == TRUE) {
       below = ROAD;
     }
 
-    if (pillsExistPos(pb, (BYTE) (xValue-1), yValue) == true) {
+    if (pillsExistPos(pb, (BYTE) (xValue-1), yValue) == TRUE) {
       leftPos = ROAD;
-    } else if (basesExistPos(bs, (BYTE) (xValue-1),  yValue) == true) {
+    } else if (basesExistPos(bs, (BYTE) (xValue-1),  yValue) == TRUE) {
       leftPos = ROAD;
     }
 
-    if (pillsExistPos(pb, (BYTE) (xValue+1), yValue) == true) {
+    if (pillsExistPos(pb, (BYTE) (xValue+1), yValue) == TRUE) {
       rightPos = ROAD;
-    } else if (basesExistPos(bs, (BYTE) (xValue-1),  yValue) == true) {
+    } else if (basesExistPos(bs, (BYTE) (xValue-1),  yValue) == TRUE) {
       rightPos = ROAD;
     }
 
@@ -1905,7 +1905,7 @@ bool mapLoadCompressedMap(map *value, pillboxes *pb, bases *bs, starts *ss, BYTE
   int mapSize;
   BYTE *ptr2;
 
-  returnValue = true;
+  returnValue = TRUE;
   
   /* Bases */
   ptr = input;
@@ -1927,7 +1927,7 @@ bool mapLoadCompressedMap(map *value, pillboxes *pb, bases *bs, starts *ss, BYTE
   ptr2 = (BYTE *) (*value)->mapItem;
   mapSize = lzwdecoding((char*)ptr, (char*)ptr2, inputLen);
   if (mapSize != sizeof(**value) - 2 * sizeof(mapNet)) {
-    returnValue = false;
+    returnValue = FALSE;
   }
   return returnValue;
 }

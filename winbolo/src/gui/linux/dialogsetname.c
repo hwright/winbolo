@@ -37,7 +37,7 @@
 #include "messagebox.h"
 
 GtkWidget *idc_setnametxt;
-bool setNameInGame = false; /* Are we in a game or not */
+bool setNameInGame = FALSE; /* Are we in a game or not */
 GtkWidget *dialogSetNameUs;
 
 gboolean dialogSetNameOK(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
@@ -50,8 +50,8 @@ gboolean dialogSetNameOK(GtkWidget *widget, GdkEventKey *event, gpointer user_da
   /* Set the name */
   oldName[0] = '\0';
   newName[0] = '\0';
-  closeDialog = false;
-  changeOK = true;
+  closeDialog = FALSE;
+  changeOK = TRUE;
 
   screenGetPlayerName(oldName);
   str = gtk_entry_get_text(GTK_ENTRY(idc_setnametxt));
@@ -65,45 +65,45 @@ gboolean dialogSetNameOK(GtkWidget *widget, GdkEventKey *event, gpointer user_da
     MessageBox("Sorry, names can not begin with a '*'", DIALOG_BOX_TITLE);
   } else if (strcmp(oldName, newName) == 0) {
     /* Names are the same */
-    closeDialog = true;
+    closeDialog = TRUE;
   } else {
-    if (setNameInGame == true) {
+    if (setNameInGame == TRUE) {
       changeOK = screenSetPlayerName(newName);
-      if (changeOK == false) {
+      if (changeOK == FALSE) {
         if (strcmp(oldName, newName) != 0) {
           /* Someone else in the game must have our name already - Can't change */
           MessageBox(langGetText(NETERR_PLAYERNAMEINUSE), DIALOG_BOX_TITLE);
         }
       } else {
-        closeDialog = true;
+        closeDialog = TRUE;
       }
     } else {
       /* Tell game front about */
-      closeDialog = true;
+      closeDialog = TRUE;
       gameFrontSetPlayerName(newName);
     }
   }
  /* Close the dialog if necessary */
- if (closeDialog == true) {
+ if (closeDialog == TRUE) {
     gtk_grab_remove(dialogSetNameUs);
     gtk_widget_destroy(dialogSetNameUs);
     gtk_main_quit();
   }
-  return false;
+  return FALSE;
 }
     
 gboolean dialogSetNameKey(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   if (event->keyval == 65293) {
     dialogSetNameOK(dialogSetNameUs, NULL, NULL);
   }
-  return false;
+  return FALSE;
 }
 
 gboolean dialogSetNameClose(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   gtk_grab_remove(dialogSetNameUs);
   gtk_widget_destroy(dialogSetNameUs);
   gtk_main_quit();
-  return false;
+  return FALSE;
 }
 
 
@@ -122,8 +122,8 @@ GtkWidget* dialogSetNameCreate(bool inGame) {
   gtk_container_set_border_width (GTK_CONTAINER (dialogSetName), 10);
   gtk_window_set_title (GTK_WINDOW (dialogSetName), "Enter Player Name");
   gtk_window_set_position (GTK_WINDOW (dialogSetName), GTK_WIN_POS_CENTER);
-  gtk_window_set_modal (GTK_WINDOW (dialogSetName), true);
-  gtk_window_set_policy (GTK_WINDOW (dialogSetName), false, false, false);
+  gtk_window_set_modal (GTK_WINDOW (dialogSetName), TRUE);
+  gtk_window_set_policy (GTK_WINDOW (dialogSetName), FALSE, FALSE, FALSE);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
@@ -137,15 +137,15 @@ GtkWidget* dialogSetNameCreate(bool inGame) {
   gtk_object_set_data_full (GTK_OBJECT (dialogSetName), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label1);
-  gtk_box_pack_start (GTK_BOX (vbox1), label1, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), label1, FALSE, FALSE, 0);
   gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_LEFT);
 
-  hbox1 = gtk_hbox_new (false, 0);
+  hbox1 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox1);
   gtk_object_set_data_full (GTK_OBJECT (dialogSetName), "hbox1", hbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox1);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (hbox1), 10);
 
   idc_setnametxt = gtk_entry_new ();
@@ -153,14 +153,14 @@ GtkWidget* dialogSetNameCreate(bool inGame) {
   gtk_object_set_data_full (GTK_OBJECT (dialogSetName), "idc_setnametxt", idc_setnametxt,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_setnametxt);
-  gtk_box_pack_start (GTK_BOX (hbox1), idc_setnametxt, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), idc_setnametxt, TRUE, TRUE, 0);
 
   button1 = gtk_button_new_with_label ("OK");
   gtk_widget_ref (button1);
   gtk_object_set_data_full (GTK_OBJECT (dialogSetName), "button1", button1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button1);
-  gtk_box_pack_start (GTK_BOX (hbox1), button1, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), button1, TRUE, TRUE, 0);
 
   gtk_signal_connect(GTK_OBJECT(dialogSetName), "delete_event", GTK_SIGNAL_FUNC (dialogSetNameClose), NULL);
   gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(dialogSetNameOK), 0);
@@ -168,7 +168,7 @@ GtkWidget* dialogSetNameCreate(bool inGame) {
 
   /* Get the name */
   playerName[0] = '\0';
-  if (setNameInGame == true) {
+  if (setNameInGame == TRUE) {
     screenGetPlayerName(playerName);
   } else {
     gameFrontGetPlayerName(playerName);

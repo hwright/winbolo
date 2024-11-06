@@ -65,8 +65,8 @@ void pillsCreate(pillboxes *value) {
     (*value)->item[count].speed = PILLBOX_ATTACK_NORMAL;
     (*value)->item[count].reload = PILLBOX_ATTACK_NORMAL;
     (*value)->item[count].coolDown = 0;
-    (*value)->item[count].inTank = false;
-    (*value)->item[count].justSeen = false;
+    (*value)->item[count].inTank = FALSE;
+    (*value)->item[count].justSeen = FALSE;
   }
 }
 
@@ -155,9 +155,9 @@ void pillsSetPill(pillboxes *value, pillbox *item, BYTE pillNum) {
     (((*value)->item[pillNum]).speed) = item->speed;
     (((*value)->item[pillNum]).inTank) = item->inTank;
     (((*value)->item[pillNum]).justSeen) = item->justSeen;
-    logAddEvent(log_PillSetOwner, pillNum, item->owner, true, 0, 0, NULL);
+    logAddEvent(log_PillSetOwner, pillNum, item->owner, TRUE, 0, 0, NULL);
     logAddEvent(log_PillSetHealth, utilPutNibble(pillNum, item->armour), 0, 0, 0, 0, NULL);
-    logAddEvent(log_PillSetInTank, utilPutNibble(pillNum, false), 0, 0, 0, 0, NULL);
+    logAddEvent(log_PillSetInTank, utilPutNibble(pillNum, FALSE), 0, 0, 0, 0, NULL);
     logAddEvent(log_PillSetPlace, pillNum, item->x, item->y, 0, 0, NULL);
   }
 }
@@ -205,14 +205,14 @@ bool pillsExistPos(pillboxes *value, BYTE xValue, BYTE yValue) {
 	bool returnValue; /* Value to return */
 	BYTE count;       /* Looping Variable */
 
-	returnValue = false;
+	returnValue = FALSE;
 	count = 0;
-	while (returnValue == false && count < ((*value)->numPills)) {
+	while (returnValue == FALSE && count < ((*value)->numPills)) {
 		/* Does the pill's map coords match what was passed and is it not in a tank? */
 		if ((((*value)->item[count].x) == xValue)
 		&& (((*value)->item[count].y) == yValue)
-		&& (((*value)->item[count].inTank) == false)) {
-			returnValue = true;
+		&& (((*value)->item[count].inTank) == FALSE)) {
+			returnValue = TRUE;
 		}
 		count++;
 	}
@@ -238,22 +238,22 @@ pillAlliance pillsGetAllianceNum(pillboxes *value, BYTE pillNum) {
   pillNum--;
   if ((*value) != NULL) {
     if ((pillNum) <= ((*value)->numPills)) {
-      if ((*value)->item[pillNum].armour == 0 && (*value)->item[pillNum].inTank == false) {
+      if ((*value)->item[pillNum].armour == 0 && (*value)->item[pillNum].inTank == FALSE) {
         returnValue = pillDead;
       } else if ((*value)->item[pillNum].owner == playersGetSelf(screenGetPlayers())) {
-        if ((*value)->item[pillNum].inTank == true) {
+        if ((*value)->item[pillNum].inTank == TRUE) {
           returnValue = pillTankGood;
         } else {
           returnValue = pillGood;
         } 
-      } else if (playersIsAllie(screenGetPlayers(), (*value)->item[pillNum].owner, playersGetSelf(screenGetPlayers())) == true) {
-        if ((*value)->item[pillNum].inTank == true) {
+      } else if (playersIsAllie(screenGetPlayers(), (*value)->item[pillNum].owner, playersGetSelf(screenGetPlayers())) == TRUE) {
+        if ((*value)->item[pillNum].inTank == TRUE) {
           returnValue = pillTankAllie;
         } else {
           returnValue = pillAllie;
         } 
       } else if ((*value)->item[pillNum].owner != NEUTRAL) {
-        if ((*value)->item[pillNum].inTank == true) {
+        if ((*value)->item[pillNum].inTank == TRUE) {
           returnValue = pillTankEvil;
         } else {
           returnValue = pillEvil;
@@ -302,7 +302,7 @@ void pillsUpdate(pillboxes *value, map *mp, bases *bs, tank *tnk, shells *shs) {
   tankSpeed = 0;
 
   /* Get the tank info */
-  if (threadsGetContext() == false) {
+  if (threadsGetContext() == FALSE) {
     tankGetWorld(tnk, &tankX, &tankY);
     tankDir = tankGetTravelAngel(tnk);
     tankSpeed = tankGetSpeed(tnk);
@@ -334,8 +334,8 @@ void pillsUpdate(pillboxes *value, map *mp, bases *bs, tank *tnk, shells *shs) {
       }
     }
     /* Check to see if it should fire ie Is alive, not allied to the tank and not reloading */
-    if (threadsGetContext() == false) {
-      if ((*value)->item[count].armour > 0 && (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, playersGetSelf(screenGetPlayers())) == false) && (*value)->item[count].reload >= (*value)->item[count].speed && (*value)->item[count].inTank == false) {
+    if (threadsGetContext() == FALSE) {
+      if ((*value)->item[count].armour > 0 && (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, playersGetSelf(screenGetPlayers())) == FALSE) && (*value)->item[count].reload >= (*value)->item[count].speed && (*value)->item[count].inTank == FALSE) {
         /* Check to see if tank is in range */
         if (tankX > ((((*value)->item[count].x) << TANK_SHIFT_MAPSIZE) + MAP_SQUARE_MIDDLE)) {
           diffX = tankX - ((((*value)->item[count].x) << TANK_SHIFT_MAPSIZE) + MAP_SQUARE_MIDDLE);
@@ -348,24 +348,24 @@ void pillsUpdate(pillboxes *value, map *mp, bases *bs, tank *tnk, shells *shs) {
           diffY = ((((*value)->item[count].y) << TANK_SHIFT_MAPSIZE) + MAP_SQUARE_MIDDLE) - tankY;
         }
 
-        if (tankArmour <= TANK_FULL_ARMOUR && ((utilIsTankInTrees(mp, value, bs, tankX, tankY)) == false || (diffX < MIN_TREEHIDE_DIST && diffY < MIN_TREEHIDE_DIST) || tankJustFired(tnk) == true)) {
-          if ((utilIsItemInRange(x, y, tankX, tankY, PILLBOX_RANGE, &amount)) == true) {
+        if (tankArmour <= TANK_FULL_ARMOUR && ((utilIsTankInTrees(mp, value, bs, tankX, tankY)) == FALSE || (diffX < MIN_TREEHIDE_DIST && diffY < MIN_TREEHIDE_DIST) || tankJustFired(tnk) == TRUE)) {
+          if ((utilIsItemInRange(x, y, tankX, tankY, PILLBOX_RANGE, &amount)) == TRUE) {
           /* Check for closer tanks here */
-            if (playersIsTankCloser(screenGetPlayers(), x, y, (*value)->item[count].owner, amount) == false) {
+            if (playersIsTankCloser(screenGetPlayers(), x, y, (*value)->item[count].owner, amount) == FALSE) {
               /* Fire at player */
-              if ((*value)->item[count].justSeen == true) {
+              if ((*value)->item[count].justSeen == TRUE) {
                 dir = pillsTargetTank(mp, value, bs, x, y, tankX, tankY, (TURNTYPE) tankDir, tankSpeed, (tankIsOnBoat(tnk)));
-                shellsAddItem(shs, x, y, dir, (float) (PILLBOX_FIRE_DISTANCE), NEUTRAL, false);
+                shellsAddItem(shs, x, y, dir, (float) (PILLBOX_FIRE_DISTANCE), NEUTRAL, FALSE);
                 (*value)->item[count].reload = 0;
                 soundDist(shootNear, (*value)->item[count].x, (*value)->item[count].y);
               } else {
                 /* They were just seen */
-                (*value)->item[count].justSeen = true;
+                (*value)->item[count].justSeen = TRUE;
                 (*value)->item[count].reload = 0;
               }
             }
           } else {
-            (*value)->item[count].justSeen = false;
+            (*value)->item[count].justSeen = FALSE;
           }
         }
       }
@@ -390,12 +390,12 @@ bool pillsIsPillHit(pillboxes *value, BYTE xValue, BYTE yValue) {
   bool returnValue; /* Value to return */
   BYTE count;       /* Looping Variable */
 
-  returnValue = false;
+  returnValue = FALSE;
   count = 0;
-  while (returnValue == false && count < ((*value)->numPills)) {
-    if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue && ((*value)->item[count].armour >0) && (*value)->item[count].inTank == false) {
+  while (returnValue == FALSE && count < ((*value)->numPills)) {
+    if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue && ((*value)->item[count].armour >0) && (*value)->item[count].inTank == FALSE) {
       /* Pillbox has been Hit */
-      returnValue = true;
+      returnValue = TRUE;
     }
     count++;
   }
@@ -416,31 +416,31 @@ bool pillsIsPillHit(pillboxes *value, BYTE xValue, BYTE yValue) {
 *  value      - Pointer to the pillbox structure
 *  xValue     - X Location
 *  yValue     - Y Location
-*  wantDamage - true if we just want to do damage to it
-*  wantAngry  - true if we just want to make it angry
+*  wantDamage - TRUE if we just want to do damage to it
+*  wantAngry  - TRUE if we just want to make it angry
 *********************************************************/
 bool pillsDamagePos(pillboxes *value, BYTE xValue, BYTE yValue, bool wantDamage, bool wantAngry) {
   bool returnValue;  /* Value to return */
   bool done;         /* Loop guard */
   BYTE count;        /* Looping Variable */
 
-  returnValue = false;
-  done = false;
+  returnValue = FALSE;
+  done = FALSE;
   count = 0;
-  while (done == false && count < ((*value)->numPills)) {
-    if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue && ((*value)->item[count].armour >0) && (*value)->item[count].inTank == false) {
+  while (done == FALSE && count < ((*value)->numPills)) {
+    if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue && ((*value)->item[count].armour >0) && (*value)->item[count].inTank == FALSE) {
       /* Pillbox has been Hit */
-      done = true;
-      if (wantDamage == true && (*value)->item[count].armour > 0) {
+      done = TRUE;
+      if (wantDamage == TRUE && (*value)->item[count].armour > 0) {
         (*value)->item[count].armour--;
       }
       logAddEvent(log_PillSetHealth, utilPutNibble(count, (*value)->item[count].armour), 0, 0, 0, 0, NULL);
       if ((*value)->item[count].armour == 0) {
-        returnValue = true;
-        if (threadsGetContext() == false) {
+        returnValue = TRUE;
+        if (threadsGetContext() == FALSE) {
           frontEndStatusPillbox((BYTE) (count+1), pillDead);
         }
-      } else if (wantDamage == true) {
+      } else if (wantDamage == TRUE) {
         (*value)->item[count].coolDown = PILLBOX_COOLDOWN_TIME;
         if ((*value)->item[count].speed > PILLBOX_MAX_FIRERATE) {
           (*value)->item[count].speed /=2;
@@ -474,16 +474,16 @@ BYTE pillsGetScreenHealth(pillboxes *value, BYTE xValue, BYTE yValue) {
   BYTE returnValue; /* Value to return */
   BYTE count;       /* Looping Variable */
 
-  done = false;
+  done = FALSE;
   count = 0;
   returnValue = PILL_EVIL_15;
 
-  while (done == false && count < ((*value)->numPills)) {
-    if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue && (*value)->item[count].inTank == false) {
+  while (done == FALSE && count < ((*value)->numPills)) {
+    if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue && (*value)->item[count].inTank == FALSE) {
       /* Pillbox has been Hit */
-      done = true;
+      done = TRUE;
       
-      if (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, playersGetSelf(screenGetPlayers()) ) == false) {
+      if (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, playersGetSelf(screenGetPlayers()) ) == FALSE) {
         switch((*value)->item[count].armour) {
         case PILLBOX_15:
           returnValue = PILL_EVIL_15;
@@ -666,7 +666,7 @@ TURNTYPE pillsTargetTankMove(map *mp, pillboxes *pb, bases *bs, WORLD xValue, WO
   WORLD shellY;         /* Shell Y locatiopn */
   bool isLand;          /* Is this square land */
 
-  found = false;
+  found = FALSE;
   count = 1;
   shellX = xValue;
   shellY = yValue;
@@ -683,9 +683,9 @@ TURNTYPE pillsTargetTankMove(map *mp, pillboxes *pb, bases *bs, WORLD xValue, WO
   shellX = (WORLD) (xValue + shellAddX);
   shellY = (WORLD) (yValue + shellAddY);
   
-  while (found == false && count < MAX_AIM_ITERATE) {
-    if ((utilIsTankHit(tankX, tankY, angle, shellX, shellY, estimate)) == true  ) {
-      found = true;
+  while (found == FALSE && count < MAX_AIM_ITERATE) {
+    if ((utilIsTankHit(tankX, tankY, angle, shellX, shellY, estimate)) == TRUE  ) {
+      found = TRUE;
       returnValue = estimate;
     }
     count++;
@@ -717,12 +717,12 @@ TURNTYPE pillsTargetTankMove(map *mp, pillboxes *pb, bases *bs, WORLD xValue, WO
     bmy = (BYTE) tankTestAddY;
 
     isLand = mapIsLand(mp, pb,bs, bmx, newbmy);
-    if (mapGetSpeed(mp,pb,bs,bmx,newbmy, onBoat, playersGetSelf(screenGetPlayers())) > 0 && (onBoat == false || (onBoat == true && isLand == false) || (onBoat == true && isLand == true && speed >= BOAT_EXIT_SPEED))) {
+    if (mapGetSpeed(mp,pb,bs,bmx,newbmy, onBoat, playersGetSelf(screenGetPlayers())) > 0 && (onBoat == FALSE || (onBoat == TRUE && isLand == FALSE) || (onBoat == TRUE && isLand == TRUE && speed >= BOAT_EXIT_SPEED))) {
       tankY = (WORLD) (tankY + tankAddY);
     }
 
     isLand = mapIsLand(mp, pb,bs, newbmx, bmy);
-    if (mapGetSpeed(mp,pb,bs,newbmx,bmy, onBoat, playersGetSelf(screenGetPlayers())) > 0 && (onBoat == false || (onBoat == true && isLand == false) || (onBoat == true && isLand == true && speed >= BOAT_EXIT_SPEED))) {
+    if (mapGetSpeed(mp,pb,bs,newbmx,bmy, onBoat, playersGetSelf(screenGetPlayers())) > 0 && (onBoat == FALSE || (onBoat == TRUE && isLand == FALSE) || (onBoat == TRUE && isLand == TRUE && speed >= BOAT_EXIT_SPEED))) {
       tankX = (WORLD) (tankX + tankAddX);
     }
     
@@ -755,16 +755,16 @@ bool pillsDeadPos(pillboxes *value, BYTE xValue, BYTE yValue) {
 	bool returnValue; /* Value to return */
 	BYTE count;       /* Looping Variable */
 
-	returnValue = false;
+	returnValue = FALSE;
 	count = 0;
-	while (returnValue == false && count < ((*value)->numPills)) {
+	while (returnValue == FALSE && count < ((*value)->numPills)) {
 		/* Do the pill's map coords match what was passed and does it have zero armour and is it not in a tank? */
 		if ((((*value)->item[count].x) == xValue)
 		&& (((*value)->item[count].y) == yValue)
 		&& (((*value)->item[count].armour == 0))
-		&& (((*value)->item[count].inTank == false)))
+		&& (((*value)->item[count].inTank == FALSE)))
 		{
-			returnValue = true;
+			returnValue = TRUE;
 		}
 		count++;
 	}
@@ -795,7 +795,7 @@ BYTE pillsGetPillNum(pillboxes *value, BYTE xValue, BYTE yValue, bool careInTank
   count = 0;
   while (count < ((*value)->numPills)) {
     if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue) {
-      if (careInTank == false || ((*value)->item[count].inTank == inTank)) {
+      if (careInTank == FALSE || ((*value)->item[count].inTank == inTank)) {
         returnValue = (BYTE) (count+1);
         count = (*value)->numPills;
       }
@@ -859,7 +859,7 @@ BYTE pillsGetPillOwner(pillboxes *value, BYTE pillNum) {
 *LAST MODIFIED: 04/04/02
 *PURPOSE:
 * Sets the pillbox pillNum to owner. Returns the previous
-* owner. If migrate is set to true then it has migrated 
+* owner. If migrate is set to TRUE then it has migrated 
 * from a alliance when a player left and we shouldn't 
 * make a message
 *
@@ -867,7 +867,7 @@ BYTE pillsGetPillOwner(pillboxes *value, BYTE pillNum) {
 *  value   - Pointer to the pillbox structure
 *  pillNum - The pillbox number to apply it to
 *  owner   - The new owner
-*  migrate - true if it is migrating.
+*  migrate - TRUE if it is migrating.
 *********************************************************/
 BYTE pillsSetPillOwner(pillboxes *value, BYTE pillNum, BYTE owner, bool migrate) {
   /* Message stuff */
@@ -884,14 +884,14 @@ BYTE pillsSetPillOwner(pillboxes *value, BYTE pillNum, BYTE owner, bool migrate)
     returnValue = (*value)->item[pillNum].owner;
     (*value)->item[pillNum].owner = owner;
     /* Make the message if required */
-    if (returnValue == NEUTRAL && migrate == false && owner != NEUTRAL) {
+    if (returnValue == NEUTRAL && migrate == FALSE && owner != NEUTRAL) {
       /* Neutral pill */
       playersMakeMessageName(screenGetPlayers(), owner, messageStr);
       strcat(messageStr, langGetText(MESSAGE_CAPTURE_PILL));
       messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE), messageStr);
     } else if (owner == NEUTRAL) {
       /* Do nothing */
-    } else if (playersIsAllie(screenGetPlayers(), returnValue, owner) == false && migrate == false) {
+    } else if (playersIsAllie(screenGetPlayers(), returnValue, owner) == FALSE && migrate == FALSE) {
       /* Stole pill */
       playersMakeMessageName(screenGetPlayers(), owner, messageStr);
       strcat(messageStr, langGetText(MESSAGE_STOLE_PILL));
@@ -904,14 +904,14 @@ BYTE pillsSetPillOwner(pillboxes *value, BYTE pillNum, BYTE owner, bool migrate)
     pillNum++;
     /* Winbolo.Net stuff */
     /* FIXME: Check if in an alliance?????? */
-    if (migrate == false && owner != NEUTRAL) {
+    if (migrate == FALSE && owner != NEUTRAL) {
       if (returnValue == NEUTRAL) {
         winbolonetAddEvent(WINBOLO_NET_EVENT_PILL_CAPTURE, threadsGetContext(), owner, WINBOLO_NET_NO_PLAYER);
       } else {
         winbolonetAddEvent(WINBOLO_NET_EVENT_PILL_STEAL, threadsGetContext(), owner, returnValue);
       }
     }
-    if (threadsGetContext() == false) {
+    if (threadsGetContext() == FALSE) {
       frontEndStatusPillbox(pillNum, (pillsGetAllianceNum(value, pillNum)));
     }
   }
@@ -944,7 +944,7 @@ void pillsGetDamagePos(pillboxes *value, BYTE xValue, BYTE yValue, BYTE amount) 
         (*value)->item[count].armour = 0;
       }
       if ((*value)->item[count].armour == 0) {
-        if (threadsGetContext() == false) {
+        if (threadsGetContext() == FALSE) {
           frontEndStatusPillbox((BYTE) (count+1), pillDead);
         }
       } 
@@ -979,7 +979,7 @@ BYTE pillsNumInRect(pillboxes *value, BYTE leftPos, BYTE rightPos, BYTE top, BYT
   returnValue = 0;
   count = 0;
   while (count < ((*value)->numPills)) {
-    if ((*value)->item[count].x >= leftPos && (*value)->item[count].x <= rightPos && (*value)->item[count].y >= top && (*value)->item[count].y <= bottom && (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, playersGetSelf(screenGetPlayers())) == false)) {
+    if ((*value)->item[count].x >= leftPos && (*value)->item[count].x <= rightPos && (*value)->item[count].y >= top && (*value)->item[count].y <= bottom && (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, playersGetSelf(screenGetPlayers())) == FALSE)) {
       if ((*value)->item[count].armour > 0) {
         returnValue++;
       }
@@ -1009,13 +1009,13 @@ void pillsRepairPos(pillboxes *value, BYTE xValue, BYTE yValue, BYTE treeAmount)
 
   count = 0;
   while (count < ((*value)->numPills)) {
-    if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue && ((*value)->item[count].inTank) == false) {
+    if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue && ((*value)->item[count].inTank) == FALSE) {
       repairAmount = treeAmount*PILL_REPAIR_AMOUNT;
 	  (*value)->item[count].armour = (*value)->item[count].armour + repairAmount;
 	  if((*value)->item[count].armour>PILLS_MAX_ARMOUR) {
 	    (*value)->item[count].armour = PILLS_MAX_ARMOUR;
       }
-      if (threadsGetContext() == false) {
+      if (threadsGetContext() == FALSE) {
         frontEndStatusPillbox((BYTE) (count+1), (pillsGetAllianceNum(value, (BYTE) (count+1))));
       }
       logAddEvent(log_PillSetHealth, utilPutNibble(count, (*value)->item[count].armour), 0, 0, 0, 0, NULL);
@@ -1048,7 +1048,7 @@ BYTE pillsGetArmourPos(pillboxes *value, BYTE mx, BYTE my) {
   returnValue = PILL_NOT_FOUND;
   count = 0;
   while (count < ((*value)->numPills)) {
-    if (((*value)->item[count].x) == mx && ((*value)->item[count].y) == my && ((*value)->item[count].inTank) == false) {
+    if (((*value)->item[count].x) == mx && ((*value)->item[count].y) == my && ((*value)->item[count].inTank) == FALSE) {
       returnValue = (*value)->item[count].armour;
       count = (*value)->numPills;
     }
@@ -1084,19 +1084,19 @@ bool pillsMoveView(pillboxes *value, BYTE *mx, BYTE *my, int xMove, int yMove) {
   BYTE oldPill;
 
   nearest = 65000;
-  returnValue = false;
+  returnValue = FALSE;
   found = 0;
   count = 0;
-  oldPill = pillsGetPillNum(value, *mx, *my, false, false);
+  oldPill = pillsGetPillNum(value, *mx, *my, FALSE, FALSE);
   oldPill--;
   myPlayerNum = playersGetSelf(screenGetPlayers());
   while (count < (*value)->numPills) {
-    if (count != oldPill && (playersIsAllie(screenGetPlayers(), myPlayerNum, (*value)->item[count].owner) == true) && ((*value)->item[count].armour) > 0 && ((*value)->item[count].inTank) == false) {
+    if (count != oldPill && (playersIsAllie(screenGetPlayers(), myPlayerNum, (*value)->item[count].owner) == TRUE) && ((*value)->item[count].armour) > 0 && ((*value)->item[count].inTank) == FALSE) {
       if (((yMove == 0 && xMove < 0 && (*value)->item[count].x < *mx) || (xMove > 0 && (*value)->item[count].x > *mx)) || ((xMove == 0 && yMove < 0 && (*value)->item[count].y < *my) || (yMove > 0 && (*value)->item[count].y > *my))) {
-        if (utilIsItemInRange(*mx, *my, (*value)->item[count].x, (*value)->item[count].y, (WORLD) nearest, &dist) == true) {
+        if (utilIsItemInRange(*mx, *my, (*value)->item[count].x, (*value)->item[count].y, (WORLD) nearest, &dist) == TRUE) {
           nearest = dist;
           found = count;
-          returnValue = true;
+          returnValue = TRUE;
         }
       }
     }
@@ -1104,7 +1104,7 @@ bool pillsMoveView(pillboxes *value, BYTE *mx, BYTE *my, int xMove, int yMove) {
   }
 
 
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     *mx = (*value)->item[found].x;
     *my = (*value)->item[found].y;
   }
@@ -1137,20 +1137,20 @@ bool pillsGetNextView(pillboxes *value, BYTE *mx, BYTE *my, bool prev) {
   BYTE count;       /* Counting variable */
 
   count = 0;
-  returnValue = true;
-  done = false;
-  okLoop = false;
+  returnValue = TRUE;
+  done = FALSE;
+  okLoop = FALSE;
   playNumber = playersGetSelf(screenGetPlayers());
 
   /* Find out the previous amount */
-  if (prev == true) {
-    count = pillsGetPillNum(value, *mx, *my, false, false);
+  if (prev == TRUE) {
+    count = pillsGetPillNum(value, *mx, *my, FALSE, FALSE);
     if (count == PILL_NOT_FOUND) {
       count = 0;
     } else {
       count--;
-      if ((*value)->item[count].armour > 0 && ((*value)->item[count].inTank) == false) {
-        okLoop = true;
+      if ((*value)->item[count].armour > 0 && ((*value)->item[count].inTank) == FALSE) {
+        okLoop = TRUE;
         count++;
       } else {
         count = 0;
@@ -1159,9 +1159,9 @@ bool pillsGetNextView(pillboxes *value, BYTE *mx, BYTE *my, bool prev) {
   }
 
   /* Find the next item */
-  while (done == false && count < ((*value)->numPills)) {
-    if ((playersIsAllie(screenGetPlayers(), playNumber, (*value)->item[count].owner) == true) && ((*value)->item[count].armour) > 0 && ((*value)->item[count].inTank) == false) {
-      done = true;
+  while (done == FALSE && count < ((*value)->numPills)) {
+    if ((playersIsAllie(screenGetPlayers(), playNumber, (*value)->item[count].owner) == TRUE) && ((*value)->item[count].armour) > 0 && ((*value)->item[count].inTank) == FALSE) {
+      done = TRUE;
       *mx = (*value)->item[count].x;
       *my = (*value)->item[count].y;
     }
@@ -1169,11 +1169,11 @@ bool pillsGetNextView(pillboxes *value, BYTE *mx, BYTE *my, bool prev) {
   }
  
   /* If not found still and we are loop do it here */
-  if (done == false && okLoop == true) {
+  if (done == FALSE && okLoop == TRUE) {
     count = 0;
-    while (done == false && count < ((*value)->numPills)) {
-      if ((playersIsAllie(screenGetPlayers(), playNumber, (*value)->item[count].owner) == true) && ((*value)->item[count].armour) > 0 && ((*value)->item[count].inTank) == false) {
-        done = true;
+    while (done == FALSE && count < ((*value)->numPills)) {
+      if ((playersIsAllie(screenGetPlayers(), playNumber, (*value)->item[count].owner) == TRUE) && ((*value)->item[count].armour) > 0 && ((*value)->item[count].inTank) == FALSE) {
+        done = TRUE;
         *mx = (*value)->item[count].x;
         *my = (*value)->item[count].y;
       }
@@ -1182,8 +1182,8 @@ bool pillsGetNextView(pillboxes *value, BYTE *mx, BYTE *my, bool prev) {
   }
 
   /* If we still haven't found one then one doesn't exist at all */
-  if (done == false) {
-    returnValue = false;
+  if (done == FALSE) {
+    returnValue = FALSE;
   }
 
   return returnValue;
@@ -1209,16 +1209,16 @@ bool pillsCheckView(pillboxes *value, BYTE mx, BYTE my) {
   BYTE playNumber;  /* My player number */
   BYTE pillNum;     /* The pillbox number */
 
-    returnValue = true;
-  pillNum = pillsGetPillNum(value, mx, my, false, false);
+    returnValue = TRUE;
+  pillNum = pillsGetPillNum(value, mx, my, FALSE, FALSE);
   playNumber = playersGetSelf(screenGetPlayers());
 
   if (pillNum == PILL_NOT_FOUND || pillNum == (PILL_NOT_FOUND-1)) {
-    returnValue = false;
+    returnValue = FALSE;
   } else {
     pillNum--;
-    if ((playersIsAllie(screenGetPlayers(), playNumber, (*value)->item[pillNum].owner) == false) || ((*value)->item[pillNum].armour) == 0 || ((*value)->item[pillNum].inTank) == true) {
-      returnValue = false;
+    if ((playersIsAllie(screenGetPlayers(), playNumber, (*value)->item[pillNum].owner) == FALSE) || ((*value)->item[pillNum].armour) == 0 || ((*value)->item[pillNum].inTank) == TRUE) {
+      returnValue = FALSE;
     }
   }
   
@@ -1249,7 +1249,7 @@ void pillsBaseHit(pillboxes *value, BYTE mx, BYTE my, BYTE baseOwner) {
   for (count=0;count<(*value)->numPills;count++) {
     xDist = ((*value)->item[count].x) - mx;
     yDist = ((*value)->item[count].y) - my;
-    if (xDist >= PILL_BASE_HIT_LEFT && xDist <= PILL_BASE_HIT_RIGHT && yDist >= PILL_BASE_HIT_TOP && yDist <= PILL_BASE_HIT_BOTTOM && (*value)->item[count].owner != NEUTRAL && (playersIsAllie(screenGetPlayers(), baseOwner, (*value)->item[count].owner) == true) && (*value)->item[count].armour > 0) {
+    if (xDist >= PILL_BASE_HIT_LEFT && xDist <= PILL_BASE_HIT_RIGHT && yDist >= PILL_BASE_HIT_TOP && yDist <= PILL_BASE_HIT_BOTTOM && (*value)->item[count].owner != NEUTRAL && (playersIsAllie(screenGetPlayers(), baseOwner, (*value)->item[count].owner) == TRUE) && (*value)->item[count].armour > 0) {
       /* It is in range make it angry */
       (*value)->item[count].coolDown = PILLBOX_COOLDOWN_TIME;
       if ((*value)->item[count].speed > PILLBOX_MAX_FIRERATE) {
@@ -1405,12 +1405,12 @@ void pillsDropSetNeutralOwner(pillboxes *value, BYTE owner) {
 			/* A 'neutral' tank captures the pill instantly */
 			netPNBAdd(screenGetNetPnb(), NPNB_PILL_CAPTURE, count, NEUTRAL, (*value)->item[count].x, (*value)->item[count].y, 0);
 			/* The tank was carrying pills */
-			if (((*value)->item[count].inTank) == true) {
-				(*value)->item[count].inTank = false;
+			if (((*value)->item[count].inTank) == TRUE) {
+				(*value)->item[count].inTank = FALSE;
 				/* Send a message that all the pills in the tank are now dead and belong to a 'neutral' player */
 				netPNBAdd(screenGetNetPnb(), NPNB_PILL_DEAD, count, NEUTRAL, (*value)->item[count].x, (*value)->item[count].y, 0);
-        logAddEvent(log_PillSetInTank, utilPutNibble(count, false), 0, 0, 0, 0, NULL);
-        logAddEvent(log_PillSetOwner, count, NEUTRAL, false, 0, 0, NULL);
+        logAddEvent(log_PillSetInTank, utilPutNibble(count, FALSE), 0, 0, 0, 0, NULL);
+        logAddEvent(log_PillSetOwner, count, NEUTRAL, FALSE, 0, 0, NULL);
 			}
 		}
 		count++;
@@ -1441,10 +1441,10 @@ void pillsMigrate(pillboxes *value, BYTE oldOwner, BYTE newOwner) {
 		if (((*value)->item[count].owner) == oldOwner) {
 			(*value)->item[count].owner = newOwner;
 			netMNTAdd(screenGetNetMnt(), NMNT_PILLMIGRATE, count, newOwner, (*value)->item[count].x, (*value)->item[count].y);
-			if (((*value)->item[count].inTank) == true && isServer == true) {
-				(*value)->item[count].inTank = false;
-        logAddEvent(log_PillSetOwner, count, newOwner, false, 0, 0, NULL);
-        logAddEvent(log_PillSetInTank, utilPutNibble(count, false), 0, 0, 0, 0, NULL);
+			if (((*value)->item[count].inTank) == TRUE && isServer == TRUE) {
+				(*value)->item[count].inTank = FALSE;
+        logAddEvent(log_PillSetOwner, count, newOwner, FALSE, 0, 0, NULL);
+        logAddEvent(log_PillSetInTank, utilPutNibble(count, FALSE), 0, 0, 0, 0, NULL);
         logAddEvent(log_PillSetPlace, count, (*value)->item[count].x, (*value)->item[count].y, 0, 0, NULL);
 				netPNBAdd(screenGetNetPnb(), NPNB_PILL_DEAD, count, newOwner, (*value)->item[count].x, (*value)->item[count].y, 0);
 			}
@@ -1473,11 +1473,11 @@ void pillsMigratePlanted(pillboxes *value, BYTE oldOwner, BYTE newOwner) {
   count = 0;
   while (count < ((*value)->numPills)) {
 	if (((*value)->item[count].owner) == oldOwner) {
- 	  if((*value)->item[count].inTank == false){
+ 	  if((*value)->item[count].inTank == FALSE){
 	    (*value)->item[count].owner = newOwner;
 	    netMNTAdd(screenGetNetMnt(), NMNT_PILLMIGRATE, count, newOwner, (*value)->item[count].x, (*value)->item[count].y);
 	  } else {
-	    (*value)->item[count].inTank = true;
+	    (*value)->item[count].inTank = TRUE;
 		(*value)->item[count].owner = oldOwner;
 	  }
 	} 
@@ -1503,11 +1503,11 @@ bool pillsIsCapturable(pillboxes *value, BYTE xValue, BYTE yValue) {
   bool returnValue; /* Value to return */
   BYTE count;       /* Looping Variable */
 
-  returnValue = false;
+  returnValue = FALSE;
   count = 0;
-  while (returnValue == false && count < ((*value)->numPills)) {
-    if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue && ((*value)->item[count].armour == 0)  && ((*value)->item[count].inTank == false)) {
-      returnValue = true;
+  while (returnValue == FALSE && count < ((*value)->numPills)) {
+    if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue && ((*value)->item[count].armour == 0)  && ((*value)->item[count].inTank == FALSE)) {
+      returnValue = TRUE;
       count = (*value)->numPills;
     }
     count++;
@@ -1535,10 +1535,10 @@ void pillsExplicitDrop(pillboxes *value, BYTE owner) {
   count = 0;
   while (count < ((*value)->numPills)) {
     if (((*value)->item[count].owner) == owner) {
-      if (((*value)->item[count].inTank) == true) {
-        (*value)->item[count].inTank = false;
+      if (((*value)->item[count].inTank) == TRUE) {
+        (*value)->item[count].inTank = FALSE;
         netPNBAdd(screenGetNetPnb(), NPNB_PILL_DEAD, count, NEUTRAL, (*value)->item[count].x, (*value)->item[count].y, 0);
-        logAddEvent(log_PillSetInTank, utilPutNibble(count, false), 0, 0, 0, 0, NULL);
+        logAddEvent(log_PillSetInTank, utilPutNibble(count, FALSE), 0, 0, 0, 0, NULL);
         logAddEvent(log_PillSetPlace, count, (*value)->item[count].x, (*value)->item[count].y, 0, 0, NULL);
       }
     }
@@ -1585,11 +1585,11 @@ void pillsGetBrainPillsInRect(pillboxes *value, BYTE leftPos, BYTE rightPos, BYT
 */
 
   while (count < ((*value)->numPills)) {
-    isAllie = false;
+    isAllie = FALSE;
     if ((*value)->item[count].owner != NEUTRAL) {
       isAllie = playersIsAllie(screenGetPlayers(), playerNum, (*value)->item[count].owner);
     }
-    if (((((*value)->item[count].x) >= leftPos && ((*value)->item[count].x) <= rightPos && ((*value)->item[count].y) >= top && ((*value)->item[count].y) <= bottom) || isAllie == true) && ((*value)->item[count].inTank == false)) {
+    if (((((*value)->item[count].x) >= leftPos && ((*value)->item[count].x) <= rightPos && ((*value)->item[count].y) >= top && ((*value)->item[count].y) <= bottom) || isAllie == TRUE) && ((*value)->item[count].inTank == FALSE)) {
       /* In the rectangle */
       wx = (*value)->item[count].x;
       wx <<= TANK_SHIFT_MAPSIZE;
@@ -1599,7 +1599,7 @@ void pillsGetBrainPillsInRect(pillboxes *value, BYTE leftPos, BYTE rightPos, BYT
       wy += MAP_SQUARE_MIDDLE;
       if ((*value)->item[count].owner == NEUTRAL) {
         owner = PILLS_BRAIN_NEUTRAL;
-      } else if (isAllie == true) {
+      } else if (isAllie == TRUE) {
         owner = PILLS_BRAIN_FRIENDLY;
       } else {
         owner = PILLS_BRAIN_HOSTILE;
@@ -1628,10 +1628,10 @@ void pillsGetBrainPillsInRect(pillboxes *value, BYTE leftPos, BYTE rightPos, BYT
 bool pillsSetView(pillboxes *value, BYTE pillNum, BYTE playerNum) {
   bool returnValue; /* Value to return */
 
-  returnValue = false;
+  returnValue = FALSE;
   if (pillNum < ((*value)->numPills)) {
-    if ((*value)->item[pillNum].inTank == false && (*value)->item[pillNum].armour > 0 && playersIsAllie(screenGetPlayers(), playerNum, (*value)->item[pillNum].owner) == true) {
-      returnValue = true;
+    if ((*value)->item[pillNum].inTank == FALSE && (*value)->item[pillNum].armour > 0 && playersIsAllie(screenGetPlayers(), playerNum, (*value)->item[pillNum].owner) == TRUE) {
+      returnValue = TRUE;
     }
   }
   return returnValue;
@@ -1780,13 +1780,13 @@ bool pillsIsInView(pillboxes *value, BYTE playerNum, BYTE mx, BYTE my) {
   int gapY;
 
   count = 0;
-  returnValue = false;
-  while (count < (*value)->numPills && returnValue == false) {
-    if (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, playerNum) == true) {
+  returnValue = FALSE;
+  while (count < (*value)->numPills && returnValue == FALSE) {
+    if (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, playerNum) == TRUE) {
       gapX = (*value)->item[count].x - mx;
       gapY = (*value)->item[count].y - my;
       if (gapX >= -10 && gapX <= 10 && gapY >= -10 && gapY <=  10) {
-        returnValue = true;
+        returnValue = TRUE;
       }
     }
     count++;

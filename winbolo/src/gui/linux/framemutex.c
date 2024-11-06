@@ -54,21 +54,21 @@ HANDLE hFrameMutexHandle = NULL;
 bool frameMutexCreate(void) {
   bool returnValue; /* Value to return */
 
-  returnValue = true;
+  returnValue = TRUE;
 #ifdef _WIN32
   sprintf(name, "%s%d", DIALOG_BOX_TITLE, GetTickCount());
-  hFrameMutexHandle = CreateMutex(NULL, false, name);
+  hFrameMutexHandle = CreateMutex(NULL, FALSE, name);
   if (hFrameMutexHandle == NULL) {
     DWORD d = GetLastError();
     if (d == ERROR_ALREADY_EXISTS) {
       d= 1;
     }
-    returnValue = false;
+    returnValue = FALSE;
   }
 #else
   hFrameMutexHandle = SDL_CreateMutex();
   if (hFrameMutexHandle == NULL) {
-    returnValue = false;
+    returnValue = FALSE;
   }
 #endif
 

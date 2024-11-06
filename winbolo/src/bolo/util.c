@@ -233,9 +233,9 @@ BYTE utilGet16Dir(TURNTYPE value) {
 bool utilIsTankHit(WORLD xTank, WORLD yTank, TURNTYPE tankAngle, WORLD x, WORLD y, TURNTYPE angle) {
   bool returnValue; /* Value to return */
 
-  returnValue = false;
+  returnValue = FALSE;
   if (abs(xTank - x) < 128 && abs(yTank - y) < 128) {
-    returnValue = true;
+    returnValue = TRUE;
   }
 
   return returnValue;
@@ -313,7 +313,7 @@ bool utilIsItemInRange(WORLD x, WORLD y, WORLD tankX, WORLD tankY, WORLD range, 
   double distance;  /* Hold distance */
 
   /* FIXME: optimise me by using unsigned types. neg*neg = positive */
-  returnValue = false;
+  returnValue = FALSE;
   if (tankX - x < 0) {
     gapX = x - tankX;
   } else {
@@ -329,7 +329,7 @@ bool utilIsItemInRange(WORLD x, WORLD y, WORLD tankX, WORLD tankY, WORLD range, 
   distance += (double) gapY * gapY;
   distance = sqrt(distance);
   if (distance >=0 && distance <= range) {
-    returnValue = true;
+    returnValue = TRUE;
     *amount = distance;
   } else {
     *amount = WORLD_MAX;
@@ -363,7 +363,7 @@ bool utilIsTankInTrees(map *mp, pillboxes *pb, bases *bs, WORLD wx, WORLD wy) {
 
   bmx = wx >> TANK_SHIFT_MAPSIZE;
   bmy = wy >> TANK_SHIFT_MAPSIZE;
-  returnValue = true;
+  returnValue = TRUE;
   wx <<= TANK_SHIFT_MAPSIZE;
   wx >>= TANK_SHIFT_MAPSIZE;
   wy <<= TANK_SHIFT_MAPSIZE;
@@ -371,28 +371,28 @@ bool utilIsTankInTrees(map *mp, pillboxes *pb, bases *bs, WORLD wx, WORLD wy) {
 
   terrain = mapGetPos(mp, bmx, bmy);
   if (terrain != FOREST && terrain != MINE_FOREST) {
-    returnValue = false;
-  } else if (pillsExistPos(pb, bmx, bmy) == true || basesExistPos(bs, bmx, bmy) == true) {
-    returnValue = false;
+    returnValue = FALSE;
+  } else if (pillsExistPos(pb, bmx, bmy) == TRUE || basesExistPos(bs, bmx, bmy) == TRUE) {
+    returnValue = FALSE;
   }
 
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     if (wx >= MAP_SQUARE_MIDDLE) {
       /* wx > 128 */
       terrain = mapGetPos(mp, (BYTE) (bmx+1), bmy);
-      if ((terrain != FOREST && terrain != MINE_FOREST) || pillsExistPos(pb, (BYTE) (bmx+1), bmy) == true || basesExistPos(bs, (BYTE) (bmx+1), bmy) == true) {
-          returnValue = false;
+      if ((terrain != FOREST && terrain != MINE_FOREST) || pillsExistPos(pb, (BYTE) (bmx+1), bmy) == TRUE || basesExistPos(bs, (BYTE) (bmx+1), bmy) == TRUE) {
+          returnValue = FALSE;
        }
-      if (returnValue == true) {
+      if (returnValue == TRUE) {
         if (wy >= MAP_SQUARE_MIDDLE) {
           /* wx > 128 && wy > 128 */
           terrain = mapGetPos(mp, (BYTE) (bmx+1), (BYTE) (bmy+1));
           terrain2 = mapGetPos(mp, bmx, (BYTE) (bmy+1));
-          if (pillsExistPos(pb, (BYTE) (bmx+1), (BYTE) (bmy+1)) == true || basesExistPos(bs, (BYTE) (bmx+1), (BYTE) (bmy+1)) == true) {
-            returnValue = false;
+          if (pillsExistPos(pb, (BYTE) (bmx+1), (BYTE) (bmy+1)) == TRUE || basesExistPos(bs, (BYTE) (bmx+1), (BYTE) (bmy+1)) == TRUE) {
+            returnValue = FALSE;
           }
-          if (pillsExistPos(pb, bmx, (BYTE) (bmy+1)) == true || basesExistPos(bs, bmx, (BYTE) (bmy+1)) == true) {
-            returnValue = false;
+          if (pillsExistPos(pb, bmx, (BYTE) (bmy+1)) == TRUE || basesExistPos(bs, bmx, (BYTE) (bmy+1)) == TRUE) {
+            returnValue = FALSE;
           }
 
         } else {
@@ -400,17 +400,17 @@ bool utilIsTankInTrees(map *mp, pillboxes *pb, bases *bs, WORLD wx, WORLD wy) {
           terrain = mapGetPos(mp, (BYTE) (bmx+1), (BYTE) (bmy-1));
           terrain2 = mapGetPos(mp, bmx, (BYTE) (bmy-1));
         }
-        if (returnValue == true && ((terrain != FOREST && terrain != MINE_FOREST) || (terrain2 != FOREST && terrain2 != MINE_FOREST))) {
-          returnValue = false;
+        if (returnValue == TRUE && ((terrain != FOREST && terrain != MINE_FOREST) || (terrain2 != FOREST && terrain2 != MINE_FOREST))) {
+          returnValue = FALSE;
         }
       }
     } else {
       /* wx < 128 */
       terrain = mapGetPos(mp, (BYTE) (bmx-1), bmy);
       if (terrain != FOREST && terrain != MINE_FOREST) {
-          returnValue = false;
+          returnValue = FALSE;
        }
-      if (returnValue == true) {
+      if (returnValue == TRUE) {
         if (wy >= MAP_SQUARE_MIDDLE) {
           /* wx < 128 && wy > 128 */
           terrain2 = mapGetPos(mp, bmx, (BYTE) (bmy+1));
@@ -421,7 +421,7 @@ bool utilIsTankInTrees(map *mp, pillboxes *pb, bases *bs, WORLD wx, WORLD wy) {
           terrain = mapGetPos(mp, (BYTE) (bmx-1), (BYTE) (bmy-1));
         }
         if ((terrain != FOREST && terrain != MINE_FOREST) || (terrain2 != FOREST && terrain2 != MINE_FOREST)) {
-          returnValue = false;
+          returnValue = FALSE;
         }
       }
     }

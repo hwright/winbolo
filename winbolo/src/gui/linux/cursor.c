@@ -34,7 +34,7 @@
 #include "cursor.h"
 
 /* Is the cursor inside the main view area */
-bool cursorInMainView = false;
+bool cursorInMainView = FALSE;
 SDL_Cursor *saveCursor = NULL;
 SDL_Cursor *boloCursor = NULL;
 
@@ -57,13 +57,13 @@ Uint8 cm[8] = { 56, 40, 238, 124, 238, 40, 56 };
 bool cursorSetup() {
   bool returnValue; /* Value to return */
 
-  returnValue = true;
+  returnValue = TRUE;
   saveCursor = SDL_GetCursor();
   boloCursor = SDL_CreateCursor(cd, cm, 7, 7, 3, 3);
-  cursorSetCursor(true);
+  cursorSetCursor(TRUE);
   if (boloCursor == NULL || saveCursor == NULL) {
     fprintf(stderr, "Error building cursor\n");
-    returnValue = false;
+    returnValue = FALSE;
   }
   return returnValue;
 }
@@ -99,7 +99,7 @@ void cursorCleanup() {
 * normalCurs - Is it the normal cursor or Bolo one ?
 *********************************************************/
 void cursorSetCursor(bool normalCurs) {
-  if (normalCurs == true) {
+  if (normalCurs == TRUE) {
     SDL_SetCursor(saveCursor);
     //hCurs = LoadCursor(appInst, MAKEINTRESOURCE(IDC_POINTER));
   } else {
@@ -131,9 +131,9 @@ void cursorMove(int mouseX, int mouseY) {
 
 
 /*FIXME  if (GetForegroundWindow() != hWnd) {
-    if (cursorInMainView == true) {
-      cursorSetCursor(appInst, true);
-      cursorInMainView = false;
+    if (cursorInMainView == TRUE) {
+      cursorSetCursor(appInst, TRUE);
+      cursorInMainView = FALSE;
     }
     return;
   } else { */
@@ -145,14 +145,14 @@ void cursorMove(int mouseX, int mouseY) {
     top = zoomFactor * MAIN_OFFSET_Y;
     bottom = top + (MAIN_SCREEN_SIZE_Y * (zoomFactor * TILE_SIZE_Y));
     if (xPos >= left && xPos <= right && yPos >= top && yPos <= bottom) {
-      if (cursorInMainView == false) {
-        cursorSetCursor(false);
-        cursorInMainView = true;
+      if (cursorInMainView == FALSE) {
+        cursorSetCursor(FALSE);
+        cursorInMainView = TRUE;
       }
     } else {
-      if (cursorInMainView == true) {
-        cursorSetCursor(true);
-        cursorInMainView = false;
+      if (cursorInMainView == TRUE) {
+        cursorSetCursor(TRUE);
+        cursorInMainView = FALSE;
       }
     }
 //  }
@@ -182,7 +182,7 @@ bool cursorPos(int mouseX, int mouseY, BYTE *xValue, BYTE *yValue) {
   BYTE zoomFactor; /* The zooming factor */
   div_t dt;        /* Used for integer division */
 
-  if (cursorInMainView == true) { 
+  if (cursorInMainView == TRUE) { 
     if (mouseX != oldX || mouseY != oldY) {
       oldX = mouseX;
       oldY = mouseY;
@@ -230,11 +230,11 @@ void cursorAcquireCursor() {
   yPos = mousePos.y - rcWindow.top;
 
   if ((xPos >= (zoomFactor * MAIN_OFFSET_X) && xPos <= ((zoomFactor * MAIN_OFFSET_X) + ((zoomFactor * MAIN_SCREEN_SIZE_X) * (zoomFactor * TILE_SIZE_X)))) && (yPos >= (zoomFactor * MAIN_OFFSET_Y) && yPos <= ((zoomFactor * MAIN_OFFSET_Y) + ((zoomFactor * MAIN_SCREEN_SIZE_Y) * (zoomFactor * TILE_SIZE_Y))))) {
-    cursorSetCursor(appInst, false);
-    cursorInMainView = true;
+    cursorSetCursor(appInst, FALSE);
+    cursorInMainView = TRUE;
   } else {
-    cursorSetCursor(appInst, true);
-    cursorInMainView = false;
+    cursorSetCursor(appInst, TRUE);
+    cursorInMainView = FALSE;
   } */
 }
 
@@ -250,6 +250,6 @@ void cursorAcquireCursor() {
 *
 *********************************************************/
 void cursorLeaveWindow(void) {
-  cursorSetCursor(true);
+  cursorSetCursor(TRUE);
 }
 

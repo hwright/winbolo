@@ -44,7 +44,7 @@ char langFileName[FILENAME_MAX];
 *
 *********************************************************/
 bool langSetup() {
-  return true;
+  return TRUE;
 }
 
 
@@ -94,7 +94,7 @@ HMENU langGetMenu() {
 bool langLoadFile(char *filename, char *langName) {
   bool returnValue; /* Value to return */
 
-  returnValue = false;
+  returnValue = FALSE;
   return returnValue;
 }
 

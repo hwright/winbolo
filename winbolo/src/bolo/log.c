@@ -67,7 +67,7 @@ logTanks logCheckTanks;
 void logCreate() {
   logFile = NULL;
   logLastEvent = 0;
-  logIsRunning = false;
+  logIsRunning = FALSE;
   logNumEvents = 0;
   logMem = malloc(LOG_MEMORY_BUFFER_SIZE);
   logMemSize = 0;
@@ -89,7 +89,7 @@ void logCreate() {
 void logWriteEmpty() {
   BYTE data[3];
   unsigned short us;
-  if (logIsRunning == true) {
+  if (logIsRunning == TRUE) {
     if (logLastEvent > 0) {
       if (logLastEvent < LOG_SIZE_LONG_DIFF) {
         data[0] = LOG_NOEVENTS ^ logOldKey;
@@ -122,15 +122,15 @@ void logWriteEmpty() {
 void logWriteTick() {
   BYTE savedKey = logOldKey;
 
-  if (logIsRunning == true) {
+  if (logIsRunning == TRUE) {
     if (logNumEvents > 0) {
       logWriteEmpty();
       logWriteEvents(savedKey);
-      logLastEmpty = false;
+      logLastEmpty = FALSE;
     } else {
       logLastEvent++;
       if (logLastEvent == 63000) {
-        logLastEmpty = false;
+        logLastEmpty = FALSE;
         logWriteEmpty();
       }
     }
@@ -186,7 +186,7 @@ void logStop() {
   BYTE data[2];
   BYTE savedKey = logOldKey; /* Save the key as the old key will be overridden in WriteEmpty */
 
-  if (logIsRunning == true) {
+  if (logIsRunning == TRUE) {
     logWriteEmpty();
     data[0] = LOG_QUIT ^ savedKey;
     data[1] = LOG_QUIT ^ savedKey;
@@ -194,7 +194,7 @@ void logStop() {
     zipCloseFileInZip(logFile);
     zipClose(logFile, "WinBolo Log File");
   }
-  logIsRunning = false;
+  logIsRunning = FALSE;
 }
 
 /*********************************************************
@@ -253,9 +253,9 @@ void logAddToMemory(BYTE *memPos, BYTE *data, BYTE dataLen) {
 *  words   - Char* optional argument
 *********************************************************/
 void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4, unsigned short short1, char *words) {
-  bool changeKey = true; /* Whether to change the encryption key or not */
+  bool changeKey = TRUE; /* Whether to change the encryption key or not */
 
-  if (logIsRunning == true) {
+  if (logIsRunning == TRUE) {
     switch (itemNum) {
     case log_BaseSetOwner:
       *(logMem+logMemSize) = log_BaseSetOwner ^ logKey;
@@ -395,8 +395,8 @@ void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4, un
       logMemSize++;
       break;
     case log_PlayerLocation:
-      if (logCheckTankSame(opt1, opt2, opt3, opt4, (BYTE) short1) == true) {
-        changeKey = false;
+      if (logCheckTankSame(opt1, opt2, opt3, opt4, (BYTE) short1) == TRUE) {
+        changeKey = FALSE;
         logNumEvents--;
       } else {
         *(logMem+logMemSize) = itemNum ^ logKey;
@@ -480,12 +480,12 @@ void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4, un
       logMemSize++;
       break;
     default:
-      changeKey = false;
+      changeKey = FALSE;
       logNumEvents--;
       break;
     }
     logNumEvents++;
-    if (changeKey == true) {
+    if (changeKey == TRUE) {
       logKey = itemNum;
     }
   }
@@ -504,7 +504,7 @@ void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4, un
 *********************************************************/
 void logDestroy() {
   logStop();
-  logIsRunning = false;
+  logIsRunning = FALSE;
   logFile = NULL;  
   if (logMem != NULL) {
     free(logMem);
@@ -536,7 +536,7 @@ int writeData(BYTE *data, int len, BYTE key) {
 * check - Whether to check if running or not
 *********************************************************/
 bool logWriteSnapshot(map *mp, pillboxes *pb, bases *bs, starts *ss, players *plrs, bool check) {
-  bool returnValue = true; /* Value to return */
+  bool returnValue = TRUE; /* Value to return */
   BYTE dataLen; 
   BYTE savedDataLen;       /* Non XOR'd datalength */
   BYTE data[512];
@@ -548,8 +548,8 @@ bool logWriteSnapshot(map *mp, pillboxes *pb, bases *bs, starts *ss, players *pl
   int len;                 /* Length of the run to write */
   long length;
 
-  if (logIsRunning == false && check == true) {
-    return true;
+  if (logIsRunning == FALSE && check == TRUE) {
+    return TRUE;
   }
 
   
@@ -559,11 +559,11 @@ bool logWriteSnapshot(map *mp, pillboxes *pb, bases *bs, starts *ss, players *pl
     logWriteEvents(logOldKey);
   } else {
     logWriteEmpty();
-    if (logLastEmpty == true) {
+    if (logLastEmpty == TRUE) {
   //    printf("Not snapshotting because nothing happened!\n");
-      return true;
+      return TRUE;
     }
-    logLastEmpty = true;
+    logLastEmpty = TRUE;
     // Nothing happened return?
   }
 
@@ -573,80 +573,80 @@ bool logWriteSnapshot(map *mp, pillboxes *pb, bases *bs, starts *ss, players *pl
   data[0] = LOG_EVENT_SNAPSHOT;
   ret = writeData(data, 1, logOldKey);
   if (ret != Z_OK) {
-    returnValue = false;
+    returnValue = FALSE;
   }
 
   /* Write start delay and time left */
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     length = htonl(serverCoreGetGameStartDelay());
     ret = writeData((BYTE *) &length, sizeof(long), logOldKey);   
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     length = htonl(serverCoreGetGameTimeLeft());
     ret = writeData((BYTE *) &length, sizeof(long), logOldKey);   
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   /* Write pill locations */
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     dataLen = pillsGetPillNetData(pb, data);
     savedDataLen = dataLen;
     ret = writeData(&dataLen, 1, logOldKey);   
     ret = writeData(data, savedDataLen, logOldKey);
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
   /* Write bases locations */
-  if (returnValue == true && logFile) {
+  if (returnValue == TRUE && logFile) {
     dataLen = basesGetBaseNetData(bs, data);
     savedDataLen = dataLen;
     ret = writeData(&dataLen, 1, logOldKey);
     ret = writeData(data, savedDataLen, logOldKey);
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
   /* Write starts locations */
-  if (returnValue == true && logFile) {
+  if (returnValue == TRUE && logFile) {
     dataLen = startsGetStartNetData(ss, data);
     savedDataLen = dataLen;
     ret = writeData(&dataLen, 1, logOldKey);
     ret = writeData(data, savedDataLen, logOldKey);
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   /* Write the map itself */
-  if (returnValue == true && logFile) {
+  if (returnValue == TRUE && logFile) {
     xPos = 0;
     yPos = 0;
-    while (yPos < 0xFF && returnValue == true) {
+    while (yPos < 0xFF && returnValue == TRUE) {
       /* Process runs */
       len = mapPrepareRun(mp, &run, &xPos, &yPos);
       /* Write the run out */
       ret = writeData((BYTE *) &run, len, logOldKey);
       if (ret != Z_OK) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
   }
 
   /* Write each player */
-  while (count < MAX_TANKS && returnValue == true) {
+  while (count < MAX_TANKS && returnValue == TRUE) {
     playersPrepareLogSnapshotForPlayer(plrs, count, data, &dataLen);
     savedDataLen = dataLen;
     ret = writeData((BYTE *) &dataLen, 1, logOldKey);
     ret = writeData(data, savedDataLen, logOldKey);
 
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
     count++;
   }
@@ -684,9 +684,9 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
   unsigned short port;
   BYTE count;
 
-  returnValue = true;
+  returnValue = TRUE;
   logStop(); /* Stop the current log if it is running */
-  logLastEmpty = false;
+  logLastEmpty = FALSE;
 
   count = 0;
   while (count < MAX_TANKS) {
@@ -710,44 +710,44 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
 
   
   if (logFile == NULL) {
-    returnValue = false;
+    returnValue = FALSE;
     ret = Z_OK;
   } else {
     ret = zipOpenNewFileInZip(logFile, "log.dat", &zi, NULL, 0, NULL, 0, "", Z_DEFLATED, Z_DEFAULT_COMPRESSION);
   }
 
   if (ret != Z_OK) {
-    returnValue = false;
+    returnValue = FALSE;
   } else {
     strcpy((char *) data, LOG_HEADER);
     ret = zipWriteInFileInZip(logFile, data, (unsigned int) strlen((char *) data));
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   
   /* Write log version */
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     data[0] = LOG_VERSION;
     ret = zipWriteInFileInZip(logFile, data, 1);
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   /* Write Map Name */
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     serverCoreGetMapName((char *) data+1);
     data[0] = (BYTE) strlen((char *) data+1);
     ret = zipWriteInFileInZip(logFile, data, data[0]+1);
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   /* Write Game Type, Allow mines, AI type, password */
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     data[0] = serverCoreGetActualGameType();
     data[1] = serverCoreGetAllowHiddenMines();
     data[2] = ai;
@@ -758,51 +758,51 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
     data[7] = BOLO_VERSION_REVISION;
     ret = zipWriteInFileInZip(logFile, data, 8);
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   /* Write server address and port */
   serverNetGetUs(data, &port);
   port = htons(port);
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     ret = zipWriteInFileInZip(logFile, data, 4);
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     } else {
       ret = zipWriteInFileInZip(logFile, &port, sizeof(unsigned short));
       if (ret != Z_OK) {
-        returnValue = false;
+        returnValue = FALSE;
       }
     }
   }
 
   /* Start time */
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     start = htonl(serverCoreGetTimeGameCreated());
     ret = zipWriteInFileInZip(logFile, &start, sizeof(long));
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   /* Write WBN Key */
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     winboloNetGetServerKey(data);
     ret = zipWriteInFileInZip(logFile, data, WINBOLONET_KEY_LEN);
     if (ret != Z_OK) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 
   logKey = logOldKey = (BYTE) (serverCoreGetTimeGameCreated() & 0xFF);
   /* Write Snapshot */
-  if (returnValue == true) {
-    returnValue = logWriteSnapshot(mp, pb, bs, ss, plrs, false);
+  if (returnValue == TRUE) {
+    returnValue = logWriteSnapshot(mp, pb, bs, ss, plrs, FALSE);
   }
 
-  if (returnValue == true) {
-    logIsRunning = true;
+  if (returnValue == TRUE) {
+    logIsRunning = TRUE;
   } else if(logFile != NULL) {
     zipCloseFileInZip(logFile);
     zipClose(logFile, "");
@@ -835,13 +835,13 @@ bool logCheckTankSame(BYTE playerNum, BYTE mx, BYTE my, BYTE pxy, BYTE opt) {
   }
 
   if (playerNum >= MAX_TANKS) {
-    return false;
+    return FALSE;
   } else  if (logCheckTanks.item[playerNum].mx != mx || logCheckTanks.item[playerNum].my != my || logCheckTanks.item[playerNum].pxy != pxy || logCheckTanks.item[playerNum].opt != opt) {
     logCheckTanks.item[playerNum].mx = mx;
     logCheckTanks.item[playerNum].my = my;
     logCheckTanks.item[playerNum].pxy = pxy;
     logCheckTanks.item[playerNum].opt = opt;
-    return false;
+    return FALSE;
   }
-  return true;
+  return TRUE;
 }

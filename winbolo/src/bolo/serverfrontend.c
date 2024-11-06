@@ -85,5 +85,5 @@ void serverNetSendManWorkingMessage(BYTE playerNum, BYTE mapX, BYTE mapY, BYTE n
 * checkY    - Y Position to check
 *********************************************************/
 bool serverCoreTankInView(BYTE playerNum, BYTE checkX, BYTE checkY) {
-  return true;
+  return TRUE;
 }

@@ -88,27 +88,27 @@ BYTE grassAddItem(grass *grs, BYTE x, BYTE y) {
   grass inc;
 
   inc = *grs;
-  found = false;
+  found = FALSE;
   returnValue = GRASS;
   count = 0;
   
-  while (found == false && NonEmpty(inc)) {
+  while (found == FALSE && NonEmpty(inc)) {
     count++;
     if (inc->x == x && inc->y == y) {
-      found = true;
+      found = TRUE;
       inc->life--;
       if (inc->life == GRASS_DEATH) {
         returnValue = GRASS_DEATH_RETURN;
         grassDeleteItem(grs, count);
       } 
 	  }
-    if (found == false) {
+    if (found == FALSE) {
 		  inc = GrassTail(inc);
     }
   }
 
   /* If not found add a new item */
-  if (found == false) {
+  if (found == FALSE) {
     New (q);
     q->x = x;
     q->y = y;
@@ -175,19 +175,19 @@ void grassRemovePos(grass *grs, BYTE x, BYTE y) {
   grass inc;
 
   inc = *grs;
-  found = false;
+  found = FALSE;
   count = 0;
   
-  while (found == false && NonEmpty(inc)) {
+  while (found == FALSE && NonEmpty(inc)) {
     count++;
     if (inc->x == x && inc->y == y) {
-      found = true;
+      found = TRUE;
     }
     inc = GrassTail(inc);
   }
 
   /* If found remove item */
-  if (found == true) {
+  if (found == TRUE) {
     grassDeleteItem(grs, count);
   }
 }

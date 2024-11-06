@@ -86,45 +86,45 @@ create_dialogGameFinder (void)
   gtk_object_set_data (GTK_OBJECT (dialogGameFinder), "dialogGameFinder", dialogGameFinder);
   gtk_container_set_border_width (GTK_CONTAINER (dialogGameFinder), 15);
   gtk_window_set_title (GTK_WINDOW (dialogGameFinder), "Game Finder");
-  gtk_window_set_modal (GTK_WINDOW (dialogGameFinder), true);
+  gtk_window_set_modal (GTK_WINDOW (dialogGameFinder), TRUE);
 
-  vbox1 = gtk_vbox_new (false, 0);
+  vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
   gtk_container_add (GTK_CONTAINER (dialogGameFinder), vbox1);
 
-  hbox1 = gtk_hbox_new (false, 0);
+  hbox1 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox1);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "hbox1", hbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox1);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
 
   list1 = gtk_list_new ();
   gtk_widget_ref (list1);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "list1", list1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (list1);
-  gtk_box_pack_start (GTK_BOX (hbox1), list1, true, true, 10);
+  gtk_box_pack_start (GTK_BOX (hbox1), list1, TRUE, TRUE, 10);
 
-  vbox2 = gtk_vbox_new (false, 0);
+  vbox2 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox2);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "vbox2", vbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox2);
-  gtk_box_pack_start (GTK_BOX (hbox1), vbox2, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), vbox2, TRUE, TRUE, 0);
 
   frame1 = gtk_frame_new ("Selected Game Information");
   gtk_widget_ref (frame1);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "frame1", frame1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (frame1);
-  gtk_box_pack_start (GTK_BOX (vbox2), frame1, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (vbox2), frame1, TRUE, TRUE, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame1), 7);
 
-  table2 = gtk_table_new (11, 2, false);
+  table2 = gtk_table_new (11, 2, FALSE);
   gtk_widget_ref (table2);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "table2", table2,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -359,15 +359,15 @@ create_dialogGameFinder (void)
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "idc_gamefindstatus", idc_gamefindstatus,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_gamefindstatus);
-  gtk_box_pack_start (GTK_BOX (vbox2), idc_gamefindstatus, false, true, 3);
+  gtk_box_pack_start (GTK_BOX (vbox2), idc_gamefindstatus, FALSE, TRUE, 3);
   gtk_misc_set_alignment (GTK_MISC (idc_gamefindstatus), 0.04, 0.5);
 
-  table1 = gtk_table_new (3, 4, false);
+  table1 = gtk_table_new (3, 4, FALSE);
   gtk_widget_ref (table1);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "table1", table1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table1);
-  gtk_box_pack_start (GTK_BOX (vbox1), table1, true, true, 15);
+  gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 15);
 
   button2 = gtk_button_new_with_label ("Join by Address");
   gtk_widget_ref (button2);
@@ -431,7 +431,7 @@ create_dialogGameFinder (void)
   gtk_table_attach (GTK_TABLE (table1), idc_gamefindjoin, 3, 4, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (idc_gamefindjoin, false);
+  gtk_widget_set_sensitive (idc_gamefindjoin, FALSE);
 
   idc_gamefindrejoin = gtk_button_new_with_label ("Rejoin");
   gtk_widget_ref (idc_gamefindrejoin);
@@ -441,7 +441,7 @@ create_dialogGameFinder (void)
   gtk_table_attach (GTK_TABLE (table1), idc_gamefindrejoin, 3, 4, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (idc_gamefindrejoin, false);
+  gtk_widget_set_sensitive (idc_gamefindrejoin, FALSE);
 
   button7 = gtk_button_new_with_label ("Cancel");
   gtk_widget_ref (button7);

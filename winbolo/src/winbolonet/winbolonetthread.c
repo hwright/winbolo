@@ -68,40 +68,40 @@ bool wbnFinished;
 bool winbolonetThreadCreate(void) {
   bool returnValue;        /* Value to return */
 
-  returnValue = true;
+  returnValue = TRUE;
   wbnProcessing = NULL;
   wbnWaiting = NULL;
-  wbnShouldRun = true;
-  wbnFinished = false;
+  wbnShouldRun = TRUE;
+  wbnFinished = FALSE;
   
 #ifdef _WIN32
   char name[FILENAME_MAX]; /* Used in Mutex creation */
   sprintf(name, "%s%d", "WBNUPDATE", GetTickCount());
-  hWbnMutexHandle = CreateMutex(NULL, false, (LPCTSTR ) name);
+  hWbnMutexHandle = CreateMutex(NULL, FALSE, (LPCTSTR ) name);
 #else
   hWbnMutexHandle = SDL_CreateMutex();
 #endif
   if (hWbnMutexHandle == NULL) {
-    returnValue = false;
+    returnValue = FALSE;
   }
 
   /* create thread and run */
 #ifdef _WIN32
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     hWbnThread = CreateThread((LPSECURITY_ATTRIBUTES) NULL, 0, (LPTHREAD_START_ROUTINE) winbolonetThreadRun, 0, 0, &wbnThreadID);
     if (hWbnThread == NULL) {
       CloseHandle(hWbnMutexHandle);
       hWbnMutexHandle = NULL;
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 #else
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     hWbnThread = SDL_CreateThread(winbolonetThreadRun, NULL);
     if (hWbnThread  == NULL) {
       SDL_DestroyMutex(hWbnMutexHandle);
       hWbnMutexHandle = NULL;
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
 #endif
@@ -134,8 +134,8 @@ void winbolonetThreadDestroy(void) {
     }
 
     /* Wait for current to finish */
-    wbnShouldRun = false;
-    while (wbnFinished == false) {
+    wbnShouldRun = FALSE;
+    while (wbnFinished == FALSE) {
       /* Wait a bit for the last call to finish */
 #ifdef _WIN32
       Sleep(WBN_SHUTDOWN_SLEEP_TIME);
@@ -204,7 +204,7 @@ void winbolonetThreadDestroy(void) {
 void winbolonetThreadAddRequest(BYTE *data, int len) {
   wbnList add; /* Used to add to the queue */
 
-  if (wbnShouldRun == true) {
+  if (wbnShouldRun == TRUE) {
     New(add);
     memcpy(add->data, data, len);
     add->len = len;
@@ -239,7 +239,7 @@ int winbolonetThreadRun() {
   wbnList q;      /* Used to iterate through the list */
   wbnList prev;      /* Used to iterate through the list */
 
-  while (wbnShouldRun == true) {
+  while (wbnShouldRun == TRUE) {
 
 #ifdef _WIN32
     WaitForSingleObject(hWbnMutexHandle, INFINITE);
@@ -253,7 +253,7 @@ int winbolonetThreadRun() {
     SDL_mutexV(hWbnMutexHandle);
 #endif    
     
-    while (NonEmpty(wbnProcessing) && wbnShouldRun == true) {
+    while (NonEmpty(wbnProcessing) && wbnShouldRun == TRUE) {
       /* Get last entry */
       if (wbnProcessing->next == NULL) {
         /* Only one entry */
@@ -279,7 +279,7 @@ int winbolonetThreadRun() {
     sleep(WBN_THREAD_SLEEP_TIME_LINUX);
 #endif
   }
-  wbnFinished = true;
+  wbnFinished = TRUE;
   return 0;
 }
 

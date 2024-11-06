@@ -29,12 +29,8 @@
 /* jm */
 
 typedef BYTE Boolean;
-#ifndef TRUE
 #define TRUE 1
-#endif
-#ifndef FALSE
 #define FALSE 0
-#endif
 /* end jm */
 
 /* The various accessible tank control functions */
