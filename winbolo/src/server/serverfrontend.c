@@ -124,7 +124,7 @@ void frontEndPlaySound(sndEffects value) {
 *  lgms       - Pointer to the screen builder structure
 *  srtDelay   - Start delay. If this is greater then 0
 *               Then the delay screen should be drawn
-*  isPillView - true if we are in pillbox view
+*  isPillView - TRUE if we are in pillbox view
 *  tank       - Pointer to player's tank structure
 *  edgeX      - X Offset for smooth scrolling
 *  edgeY      - Y Offset for smooth scrolling
@@ -302,7 +302,7 @@ void frontEndSetPlayer(playerNumbers value, char *str) {
 * downloading network data. Draw progress line instead.
 * 
 *ARGUMENTS:
-*  justBlack - true if we want just a black screen
+*  justBlack - TRUE if we want just a black screen
 *********************************************************/
 void frontEndDrawDownload(bool justBlack) {
   return;
@@ -376,7 +376,7 @@ void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my) {
   BYTE logMessageType; /* Log item type */
   bool wantLog;        /* Do we want to log this? */
   
-  wantLog = true;
+  wantLog = TRUE;
   switch (value) {
   case shootSelf:
   case shootNear:
@@ -402,7 +402,7 @@ void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my) {
   case bubbles:
   case tankSinkNear:
   case tankSinkFar:
-    wantLog = false;
+    wantLog = FALSE;
     break;
   case bigExplosionNear:
     logMessageType = log_SoundBigExplosion;
@@ -433,7 +433,7 @@ void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my) {
     break;
   }
 
-  if (wantLog == true) {
+  if (wantLog == TRUE) {
     logAddEvent(logMessageType, mx, my, 0, 0, 0, NULL);
   }
 
@@ -515,7 +515,7 @@ void screenGetTankWorld(WORLD *x, WORLD *y) {
 *********************************************************/
 bool screenIsItemInTrees(WORLD bmx, WORLD bmy) {
   messageAdd(globalMessage, (char *) "DANGEROUS: screenIsItemInTrees", (char *) ""); /* This code should never be called by the server. */
-  return true;
+  return TRUE;
 }
 
 /*********************************************************
@@ -620,7 +620,7 @@ void netMessageSendPlayer(BYTE playerNum, BYTE destPlayer, char *message) {
 * item
 * 
 *ARGUMENTS:
-*  enabled - true for enabled/false for diabled
+*  enabled - TRUE for enabled/FALSE for diabled
 *********************************************************/
 void frontEndEnableRequestAllyMenu(bool enabled) {
   return;
@@ -635,7 +635,7 @@ void frontEndEnableRequestAllyMenu(bool enabled) {
 * Request to enable/disable the leave alliance menu item
 * 
 *ARGUMENTS:
-*  enabled - true for enabled/false for diabled
+*  enabled - TRUE for enabled/FALSE for diabled
 *********************************************************/
 void frontEndEnableLeaveAllyMenu(bool enabled) {
   return;
@@ -732,7 +732,7 @@ void screenChangeOwnership(BYTE oldOwner) {
 * Moves our view left or right depending on the argument
 *
 *ARGUMENTS:
-*  isLeft - true for left, false for right
+*  isLeft - TRUE for left, FALSE for right
 *********************************************************/
 void screenMoveViewOffsetLeft(bool isLeft) {
 
@@ -747,13 +747,13 @@ void screenMoveViewOffsetLeft(bool isLeft) {
 * Moves our view up or down depending on the argument
 *
 *ARGUMENTS:
-*  isup - true for up, false for dpwm
+*  isup - TRUE for up, FALSE for dpwm
 *********************************************************/
 void screenMoveViewOffsetUp(bool isUp) {
 }
 
 bool screenTankScroll() {
-  return false;
+  return FALSE;
 }
 
 /*********************************************************
@@ -786,14 +786,14 @@ void screenAddBrainObject(unsigned short object, WORLD wx, WORLD wy, unsigned sh
 *  position
 *
 *ARGUMENTS:
-*  entering - true if entering, false if leaving
+*  entering - TRUE if entering, FALSE if leaving
 *********************************************************/
 void clientSetInStartFind(bool entering) {
 
 }
 
 bool clientGetInStartFind() {
-  return false;
+  return FALSE;
 }
 void frontEndShowGunsight(bool isShown){}
 
@@ -811,7 +811,7 @@ void netErrorOccured() {}
 *  pos - Y Position on the map
 *********************************************************/
 bool frontEndTutorial(BYTE pos) {
-  return false;
+  return FALSE;
 }
 
 /*********************************************************
@@ -982,16 +982,16 @@ void clientGetTankWorldFromLgm(lgm *lgmans, WORLD *x, WORLD *y) {
 *LAST MODIFIED: 9/04/01
 *PURPOSE:
 * Checks to see if there is enemy tank within range
-* supplied. Returns true if we are in the clear
+* supplied. Returns TRUE if we are in the clear
 *
 *ARGUMENTS:
 *  xValue    - X Value
 *  yValue    - Y Value
 *  playerNum - Player number to check against
-*  distance  - Distance to be less then to return false
+*  distance  - Distance to be less then to return FALSE
 *********************************************************/
 bool clientCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
-  return false;
+  return FALSE;
 }
 
 /*********************************************************
@@ -1001,7 +1001,7 @@ bool clientCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
 *LAST MODIFIED: 9/04/01
 *PURPOSE:
 * Checks to see if there is enemy pill within range
-* supplied. Returns true if we are in the clear
+* supplied. Returns TRUE if we are in the clear
 *
 *ARGUMENTS:
 *  xValue    - X Value
@@ -1010,7 +1010,7 @@ bool clientCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
 *  distance  - Distance to be less then to return true
 *********************************************************/
 bool clientCheckPillsRange(BYTE xValue, BYTE yValue, BYTE playerNum, double distance) {
-  return false;
+  return FALSE;
 }
 
 /*********************************************************
@@ -1055,7 +1055,7 @@ void clientMessageAdd(messageType msgType, char *top, char *bottom) {
 *CREATION DATE: 31/8/99
 *LAST MODIFIED:  8/9/00
 *PURPOSE:
-* Returns true in a client.
+* Returns TRUE in a client.
 *
 *ARGUMENTS:
 * playerNum - PlayerNum to check
@@ -1063,7 +1063,7 @@ void clientMessageAdd(messageType msgType, char *top, char *bottom) {
 * checkY    - Y Position to check
 *********************************************************/
 bool clientTankInView(BYTE playerNum, BYTE checkX, BYTE checkY) {
-  return false;
+  return FALSE;
 }
 
 /*********************************************************

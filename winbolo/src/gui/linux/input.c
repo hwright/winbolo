@@ -50,21 +50,21 @@ keyItems heldKeys;
 bool inputSetup() {
   scrollKeyCount = 0;
   /* These are DIK_??? defines */
-  heldKeys.kiForward = false;    /* Tank accelerate */
-  heldKeys.kiBackward = false;   /* Tank decelerate */
-  heldKeys.kiLeft = false;       /* Tank left */
-  heldKeys.kiRight = false;      /* Tank right */
-  heldKeys.kiShoot = false;      /* Tank shooting */
-  heldKeys.kiLayMine = false;     /* Tank lay mine */
-  heldKeys.kiGunIncrease = false; /* Increase gunsight length */
-  heldKeys.kiGunDecrease = false; /* Decrease gunsight length */
-  heldKeys.kiTankView = false;    /* Center on tank */
-  heldKeys.kiPillView = false;    /* Pill view */
-  heldKeys.kiScrollUp = false;    /* Scroll up */
-  heldKeys.kiScrollDown = false;  /* Scroll down */
-  heldKeys.kiScrollLeft = false;  /* Scroll left */
-  heldKeys.kiScrollRight = false; /* Scroll right */
-  return true;
+  heldKeys.kiForward = FALSE;    /* Tank accelerate */
+  heldKeys.kiBackward = FALSE;   /* Tank decelerate */
+  heldKeys.kiLeft = FALSE;       /* Tank left */
+  heldKeys.kiRight = FALSE;      /* Tank right */
+  heldKeys.kiShoot = FALSE;      /* Tank shooting */
+  heldKeys.kiLayMine = FALSE;     /* Tank lay mine */
+  heldKeys.kiGunIncrease = FALSE; /* Increase gunsight length */
+  heldKeys.kiGunDecrease = FALSE; /* Decrease gunsight length */
+  heldKeys.kiTankView = FALSE;    /* Center on tank */
+  heldKeys.kiPillView = FALSE;    /* Pill view */
+  heldKeys.kiScrollUp = FALSE;    /* Scroll up */
+  heldKeys.kiScrollDown = FALSE;  /* Scroll down */
+  heldKeys.kiScrollLeft = FALSE;  /* Scroll left */
+  heldKeys.kiScrollRight = FALSE; /* Scroll right */
+  return TRUE;
 }
 
 /*********************************************************
@@ -101,61 +101,61 @@ tankButton inputGetKeys(bool isMenu) {
   static BYTE gunsightKeyCount = 0; /* Used for gunsight movement */
 
   /* FIXME: Check message window doesn't have focus *
-  if (GetForegroundWindow() != hWnd || isMenu == true) {
+  if (GetForegroundWindow() != hWnd || isMenu == TRUE) {
     return TNONE;
    SDL_PumpEvents();
     SDL_PumpEvents();
  } */
  tb = TNONE;
   /* Now set up the tank buttons */
-  if (heldKeys.kiForward == true &&  heldKeys.kiRight == true) {
+  if (heldKeys.kiForward == TRUE &&  heldKeys.kiRight == TRUE) {
     tb = TRIGHTACCEL;
-  } else if (heldKeys.kiForward == true && heldKeys.kiLeft == true) {
+  } else if (heldKeys.kiForward == TRUE && heldKeys.kiLeft == TRUE) {
     tb = TLEFTACCEL;
-  } else if (heldKeys.kiBackward == true && heldKeys.kiLeft == true) {
+  } else if (heldKeys.kiBackward == TRUE && heldKeys.kiLeft == TRUE) {
     tb = TLEFTDECEL;
-  } else if (heldKeys.kiBackward == true && heldKeys.kiRight == true) {
+  } else if (heldKeys.kiBackward == TRUE && heldKeys.kiRight == TRUE) {
     tb = TRIGHTDECEL;
-  } else if (heldKeys.kiForward == true) {
+  } else if (heldKeys.kiForward == TRUE) {
     tb = TACCEL;
-  } else if (heldKeys.kiBackward == true) {
+  } else if (heldKeys.kiBackward == TRUE) {
     tb = TDECEL;
-  } else if (heldKeys.kiLeft == true) {
+  } else if (heldKeys.kiLeft == TRUE) {
     tb = TLEFT;
-  } else if (heldKeys.kiRight == true) {
+  } else if (heldKeys.kiRight == TRUE) {
     tb = TRIGHT;
   } else {
     tb = TNONE;
   }
   /* Get whether the tank is lay a mine */
-  if (heldKeys.kiLayMine == true) {
+  if (heldKeys.kiLayMine == TRUE) {
       screenTankLayMine();
   }
   scrollKeyCount++;
-  if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && isMenu == false) {
+  if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && isMenu == FALSE) {
     scrollKeyCount = 0;
     /* Scroll Check */
-    if (heldKeys.kiScrollUp == true) {
+    if (heldKeys.kiScrollUp == TRUE) {
       screenUpdate(up);
     }
-    if (heldKeys.kiScrollDown == true) {
+    if (heldKeys.kiScrollDown == TRUE) {
       screenUpdate(down);
     }
-    if (heldKeys.kiScrollLeft == true) {
+    if (heldKeys.kiScrollLeft == TRUE) {
       screenUpdate(left);
     }
-    if (heldKeys.kiScrollRight == true) {
+    if (heldKeys.kiScrollRight == TRUE) {
       screenUpdate(right);
     }
   }
   gunsightKeyCount++;
-  if (gunsightKeyCount >= INPUT_GUNSIGHT_WAIT_TIME && isMenu == false) {
+  if (gunsightKeyCount >= INPUT_GUNSIGHT_WAIT_TIME && isMenu == FALSE) {
     /* Gunsight Check */
-    if (heldKeys.kiGunIncrease == true) {
-      screenGunsightRange(true);
+    if (heldKeys.kiGunIncrease == TRUE) {
+      screenGunsightRange(TRUE);
       gunsightKeyCount = 0;
-    } else if (heldKeys.kiGunDecrease == true) {
-      screenGunsightRange(false);
+    } else if (heldKeys.kiGunDecrease == TRUE) {
+      screenGunsightRange(FALSE);
       gunsightKeyCount = 0;
     } else if (gunsightKeyCount > (INPUT_GUNSIGHT_WAIT_TIME + 1)) {
       gunsightKeyCount = INPUT_GUNSIGHT_WAIT_TIME;
@@ -179,19 +179,19 @@ tankButton inputGetKeys(bool isMenu) {
 *********************************************************/
 void inputScroll(bool isMenu) {
   scrollKeyCount++;
-  if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && isMenu == false) {
+  if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && isMenu == FALSE) {
     scrollKeyCount = 0;
     /* Scroll Check */
-    if (heldKeys.kiScrollUp == true) {
+    if (heldKeys.kiScrollUp == TRUE) {
       screenUpdate(up);
     }
-    if (heldKeys.kiScrollDown == true) {
+    if (heldKeys.kiScrollDown == TRUE) {
       screenUpdate(down);
     }
-    if (heldKeys.kiScrollLeft == true) {
+    if (heldKeys.kiScrollLeft == TRUE) {
       screenUpdate(left);
     }
-    if (heldKeys.kiScrollRight == true) {
+    if (heldKeys.kiScrollRight == TRUE) {
        screenUpdate(right);
     }
   }
@@ -211,16 +211,16 @@ void inputScroll(bool isMenu) {
 *ARGUMENTS:
 *     hWnd - The main window
 *  setKeys - Structure that holds the key settings
-*   isMenu - true if we are in a menu
+*   isMenu - TRUE if we are in a menu
 *********************************************************/
 bool inputIsFireKeyPressed(bool isMenu) {
   bool returnValue;       /* Value to return */
 
-  returnValue = false;
+  returnValue = FALSE;
  
   /* Get the fire button state here if it is OK to proceed */
-  if (heldKeys.kiShoot == true) {
-    returnValue = true;
+  if (heldKeys.kiShoot == TRUE) {
+    returnValue = TRUE;
   }
   return returnValue;
 }

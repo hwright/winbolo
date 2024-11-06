@@ -92,25 +92,25 @@ void floodAddItem(floodFill *ff, BYTE x, BYTE y) {
   bool found;       /* Is the item found */
   
   prev = inc = *ff;
-  found = false;
+  found = FALSE;
   
-  while (found == false && NonEmpty(inc)) {
+  while (found == FALSE && NonEmpty(inc)) {
     if (inc->x == x && inc->y == y) {
-      found = true;
+      found = TRUE;
     }
     prev = inc;
     inc = FloodFillTail(inc);
   }
 
   /* If not found add a new item */
-  if (found == false && IsEmpty(*ff)) {
+  if (found == FALSE && IsEmpty(*ff)) {
     New(q);
     q->x = x;
     q->y = y;
     q->time = FLOOD_FILL_WAIT;
     q->next = *ff;
     *ff = q;
-  } else if (found == false) {
+  } else if (found == FALSE) {
     New (q);
     q->x = x;
     q->y = y;
@@ -143,13 +143,13 @@ void floodUpdate(floodFill *ff, map *mp, pillboxes *pb, bases *bs) {
   itemCount = 0;
 
   while (NonEmpty(position)) {
-    needUpdate = true;
+    needUpdate = TRUE;
     itemCount++;
     if (position->time > 0) {
         position->time--;
     } else {
       /* Check for fill and remove from data structure */
-      needUpdate = false;
+      needUpdate = FALSE;
       floodCheckFill(ff, mp, pb, bs, position->x, position->y);
       position = FloodFillTail(position);
       floodDeleteItem(ff, itemCount);
@@ -157,7 +157,7 @@ void floodUpdate(floodFill *ff, map *mp, pillboxes *pb, bases *bs) {
     }
     
     /* Get the next Item */
-    if (*ff != NULL && needUpdate == true) {
+    if (*ff != NULL && needUpdate == TRUE) {
       position = FloodFillTail(position);
     } else {
       position = NULL;
@@ -228,27 +228,27 @@ void floodCheckFill(floodFill *ff, map *mp, pillboxes *pb, bases *bs, BYTE mx, B
   rightPos = mapGetPos(mp, (BYTE) (mx+1), my);
 
   /* Check for pills, bases etc. If found change to non crater / water */
-  if (pillsExistPos(pb, mx, (BYTE) (my-1)) == true) {
+  if (pillsExistPos(pb, mx, (BYTE) (my-1)) == TRUE) {
     above = ROAD;
-  } else if (basesExistPos(bs, mx, (BYTE) (my-1)) == true) {
+  } else if (basesExistPos(bs, mx, (BYTE) (my-1)) == TRUE) {
     above = ROAD;
   }
 
-  if (pillsExistPos(pb, mx, (BYTE) (my+1)) == true) {
+  if (pillsExistPos(pb, mx, (BYTE) (my+1)) == TRUE) {
     below  = ROAD;
-  } else if (basesExistPos(bs, mx, (BYTE) (my+1)) == true) {
+  } else if (basesExistPos(bs, mx, (BYTE) (my+1)) == TRUE) {
     below = ROAD;
   }
 
-  if (pillsExistPos(pb, (BYTE) (mx-1), my) == true) {
+  if (pillsExistPos(pb, (BYTE) (mx-1), my) == TRUE) {
     leftPos = ROAD;
-  } else if (basesExistPos(bs, (BYTE) (mx-1),  my) == true) {
+  } else if (basesExistPos(bs, (BYTE) (mx-1),  my) == TRUE) {
     leftPos = ROAD;
   }
 
-  if (pillsExistPos(pb, (BYTE) (mx+1), my) == true) {
+  if (pillsExistPos(pb, (BYTE) (mx+1), my) == TRUE) {
     rightPos = ROAD;
-  } else if (basesExistPos(bs, (BYTE) (mx-1),  my) == true) {
+  } else if (basesExistPos(bs, (BYTE) (mx-1),  my) == TRUE) {
     rightPos = ROAD;
   }
 
@@ -256,7 +256,7 @@ void floodCheckFill(floodFill *ff, map *mp, pillboxes *pb, bases *bs, BYTE mx, B
 
   if (leftPos == DEEP_SEA || leftPos == BOAT || leftPos == RIVER || rightPos == DEEP_SEA || rightPos == BOAT || rightPos == RIVER || above == DEEP_SEA || above == RIVER || above == BOAT || below == DEEP_SEA || below == BOAT || below == RIVER) {
     /* Do fill */
-    mapSetPos(mp, mx, my, RIVER, false, false);
+    mapSetPos(mp, mx, my, RIVER, FALSE, FALSE);
     minesRemoveItem(screenGetMines(), mx, my);
 
     /* Add items if craters */

@@ -52,7 +52,7 @@ void clientSoundDist(sndEffects value, BYTE mx, BYTE my) {
   BYTE gapX;  /* Distance from tank to sound */
   BYTE gapY;
 
-  if (logIsRecording() == true) {
+  if (logIsRecording() == TRUE) {
     soundDistLog(value, mx, my);
   }
   if (mineExplosionNear == value) {
@@ -186,7 +186,7 @@ void soundDistLog(sndEffects value, BYTE mx, BYTE my) {
   BYTE logMessageType; /* Log item type */
   bool wantLog;        /* Do we want to log this? */
   
-  wantLog = true;
+  wantLog = TRUE;
   switch (value) {
   case shootSelf:
   case shootNear:
@@ -207,12 +207,12 @@ void soundDistLog(sndEffects value, BYTE mx, BYTE my) {
   case hitTankNear:
   case hitTankFar:
   case hitTankSelf:
-    wantLog = false;
+    wantLog = FALSE;
     break;
   case bubbles:
   case tankSinkNear:
   case tankSinkFar:
-    wantLog = false;
+    wantLog = FALSE;
     break;
   case bigExplosionNear:
     logMessageType = log_SoundExplosion;
@@ -243,7 +243,7 @@ void soundDistLog(sndEffects value, BYTE mx, BYTE my) {
     break;
   }
 
-  if (wantLog == true) {
+  if (wantLog == TRUE) {
     logAddEvent(logMessageType, mx, my, 0, 0, 0, NULL);
   }
 

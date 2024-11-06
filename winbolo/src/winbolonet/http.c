@@ -48,7 +48,7 @@
 #include "../server/servertransport.h"
 #include "http.h"
 
-bool httpStarted = false; /* Is the http subsystem operational */
+bool httpStarted = FALSE; /* Is the http subsystem operational */
 struct sockaddr_in httpAddrServer; /* Winbolo.net Server address */
 char wbnHostString[FILENAME_MAX]; /* Preference for name */
 char hostString[FILENAME_MAX]; /* Host String Name Host: wbnHostString */
@@ -91,7 +91,7 @@ static unsigned long getaddrbyany(char *sp_name)  {
 * 
 *********************************************************/
 bool httpCreate() {
-  bool returnValue = true;          /* Value to return */
+  bool returnValue = TRUE;          /* Value to return */
   char prefs[FILENAME_MAX];         /* Preference file */
   struct hostent *phe;              /* Used for DNS lookups */
 
@@ -101,7 +101,7 @@ bool httpCreate() {
 
   ret = WSAStartup(MAKEWORD(2,0), &wsaData);
   if (ret != 0) {
-    returnValue = false;
+    returnValue = FALSE;
   }
   strcpy(prefs, PREFERENCE_FILE);
 #else
@@ -119,7 +119,7 @@ bool httpCreate() {
     /* Do hostname lookup */
     phe= gethostbyname(wbnHostString); // wbnHostString
     if (phe == 0) {
-      returnValue = false;
+      returnValue = FALSE;
       fprintf(stderr, "Unable to locate WinBolo.net host. Winbolo.net disabled.\n");
       #ifdef _WIN32
         WSACleanup();
@@ -148,14 +148,14 @@ bool httpCreate() {
 * 
 *********************************************************/
 void httpDestroy() {
-  if (httpStarted == true) {
+  if (httpStarted == TRUE) {
     /* Perform any cleanup required */
 #ifdef _WIN32
     WSACleanup();
 #endif
   }
 
-  httpStarted = false;
+  httpStarted = FALSE;
 }
 
 
@@ -324,15 +324,15 @@ int httpRecvData(SOCKET sock, BYTE *buff, int maxSize) {
   if (ret >= 0) {
     /* Strip out the header */
     ptr = buff;
-    found = false;
-    while (((ptr-buff) < size-3) && found == false) {
+    found = FALSE;
+    while (((ptr-buff) < size-3) && found == FALSE) {
       if (*ptr == '\r' && *(ptr+1) == '\n' && *(ptr+2) == '\r' && *(ptr+3) == '\n') {
-        found = true;
+        found = TRUE;
       } else {
         ptr++;
       }
     }
-    if (found == true) {
+    if (found == TRUE) {
       ptr += 4; /* Skip over \r\n\r\n */
       returnValue = (int) (size - (ptr - buff));
       memcpy(buff, ptr, returnValue);
@@ -370,7 +370,7 @@ int httpSendMessage(BYTE *message, int len, BYTE *response, int maxSize) {
   static unsigned long addressToBind=0; /*This is the address we're going to bind, this is the address winbolo.net will show */
   
 
-  if (httpStarted == true) {
+  if (httpStarted == TRUE) {
 	ourAddress.sin_family = AF_INET;
 	ourAddress.sin_port = 0; /*setting this to zero should have it just grab a ephemeral port*/
 	ourAddress.sin_addr.s_addr = INADDR_ANY; /* grabs the ip from the default interface */
@@ -386,7 +386,7 @@ int httpSendMessage(BYTE *message, int len, BYTE *response, int maxSize) {
 		}
 	}
     sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    returnValue = true;
+    returnValue = TRUE;
     if (sock <= 0) {
       returnValue = -1;
     } else {
@@ -398,12 +398,12 @@ int httpSendMessage(BYTE *message, int len, BYTE *response, int maxSize) {
 		ret = 0;
 	    ret = connect(sock, (struct sockaddr *) &httpAddrServer, sizeof(httpAddrServer));
         if (ret == SOCKET_ERROR) {
-          returnValue = false;
+          returnValue = FALSE;
 		}
 	  }
     }
 
-    if (returnValue == true) {
+    if (returnValue == TRUE) {
       returnValue = httpSendData(sock, message, len);
     }
     if (returnValue >0) {
@@ -454,7 +454,7 @@ bool httpSendLogFile2(char *fileName, BYTE *key, bool wantFeedback, long fileLen
 
   fp = fopen(fileName, "rb");
   if (fp == NULL) {
-    return false;
+    return FALSE;
   }
 
   srand((unsigned int) time(NULL));
@@ -474,13 +474,13 @@ bool httpSendLogFile2(char *fileName, BYTE *key, bool wantFeedback, long fileLen
 
   sprintf(header, "%s%s HTTP/1.0\r\nContent-Type: multipart/form-data; boundary=%s\r\nContent-Length: %ld\r\n%s", HTTP_POST_HEADER, sKey, boundry, length, hostString);  
   sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
-  returnValue = true;
+  returnValue = TRUE;
   if (sock <= 0) {
-    returnValue = false;
+    returnValue = FALSE;
   } else {
     ret = connect(sock, (struct sockaddr *) &httpAddrServer, sizeof(httpAddrServer));
     if (ret == SOCKET_ERROR) {
-      returnValue = false;
+      returnValue = FALSE;
     }
 
 
@@ -526,13 +526,13 @@ bool httpSendLogFile2(char *fileName, BYTE *key, bool wantFeedback, long fileLen
 bool httpSendLogFile(char *fileName, BYTE *key, bool wantFeedback) {
   long fileLength;
 
-  if (httpStarted == true && fileName != NULL && key != NULL) {
+  if (httpStarted == TRUE && fileName != NULL && key != NULL) {
     fileLength = httpGetFileLength(fileName);
     if (fileLength != -1) {
       return httpSendLogFile2(fileName, key, wantFeedback, fileLength);
     }
   }
-  return false;
+  return FALSE;
 }
 
 /*********************************************************

@@ -50,20 +50,20 @@ keyItems heldKeys;
 bool inputSetup() {
   scrollKeyCount = 0;
   /* These are DIK_??? defines */
-  heldKeys.kiForward = false;    /* Tank accelerate */
-  heldKeys.kiBackward = false;   /* Tank decelerate */
-  heldKeys.kiLeft = false;       /* Tank left */
-  heldKeys.kiRight = false;      /* Tank right */
-  heldKeys.kiShoot = false;      /* Tank shooting */
-  heldKeys.kiLayMine = false;     /* Tank lay mine */
-  heldKeys.kiGunIncrease = false; /* Increase gunsight length */
-  heldKeys.kiGunDecrease = false; /* Decrease gunsight length */
-  heldKeys.kiTankView = false;    /* Center on tank */
-  heldKeys.kiPillView = false;    /* Pill view */
-  heldKeys.kiScrollUp = false;    /* Scroll up */
-  heldKeys.kiScrollDown = false;  /* Scroll down */
-  heldKeys.kiScrollLeft = false;  /* Scroll left */
-  heldKeys.kiScrollRight = false; /* Scroll right */
+  heldKeys.kiForward = FALSE;    /* Tank accelerate */
+  heldKeys.kiBackward = FALSE;   /* Tank decelerate */
+  heldKeys.kiLeft = FALSE;       /* Tank left */
+  heldKeys.kiRight = FALSE;      /* Tank right */
+  heldKeys.kiShoot = FALSE;      /* Tank shooting */
+  heldKeys.kiLayMine = FALSE;     /* Tank lay mine */
+  heldKeys.kiGunIncrease = FALSE; /* Increase gunsight length */
+  heldKeys.kiGunDecrease = FALSE; /* Decrease gunsight length */
+  heldKeys.kiTankView = FALSE;    /* Center on tank */
+  heldKeys.kiPillView = FALSE;    /* Pill view */
+  heldKeys.kiScrollUp = FALSE;    /* Scroll up */
+  heldKeys.kiScrollDown = FALSE;  /* Scroll down */
+  heldKeys.kiScrollLeft = FALSE;  /* Scroll left */
+  heldKeys.kiScrollRight = FALSE; /* Scroll right */
 }
 
 /*********************************************************
@@ -100,17 +100,17 @@ tankButton inputGetKeys(keyItems *setKeys, bool isMenu) {
   static BYTE gunsightKeyCount = 0; /* Used for gunsight movement */
   Uint8 *keys; /* Keyboard states */
   bool proceed;           /* Ok to proceed */
-  proceed = true;
+  proceed = TRUE;
 
   /* FIXME: Check message window doesn't have focus *
-  if (GetForegroundWindow() != hWnd || isMenu == true) {
+  if (GetForegroundWindow() != hWnd || isMenu == TRUE) {
     return TNONE;
    SDL_PumpEvents();
     SDL_PumpEvents();
  } */
  keys = SDL_GetKeyState(NULL);
  SDL_PumpEvents();
-  if (proceed == true) {
+  if (proceed == TRUE) {
     /* Now set up the tank buttons */
     if (keys[(setKeys->kiForward)] == SDL_PRESSED &&  keys[(setKeys->kiRight)] == SDL_PRESSED) {
       tb = TRIGHTACCEL;
@@ -136,7 +136,7 @@ tankButton inputGetKeys(keyItems *setKeys, bool isMenu) {
 //      screenTankLayMine();
     }
     scrollKeyCount++;
-    if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && isMenu == false) {
+    if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && isMenu == FALSE) {
       scrollKeyCount = 0;
       /* Scroll Check */
       if (keys[(setKeys->kiScrollUp)] == SDL_PRESSED) {
@@ -153,13 +153,13 @@ tankButton inputGetKeys(keyItems *setKeys, bool isMenu) {
       }
     }
     gunsightKeyCount++;
-    if (gunsightKeyCount >= INPUT_GUNSIGHT_WAIT_TIME && isMenu == false) {
+    if (gunsightKeyCount >= INPUT_GUNSIGHT_WAIT_TIME && isMenu == FALSE) {
       /* Gunsight Check */
       if (keys[(setKeys->kiGunIncrease)] == SDL_PRESSED) {
-//        screenGunsightRange(true);
+//        screenGunsightRange(TRUE);
         gunsightKeyCount = 0;
       } else if (keys[(setKeys->kiGunDecrease)] == SDL_PRESSED) {
-//        screenGunsightRange(false);
+//        screenGunsightRange(FALSE);
         gunsightKeyCount = 0;
       } else if (gunsightKeyCount > (INPUT_GUNSIGHT_WAIT_TIME + 1)) {
         gunsightKeyCount = INPUT_GUNSIGHT_WAIT_TIME;
@@ -186,13 +186,13 @@ void inputScroll(keyItems *setKeys, bool isMenu) {
   Uint8 *keys;   /* Keyboard states */
   bool proceed; /* Ok to proceed */
 
-  proceed = true;
+  proceed = TRUE;
   keys = SDL_GetKeyState(NULL);
  SDL_PumpEvents();
   /* Get the tabkButtons here if it is OK to proceed */
-  if (proceed == true) {
+  if (proceed == TRUE) {
     scrollKeyCount++;
-    if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && isMenu == false) {
+    if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && isMenu == FALSE) {
       scrollKeyCount = 0;
       /* Scroll Check */
       if (keys[(setKeys->kiScrollUp)] == SDL_PRESSED) {
@@ -225,22 +225,22 @@ void inputScroll(keyItems *setKeys, bool isMenu) {
 *ARGUMENTS:
 *     hWnd - The main window
 *  setKeys - Structure that holds the key settings
-*   isMenu - true if we are in a menu
+*   isMenu - TRUE if we are in a menu
 *********************************************************/
 bool inputIsFireKeyPressed(keyItems *setKeys, bool isMenu) {
   bool returnValue;       /* Value to return */
   Uint8 *keys;  /* Keyboard states */
   bool proceed;           /* Ok to proceed */
 
-  returnValue = false;
-  proceed = true;
+  returnValue = FALSE;
+  proceed = TRUE;
   keys = SDL_GetKeyState(NULL);
  SDL_PumpEvents();
  
   /* Get the fire button state here if it is OK to proceed */
-  if (proceed == true) {
+  if (proceed == TRUE) {
     if (keys[(setKeys->kiShoot)] == SDL_PRESSED) {
-      returnValue = true;
+      returnValue = TRUE;
     }
   }
   return returnValue;

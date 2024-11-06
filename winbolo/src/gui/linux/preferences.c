@@ -42,28 +42,28 @@
 *********************************************************/
 void GetPrivateProfileString(char *section, char *item, char *def, char *output, int outlen, char *filename) {
   FILE *fp;
-  bool found = false;
+  bool found = FALSE;
   char line[512];
   char sec[512];
   int len;
   
-  found = false;
+  found = FALSE;
   fp = fopen(filename, "r");
   if (fp) {
     sprintf(sec, "[%s]\n", section);
-    while (found == false && !feof(fp)) {
+    while (found == FALSE && !feof(fp)) {
       fgets(line, 512, fp);
       if (strcmp(line, sec) == 0) {
         sprintf(sec, "%s=", item);
 	len = strlen(sec);
-        while (found == false && !feof(fp)) {
+        while (found == FALSE && !feof(fp)) {
           fgets(line, 512, fp);
 	  if (strncmp(sec, line, len) == 0) {
-	    found = true;
+	    found = TRUE;
 	    strcpy(output, (line + len));
 	  } else if (line[0] == '[') {
             strncpy(output, def, outlen);
-	    found = true;
+	    found = TRUE;
 	  }
         }
       }
@@ -72,7 +72,7 @@ void GetPrivateProfileString(char *section, char *item, char *def, char *output,
     fclose(fp);
   }
 
-  if (found == false) {
+  if (found == FALSE) {
     strncpy(output, def, outlen);
   } else {
     /* Stip newline if required */
@@ -102,8 +102,8 @@ void WritePrivateProfileString(char *section, char *item, char *value, char *fil
   char sec[512];
   int len;
   FILE *fp;
-  bool done = false;
-  bool inSec = false;
+  bool done = FALSE;
+  bool inSec = FALSE;
   int secLen;
 
   buff = malloc(16 * 1024);
@@ -115,27 +115,27 @@ void WritePrivateProfileString(char *section, char *item, char *value, char *fil
   if (fp) {
    fgets(line, 512, fp);
    while (!feof(fp)) {
-      if (done == false) {
-        if (strncmp(sec, line, secLen) == 0 && inSec == false) {
+      if (done == FALSE) {
+        if (strncmp(sec, line, secLen) == 0 && inSec == FALSE) {
           /* Found section */
-          inSec = true;
+          inSec = TRUE;
 	  strcat(buff, line);
           sprintf(sec, "%s=", item);
           len = strlen(sec);
-        } else if (inSec == true && line[0] == '[') {
+        } else if (inSec == TRUE && line[0] == '[') {
           /* Leaving section - Add here */
           strcat(buff, item);
           strcat(buff, "=");
           strcat(buff, value);
           strcat(buff, "\n");
 	  strcat(buff, line);
-	} else if (inSec == true && strncmp(sec, line, len) == 0) {
+	} else if (inSec == TRUE && strncmp(sec, line, len) == 0) {
           /* Found the line to replace */
           strcat(buff, item);
           strcat(buff, "=");
           strcat(buff, value);
           strcat(buff, "\n");
-          done = true;
+          done = TRUE;
 	} else {
           /* Just add the line */
           strcat(buff, line);
@@ -149,13 +149,13 @@ void WritePrivateProfileString(char *section, char *item, char *value, char *fil
     fclose(fp);
   } else {
     sprintf(buff, "%s\n%s=%s\n", sec, item, value);
-    done = true;
+    done = TRUE;
   }
-  if (done == false) {
+  if (done == FALSE) {
     /* We didn't find it in the file and we are still in the right section
      * Append it here
      */
-    if (inSec == false) {
+    if (inSec == FALSE) {
       strcat(buff, sec);
       strcat(buff, "\n");
     }

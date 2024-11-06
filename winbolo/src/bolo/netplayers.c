@@ -50,11 +50,11 @@ void netPlayersCreate(netPlayers *np) {
   BYTE count;
 
   for (count=0;count<MAX_TANKS;count++) {
-    (*np).inUse[count] = false;
-    (*np).inGame[count] = false;
-    (*np).locked[count] = false ;
-    (*np).passed[count] = false;
-	(*np).passedrsa[count] = false;
+    (*np).inUse[count] = FALSE;
+    (*np).inGame[count] = FALSE;
+    (*np).locked[count] = FALSE ;
+    (*np).passed[count] = FALSE;
+	(*np).passedrsa[count] = FALSE;
     (*np).udpp[count] = udpPacketsCreate();
     (*np).cheatCount[count] = 0;
     /* Incoming must be incrememnent */
@@ -133,7 +133,7 @@ struct sockaddr_in *netPlayersGetAddr(netPlayers *value, BYTE playerNum) {
 *  addr      - Address structure of client
 *********************************************************/
 void netPlayersSetAddr(netPlayers *value, BYTE playerNum, struct sockaddr_in *addr) {
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum] == TRUE) {
     memcpy(&((*value).addr[playerNum]), addr, sizeof(*addr));
   }
 }
@@ -153,11 +153,11 @@ void netPlayersSetAddr(netPlayers *value, BYTE playerNum, struct sockaddr_in *ad
 *  addr      - Address structure of client
 *********************************************************/
 void netPlayersSetPlayer(netPlayers *value, BYTE playerNum, struct sockaddr_in *addr) {
-  if ((*value).inUse[playerNum] == false) {
+  if ((*value).inUse[playerNum] == FALSE) {
     memcpy(&((*value).addr[playerNum]), addr, sizeof(*addr));
     (*value).addr[playerNum].sin_family = AF_INET;
-    (*value).inUse[playerNum] = true;
-    (*value).inGame[playerNum] = false;
+    (*value).inUse[playerNum] = TRUE;
+    (*value).inGame[playerNum] = FALSE;
     if ((*value).udpp[playerNum] != NULL) {
       udpPacketsDestroy(&(*value).udpp[playerNum]);
     }
@@ -191,7 +191,7 @@ BYTE netPlayersGetPlayerNumber(netPlayers *value, unsigned long addr, unsigned s
   returnValue = NET_PLAYERS_NOT_FOUND;
   count = 0;
   while (count < MAX_TANKS && returnValue == NET_PLAYERS_NOT_FOUND) {
-    if ((*value).inUse[count] == true) {
+    if ((*value).inUse[count] == TRUE) {
 #ifdef _WIN32
       if ((*value).addr[count].sin_addr.S_un.S_addr == addr && (*value).addr[count].sin_port == port) {
 #else
@@ -243,8 +243,8 @@ void netPlayersSetInGame(netPlayers *value, BYTE playerNum, bool set) {
 bool netPlayersGetInGame(netPlayers *value, BYTE playerNum) {
   bool returnValue; /* value to return */
 
-  returnValue = false;
-  if ((*value).inUse[playerNum] == true) {
+  returnValue = FALSE;
+  if ((*value).inUse[playerNum] == TRUE) {
     returnValue = (*value).inGame[playerNum];
   }
   return returnValue;
@@ -297,7 +297,7 @@ bool netPlayersHasPassedRsa(netPlayers *value, BYTE playerNum) {
 *  playerNum - The player number to set
 *********************************************************/
 void netPlayersDonePassword(netPlayers *value, BYTE playerNum) {
-  (*value).passed[playerNum] = true;
+  (*value).passed[playerNum] = TRUE;
 }
 
 /*********************************************************
@@ -314,7 +314,7 @@ void netPlayersDonePassword(netPlayers *value, BYTE playerNum) {
 *  playerNum - The player number to set
 *********************************************************/
 void netPlayersDoneRsa(netPlayers *value, BYTE playerNum) {
-  (*value).passedrsa[playerNum] = true;
+  (*value).passedrsa[playerNum] = TRUE;
 }
 
 /*********************************************************
@@ -331,11 +331,11 @@ void netPlayersDoneRsa(netPlayers *value, BYTE playerNum) {
 *  playerNum - The socket Number to set
 *********************************************************/
 BYTE netPlayersRemovePlayerNum(netPlayers *value, BYTE playerNum) {
-  (*value).inUse[playerNum] = false;
-  (*value).inGame[playerNum] = false;
-  (*value).locked[playerNum] = false ;
-  (*value).passed[playerNum] = false;
-  (*value).passedrsa[playerNum] = false;
+  (*value).inUse[playerNum] = FALSE;
+  (*value).inGame[playerNum] = FALSE;
+  (*value).locked[playerNum] = FALSE ;
+  (*value).passed[playerNum] = FALSE;
+  (*value).passedrsa[playerNum] = FALSE;
   udpPacketsDestroy(&((*value).udpp[playerNum]));
   (*value).udpp[playerNum] = NULL;
   return playerNum;
@@ -356,10 +356,10 @@ bool netPlayersIsLocked(netPlayers *value) {
   bool returnValue; /* Value to return */
   BYTE count; /* Looping variable */
 
-  returnValue = true;
+  returnValue = TRUE;
   count = 0;
-  while (count < MAX_TANKS && returnValue == true) {
-    if ((*value).inUse[count] == true) {
+  while (count < MAX_TANKS && returnValue == TRUE) {
+    if ((*value).inUse[count] == TRUE) {
       returnValue = (*value).locked[count];
     }
     count++;
@@ -381,7 +381,7 @@ bool netPlayersIsLocked(netPlayers *value) {
 *  locked    - The lock state to set
 *********************************************************/
 void netPlayersSetLock(netPlayers *value, BYTE playerNum, bool locked) {
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum] == TRUE) {
     (*value).locked[playerNum] = locked;
   }
 }
@@ -420,7 +420,7 @@ udpPackets netPlayersGetUdpPackets(netPlayers *value, BYTE playerNum) {
 *  port      - Port
 *********************************************************/
 void netPlayersGetPlayerDataReq(netPlayers *value, BYTE playerNum, struct in_addr *addr, unsigned short *port) {
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum] == TRUE) {
     memcpy(addr, &((*value).addr[playerNum].sin_addr), sizeof(*addr));
     *port = (*value).addr[playerNum].sin_port;
   } else {
@@ -443,11 +443,11 @@ void netPlayersGetPlayerDataReq(netPlayers *value, BYTE playerNum, struct in_add
 *  playerNum - The player number
 *********************************************************/
 bool netPlayersShouldDisconnectPlayer(netPlayers *value, BYTE playerNum) {
-  bool returnValue = false; /* Value to return */
+  bool returnValue = FALSE; /* Value to return */
 
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum] == TRUE) {
     if (time(NULL) - (*value).lastHeard[playerNum] >= NET_PLAYERS_INACTIVEREMOVE_TIME) {
-      returnValue = true;
+      returnValue = TRUE;
     }
   }
 
@@ -474,7 +474,7 @@ bool netPlayersCheck(netPlayers *value, BYTE playerNum, time_t t, time_t ourTime
   int ourDiff;
   int diff;
 
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum] == TRUE) {
     ourDiff = (int) ((ourTime) - (*value).lastServerTime[playerNum]);
     (*value).lastServerTime[playerNum] = ourTime;
     clientDiff = (int) (t - (*value).lastClientTime[playerNum]);
@@ -486,11 +486,11 @@ bool netPlayersCheck(netPlayers *value, BYTE playerNum, time_t t, time_t ourTime
 //      printf("incrementing... %d\n", (*value).cheatCount[playerNum]);
       if ((*value).cheatCount[playerNum] > 100) {
 //        printf("Threshold too high...\n");
-        return true;
+        return TRUE;
       }
     }
   }
-  return false;
+  return FALSE;
 }
 
 /*********************************************************
@@ -505,7 +505,7 @@ bool netPlayersCheck(netPlayers *value, BYTE playerNum, time_t t, time_t ourTime
 *  value     - The netPlayers structure 
 *********************************************************/
 void netPlayersSetCheater(netPlayers *value, BYTE playerNum) {
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum] == TRUE) {
     (*value).cheatCount[playerNum] = 150;
   }
 }

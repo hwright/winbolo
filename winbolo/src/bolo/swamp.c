@@ -87,14 +87,14 @@ BYTE swampAddItem(swamp *swmp, BYTE x, BYTE y) {
   swamp inc;
 
   inc = *swmp;
-  found = false;
+  found = FALSE;
   returnValue = SWAMP;
   count = 0;
   
-  while (found == false && NonEmpty(inc)) {
+  while (found == FALSE && NonEmpty(inc)) {
     count++;
     if (inc->x == x && inc->y == y) {
-      found = true;
+      found = TRUE;
       inc->life--;
       if (inc->life == SWAMP_DEATH) {
         returnValue = SWAMP_DEATH_RETURN;
@@ -102,13 +102,13 @@ BYTE swampAddItem(swamp *swmp, BYTE x, BYTE y) {
       }
         
 	  }
-    if (found == false) {
+    if (found == FALSE) {
       inc = SwampTail(inc);
     }
   }
 
   /* If not found add a new item */
-  if (found == false) {
+  if (found == FALSE) {
     New (q);
     q->x = x;
     q->y = y;
@@ -173,19 +173,19 @@ void swampRemovePos(swamp *swmp, BYTE x, BYTE y) {
   swamp inc;
 
   inc = *swmp;
-  found = false;
+  found = FALSE;
   count = 0;
   
-  while (found == false && NonEmpty(inc)) {
+  while (found == FALSE && NonEmpty(inc)) {
     count++;
     if (inc->x == x && inc->y == y) {
-      found = true;
+      found = TRUE;
     }
     inc = SwampTail(inc);
   }
 
   /* If found remove item */
-  if (found == true) {
+  if (found == TRUE) {
     swampDeleteItem(swmp, count);
   }
 }

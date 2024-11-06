@@ -20,7 +20,6 @@
 
 /* Standard Includes */
 #include <stdio.h>
-#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -33,6 +32,12 @@ typedef float SPEEDTYPE;
 typedef unsigned char u_char;
 #endif
 
+/* Boolean type */
+#undef TRUE
+#define TRUE 1
+#undef FALSE
+#define FALSE 0
+typedef BYTE bool;
 /*typedef BYTE Bool; */
 
 

@@ -97,7 +97,7 @@ void screenTanksPrepare(screenTanks *value, tank *tnk, BYTE leftPos, BYTE rightP
     (*value).pos[0].playerName[0] = '\0';
     if (tankGetArmour(tnk) <= TANK_FULL_ARMOUR) {
       playersGetPlayerName(screenGetPlayers(), playersGetSelf(screenGetPlayers()), playerName);
-      labelMakeTankLabel((*value).pos[0].playerName, playerName, langGetText(MESSAGE_THIS_COMPUTER), true);
+      labelMakeTankLabel((*value).pos[0].playerName, playerName, langGetText(MESSAGE_THIS_COMPUTER), TRUE);
     }
   }
   /* Add the rest of the tanks as required */

@@ -43,11 +43,11 @@ char newMessage[FILENAME_MAX]; /* A new message */
 BYTE newMessageFrom;           /* Where it came from */
 
 /* What types to show */
-bool showNewswire = true;
-bool showAssistant = true;
-bool showAI = false;
-bool showNetwork = false;
-bool showNetStat = true;
+bool showNewswire = TRUE;
+bool showAssistant = TRUE;
+bool showAI = FALSE;
+bool showNetwork = FALSE;
+bool showNetStat = TRUE;
 
 /* Queue DS for waiting messages */
 message msg;
@@ -67,11 +67,11 @@ void messageCreate(void) {
   BYTE count; /* Looping variable */
   
   msg = NULL;
-  showNewswire = true;
-  showAssistant = true;
-  showAI = false;
-  showNetwork = false;
-  showNetStat = true;
+  showNewswire = TRUE;
+  showAssistant = TRUE;
+  showAI = FALSE;
+  showNetwork = FALSE;
+  showNetStat = TRUE;
   for (count=0;count<MESSAGE_WIDTH;count++) {
     topLine[count] = MESSAGE_BLANK;
     bottomLine[count] = MESSAGE_BLANK;
@@ -124,7 +124,7 @@ void clientMessageAdd(messageType msgType, char *top, char *bottom) {
   switch (msgType) {
   /* 4 Main message Types */
   case newsWireMessage:
-    if (showNewswire == true) {
+    if (showNewswire == TRUE) {
       if (lastMessage != newsWireMessage) {
         messageAddItem(top,bottom);
       } else {
@@ -134,7 +134,7 @@ void clientMessageAdd(messageType msgType, char *top, char *bottom) {
     }
     break;
   case assistantMessage:
-    if (showAssistant == true) {
+    if (showAssistant == TRUE) {
       if (lastMessage != assistantMessage) {
         messageAddItem(top,bottom);
       } else {
@@ -144,7 +144,7 @@ void clientMessageAdd(messageType msgType, char *top, char *bottom) {
     }
     break;
   case AIMessage:
-    if (showAI == true) {
+    if (showAI == TRUE) {
       if (lastMessage != AIMessage) {
         messageAddItem(top,bottom);
       } else {
@@ -154,7 +154,7 @@ void clientMessageAdd(messageType msgType, char *top, char *bottom) {
     }
     break;
   case networkMessage:
-    if (showNetwork == true) {
+    if (showNetwork == TRUE) {
       if (lastMessage != networkMessage) {
         messageAddItem(top,bottom);
       } else {
@@ -325,7 +325,7 @@ void clientMessageAdd(messageType msgType, char *top, char *bottom) {
       lastMessage = player15Message;
       break;
     case networkStatus:
-      if (showNetStat == true) {
+      if (showNetStat == TRUE) {
         newMessageFrom = networkStatus;
         if (lastMessage != networkStatus) {
           messageAddItem(top, bottom);
@@ -367,10 +367,10 @@ void messageAddItem(char *top, char *bottom) {
 
   /* Get the location to add it to */
   
-  newQ = false;
+  newQ = FALSE;
   
   if (IsEmpty(msg)) {
-    newQ = true;
+    newQ = TRUE;
     New(msg);
     msg->next = NULL;
   }
@@ -412,7 +412,7 @@ void messageAddItem(char *top, char *bottom) {
   }
 
 
-  if (newQ == true) {
+  if (newQ == TRUE) {
     q = msg;
     msg = MessageTail(q);
     Dispose(q);
@@ -455,7 +455,7 @@ void messageUpdate(void) {
     topLine[MESSAGE_WIDTH-1] = END_OF_STRING;
     bottomLine[MESSAGE_WIDTH-1] = END_OF_STRING;
     /* Update the screen */
-    if (threadsGetContext() == false) {
+    if (threadsGetContext() == FALSE) {
       frontEndMessages(topLine,bottomLine);
     }
   }
@@ -568,9 +568,9 @@ void messageSetNetStatus(bool isShown) {
 bool messageIsNewMessage() {
   bool returnValue; /* Value to return */
 
-  returnValue = true;
+  returnValue = TRUE;
   if (newMessage[0] == '\0') {
-    returnValue = false;
+    returnValue = FALSE;
   }
   return returnValue;
 }

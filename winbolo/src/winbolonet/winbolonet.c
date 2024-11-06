@@ -34,7 +34,7 @@
 #include "winbolonetevents.h"
 #include "winbolonetthread.h"
 
-bool winboloNetRunning = false;
+bool winboloNetRunning = FALSE;
 
 #define WINBOLONET_BUFFSIZE (1024*8)
 BYTE *winboloNetBuff = NULL;
@@ -74,7 +74,7 @@ bool winbolonetCreateServer(char *mapName, unsigned short port, BYTE gameType, B
   BYTE count;              /* Looping Variable */
 
   screenServerConsoleMessage((char *) "WinBolo.net Startup");
-  winboloNetRunning = false;
+  winboloNetRunning = FALSE;
   winbolonetEventsCreate();
   winboloNetServerKey[0] = EMPTY_CHAR;
   count = 0;
@@ -85,7 +85,7 @@ bool winbolonetCreateServer(char *mapName, unsigned short port, BYTE gameType, B
 
 
   winboloNetRunning = httpCreate();
-  if (winboloNetRunning == true) {
+  if (winboloNetRunning == TRUE) {
     buff[0] = WINBOLO_NET_VERSION_MAJOR;
     buff[1] = WINBOLO_NET_VERSION_MINOR;
     buff[2] = WINBOLO_NET_VERSION_REVISION;
@@ -108,7 +108,7 @@ bool winbolonetCreateServer(char *mapName, unsigned short port, BYTE gameType, B
           sprintf((char *) buff, "\tMOTD: %s", winboloNetBuff+4);
           screenServerConsoleMessage((char *) buff);
           /* Get a server key */
-          if (winbolonetRequestServerKey(mapName, port, gameType, ai, mines, password, numBases, numPills, freeBases, freePills, numPlayers, startTime) == false) {
+          if (winbolonetRequestServerKey(mapName, port, gameType, ai, mines, password, numBases, numPills, freeBases, freePills, numPlayers, startTime) == FALSE) {
             /* Error can't get a key */
             winbolonetDestroy();
           } else {
@@ -153,11 +153,11 @@ bool winbolonetCreateClient(char *userName, char *password, BYTE *serverKey, cha
   BYTE buff[FILENAME_MAX]; /* Send buffer */
   int ret;                 /* Function return */
 
-  if (winboloNetRunning == false) {
+  if (winboloNetRunning == FALSE) {
     winboloNetRunning = httpCreate();
     winboloNetServerKey[0] = '\0';
   }
-  if (winboloNetRunning == true) {
+  if (winboloNetRunning == TRUE) {
     buff[0] = WINBOLO_NET_VERSION_MAJOR;
     buff[1] = WINBOLO_NET_VERSION_MINOR;
     buff[2] = WINBOLO_NET_VERSION_REVISION;
@@ -174,7 +174,7 @@ bool winbolonetCreateClient(char *userName, char *password, BYTE *serverKey, cha
         winbolonetDestroy();
       } else {
         /* Get a Client key */
-        if (winbolonetRequestClientKey(userName, password, serverKey, errorMsg) == false) {
+        if (winbolonetRequestClientKey(userName, password, serverKey, errorMsg) == FALSE) {
           /* Error can't get a key */
           winbolonetDestroy();
         }
@@ -201,10 +201,10 @@ bool winbolonetCreateClient(char *userName, char *password, BYTE *serverKey, cha
 *********************************************************/
 void winbolonetDestroy() {
   screenServerConsoleMessage((char *) "WinBolo.net Shutdown");
-  if (winboloNetRunning == true) {
+  if (winboloNetRunning == TRUE) {
     winbolonetThreadDestroy();
     /* We need to say goodbye */
-    if (threadsGetContext() == true && winboloNetServerKey[0] != EMPTY_CHAR) {
+    if (threadsGetContext() == TRUE && winboloNetServerKey[0] != EMPTY_CHAR) {
       /* Note only servers have to say goodbye */
       winbolonetGoodbye();
     }
@@ -214,7 +214,7 @@ void winbolonetDestroy() {
   }
   winbolonetEventsDestroy();
 
-  winboloNetRunning = false;
+  winboloNetRunning = FALSE;
 }
 
 /*********************************************************
@@ -234,7 +234,7 @@ void winbolonetGoodbye() {
   int ret;  
 
   /* Send off final data */
-  winbolonetServerUpdate(0,0,0, true);
+  winbolonetServerUpdate(0,0,0, TRUE);
 
   /* Shutdown */
   buff[0] = WINBOLO_NET_VERSION_MAJOR;
@@ -321,7 +321,7 @@ void winbolonetServerSendTeams(BYTE *array, BYTE length, BYTE numTeams) {
 * numPlayer    - Number of pleyers in the game
 * numFreePills - Number of free bases in the game
 * numFreePills - Number of free pills in the game
-* sendNow      - If true the data should not be queued
+* sendNow      - If TRUE the data should not be queued
 *********************************************************/
 void winbolonetServerUpdate(BYTE numPlayers, BYTE numFreeBases, BYTE numFreePills, bool sendNow) {
   static BYTE staticNumPlayers = 0;
@@ -336,7 +336,7 @@ void winbolonetServerUpdate(BYTE numPlayers, BYTE numFreeBases, BYTE numFreePill
   BYTE val;
 
   
-  if (winboloNetRunning == true ) {
+  if (winboloNetRunning == TRUE ) {
     size = winbolonetEventsGetSize();
     if (size > 0 || staticNumFreePills != numFreePills || numFreeBases != staticNumFreeBases || numPlayers != staticNumPlayers || time(NULL) - winboloNetLastSent > WINBOLO_NET_MAX_NOSEND) {
       pos = 0;
@@ -395,7 +395,7 @@ void winbolonetServerUpdate(BYTE numPlayers, BYTE numFreeBases, BYTE numFreePill
 //      fputc('\n', stderr);
 //      fprintf(stderr, "Sending off %d bytes to winbolo.net: \n", pos);
 
-      if (sendNow == false) {
+      if (sendNow == FALSE) {
         winbolonetThreadAddRequest(ptr, pos);
       } else {
         ret = httpSendMessage(ptr, pos, winboloNetBuff, WINBOLONET_BUFFSIZE);
@@ -445,7 +445,7 @@ bool winbolonetRequestServerKey(char *mapName, unsigned short port, BYTE gameTyp
   int buffPos = 0;
   int ret;
 
-  returnValue = false;
+  returnValue = FALSE;
   startTime = htonl(startTime);
   port = htons(port);
 
@@ -483,7 +483,7 @@ bool winbolonetRequestServerKey(char *mapName, unsigned short port, BYTE gameTyp
 //      fprintf(stderr, "Error: %s\n", winboloNetBuff+1);
     } else if (ret == 33) {
       memcpy(winboloNetServerKey, winboloNetBuff+1, WINBOLONET_KEY_LEN);
-      returnValue = true;
+      returnValue = TRUE;
     }
   } else {
     fprintf(stderr, "Error: No response from WinBolo.net - Winbolo.net disabled\n");
@@ -513,7 +513,7 @@ bool winbolonetRequestClientKey(char *userName, char *password, BYTE *serverKey,
   int buffPos = 0;
   int ret;
 
-  returnValue = false;
+  returnValue = FALSE;
 
   buff[0] = WINBOLO_NET_VERSION_MAJOR;
   buff[1] = WINBOLO_NET_VERSION_MINOR;
@@ -534,7 +534,7 @@ bool winbolonetRequestClientKey(char *userName, char *password, BYTE *serverKey,
     } else if (ret == 33) {
       memcpy(winboloNetServerKey, serverKey, WINBOLONET_KEY_LEN);
       memcpy(winboloNetPlayerKey[0], winboloNetBuff+1, WINBOLONET_KEY_LEN);
-      returnValue = true;
+      returnValue = TRUE;
     } else {
       strcpy(errorMsg, "Error: No response from WinBolo.net - Winbolo.net disabled");
     }
@@ -595,11 +595,11 @@ bool winboloNetIsPlayerParticipant(BYTE playerNum) {
   bool returnValue; /* Value to return */
 
   returnValue = winboloNetRunning;
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     if (winboloNetPlayerKey[playerNum][0] != EMPTY_CHAR) {
-      returnValue = true;
+      returnValue = TRUE;
     } else {
-	  returnValue = false;
+	  returnValue = FALSE;
 	}
   }
   return returnValue;
@@ -626,9 +626,9 @@ bool winboloNetVerifyClientKey(BYTE *keyBuff, char *userName, BYTE playerNum) {
   int buffPos = 0;
   int ret;
 
-  returnValue = false;
-  if (winboloNetPlayerKey[playerNum][0] != EMPTY_CHAR || winboloNetRunning == false) {
-    returnValue = false;
+  returnValue = FALSE;
+  if (winboloNetPlayerKey[playerNum][0] != EMPTY_CHAR || winboloNetRunning == FALSE) {
+    returnValue = FALSE;
   } else {
     buff[0] = WINBOLO_NET_VERSION_MAJOR;
     buff[1] = WINBOLO_NET_VERSION_MINOR;
@@ -648,7 +648,7 @@ bool winboloNetVerifyClientKey(BYTE *keyBuff, char *userName, BYTE playerNum) {
         winboloNetBuff[ret] = EMPTY_CHAR;
 //        fprintf(stderr, winboloNetBuff+1);
       } else if (ret == 2 && winboloNetBuff[1] == 1) {
-        returnValue = true;
+        returnValue = TRUE;
         /* Copy it */
         memcpy(winboloNetPlayerKey[playerNum], keyBuff, WINBOLONET_KEY_LEN);
       } else {
@@ -682,10 +682,10 @@ void winboloNetClientLeaveGame(BYTE playerNum, BYTE numPlayers, BYTE freeBases, 
   BYTE buff[FILENAME_MAX]; /* Sending buffer */
   int ret;
 
-  winbolonetAddEvent(WINBOLO_NET_EVENT_PLAYER_LEAVE, true, playerNum, WINBOLO_NET_NO_PLAYER);
-  if (winboloNetPlayerKey[playerNum][0] != EMPTY_CHAR && winboloNetRunning == true) {
+  winbolonetAddEvent(WINBOLO_NET_EVENT_PLAYER_LEAVE, TRUE, playerNum, WINBOLO_NET_NO_PLAYER);
+  if (winboloNetPlayerKey[playerNum][0] != EMPTY_CHAR && winboloNetRunning == TRUE) {
     /* Send an update first to flush buffers */
-    winbolonetServerUpdate(numPlayers, freeBases, freePills, true);
+    winbolonetServerUpdate(numPlayers, freeBases, freePills, TRUE);
     /* Send actual quit item */
     buff[0] = WINBOLO_NET_VERSION_MAJOR;
     buff[1] = WINBOLO_NET_VERSION_MINOR;
@@ -737,7 +737,7 @@ void winbolonetAddEvent(BYTE eventType, bool isServer, BYTE playerA, BYTE player
   BYTE *keyB;
   BYTE emptyKey[WINBOLONET_KEY_LEN];
  
- if (winboloNetRunning == true && isServer == true) {  
+ if (winboloNetRunning == TRUE && isServer == TRUE) {  
     emptyKey[0] = EMPTY_CHAR;
     keyA = winboloNetPlayerKey[playerA];
     if (playerB == WINBOLO_NET_NO_PLAYER) {
@@ -779,7 +779,7 @@ bool winbolonetIsRunning() {
 void winboloNetSendVersion() {
   BYTE buff[FILENAME_MAX]; /* Sending buffer */  
 
-  if (winboloNetRunning == true) {
+  if (winboloNetRunning == TRUE) {
     buff[0] = WINBOLO_NET_VERSION_MAJOR;
     buff[1] = WINBOLO_NET_VERSION_MINOR;
     buff[2] = WINBOLO_NET_VERSION_REVISION;
@@ -805,7 +805,7 @@ void winboloNetSendVersion() {
 void winboloNetSendLock(bool isLocked) {
   BYTE buff[FILENAME_MAX]; /* Sending buffer */  
 
-  if (winboloNetRunning == true) {
+  if (winboloNetRunning == TRUE) {
     buff[0] = WINBOLO_NET_VERSION_MAJOR;
     buff[1] = WINBOLO_NET_VERSION_MINOR;
     buff[2] = WINBOLO_NET_VERSION_REVISION;

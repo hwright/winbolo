@@ -62,24 +62,24 @@ bool dnsFinished;
 bool dnsLookupsCreate(void) {
   bool returnValue;        /* Value to return */
 
-  returnValue = true;
+  returnValue = TRUE;
   dnsProcessing = NULL;
   dnsWaiting = NULL;
-  dnsShouldRun = true;
-  dnsFinished = false;
+  dnsShouldRun = TRUE;
+  dnsFinished = FALSE;
   
   hDnsMutexHandle = SDL_CreateMutex();
   if (hDnsMutexHandle == NULL) {
-    returnValue = false;
+    returnValue = FALSE;
   }
 
   /* create thread and run */
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     hDnsThread = SDL_CreateThread(dnsLookupsRun, NULL);
     if (hDnsThread  == NULL) {
       SDL_DestroyMutex(hDnsMutexHandle);
       hDnsMutexHandle = NULL;
-      returnValue = false;
+      returnValue = FALSE;
     }
 
   }
@@ -102,8 +102,8 @@ void dnsLookupsDestroy(void) {
 
   if (hDnsMutexHandle != NULL) { /* FIXME: Will be non null if we started it OK. Is there a better way? (threadid?) */
     /* Wait for current to finish */
-    dnsShouldRun = false;
-    while (dnsFinished == false) {
+    dnsShouldRun = FALSE;
+    while (dnsFinished == FALSE) {
       /* Wait a bit for the last call to finish */
       sleep(DNS_SHUTDOWN_SLEEP_TIME_LINUX);
     }
@@ -146,7 +146,7 @@ void dnsLookupsDestroy(void) {
 void dnsLookupsAddRequest(char *ip, void *func) {
   dnsList add; /* Used to add to the queue */
 
-  if (dnsShouldRun == true) {
+  if (dnsShouldRun == TRUE) {
     New(add);
     strcpy(add->ip, ip);
     add->func = func;
@@ -173,13 +173,13 @@ int dnsLookupsRun() {
   char dest[512]; /* Destination address space */
   dnsList q;      /* Used to iterate through the list */
 
-  while (dnsShouldRun == true) {
+  while (dnsShouldRun == TRUE) {
     SDL_mutexP(hDnsMutexHandle);
     dnsProcessing = dnsWaiting;
     dnsWaiting = NULL;
     SDL_mutexV(hDnsMutexHandle);
     
-    while (NonEmpty(dnsProcessing) && dnsShouldRun == true) {
+    while (NonEmpty(dnsProcessing) && dnsShouldRun == TRUE) {
       q = dnsProcessing;
       netClientGetAddress(q->ip, dest);
 /*      func = q->func;
@@ -191,7 +191,7 @@ int dnsLookupsRun() {
     }
     sleep(DNS_THREAD_SLEEP_TIME_LINUX);
   }
-  dnsFinished = true;
+  dnsFinished = TRUE;
   return 0;
 }
 

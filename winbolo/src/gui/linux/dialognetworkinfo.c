@@ -74,7 +74,7 @@ gint dialogNetInfoUpdate(gpointer data) {
   gtk_label_set_text(GTK_LABEL(lblPPS), str);
   sprintf(str, "%i", numErrors);
   gtk_label_set_text(GTK_LABEL(lblErrors), str);
-  return true;
+  return TRUE;
 }
 
 void windowNetworkInfoClose();
@@ -82,7 +82,7 @@ void windowNetworkInfoClose();
 gint dialogNetworkInfoClose(GtkWidget *widget, gpointer gdata) {
   gtk_timeout_remove(timerNetworkInfo);
   windowNetworkInfoClose();
-  return false;
+  return FALSE;
 }
 
 
@@ -110,139 +110,139 @@ dialogNetworkInformationCreate(void)
   gtk_widget_set_usize (dialogNetworkInformation, 300, 150);
   gtk_container_set_border_width (GTK_CONTAINER (dialogNetworkInformation), 15);
   gtk_window_set_title (GTK_WINDOW (dialogNetworkInformation), "LinBolo Network Information");
-  gtk_window_set_policy(GTK_WINDOW(dialogNetworkInformation), false, false, false);
-  vbox1 = gtk_vbox_new (false, 0);
+  gtk_window_set_policy(GTK_WINDOW(dialogNetworkInformation), FALSE, FALSE, FALSE);
+  vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
   gtk_container_add (GTK_CONTAINER (dialogNetworkInformation), vbox1);
 
-  hbox13 = gtk_hbox_new (false, 0);
+  hbox13 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox13);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "hbox13", hbox13,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox13);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox13, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox13, TRUE, TRUE, 0);
 
   label29 = gtk_label_new ("Server Addresss: ");
   gtk_widget_ref (label29);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "label29", label29,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label29);
-  gtk_box_pack_start (GTK_BOX (hbox13), label29, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (hbox13), label29, FALSE, FALSE, 0);
 
   lblServerAddress = gtk_label_new ("");
   gtk_widget_ref (lblServerAddress);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "lblServerAddress", lblServerAddress,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lblServerAddress);
-  gtk_box_pack_end (GTK_BOX (hbox13), lblServerAddress, false, false, 0);
+  gtk_box_pack_end (GTK_BOX (hbox13), lblServerAddress, FALSE, FALSE, 0);
 
-  hbox14 = gtk_hbox_new (false, 0);
+  hbox14 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox14);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "hbox14", hbox14,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox14);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox14, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox14, TRUE, TRUE, 0);
 
   label31 = gtk_label_new ("This game address");
   gtk_widget_ref (label31);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "label31", label31,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label31);
-  gtk_box_pack_start (GTK_BOX (hbox14), label31, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (hbox14), label31, FALSE, FALSE, 0);
 
   lblGameAddress = gtk_label_new ("");
   gtk_widget_ref (lblGameAddress);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "lblGameAddress", lblGameAddress,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lblGameAddress);
-  gtk_box_pack_end (GTK_BOX (hbox14), lblGameAddress, false, false, 0);
+  gtk_box_pack_end (GTK_BOX (hbox14), lblGameAddress, FALSE, FALSE, 0);
 
-  hbox15 = gtk_hbox_new (false, 0);
+  hbox15 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox15);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "hbox15", hbox15,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox15);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox15, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox15, TRUE, TRUE, 0);
 
   label33 = gtk_label_new ("Server ping (ms) ");
   gtk_widget_ref (label33);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "label33", label33,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label33);
-  gtk_box_pack_start (GTK_BOX (hbox15), label33, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (hbox15), label33, FALSE, FALSE, 0);
 
   lblPing = gtk_label_new ("");
   gtk_widget_ref (lblPing);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "lblPing", lblPing,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lblPing);
-  gtk_box_pack_end (GTK_BOX (hbox15), lblPing, false, false, 0);
+  gtk_box_pack_end (GTK_BOX (hbox15), lblPing, FALSE, FALSE, 0);
 
-  hbox16 = gtk_hbox_new (false, 0);
+  hbox16 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox16);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "hbox16", hbox16,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox16);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox16, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox16, TRUE, TRUE, 0);
 
   label35 = gtk_label_new ("Packets per second (per player)");
   gtk_widget_ref (label35);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "label35", label35,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label35);
-  gtk_box_pack_start (GTK_BOX (hbox16), label35, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (hbox16), label35, FALSE, FALSE, 0);
 
   lblPPS = gtk_label_new ("");
   gtk_widget_ref (lblPPS);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "lblPPS", lblPPS,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lblPPS);
-  gtk_box_pack_end (GTK_BOX (hbox16), lblPPS, false, false, 0);
+  gtk_box_pack_end (GTK_BOX (hbox16), lblPPS, FALSE, FALSE, 0);
 
-  hbox17 = gtk_hbox_new (false, 0);
+  hbox17 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox17);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "hbox17", hbox17,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox17);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox17, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox17, TRUE, TRUE, 0);
 
   label37 = gtk_label_new ("Network status");
   gtk_widget_ref (label37);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "label37", label37,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label37);
-  gtk_box_pack_start (GTK_BOX (hbox17), label37, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (hbox17), label37, FALSE, FALSE, 0);
 
   lblStatus = gtk_label_new ("");
   gtk_widget_ref (lblStatus);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "lblStatus", lblStatus,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lblStatus);
-  gtk_box_pack_end (GTK_BOX (hbox17), lblStatus, false, false, 0);
+  gtk_box_pack_end (GTK_BOX (hbox17), lblStatus, FALSE, FALSE, 0);
 
-  hbox18 = gtk_hbox_new (false, 0);
+  hbox18 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox18);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "hbox18", hbox18,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox18);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox18, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox18, TRUE, TRUE, 0);
 
   label41 = gtk_label_new ("Network errors");
   gtk_widget_ref (label41);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "label41", label41,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label41);
-  gtk_box_pack_start (GTK_BOX (hbox18), label41, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (hbox18), label41, FALSE, FALSE, 0);
 
   lblErrors = gtk_label_new ("");
   gtk_widget_ref (lblErrors);
   gtk_object_set_data_full (GTK_OBJECT (dialogNetworkInformation), "lblErrors", lblErrors,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (lblErrors);
-  gtk_box_pack_end (GTK_BOX (hbox18), lblErrors, false, false, 0);
+  gtk_box_pack_end (GTK_BOX (hbox18), lblErrors, FALSE, FALSE, 0);
 
   timerNetworkInfo = gtk_timeout_add(250/* SECOND */, dialogNetInfoUpdate, (gpointer) NULL);
   gtk_signal_connect(GTK_OBJECT(dialogNetworkInformation), "delete_event", GTK_SIGNAL_FUNC (dialogNetworkInfoClose), NULL);

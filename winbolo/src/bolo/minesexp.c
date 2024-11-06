@@ -79,17 +79,17 @@ void minesExpAddItem(minesExp *me, map *mp, BYTE x, BYTE y) {
   bool found;       /* Is the item found */
   
   inc = *me;
-  found = false;
+  found = FALSE;
   
-  while (found == false && NonEmpty(inc)) {
+  while (found == FALSE && NonEmpty(inc)) {
     if (inc->x == x && inc->y == y) {
-      found = true;
+      found = TRUE;
     }
     inc = MinesExpTail(inc);
   }
 
   /* If not found add a new item */
-  if (found == false) {
+  if (found == FALSE) {
     New(q);
     q->x = x;
     q->y = y;
@@ -103,8 +103,8 @@ void minesExpAddItem(minesExp *me, map *mp, BYTE x, BYTE y) {
   }
 
 //  testPos = mapGetPos(mp, x, y);
-//  if (netGetType() != netSingle && threadsGetContext() == false && testPos >= MINE_START && testPos <= MINE_END) {
-//    mapSetPos(mp, x, y, CRATER, false);
+//  if (netGetType() != netSingle && threadsGetContext() == FALSE && testPos >= MINE_START && testPos <= MINE_END) {
+//    mapSetPos(mp, x, y, CRATER, FALSE);
 //    explosionsAddItem(x, y, 0, 0, EXPLOSION_START);
 //    soundDist(mineExplosionNear, x, y);
 //  }
@@ -156,19 +156,19 @@ void minesExpUpdate(minesExp *me, map *mp, pillboxes *pb, bases *bs, lgm **lgms,
   position = *me;
 
   while (NonEmpty(position)) {
-    needUpdate = true;
+    needUpdate = TRUE;
     if (position->time > 0) {
         position->time--;
     } else {
       /* Check for fill and remove from data structure */
-      needUpdate = false;
+      needUpdate = FALSE;
       minesExpCheckFill(me, mp, pb, bs, lgms, numLgm, position->x, position->y);
       minesRemoveItem(screenGetMines(), position->x, position->y);
       minesExpDeleteItem(me, &position);
     }
     
     /* Get the next Item */
-    if (*me != NULL && needUpdate == true) {
+    if (*me != NULL && needUpdate == TRUE) {
       position = MinesExpTail(position);
     } else {
       position = NULL;
@@ -238,14 +238,14 @@ void minesExpCheckFill(minesExp *me, map *mp, pillboxes *pb, bases *bs, lgm **lg
   bool rightPos;
   
 
-  abovePos = false;
-  belowPos = false;
-  leftPos = false;
-  rightPos = false;
+  abovePos = FALSE;
+  belowPos = FALSE;
+  leftPos = FALSE;
+  rightPos = FALSE;
   pos = mapGetPos(mp, mx, my);
   minesRemoveItem(screenGetMines(), mx, my);
   if (pos >= MINE_START && pos <= MINE_END) {
-    mapSetPos(mp, mx, my, CRATER, false, false);
+    mapSetPos(mp, mx, my, CRATER, FALSE, FALSE);
     soundDist(mineExplosionNear, mx, my);
     count = 1;
     while (count <= numLgm) {
@@ -269,32 +269,32 @@ void minesExpCheckFill(minesExp *me, map *mp, pillboxes *pb, bases *bs, lgm **lg
     }
     pos = mapGetPos(mp, mx, (BYTE) (my-1));
     if (pos >= MINE_START && pos <= MINE_END) {
-      abovePos = true;
+      abovePos = TRUE;
     }
     pos = mapGetPos(mp, mx, (BYTE) (my+1));
     if (pos >= MINE_START && pos <= MINE_END) {
-      belowPos = true;
+      belowPos = TRUE;
     }
     pos = mapGetPos(mp, (BYTE) (mx-1), my);
     if (pos >= MINE_START && pos <= MINE_END) {
-      leftPos = true;
+      leftPos = TRUE;
     }
     pos = mapGetPos(mp, (BYTE) (mx+1), my);
     if (pos >= MINE_START && pos <= MINE_END) {
-      rightPos = true;
+      rightPos = TRUE;
     }
 
     /* Add items if craters */
-    if (leftPos == true) {
+    if (leftPos == TRUE) {
       minesExpAddItem(me, mp, (BYTE) (mx-1), my);
     }
-    if (rightPos == true) {
+    if (rightPos == TRUE) {
       minesExpAddItem(me, mp, (BYTE) (mx+1), my);
     }
-    if (abovePos == true) {
+    if (abovePos == TRUE) {
       minesExpAddItem(me, mp, mx, (BYTE) (my-1));
     }
-    if (belowPos == true) {
+    if (belowPos == TRUE) {
       minesExpAddItem(me, mp, mx, (BYTE) (my+1));
     }
     screenReCalc();

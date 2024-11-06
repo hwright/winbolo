@@ -80,7 +80,7 @@ bool gameFrontTrackerEnabled;
 /* Dialog states */
 openingStates dlgState = openStart;
 
-bool isServer = false; /* Are we server of a net game */
+bool isServer = FALSE; /* Are we server of a net game */
 
 bool useAutoslow; /* Other key preferences options */
 bool useAutohide;
@@ -150,14 +150,14 @@ HWND gameFrontStart(HINSTANCE hInst, char *cmdLine, int nCmdShow, keyItems *keys
   int length;       /* Length of command line */
   bool OKStart;     /* Is the program OK to start? */
 
-  isTutorial = false;
+  isTutorial = FALSE;
   password[0] = '\0';
   gameFrontName[0] = '\0';
   gameFrontUdpAddress[0] = '\0';
-  wantRejoin = false;
+  wantRejoin = FALSE;
   langSetup();
 
-//  dialogSetNameInGame(false);
+//  dialogSetNameInGame(FALSE);
 
   /* Read preferences */
 // gameFrontGetPrefs(keys, &useAutoslow, &useAutohide);
@@ -174,43 +174,43 @@ HWND gameFrontStart(HINSTANCE hInst, char *cmdLine, int nCmdShow, keyItems *keys
 
   
   /* Initalise game subsystems */
-  OKStart = true;
-  if (isLoaded == false) {
+  OKStart = TRUE;
+  if (isLoaded == FALSE) {
 //    appWnd = windowCreate(hInst, nCmdShow);
     if (appWnd == NULL) {
 //      MessageBox(NULL, langGetText(STR_GAMEFRONTERR_WINDOW), DIALOG_BOX_TITLE, MB_ICONEXCLAMATION);
-      OKStart = false;
+      OKStart = FALSE;
     }
   
-    if ((drawSetup(hInst, appWnd)) == false) {
+    if ((drawSetup(hInst, appWnd)) == FALSE) {
 //      MessageBox(NULL, langGetText(STR_GAMEFRONTERR_DDRAW), DIALOG_BOX_TITLE, MB_ICONEXCLAMATION);
-      OKStart = false;
+      OKStart = FALSE;
     }
 
-    if ((soundSetup(hInst, appWnd)) == false) {
+    if ((soundSetup(hInst, appWnd)) == FALSE) {
 //      MessageBox(NULL, langGetText(STR_GAMEFRONTERR_DSOUND), DIALOG_BOX_TITLE, MB_ICONEXCLAMATION);
-      OKStart = false;
+      OKStart = FALSE;
     }
 
-    if ((inputSetup(hInst, appWnd)) == false) {
+    if ((inputSetup(hInst, appWnd)) == FALSE) {
 //      MessageBox(NULL, langGetText(STR_GAMEFRONTERR_DINPUT), DIALOG_BOX_TITLE, MB_ICONEXCLAMATION);
-      OKStart = false;
+      OKStart = FALSE;
     }
 
-    if ((cursorSetup(hInst, appWnd)) == false) {
+    if ((cursorSetup(hInst, appWnd)) == FALSE) {
 //      MessageBox(NULL, langGetText(STR_GAMEFRONTERR_CURSOR), DIALOG_BOX_TITLE, MB_ICONEXCLAMATION);
-      OKStart = false;
+      OKStart = FALSE;
     }
 
-    if ((fontSetup(hInst, appWnd)) == false) {
+    if ((fontSetup(hInst, appWnd)) == FALSE) {
 //      MessageBox(NULL, langGetText(STR_GAMEFRONTERR_FONTS), DIALOG_BOX_TITLE, MB_ICONEXCLAMATION);
-      OKStart = false;
+      OKStart = FALSE;
     }
   }
 
   /* Quit Program if start up failed */
-  if (OKStart == false) {
-//    gameFrontEnd(hInst, appWnd, keys, false, true);
+  if (OKStart == FALSE) {
+//    gameFrontEnd(hInst, appWnd, keys, FALSE, TRUE);
     exit(0);
   }
 
@@ -221,7 +221,7 @@ HWND gameFrontStart(HINSTANCE hInst, char *cmdLine, int nCmdShow, keyItems *keys
   screenSetAiType(compTanks);
   /* Set the key auto preferences up in the backend */
 
-  if (isTutorial == false) {
+  if (isTutorial == FALSE) {
     screenSetTankAutoSlowdown(useAutoslow);
     screenSetTankAutoHideGunsight(useAutohide);
   }
@@ -238,7 +238,7 @@ HWND gameFrontStart(HINSTANCE hInst, char *cmdLine, int nCmdShow, keyItems *keys
   }
 
   
-//  dialogSetNameInGame(true);
+//  dialogSetNameInGame(TRUE);
   return appWnd;
 }
 
@@ -254,16 +254,16 @@ HWND gameFrontStart(HINSTANCE hInst, char *cmdLine, int nCmdShow, keyItems *keys
 *  hInst      - Handle to the app instance
 *  hWnd       - Handle to the main window
 *  keys       - Pointer to hold Key Preferences
-*  gamePlayed - true if we actually entered the main 
+*  gamePlayed - TRUE if we actually entered the main 
 *               screen (ie played a game)
-*  isQuiting  - true if we are quiting
+*  isQuiting  - TRUE if we are quiting
 *********************************************************/
 void gameFrontEnd(HINSTANCE hInst, HWND hWnd, keyItems *keys, bool gamePlayed, bool isQuiting) {
   DWORD dwWritten; 
   
   clientMutexWaitFor();
-//  ShowWindow(hWnd, false);
-  if (gamePlayed == true) {
+//  ShowWindow(hWnd, FALSE);
+  if (gamePlayed == TRUE) {
     useAutoslow = screenGetTankAutoSlowdown();
     useAutohide = screenGetTankAutoHideGunsight();
   }
@@ -271,7 +271,7 @@ void gameFrontEnd(HINSTANCE hInst, HWND hWnd, keyItems *keys, bool gamePlayed, b
   screenDestroy();
   netDestroy();
   gameFrontPutPrefs(keys);
-  if (isQuiting == true) {
+  if (isQuiting == TRUE) {
     drawCleanup();
     soundCleanup();
     inputCleanup();
@@ -282,13 +282,13 @@ void gameFrontEnd(HINSTANCE hInst, HWND hWnd, keyItems *keys, bool gamePlayed, b
 //    UnregisterClass(WIND_KEYCLASSNAME, hInst);
     langCleanup();
   }
-/*  if (isServer == true) {
+/*  if (isServer == TRUE) {
     /* Quit server *
     DWORD code;
     GetExitCodeProcess(pi.hProcess, &code);
     if (code != 1) {
       /* Shut it down *
-      if (WriteFile(hChildStdinWrDup, "quit\n", 5, &dwWritten, NULL) == false) {
+      if (WriteFile(hChildStdinWrDup, "quit\n", 5, &dwWritten, NULL) == FALSE) {
         DWORD d = GetLastError();
         MessageBox(NULL, "Thats not so good", "b", MB_OK);
       }
@@ -318,11 +318,11 @@ void gameFrontRun(HINSTANCE hInst, HWND appWnd, HACCEL hAccel, int nCmdShow) {
   bool done;      /* Program finished? */
   bool process;   /* Whether to process the message or not */
 
-  done = false; 
+  done = FALSE; 
   msg.wParam = 0; /* In case something goes horribly wrong */
   ShowWindow(appWnd, nCmdShow);
   /* Start up messaging */
-  while (done == false) {
+  while (done == FALSE) {
   }
 
 /*  ShowWindow(appWnd, SW_HIDE);
@@ -359,8 +359,8 @@ void gameFrontRun(HINSTANCE hInst, HWND appWnd, HACCEL hAccel, int nCmdShow) {
 void gameFrontDialogs(HINSTANCE appInst) {
   bool done; /* Are we finished with the dialogs? */
 
-  done = false;
-  while (done == false) {
+  done = FALSE;
+  while (done == FALSE) {
     switch (dlgState) {
     case openStart:
       dlgState = openWelcome;
@@ -386,23 +386,23 @@ void gameFrontDialogs(HINSTANCE appInst) {
       break;
     case openInternet:
       /* Game Finder */
-      dialogGameFinderSetMethod(langGetText(STR_GAMEFRONT_TRACKERFINDER_TITLE), true);
+      dialogGameFinderSetMethod(langGetText(STR_GAMEFRONT_TRACKERFINDER_TITLE), TRUE);
       DialogBox(appInst, MAKEINTRESOURCE(IDD_GAMEFINDER), NULL, dialogGameFinderCallback);
       break;
     case openLan:
       /* Lan Game Finder */
-      dialogGameFinderSetMethod(langGetText(STR_GAMEFRONT_LANFINDER_TITLE), false);
+      dialogGameFinderSetMethod(langGetText(STR_GAMEFRONT_LANFINDER_TITLE), FALSE);
       DialogBox(appInst, MAKEINTRESOURCE(IDD_GAMEFINDER), NULL, dialogGameFinderCallback);
       break;
     case openTutorial:
       /* Load Tutorial */
       gameFrontLoadTutorial(); 
       screenNetSetupTankGo();
-      isTutorial = true;
+      isTutorial = TRUE;
       dlgState = openFinished; 
       break;
     case openFinished:
-      done = true;
+      done = TRUE;
       break;
     default:
       break;
@@ -424,17 +424,17 @@ void gameFrontDialogs(HINSTANCE appInst) {
 bool gameFrontSetDlgState(openingStates newState) {
   bool returnValue; /* Value to return */
 
-  returnValue = true;
+  returnValue = TRUE;
 
   if ((dlgState == openInternet || dlgState == openLan || dlgState == openUdp || dlgState == openLanManual || dlgState == openInternetManual) && newState == openUdpJoin) {
     SetCursor(LoadCursor(NULL, IDC_WAIT));
-    screenSetup(0, false, 0, UNLIMITED_GAME_TIME);
-    if (netSetup(netUdp, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, false, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin) == false) {
-      wantRejoin = false;
+    screenSetup(0, FALSE, 0, UNLIMITED_GAME_TIME);
+    if (netSetup(netUdp, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, FALSE, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin) == FALSE) {
+      wantRejoin = FALSE;
       MessageBox(NULL, langGetText(STR_GAMEFRONTERR_JOINGAME), DIALOG_BOX_TITLE, MB_ICONINFORMATION);
       netDestroy();
       screenDestroy();
-      returnValue = false;
+      returnValue = FALSE;
     } else {
       dlgState = openFinished;
     }
@@ -451,15 +451,15 @@ bool gameFrontSetDlgState(openingStates newState) {
     /* Start network game */
     dlgState = newState;
     SetCursor(LoadCursor(NULL, IDC_WAIT));
-    if (gameFrontSetupServer() == true) {
-      screenSetup(0, false, 0, UNLIMITED_GAME_TIME);
-      if (netSetup(netUdp, gameFrontMyUdp, "127.0.0.1", gameFrontTargetUdp, password, false, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin) == false) {
-        wantRejoin = false;
+    if (gameFrontSetupServer() == TRUE) {
+      screenSetup(0, FALSE, 0, UNLIMITED_GAME_TIME);
+      if (netSetup(netUdp, gameFrontMyUdp, "127.0.0.1", gameFrontTargetUdp, password, FALSE, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin) == FALSE) {
+        wantRejoin = FALSE;
         MessageBox(NULL, langGetText(STR_GAMEFRONTERR_JOINGAME), DIALOG_BOX_TITLE, MB_ICONINFORMATION);
         netDestroy();
         screenDestroy();
 //        dlgState = openStart;
-        returnValue = false;
+        returnValue = FALSE;
       } else {
         dlgState = openFinished;
       }
@@ -470,16 +470,16 @@ bool gameFrontSetDlgState(openingStates newState) {
     SetCursor(LoadCursor(NULL, IDC_ARROW));
   } else if (dlgState == openSetup && newState == openFinished) {
     dlgState = openFinished;
-    if (netSetup(netSingle, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, false, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin) == false) {
-      wantRejoin = false;
+    if (netSetup(netSingle, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, FALSE, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin) == FALSE) {
+      wantRejoin = FALSE;
       MessageBox(NULL, langGetText(STR_GAMEFRONTERR_NETSINGLEPLAYER), DIALOG_BOX_TITLE, MB_ICONINFORMATION);
       netDestroy();
       screenDestroy();
 //      dlgState = openSetup;
-      returnValue = false;
+      returnValue = FALSE;
     } else {
       if (strcmp(fileName, "") != 0) {
-        screenLoadMap(fileName, gametype, hiddenMines, startDelay, timeLen, gameFrontName, false);
+        screenLoadMap(fileName, gametype, hiddenMines, startDelay, timeLen, gameFrontName, FALSE);
       } else {
         gameFrontLoadInBuiltMap();
       }
@@ -537,18 +537,18 @@ void gameFrontSetFileName(char *getName) {
 *  ai       - Are computer tanks allowed etc.
 *  sd       - Game start delay
 *  tlimit   - Game time limit
-*  justPass - true if we want to just set the password
+*  justPass - TRUE if we want to just set the password
 *********************************************************/
 void gameFrontSetGameOptions(char *pword, gameType gt, bool hm, aiType ai, long sd, long tlimit, bool justPass) {
   strcpy(password, pword);
-  if (justPass == false) {
+  if (justPass == FALSE) {
     gametype = gt;
     hiddenMines = hm;
     compTanks = ai;
     if (compTanks == aiNone) {
-      brainsHandlerSet(windowWnd(), false);
+      brainsHandlerSet(windowWnd(), FALSE);
     } else {
-      brainsHandlerSet(windowWnd(), true);
+      brainsHandlerSet(windowWnd(), TRUE);
     }
     startDelay = sd;
     timeLen = tlimit;
@@ -701,9 +701,9 @@ void gameFrontSetAIType(aiType ait) {
   compTanks = ait;
   screenSetAiType(compTanks);
   if (compTanks == aiNone) {
-    brainsHandlerSet(windowWnd(), false);
+    brainsHandlerSet(windowWnd(), FALSE);
   } else {
-    brainsHandlerSet(windowWnd(), true);
+    brainsHandlerSet(windowWnd(), TRUE);
   }
 }
 
@@ -863,7 +863,7 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   if (strcmp(buff, "") != 0) {
     /* Must be something to load */
     strcpy(def, LANG_DIR_STRING);
-    if (winUtilWBSubDirExist(def) == true) {
+    if (winUtilWBSubDirExist(def) == TRUE) {
     /* Okay Directory exists */
       strcat(def, SLASH_STRING);
       strcat(def, buff);
@@ -872,7 +872,7 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   }
 
 
-  return true;
+  return TRUE;
 }
 
 /*********************************************************
@@ -891,7 +891,7 @@ void gameFrontPutPrefs(keyItems *keys) {
   char buff[FILENAME_MAX];          /* Read Buffer               */
 
   /* Player Name */
-  if ((netGetType() == netSingle || gameFrontRemeber == true) && dlgState != openSetup) {
+  if ((netGetType() == netSingle || gameFrontRemeber == TRUE) && dlgState != openSetup) {
     screenGetPlayerName(playerName);
     WritePrivateProfileString("SETTINGS", "Player Name", playerName, PREFERENCE_FILE);
   } else {
@@ -1044,7 +1044,7 @@ bool gameFrontSetupServer() {
  
   MessageBox(NULL, langGetText(STR_GAMEFRONT_SERVERSTARTMSG), DIALOG_BOX_TITLE, MB_ICONINFORMATION);
 
-  returnValue = true;
+  returnValue = TRUE;
   cmdLine[0] = EMPTY_CHAR;
 
   strcat(cmdLine, " -map ");
@@ -1073,7 +1073,7 @@ bool gameFrontSetupServer() {
     break;
   }
   strcat(cmdLine, " -mines ");
-  if (hiddenMines == true) {
+  if (hiddenMines == TRUE) {
     strcat(cmdLine, "yes ");
   } else {
     strcat(cmdLine, "no ");
@@ -1112,7 +1112,7 @@ bool gameFrontSetupServer() {
   }
   sprintf(tmp, "%d ", l);
   strcat(cmdLine, tmp);
-  if (gameFrontTrackerEnabled == true && dlgState != openLanSetup) {
+  if (gameFrontTrackerEnabled == TRUE && dlgState != openLanSetup) {
     /* Add on the tracker info */
     strcat(cmdLine, "-tracker ");
     sprintf(tmp, "%s:%d ", gameFrontTrackerAddr, gameFrontTrackerPort);
@@ -1128,7 +1128,7 @@ bool gameFrontSetupServer() {
   /* Set the bInheritHandle flag so pipe handles are inherited. */
   ZeroMemory(&sa, sizeof(sa));
   sa.nLength = sizeof(SECURITY_ATTRIBUTES); 
-  sa.bInheritHandle = true; 
+  sa.bInheritHandle = TRUE; 
   sa.lpSecurityDescriptor = NULL; 
 
   ZeroMemory( &pi, sizeof(PROCESS_INFORMATION) );
@@ -1143,27 +1143,27 @@ bool gameFrontSetupServer() {
 // Create a pipe for the child process's STDIN. 
  
    if (CreatePipe(&hChildStdinRd, &hChildStdinWr, &sa, 0) == 0) {
-     returnValue = false; //ErrorExit("Stdin pipe creation failed\n"); 
+     returnValue = FALSE; //ErrorExit("Stdin pipe creation failed\n"); 
    }
  
 // Set a read handle to the pipe to be STDIN. 
  
    if (SetStdHandle(STD_INPUT_HANDLE, hChildStdinRd) == 0) {
-      returnValue = false;// ("Redirecting Stdin failed"); 
+      returnValue = FALSE;// ("Redirecting Stdin failed"); 
    } 
  
  //Duplicate the write handle to the pipe so it is not inherited. 
  
-   ret = DuplicateHandle(GetCurrentProcess(), hChildStdinWr, GetCurrentProcess(), &hChildStdinWrDup, 0, false, DUPLICATE_SAME_ACCESS); //false
+   ret = DuplicateHandle(GetCurrentProcess(), hChildStdinWr, GetCurrentProcess(), &hChildStdinWrDup, 0, FALSE, DUPLICATE_SAME_ACCESS); //FALSE
    if (ret == 0) {
-     returnValue = false; //ErrorExit("DuplicateHandle failed"); 
+     returnValue = FALSE; //ErrorExit("DuplicateHandle failed"); 
    }
  
    CloseHandle(hChildStdinWr); 
  
 
-   if (returnValue == false) {
-     return false;
+   if (returnValue == FALSE) {
+     return FALSE;
    } 
 
 
@@ -1171,16 +1171,16 @@ bool gameFrontSetupServer() {
   si.hStdError =  GetStdHandle(STD_OUTPUT_HANDLE); 
   si.hStdInput = hChildStdinRd;
 
-  ret = CreateProcess(NULL, tmp, NULL, NULL, true, NORMAL_PRIORITY_CLASS, NULL, NULL, &si, &pi);
-  if (ret == false) {
-    returnValue = false;
+  ret = CreateProcess(NULL, tmp, NULL, NULL, TRUE, NORMAL_PRIORITY_CLASS, NULL, NULL, &si, &pi);
+  if (ret == FALSE) {
+    returnValue = FALSE;
   } else {
     DWORD a;
-    isServer = true;
+    isServer = TRUE;
     Sleep(2000);
     GetExitCodeProcess(pi.hProcess, &a);
     if (a != STILL_ACTIVE) {
-      returnValue = false;
+      returnValue = FALSE;
     }
   }
   
@@ -1218,7 +1218,7 @@ void gameFrontGetTrackerOptions(char *address, unsigned short *port, bool *enabl
 *
 *********************************************************/
 void gameFrontEnableRejoin() {
-  wantRejoin = true;
+  wantRejoin = TRUE;
 }
 
 /*********************************************************
@@ -1259,7 +1259,7 @@ bool gameFrontPreferencesExist() {
   HANDLE findHandle;       /* The find handle */
 
 
-  returnValue = true;
+  returnValue = TRUE;
   /* Get the file location */
   value = GetWindowsDirectory(loc, FILENAME_MAX);
   if (loc[value] != '\\') {
@@ -1268,7 +1268,7 @@ bool gameFrontPreferencesExist() {
   strcat(loc, PREFERENCE_FILE);
   findHandle = FindFirstFile(loc, &fd);
   if (findHandle == INVALID_HANDLE_VALUE) {
-    returnValue = false;
+    returnValue = FALSE;
   } 
   FindClose(findHandle);
 
@@ -1294,14 +1294,14 @@ bool gameFrontLoadInBuiltMap() {
   BYTE *buff;       /* Byte buffer     */
   HRSRC res;        /* FindResource return */
 
-  returnValue = false;
+  returnValue = FALSE;
   res = FindResource(windowGetInstance(), MAKEINTRESOURCE(IDR_EVERARD), "MAPS");
   if (res != NULL) {
     hGlobal = LoadResource(NULL, res);
     if (hGlobal != NULL) {
       buff = LockResource(hGlobal);
       if (buff != NULL) {
-        returnValue = screenLoadCompressedMap(buff, 5097, "Everard Island", gametype, hiddenMines, startDelay, timeLen, gameFrontName, false); //
+        returnValue = screenLoadCompressedMap(buff, 5097, "Everard Island", gametype, hiddenMines, startDelay, timeLen, gameFrontName, FALSE); //
       }
     }
   }
@@ -1327,16 +1327,16 @@ bool gameFrontLoadTutorial() {
   BYTE *buff;       /* Byte buffer     */
   HRSRC res;        /* FindResource return */
 
-  returnValue = false;
+  returnValue = FALSE;
   res = FindResource(windowGetInstance(), MAKEINTRESOURCE(IDR_TUTORIAL), "MAPS");
   if (res != NULL) {
     hGlobal = LoadResource(NULL, res);
     if (hGlobal != NULL) {
       buff = LockResource(hGlobal);
       if (buff != NULL) {
-        returnValue = screenLoadCompressedMap(buff, 4182, "Inbuilt Tutorial", gameStrictTournament, false, 0, -1, langGetText(STR_DLGGAMESETUP_DEFAULTNAME), false);
-        if (returnValue == true) {
-          netSetup(netSingle, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, false, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin);
+        returnValue = screenLoadCompressedMap(buff, 4182, "Inbuilt Tutorial", gameStrictTournament, FALSE, 0, -1, langGetText(STR_DLGGAMESETUP_DEFAULTNAME), FALSE);
+        if (returnValue == TRUE) {
+          netSetup(netSingle, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, FALSE, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin);
         }
       }
     }

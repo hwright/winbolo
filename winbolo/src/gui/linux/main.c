@@ -116,8 +116,8 @@ linuxLgmFix llf;
 #define NO_SELECT -1
 
 bool isTutorial;
-bool isInMenu = false;
-bool isQuiting = false;
+bool isInMenu = FALSE;
+bool isQuiting = FALSE;
 
 /* Time since the game timer last went up */
 DWORD oldTick;
@@ -132,33 +132,33 @@ DWORD dwSysGame = 0;
 DWORD dwSysBrainTotal = 0;
 DWORD dwSysBrain = 0;
 
-bool doingTutorial = false;
+bool doingTutorial = FALSE;
 /* Current building item selected */
 buildSelect BsLinuxCurrent = BsTrees;
 
 /* Whether the Gunsight is shown or not */
-bool showGunsight = false;
+bool showGunsight = FALSE;
 
 /* Whether the sound effects are turn on or not */
-bool soundEffects = false;
+bool soundEffects = FALSE;
 /* Do we play background sound */
-bool backgroundSound = true;
+bool backgroundSound = TRUE;
 
 /* Is the sound card of the ISA variety */
-bool isISASoundCard = true;
-bool doneInitTutorial = false;
+bool isISASoundCard = TRUE;
+bool doneInitTutorial = FALSE;
 
 /* 
  *  new players */
-bool allowNewPlayers = true;
-bool allowAlianceRequest = true;
+bool allowNewPlayers = TRUE;
+bool allowAlianceRequest = TRUE;
 
 /* 5 Message Shown Status */
-bool showNewswireMessages = true;
-bool showAssistantMessages = true;
-bool showAIMessages = false;
-bool showNetworkStatusMessages = true;
-bool showNetworkDebugMessages = false;
+bool showNewswireMessages = TRUE;
+bool showAssistantMessages = TRUE;
+bool showAIMessages = FALSE;
+bool showNetworkStatusMessages = TRUE;
+bool showNetworkDebugMessages = FALSE;
 
 bool useAutoslow; /* Other key preferences options */
 bool useAutohide;
@@ -170,14 +170,14 @@ bool gameFrontWbnUse;
 bool gameFrontWbnSavePass;
 
 /* Automatic Scrolling or not */
-bool autoScrollingEnabled = false;
+bool autoScrollingEnabled = FALSE;
 
 /* Whether Pillbox & base labels should be shown */
-bool showPillLabels = false;
-bool showBaseLabels = false;
+bool showPillLabels = FALSE;
+bool showBaseLabels = FALSE;
 
 /* Labels of stuff */
-bool labelSelf = false;
+bool labelSelf = FALSE;
 labelLen labelMsg = lblShort;
 labelLen labelTank = lblShort;
 
@@ -234,7 +234,7 @@ int moveMousePointer(updateType value) {
 
 /** FIXME THIS ENTIRE SECTION NEEDS TO BE BROUGHT UP TO LATEST VERSION.... Added to enable compilation */
 bool screenLoadCompressedMap() {
-	return false;
+	return FALSE;
 }
 
 /** FIXME THIS ENTIRE SECTION NEEDS TO BE BROUGHT UP TO LATEST VERSION.... Added to enable compilation */
@@ -251,8 +251,8 @@ int windowsGetTicks() {
 }
 
 gint windowclose(GtkWidget *widget, gpointer gdata) {
-  isInMenu = true;
-  if (screenGetGameRunning() == true) {
+  isInMenu = TRUE;
+  if (screenGetGameRunning() == TRUE) {
     useAutoslow = screenGetTankAutoSlowdown();
     useAutohide = screenGetTankAutoHideGunsight();
   } else {
@@ -260,7 +260,7 @@ gint windowclose(GtkWidget *widget, gpointer gdata) {
     exit(0);
   }
   brainsHandlerManual(NULL);
-  isInMenu = false;
+  isInMenu = FALSE;
   gameFrontCloseServer(); 
   if (timerGameID != NULL) {
    SDL_RemoveTimer(timerGameID);
@@ -297,7 +297,7 @@ gint windowclose(GtkWidget *widget, gpointer gdata) {
   }
   gdk_key_repeat_restore();
   gtk_main_quit();
-  return false;
+  return FALSE;
 }
 
 
@@ -318,7 +318,7 @@ void saveFileOK(GtkWidget *w, GtkFileSelection *fs) {
 gint saveFileDestroy(GtkWidget *widget, gpointer *data) {
   gtk_grab_remove(widget);
   gtk_main_quit();
-  return (false);
+  return (FALSE);
 }
 
 
@@ -329,7 +329,7 @@ gint configure_event (GtkWidget *widget, GdkEventConfigure *event) {
   GdkBitmap *mask;
   pixmap = gdk_pixmap_create_from_xpm_d (window->window, &mask, &window->style->bg[GTK_STATE_NORMAL], boloicon_xpm);
 gdk_window_set_icon (window->window, NULL, pixmap, mask);
-  return true;
+  return TRUE;
 }
 GtkWidget *request_alliance1;
 GtkWidget *leave_alliance1;
@@ -359,20 +359,20 @@ gboolean press_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data) 
   long e = event->keyval;
 
   e = gdk_keyval_to_upper(e);
-  inputButtonInput(&keys, e, true);
+  inputButtonInput(&keys, e, TRUE);
   if (e == keys.kiTankView) {
     screenTankView();
   }
   if (e == keys.kiPillView) {
     screenPillView(0, 0);
   }
-  return true;
+  return TRUE;
 }
 
 
 gboolean release_event(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
-  inputButtonInput(&keys, gdk_keyval_to_upper(event->keyval), false);
-  return true;
+  inputButtonInput(&keys, gdk_keyval_to_upper(event->keyval), FALSE);
+  return TRUE;
 }
 
 gint windowLoseFocus(GtkWidget *widget, gpointer data) {
@@ -381,13 +381,13 @@ gint windowLoseFocus(GtkWidget *widget, gpointer data) {
 }
 
 gint windowGetFocus(GtkWidget *widget, gpointer data) {
-  if (doneInitTutorial == false && isTutorial == true) {
-     doneInitTutorial = true;
+  if (doneInitTutorial == FALSE && isTutorial == TRUE) {
+     doneInitTutorial = TRUE;
      windowStartTutorial();
   }
   clientMutexWaitFor();
   frameMutexWaitFor();
-   drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, BsLinuxCurrent, false, false);
+   drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, BsLinuxCurrent, FALSE, FALSE);
    frameMutexRelease();
    clientMutexRelease();
   gdk_key_repeat_disable();
@@ -403,55 +403,55 @@ int drawGetFrameRate();
 
 
 Uint32 windowGameTimer (Uint32 interval, void *param) {
-  static bool inBrain = false;  /* Are we allready calling the brain? */
-  static bool justKeys = false; /* Just the keys tick or whole game? */
+  static bool inBrain = FALSE;  /* Are we allready calling the brain? */
+  static bool justKeys = FALSE; /* Just the keys tick or whole game? */
   static BYTE t2 = 0;
   static int trackerTime = 11500;   /* When we should update the tracker */
   tankButton tb;  /* Buttons being pressed */
   bool isShoot;   /* Whether the tank fire key is being pressed */
-  bool used = false;
+  bool used = FALSE;
   bool brainRunning = brainHandlerIsBrainRunning();
   ttick = timeGetTime();
   /* Update the game objects if required */
   if ((ttick - oldTick) > GAME_TICK_LENGTH) {
     /* Get the keyboard state */
     while ((ttick - oldTick) > GAME_TICK_LENGTH) {
-      if (doingTutorial == false) {
-        if (justKeys == true) {
-          if (brainRunning == false) {
-            tb = inputGetKeys(false); 
+      if (doingTutorial == FALSE) {
+        if (justKeys == TRUE) {
+          if (brainRunning == FALSE) {
+            tb = inputGetKeys(FALSE); 
           } else {
-            inputScroll(false);
+            inputScroll(FALSE);
           }
           clientMutexWaitFor();
           screenKeysTick(tb, brainRunning);
           clientMutexRelease();
-          justKeys = false;
+          justKeys = FALSE;
         } else {
           t2++;
           trackerTime++;
-          if (brainRunning == false) {
-            tb = inputGetKeys(false); 
-            isShoot = inputIsFireKeyPressed(false);
+          if (brainRunning == FALSE) {
+            tb = inputGetKeys(FALSE); 
+            isShoot = inputIsFireKeyPressed(FALSE);
           } else {
-            inputScroll(false); 
+            inputScroll(FALSE); 
           }
           clientMutexWaitFor();
 	  frameMutexWaitFor();
-	  if (llf.used == true) {
+	  if (llf.used == TRUE) {
             screenManMove(llf.bs);
-            llf.used = false;
+            llf.used = FALSE;
           }
-	  if (llf.changeUsed == true) {
+	  if (llf.changeUsed == TRUE) {
             drawSelectIndentsOff(llf.old, 0, 0);
             drawSelectIndentsOn(llf.new, 0, 0 );
-	    llf.changeUsed = false;
+	    llf.changeUsed = FALSE;
 	  }
           screenGameTick(tb, isShoot, brainRunning);
 	  frameMutexRelease();
           clientMutexRelease();
-          justKeys = true;
-          used = true;
+          justKeys = TRUE;
+          used = TRUE;
         }
         oldTick += GAME_TICK_LENGTH;
         if (oldTick > ttick) {
@@ -461,19 +461,19 @@ Uint32 windowGameTimer (Uint32 interval, void *param) {
     }
   }
   dwSysGame += (timeGetTime() - ttick);
-  if (used == true) {
+  if (used == TRUE) {
     netMakeDataPosPacket();
     netMakeTokenPacket();
   }
   /* AI */
-  if (used == true && inBrain == false && brainRunning == true && netGetStatus() != netFailed) {
+  if (used == TRUE && inBrain == FALSE && brainRunning == TRUE && netGetStatus() != netFailed) {
     clientMutexWaitFor();
-    inBrain = true;
+    inBrain = TRUE;
     clientMutexRelease();
     ttick = timeGetTime();
     brainHandlerRun(NULL);
     clientMutexWaitFor();
-    inBrain = false;
+    inBrain = FALSE;
     clientMutexRelease();
     dwSysBrain += timeGetTime() - ttick;
   }
@@ -495,12 +495,12 @@ Uint32 windowGameTimer (Uint32 interval, void *param) {
   }
   return interval;
 }
-bool hideMainView = false;
+bool hideMainView = FALSE;
 
 Uint32 windowFrameRateTimer(Uint32 interval, void *param) {
   DWORD tick;
  
-  if (hideMainView == false) {
+  if (hideMainView == FALSE) {
     tick = timeGetTime();
     if ( (int) (tick - oldFrameTick) >= frameRateTime) {
       frameMutexWaitFor();
@@ -524,16 +524,16 @@ gboolean windowMouseMove(GtkWidget *widget, GdkEventMotion *event, gpointer user
     gdk_window_get_pointer(event->window, &x, &y, &state);
     y -= req.height;
     cursorMove(x, y);
-    if (cursorPos(x, y, &cursorX, &cursorY) == true) {
+    if (cursorPos(x, y, &cursorX, &cursorY) == TRUE) {
       screenSetCursorPos(cursorX, cursorY);
     }
   }
-  return true;
+  return TRUE;
 }
 
 
 void windowDisableSound() {
-  gtk_widget_set_sensitive(sound_effects1, false);
+  gtk_widget_set_sensitive(sound_effects1, FALSE);
 }
 
 /*********************************************************
@@ -570,21 +570,21 @@ char messageBody2[16*1024];
 char messageTitle2[256];
 char messageBody3[16*1024];
 char messageTitle3[256];
-bool hasMessage = false;
+bool hasMessage = FALSE;
 
 gint windowMessageCheck(gpointer data) {
-  if (hasMessage == true) {
-    hasMessage = false;
+  if (hasMessage == TRUE) {
+    hasMessage = FALSE;
     gdk_threads_enter();
     MessageBox(messageBody, messageTitle);
     gdk_threads_leave();
     oldTick = timeGetTime();
     ttick = oldTick;
-    doingTutorial = false;
+    doingTutorial = FALSE;
   } else if (hasMessage > 1) {
     BYTE temp = hasMessage;
-    hasMessage = false;
-    /* Process each message until false Max messages is 3*/
+    hasMessage = FALSE;
+    /* Process each message until FALSE Max messages is 3*/
     gdk_threads_enter();
     switch (temp) {
     case 3:
@@ -597,7 +597,7 @@ gint windowMessageCheck(gpointer data) {
     gdk_threads_leave();
     oldTick = timeGetTime();
     ttick = oldTick;
-    doingTutorial = false;
+    doingTutorial = FALSE;
   }
   return 100;
 }
@@ -613,9 +613,9 @@ gboolean windowMouseClick(GtkWidget *widget,  GdkEventButton *event, gpointer us
   xPos = event->x;
   yPos = event->y;
   yPos -= req.height;
-  if (cursorPos(xPos, yPos, &xValue, &yValue) == true) {
+  if (cursorPos(xPos, yPos, &xValue, &yValue) == TRUE) {
     llf.bs = BsLinuxCurrent;
-    llf.used = true;
+    llf.used = TRUE;
   } else {
     newSelect = NO_SELECT;
     if (xPos >= (zoomFactor * BS_TREE_OFFSET_X) && xPos <= ((zoomFactor * BS_TREE_OFFSET_X) + (zoomFactor * BS_ITEM_SIZE_X)) && yPos >= (zoomFactor * BS_TREE_OFFSET_Y) && yPos <= ((zoomFactor * BS_TREE_OFFSET_Y) + (zoomFactor * BS_ITEM_SIZE_Y))) {
@@ -631,22 +631,22 @@ gboolean windowMouseClick(GtkWidget *widget,  GdkEventButton *event, gpointer us
     }
 
     if (newSelect != NO_SELECT && newSelect != BsLinuxCurrent) {
-      llf.changeUsed = true;
+      llf.changeUsed = TRUE;
       llf.old = BsLinuxCurrent;
       llf.new = newSelect;
       BsLinuxCurrent = newSelect;
     }
   }
 
-  return true;
+  return TRUE;
 }
 
 
 GtkWidget* windowCreate() {
   GtkWidget *ret = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 //   gtk_window_set_default_size (GTK_WINDOW (ret), 400, 400);
-  gtk_window_set_policy (GTK_WINDOW (ret), false, false, false);
-gtk_widget_set_app_paintable(ret, false);
+  gtk_window_set_policy (GTK_WINDOW (ret), FALSE, FALSE, FALSE);
+gtk_widget_set_app_paintable(ret, FALSE);
   gtk_widget_add_events(ret, GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_KEY_RELEASE_MASK);
   gtk_signal_connect(GTK_OBJECT(ret), "button_press_event", GTK_SIGNAL_FUNC(windowMouseClick), 0);
   gtk_signal_connect(GTK_OBJECT(ret), "motion_notify_event", GTK_SIGNAL_FUNC(windowMouseMove), 0);
@@ -682,14 +682,14 @@ void sendBackendMenuOptions() {
   screenShowMessages(MSG_NETWORK, showNetworkDebugMessages);
  
   
-  isInMenu = true; 
-  if (soundIsPlayable() == false) {
+  isInMenu = TRUE; 
+  if (soundIsPlayable() == FALSE) {
     /* Disable windows */
     windowDisableSound();
   } else {
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(sound_effects1), soundEffects);
   }
-  isInMenu = false;
+  isInMenu = FALSE;
 }
 
 //-------------------------------------GAMEFRONT---
@@ -721,7 +721,7 @@ bool gameFrontTrackerEnabled;
 /* Dialog states */
 openingStates dlgState = openStart;
 
-bool isServer = false; /* Are we server of a net game */
+bool isServer = FALSE; /* Are we server of a net game */
 
 
 
@@ -787,7 +787,7 @@ bool gameFrontSetupServer() {
   
   MessageBox(langGetText(STR_GAMEFRONT_SERVERSTARTMSG), DIALOG_BOX_TITLE);
 
-  returnValue = true;
+  returnValue = TRUE;
   cmdLine[0] = EMPTY_CHAR;
 
   /* Make the command line */
@@ -816,7 +816,7 @@ bool gameFrontSetupServer() {
     break;
   }
   strcat(cmdLine, " -mines ");
-  if (hiddenMines == true) {
+  if (hiddenMines == TRUE) {
     strcat(cmdLine, "yes ");
   } else {
     strcat(cmdLine, "no ");
@@ -853,7 +853,7 @@ bool gameFrontSetupServer() {
   } 
   sprintf(tmp, "%ld ", l);
   strcat(cmdLine, tmp); 
-  if (gameFrontTrackerEnabled == true && dlgState != openLanSetup) {
+  if (gameFrontTrackerEnabled == TRUE && dlgState != openLanSetup) {
     /* Add on the tracker info */
     strcat(cmdLine, "-tracker ");
     sprintf(tmp, "%s:%d ", gameFrontTrackerAddr, gameFrontTrackerPort);
@@ -864,7 +864,7 @@ bool gameFrontSetupServer() {
     strcat(cmdLine, password);
   }
   strcat(cmdLine, " -quiet ");
-  if (gameFrontWbnUse == false) {
+  if (gameFrontWbnUse == FALSE) {
     strcat(cmdLine, " -nowinbolonet");
   }
   strcpy(tmp, "./linbolods ");
@@ -872,7 +872,7 @@ bool gameFrontSetupServer() {
   strcat(tmp, "  2> /dev/null");
   fpServer = popen(tmp, "w");
   if (!fpServer) {
-    returnValue = false;
+    returnValue = FALSE;
   } else {
     sleep(5);
   }
@@ -933,9 +933,9 @@ void gameFrontSetAIType(aiType ait) {
   compTanks = ait;
   screenSetAiType(compTanks);
   if (compTanks == aiNone) {
-    brainsHandlerSet(NULL, false);
+    brainsHandlerSet(NULL, FALSE);
   } else {
-    brainsHandlerSet(NULL, true);
+    brainsHandlerSet(NULL, TRUE);
   } 
 }
 
@@ -1075,7 +1075,7 @@ void startTimers() {
   timerGameID = SDL_AddTimer(GAME_TICK_LENGTH, (SDL_NewTimerCallback) windowGameTimer, (void *) NULL);
 
   timerFrameID = SDL_AddTimer(frameRateTime, (SDL_NewTimerCallback) windowFrameRateTimer, (void *) NULL);
-  isQuiting = true; 
+  isQuiting = TRUE; 
 } 
 
 /*********************************************************
@@ -1110,7 +1110,7 @@ void gameFrontSetTrackerOptions(char *address, unsigned short port, bool enabled
 *
 *********************************************************/
 void gameFrontEnableRejoin() {
-  wantRejoin = true;
+  wantRejoin = TRUE;
 }
 
 /*********************************************************
@@ -1153,18 +1153,18 @@ void gameFrontGetGameOptions(char *pword, gameType *gt, bool *hm, aiType *ai, lo
 *  ai       - Are computer tanks allowed etc.
 *  sd       - Game start delay
 *  tlimit   - Game time limit
-*  justPass - true if we want to just set the password
+*  justPass - TRUE if we want to just set the password
 *********************************************************/
 void gameFrontSetGameOptions(char *pword, gameType gt, bool hm, aiType ai, long sd, long tlimit, bool justPass) {
   strcpy(password, pword);
-  if (justPass == false) {
+  if (justPass == FALSE) {
     gametype = gt;
     hiddenMines = hm;
     compTanks = ai;
     if (compTanks == aiNone) {
-      brainsHandlerSet(NULL, false);
+      brainsHandlerSet(NULL, FALSE);
     } else {
-      brainsHandlerSet(NULL, true);
+      brainsHandlerSet(NULL, TRUE);
     } 
     startDelay = sd;
     timeLen = tlimit;
@@ -1187,9 +1187,9 @@ bool gameFrontLoadTutorial() {
   bool returnValue; /* Value to return */
   BYTE buff[6000] = TUT_MAP;
 
-  returnValue = screenLoadCompressedMap(buff, 4182, "Inbuilt Tutorial", gameStrictTournament, false, 0, -1, langGetText(STR_DLGGAMESETUP_DEFAULTNAME), false);
-  if (returnValue == true) {
-    netSetup(netSingle, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, false, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin, false, "");
+  returnValue = screenLoadCompressedMap(buff, 4182, "Inbuilt Tutorial", gameStrictTournament, FALSE, 0, -1, langGetText(STR_DLGGAMESETUP_DEFAULTNAME), FALSE);
+  if (returnValue == TRUE) {
+    netSetup(netSingle, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, FALSE, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin, FALSE, "");
     startTimers();
   }
 
@@ -1206,14 +1206,14 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
     gtk_widget_show(newWindow);
     gtk_widget_hide(oldWindow);
    } else if ((dlgState == openUdpSetup || dlgState == openInternetSetup || dlgState == openLanSetup) && newState == openFinished) {
-    if (gameFrontSetupServer() == true) {
-      screenSetup(0, false, 0, UNLIMITED_GAME_TIME);
-      if (netSetup(netUdp, gameFrontMyUdp, "127.0.0.1", gameFrontTargetUdp, password, false, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin, gameFrontWbnUse, gameFrontWbnPass) == false) {
-        wantRejoin = false;
+    if (gameFrontSetupServer() == TRUE) {
+      screenSetup(0, FALSE, 0, UNLIMITED_GAME_TIME);
+      if (netSetup(netUdp, gameFrontMyUdp, "127.0.0.1", gameFrontTargetUdp, password, FALSE, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin, gameFrontWbnUse, gameFrontWbnPass) == FALSE) {
+        wantRejoin = FALSE;
         MessageBox(langGetText(STR_GAMEFRONTERR_JOINGAME), DIALOG_BOX_TITLE);
         netDestroy();
         screenDestroy();
-	return false;
+	return FALSE;
       } else {
         dlgState = openFinished;
         sendBackendMenuOptions();
@@ -1228,12 +1228,12 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
     }
 
   } else if (newState == openLan) {
-    newWindow = dialogGameFinderCreate(false, langGetText(STR_GAMEFRONT_LANFINDER_TITLE));
+    newWindow = dialogGameFinderCreate(FALSE, langGetText(STR_GAMEFRONT_LANFINDER_TITLE));
     gtk_widget_show(newWindow);
     gtk_widget_hide(oldWindow);
     dlgState = newState;
  } else if (newState == openInternet) {
-    newWindow = dialogGameFinderCreate(true, langGetText(STR_GAMEFRONT_TRACKERFINDER_TITLE));
+    newWindow = dialogGameFinderCreate(TRUE, langGetText(STR_GAMEFRONT_TRACKERFINDER_TITLE));
     gtk_widget_show(newWindow);
     gtk_widget_hide(oldWindow);
     dlgState = newState;
@@ -1242,40 +1242,40 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
     gtk_widget_show(newWindow);
     gtk_widget_hide(oldWindow);
   } else if ((dlgState == openInternet || dlgState == openLan || dlgState == openUdp || dlgState == openLanManual || dlgState == openInternetManual) && newState == openUdpJoin) {
-    screenSetup(0, false, 0, UNLIMITED_GAME_TIME);
-    if (netSetup(netUdp, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, false, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin, gameFrontWbnUse, gameFrontWbnPass)== false) {
-      wantRejoin = false;
+    screenSetup(0, FALSE, 0, UNLIMITED_GAME_TIME);
+    if (netSetup(netUdp, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, FALSE, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin, gameFrontWbnUse, gameFrontWbnPass)== FALSE) {
+      wantRejoin = FALSE;
       MessageBox(langGetText(STR_GAMEFRONTERR_JOINGAME), DIALOG_BOX_TITLE);
       netDestroy();
       screenDestroy();
       gtk_widget_hide(oldWindow);
       gtk_widget_show(oldWindow);
-      return false;
+      return FALSE;
     } else {
       oldFrameTick = SDL_GetTicks();
       oldTick = SDL_GetTicks();
       sendBackendMenuOptions();
       timerGameID = SDL_AddTimer(GAME_TICK_LENGTH, (SDL_NewTimerCallback) windowGameTimer, (void *) NULL);
       timerFrameID = SDL_AddTimer(frameRateTime, (SDL_NewTimerCallback) windowFrameRateTimer, (void *) NULL);
-      isQuiting = true; 
+      isQuiting = TRUE; 
       gtk_widget_show(window);
       gtk_widget_destroy(oldWindow);
     }
   } else if ((dlgState == openInternetManual || dlgState == openInternetSetup) && newState == openWelcome) {
     dlgState = openInternet;
-    newWindow = dialogGameFinderCreate(true, langGetText(STR_GAMEFRONT_TRACKERFINDER_TITLE));
+    newWindow = dialogGameFinderCreate(TRUE, langGetText(STR_GAMEFRONT_TRACKERFINDER_TITLE));
     gtk_widget_show(newWindow);
     gtk_widget_hide(oldWindow);
   } else if ((dlgState == openLanSetup || dlgState == openLanManual) && newState == openWelcome) {
     dlgState = openLan;
-    newWindow = dialogGameFinderCreate(false, langGetText(STR_GAMEFRONT_LANFINDER_TITLE));
+    newWindow = dialogGameFinderCreate(FALSE, langGetText(STR_GAMEFRONT_LANFINDER_TITLE));
     gtk_widget_show(newWindow);
     gtk_widget_hide(oldWindow);
   } else if (newState == openTutorial) {
-    doneInitTutorial = false;
+    doneInitTutorial = FALSE;
     gameFrontLoadTutorial();
     screenNetSetupTankGo();
-    isTutorial = true;
+    isTutorial = TRUE;
     gtk_widget_show(window);
     gtk_widget_hide(oldWindow);
   } else if (newState == openFinished) {
@@ -1294,7 +1294,7 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
   
 
  dlgState = newState;
- return true;
+ return TRUE;
 }
 
 void catch_alarm (int sig) {
@@ -1312,8 +1312,8 @@ int main(int argc, char **argv) {
   applicationPath = g_get_current_dir();
 
   /* Linux LGM fix */
-  llf.used = false;
-  llf.changeUsed = false;
+  llf.used = FALSE;
+  llf.changeUsed = FALSE;
   
   /* Make bolo preferences directory and brains directory */
   mkDirPath= g_strconcat(g_get_home_dir(), "/.linbolo", NULL);
@@ -1329,17 +1329,17 @@ int main(int argc, char **argv) {
 
 
   timeLen =  UNLIMITED_GAME_TIME;
-  isTutorial = false;
+  isTutorial = FALSE;
   dlgState = openStart;
   password[0] = '\0';
   gameFrontName[0] = '\0';
   gameFrontUdpAddress[0] = '\0';
-  wantRejoin = false;
+  wantRejoin = FALSE;
   gameFrontTrackerEnabled = 1;
   gameFrontGetPrefs(&keys, &useAutoslow, &useAutohide);  
   window = windowCreate();
  
-  XSync(GDK_DISPLAY(), false);
+  XSync(GDK_DISPLAY(), FALSE);
  /* Hack to get SDL to use GTK window */
     //sprintf(SDL_windowhack, "SDL_WINDOWID=%ld", GDK_WINDOW_XWINDOW(window->window));
     sprintf(SDL_windowhack, "SDL_WINDOWID=%ld", GDK_WINDOW_XWINDOW(drawingarea1->window));
@@ -1354,26 +1354,26 @@ int main(int argc, char **argv) {
     }
     
     isQuiting = soundSetup();
-    if (isQuiting == true) {
+    if (isQuiting == TRUE) {
       isQuiting = drawSetup(drawingarea1);
     }
-    if (isQuiting == true) {
+    if (isQuiting == TRUE) {
       isQuiting = inputSetup();
     }
-    if (isQuiting == true) {
+    if (isQuiting == TRUE) {
       isQuiting = clientMutexCreate();
     }
-    if (isQuiting == true) {
+    if (isQuiting == TRUE) {
       isQuiting = frameMutexCreate();
     }
 
-    if (isQuiting == true) {
+    if (isQuiting == TRUE) {
       isQuiting = cursorSetup();
     }
   
     isQuiting ^= 1; 
 
-    while (isQuiting == false) {
+    while (isQuiting == FALSE) {
 frameRateTime = (int) (MILLISECONDS / FRAME_RATE_30) - 1;
 
   gameFrontGetPrefs(&keys, &useAutoslow, &useAutohide);  
@@ -1383,7 +1383,7 @@ frameRateTime = (int) (MILLISECONDS / FRAME_RATE_30) - 1;
     gtk_main();
     gdk_threads_leave();
     gdk_key_repeat_restore();
-    if (isQuiting == false) {
+    if (isQuiting == FALSE) {
       gtk_widget_hide(window);
     }
     netDestroy();
@@ -1402,27 +1402,27 @@ frameRateTime = (int) (MILLISECONDS / FRAME_RATE_30) - 1;
 }
 
 bool startSinglePlayer() {
-  bool returnValue = true;
-  if (netSetup(netSingle, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, false, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin, false, "") == false) {
-    wantRejoin = false;
+  bool returnValue = TRUE;
+  if (netSetup(netSingle, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, FALSE, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin, FALSE, "") == FALSE) {
+    wantRejoin = FALSE;
     MessageBox(langGetText(STR_GAMEFRONTERR_NETSINGLEPLAYER), DIALOG_BOX_TITLE);
     netDestroy();
     screenDestroy();
     dlgState = openSetup;
-    returnValue = false;
+    returnValue = FALSE;
   } else {
     if (strcmp(fileName, "") != 0) {
-      screenLoadMap(fileName, gametype, hiddenMines, startDelay, timeLen, gameFrontName, false);
+      screenLoadMap(fileName, gametype, hiddenMines, startDelay, timeLen, gameFrontName, FALSE);
     } else {
        BYTE emap[6000] = E_MAP;
-       screenLoadCompressedMap(emap, 5097, "Everard Island", gametype, hiddenMines, startDelay, timeLen, gameFrontName, false); 
+       screenLoadCompressedMap(emap, 5097, "Everard Island", gametype, hiddenMines, startDelay, timeLen, gameFrontName, FALSE); 
     }
   }
-  if (returnValue == true) {
+  if (returnValue == TRUE) {
     sendBackendMenuOptions();
     startTimers();
  }
- return false;
+ return FALSE;
 }
 
 /*********************************************************
@@ -1506,7 +1506,7 @@ Updates the Window View
 *  lgms       - Pointer to the screen builder structure
 *  srtDelay   - Start delay. If this is greater then 0
 *               Then the delay screen should be drawn
-*  isPillView - true if we are in pillbox view
+*  isPillView - TRUE if we are in pillbox view
 *  edgeX      - X Offset for smooth scrolling
 *  edgeY      - Y Offset for smooth scrolling
 *********************************************************/
@@ -1556,7 +1556,7 @@ void frontEndUpdateTankStatusBars(BYTE shells, BYTE mines, BYTE armour, BYTE tre
 *  value - The sound effect to play
 *********************************************************/
 void frontEndPlaySound(sndEffects value) {
-  if (soundEffects == true) {
+  if (soundEffects == TRUE) {
     soundPlayEffect(value);
   }
 }
@@ -1685,7 +1685,7 @@ void frontEndUpdateBaseStatusBars(BYTE shells, BYTE mines, BYTE armour) {
   DWORD tick;
 
   tick = timeGetTime();
-  drawStatusBaseBars(0, 0, shells, mines, armour, false);
+  drawStatusBaseBars(0, 0, shells, mines, armour, FALSE);
   dwSysFrame += (timeGetTime() - tick);
 }
 
@@ -1708,7 +1708,7 @@ void frontEndManStatus(bool isDead, TURNTYPE angle) {
  
   tick = timeGetTime();
   frameMutexWaitFor();
-  drawSetManStatus(isDead, angle, true);
+  drawSetManStatus(isDead, angle, TRUE);
   frameMutexRelease();
   dwSysFrame += (timeGetTime() - tick); 
 }
@@ -1723,12 +1723,12 @@ void frontEndManStatus(bool isDead, TURNTYPE angle) {
 * downloading network data. Draw progress line instead.
 * 
 *ARGUMENTS:
-*  justBlack - true if we want just a black screen
+*  justBlack - TRUE if we want just a black screen
 *********************************************************/
 void frontEndDrawDownload(bool justBlack) {
   DWORD tick;
 
-  if (hideMainView == false) {
+  if (hideMainView == FALSE) {
     tick = timeGetTime();
     frameMutexWaitFor();
     drawDownloadScreen(0, justBlack);
@@ -1770,7 +1770,7 @@ void frontEndGameOver(void) {
   SDL_RemoveTimer(timerFrameID);
   strcpy(messageTitle, DIALOG_BOX_TITLE);
   strcpy(messageBody, langGetText(STR_WBTIMELIMIT_END));
-  hasMessage = true;
+  hasMessage = TRUE;
 }
 
 /*********************************************************
@@ -1786,75 +1786,75 @@ void frontEndGameOver(void) {
 *  str   - String identifier of the name
 *********************************************************/
 void frontEndSetPlayer(playerNumbers value, char *str) {
-  isInMenu = true;
+  isInMenu = TRUE;
   switch (value) {
    case player01:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player1)->child)), str);
-    gtk_widget_set_sensitive(idc_player1, true);
+    gtk_widget_set_sensitive(idc_player1, TRUE);
     break;
   case player02:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player2)->child)), str);
-    gtk_widget_set_sensitive(idc_player2, true);
+    gtk_widget_set_sensitive(idc_player2, TRUE);
     break;
  case player03:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player3)->child)), str);
-    gtk_widget_set_sensitive(idc_player3, true);
+    gtk_widget_set_sensitive(idc_player3, TRUE);
     break;
   case player04:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player4)->child)), str);
-    gtk_widget_set_sensitive(idc_player4, true);
+    gtk_widget_set_sensitive(idc_player4, TRUE);
     break;
   case player05: 
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player5)->child)), str);
-    gtk_widget_set_sensitive(idc_player5, true);
+    gtk_widget_set_sensitive(idc_player5, TRUE);
     break;
   case player06:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player6)->child)), str);
-    gtk_widget_set_sensitive(idc_player6, true);
+    gtk_widget_set_sensitive(idc_player6, TRUE);
     break;
   case player07: 
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player7)->child)), str);
-    gtk_widget_set_sensitive(idc_player7, true);
+    gtk_widget_set_sensitive(idc_player7, TRUE);
     break;
   case player08:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player8)->child)), str);
-    gtk_widget_set_sensitive(idc_player8, true);
+    gtk_widget_set_sensitive(idc_player8, TRUE);
     break;
   case player09:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player9)->child)), str);
-    gtk_widget_set_sensitive(idc_player9, true);
+    gtk_widget_set_sensitive(idc_player9, TRUE);
     break;
   case player10:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player10)->child)), str);
-    gtk_widget_set_sensitive(idc_player10, true);
+    gtk_widget_set_sensitive(idc_player10, TRUE);
     break;
  case player11:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player11)->child)), str);
-    gtk_widget_set_sensitive(idc_player11, true);
+    gtk_widget_set_sensitive(idc_player11, TRUE);
     break;
   case player12:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player12)->child)), str);
-    gtk_widget_set_sensitive(idc_player12, true);
+    gtk_widget_set_sensitive(idc_player12, TRUE);
     break;
   case player13: 
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player13)->child)), str);
-    gtk_widget_set_sensitive(idc_player13, true);
+    gtk_widget_set_sensitive(idc_player13, TRUE);
     break;
   case player14:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player14)->child)), str);
-    gtk_widget_set_sensitive(idc_player14, true);
+    gtk_widget_set_sensitive(idc_player14, TRUE);
     break;
   case player15: 
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player15)->child)), str);
-    gtk_widget_set_sensitive(idc_player15, true);
+    gtk_widget_set_sensitive(idc_player15, TRUE);
     break;
  default:
   /* case player16: */
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player16)->child)), str);
-    gtk_widget_set_sensitive(idc_player16, true);
+    gtk_widget_set_sensitive(idc_player16, TRUE);
     break;
   }
-  isInMenu = false;
+  isInMenu = FALSE;
 }
 
 /*********************************************************
@@ -1869,91 +1869,91 @@ void frontEndSetPlayer(playerNumbers value, char *str) {
 *  value - The player number to clear
 *********************************************************/
 void frontEndClearPlayer(playerNumbers value) {
- isInMenu = true;
+ isInMenu = TRUE;
  switch (value) {
    case player01:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player1)->child)), STR_01);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player1), false);
-    gtk_widget_set_sensitive(idc_player1, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player1), FALSE);
+    gtk_widget_set_sensitive(idc_player1, FALSE);
     break;
   case player02:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player2)->child)), STR_02);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player2), false);
-    gtk_widget_set_sensitive(idc_player2, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player2), FALSE);
+    gtk_widget_set_sensitive(idc_player2, FALSE);
     break;
  case player03:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player3)->child)), STR_03);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player3), false);
-    gtk_widget_set_sensitive(idc_player3, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player3), FALSE);
+    gtk_widget_set_sensitive(idc_player3, FALSE);
     break;
   case player04:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player4)->child)), STR_04);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player4), false);
-    gtk_widget_set_sensitive(idc_player4, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player4), FALSE);
+    gtk_widget_set_sensitive(idc_player4, FALSE);
     break;
   case player05: 
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player5)->child)), STR_05);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player5), false);
-    gtk_widget_set_sensitive(idc_player5, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player5), FALSE);
+    gtk_widget_set_sensitive(idc_player5, FALSE);
     break;
   case player06:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player6)->child)), STR_06);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player6), false);
-    gtk_widget_set_sensitive(idc_player6, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player6), FALSE);
+    gtk_widget_set_sensitive(idc_player6, FALSE);
     break;
   case player07: 
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player7)->child)), STR_07);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player7), false);
-    gtk_widget_set_sensitive(idc_player7, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player7), FALSE);
+    gtk_widget_set_sensitive(idc_player7, FALSE);
     break;
   case player08:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player8)->child)), STR_08);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player8), false);
-    gtk_widget_set_sensitive(idc_player8, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player8), FALSE);
+    gtk_widget_set_sensitive(idc_player8, FALSE);
     break;
   case player09:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player9)->child)), STR_09);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player9), false);
-    gtk_widget_set_sensitive(idc_player9, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player9), FALSE);
+    gtk_widget_set_sensitive(idc_player9, FALSE);
     break;
   case player10:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player10)->child)), STR_10);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player10), false);
-    gtk_widget_set_sensitive(idc_player10, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player10), FALSE);
+    gtk_widget_set_sensitive(idc_player10, FALSE);
     break;
  case player11:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player11)->child)), STR_11);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player11), false);
-    gtk_widget_set_sensitive(idc_player11, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player11), FALSE);
+    gtk_widget_set_sensitive(idc_player11, FALSE);
     break;
   case player12:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player12)->child)), STR_12);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player12), false);
-    gtk_widget_set_sensitive(idc_player12, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player12), FALSE);
+    gtk_widget_set_sensitive(idc_player12, FALSE);
     break;
   case player13: 
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player13)->child)), STR_13);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player13), false);
-    gtk_widget_set_sensitive(idc_player13, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player13), FALSE);
+    gtk_widget_set_sensitive(idc_player13, FALSE);
     break;
   case player14:
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player14)->child)), STR_14);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player14), false);
-    gtk_widget_set_sensitive(idc_player14, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player14), FALSE);
+    gtk_widget_set_sensitive(idc_player14, FALSE);
     break;
   case player15: 
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player15)->child)), STR_15);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player15), false);
-    gtk_widget_set_sensitive(idc_player15, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player15), FALSE);
+    gtk_widget_set_sensitive(idc_player15, FALSE);
     break;
  default:
   /* case player16: */
     gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player16)->child)), STR_16);
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player16), false);
-    gtk_widget_set_sensitive(idc_player16, false);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player16), FALSE);
+    gtk_widget_set_sensitive(idc_player16, FALSE);
    break;
   }
- isInMenu = false;
+ isInMenu = FALSE;
 }
 
 /*********************************************************
@@ -1969,7 +1969,7 @@ void frontEndClearPlayer(playerNumbers value) {
 * isChecked - Is the item checked
 *********************************************************/
 void frontEndSetPlayerCheckState(playerNumbers value, bool isChecked) {
-  isInMenu = true;
+  isInMenu = TRUE;
   switch (value) {
    case player01:
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player1), isChecked);
@@ -2021,7 +2021,7 @@ void frontEndSetPlayerCheckState(playerNumbers value, bool isChecked) {
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player16), isChecked);
     break;
   }
-  isInMenu = false;
+  isInMenu = FALSE;
 }
 
 /*********************************************************
@@ -2034,7 +2034,7 @@ void frontEndSetPlayerCheckState(playerNumbers value, bool isChecked) {
 * item
 * 
 *ARGUMENTS:
-*  enabled - true for enabled/false for diabled
+*  enabled - TRUE for enabled/FALSE for diabled
 *********************************************************/
 void frontEndEnableRequestAllyMenu(bool enabled) {
   gtk_widget_set_sensitive(request_alliance1, enabled);
@@ -2049,7 +2049,7 @@ void frontEndEnableRequestAllyMenu(bool enabled) {
 * Request to enable/disable the leave alliance menu item
 * 
 *ARGUMENTS:
-*  enabled - true for enabled/false for diabled
+*  enabled - TRUE for enabled/FALSE for diabled
 *********************************************************/
 void frontEndEnableLeaveAllyMenu(bool enabled) {
   gtk_widget_set_sensitive(leave_alliance1, enabled);
@@ -2070,9 +2070,9 @@ void frontEndEnableLeaveAllyMenu(bool enabled) {
 *  isShown - Is the gunsight shown or not
 *********************************************************/
 void frontEndShowGunsight(bool isShown) {
-  isInMenu = true;
+  isInMenu = TRUE;
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(show_gunsight1), isShown);
-  isInMenu = false;
+  isInMenu = FALSE;
 }
 
 /*********************************************************
@@ -2241,7 +2241,7 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   if (strcmp(buff, "") != 0) {
     /* Must be something to load */
     strcpy(def, LANG_DIR_STRING);
-/*FIXME    if (winUtilWBSubDirExist(def) == true) {
+/*FIXME    if (winUtilWBSubDirExist(def) == TRUE) {
     * Okay Directory exists *
       strcat(def, SLASH_STRING);
       strcat(def, buff);
@@ -2250,7 +2250,7 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   }
 
 
-  return true;
+  return TRUE;
 }
 
 /*********************************************************
@@ -2272,7 +2272,7 @@ void gameFrontPutPrefs(keyItems *keys) {
   
   preferencesGetPreferenceFile(prefs);
   /* Player Name */
-  if ((netGetType() == netSingle || gameFrontRemeber == true) && dlgState != openSetup) {
+  if ((netGetType() == netSingle || gameFrontRemeber == TRUE) && dlgState != openSetup) {
     screenGetPlayerName(playerName);
     if (playerName[0] == '*') {
       strcpy(playerName2, playerName+1);
@@ -2375,7 +2375,7 @@ void gameFrontPutPrefs(keyItems *keys) {
   WritePrivateProfileString("MENU", "Tank Label Size", buff, prefs);
 
   /* Winbolo.net */
-  if (gameFrontWbnSavePass == true) {
+  if (gameFrontWbnSavePass == TRUE) {
     WritePrivateProfileString("WINBOLO.NET", "Password", gameFrontWbnPass, prefs);
   } else {
     WritePrivateProfileString("WINBOLO.NET", "Password", "", prefs);
@@ -2395,96 +2395,96 @@ bool frontEndTutorial(BYTE pos) {
   
 
  // gdk_threads_enter();
-  returnValue = false;
-  if (isTutorial == true) {
+  returnValue = FALSE;
+  if (isTutorial == TRUE) {
     switch (upTo) {
     case 0:
       if (pos == 208) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL01));
-        hasMessage = true;
-        returnValue = true;
+        hasMessage = TRUE;
+        returnValue = TRUE;
         upTo++; 
      }
       break;
     case 1:
       if (pos == 197) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL02));
-        hasMessage = true;
-        returnValue = true;
+        hasMessage = TRUE;
+        returnValue = TRUE;
         upTo++;
       }
       break;
     case 2:
       if (pos == 192) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL03));
-        hasMessage = true;
-        returnValue = true;
+        hasMessage = TRUE;
+        returnValue = TRUE;
         upTo++;
      }
       break;
     case 3:
       if (pos == 186) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL04));
-        hasMessage = true;
-        returnValue = true;
+        hasMessage = TRUE;
+        returnValue = TRUE;
         upTo++;
       }
       break;
     case 4:
       if (pos == 181) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL05));
-        hasMessage = true;
-        returnValue = true;
+        hasMessage = TRUE;
+        returnValue = TRUE;
         upTo++;
       }
       break;
     case 5:
       if (pos == 175) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL06));
-        hasMessage = true;
-        returnValue = true;
+        hasMessage = TRUE;
+        returnValue = TRUE;
         upTo++;
        }
       break;
     case 6:
       if (pos == 166) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL07));
-        hasMessage = true;
-        returnValue = true;
+        hasMessage = TRUE;
+        returnValue = TRUE;
         upTo++;
       }
       break;
     case 7:
       if (pos == 159) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL09));
         strcpy(messageTitle2, DIALOG_BOX_TITLE);
         strcpy(messageBody2, langGetText(STR_TUTORIAL08));
 	hasMessage = 2;
-        returnValue = true;
+        returnValue = TRUE;
         upTo++;
 	upTo++;
       }
@@ -2494,14 +2494,14 @@ bool frontEndTutorial(BYTE pos) {
       break;
     case 9:
       if (pos == 142) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL11));
         strcpy(messageTitle2, DIALOG_BOX_TITLE);
         strcpy(messageBody2, langGetText(STR_TUTORIAL10));
 	hasMessage = 2;
-        returnValue = true;
+        returnValue = TRUE;
         upTo++;
 	upTo++;
       }
@@ -2511,25 +2511,25 @@ bool frontEndTutorial(BYTE pos) {
       break;
     case 11:
       if (pos == 122) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL12));
-        hasMessage = true;
-        returnValue = true;
+        hasMessage = TRUE;
+        returnValue = TRUE;
         upTo++;
      }
       break;
     case 12:
       if (pos == 120) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL14));
         strcpy(messageTitle2, DIALOG_BOX_TITLE);
         strcpy(messageBody2, langGetText(STR_TUTORIAL13));
 	hasMessage = 2;
-        returnValue = true;
+        returnValue = TRUE;
         upTo++;
 	upTo++;
      }
@@ -2539,47 +2539,47 @@ bool frontEndTutorial(BYTE pos) {
       break;
     case 14:
       if (pos == 110) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL15));
-        hasMessage = true;
-        returnValue = true;
+        hasMessage = TRUE;
+        returnValue = TRUE;
         upTo++;
       }
       break;
     case 15:
       if (pos == 103) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
 	clientMutexRelease();
 	strcpy(messageTitle, DIALOG_BOX_TITLE);
 	strcpy(messageBody, langGetText(STR_TUTORIAL16));
-	hasMessage = true;
-	returnValue = true;
+	hasMessage = TRUE;
+	returnValue = TRUE;
 	upTo++;
       }
       break;
     case 16:
       if (pos == 98) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
 	clientMutexRelease();
 	strcpy(messageTitle, DIALOG_BOX_TITLE);
 	strcpy(messageBody, langGetText(STR_TUTORIAL17));
-	hasMessage = true;
-	returnValue = true;
+	hasMessage = TRUE;
+	returnValue = TRUE;
 	upTo++;
       }
       break;
     case 17:
       if (pos == 84) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL19));
         strcpy(messageTitle2, DIALOG_BOX_TITLE);
         strcpy(messageBody2, langGetText(STR_TUTORIAL18));
 	hasMessage = 2;
-        returnValue = true;
+        returnValue = TRUE;
         upTo++;
 	upTo++;
      }
@@ -2589,14 +2589,14 @@ bool frontEndTutorial(BYTE pos) {
       break;
     case 19:
       if (pos == 66) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL21));
         strcpy(messageTitle2, DIALOG_BOX_TITLE);
         strcpy(messageBody2, langGetText(STR_TUTORIAL20));
 	hasMessage = 2;
-        returnValue = true;
+        returnValue = TRUE;
         upTo++;
 	upTo++;
       }
@@ -2606,7 +2606,7 @@ bool frontEndTutorial(BYTE pos) {
       break;
     case 21:
       if (pos == 47) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
         clientMutexRelease();
         strcpy(messageTitle3, DIALOG_BOX_TITLE);
         strcpy(messageBody3, langGetText(STR_TUTORIAL22));
@@ -2615,7 +2615,7 @@ bool frontEndTutorial(BYTE pos) {
         strcpy(messageBody2, langGetText(STR_TUTORIAL23));
         strcpy(messageBody, langGetText(STR_TUTORIAL24));
 	hasMessage = 3;
-        returnValue = true;
+        returnValue = TRUE;
         upTo++;
 	upTo++;
      }
@@ -2628,12 +2628,12 @@ bool frontEndTutorial(BYTE pos) {
       break;
     case 24:
       if (pos == 21) {
-        doingTutorial = true;
+        doingTutorial = TRUE;
 	clientMutexRelease();
 	strcpy(messageTitle, DIALOG_BOX_TITLE);
 	strcpy(messageBody, langGetText(STR_TUTORIAL25));
-	hasMessage = true;
-	returnValue = true;
+	hasMessage = TRUE;
+	returnValue = TRUE;
 	upTo++;
         frameRateTime = 0;
         SDL_RemoveTimer(timerGameID);
@@ -2649,15 +2649,15 @@ bool frontEndTutorial(BYTE pos) {
 
 void windowStartTutorial() { 
   upTo = 0;
-  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(automatic_scrolling1), true);
-  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(show_gunsight1), true);
-  screenSetGunsight(true);
-  screenSetAutoScroll(true);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(automatic_scrolling1), TRUE);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(show_gunsight1), TRUE);
+  screenSetGunsight(TRUE);
+  screenSetAutoScroll(TRUE);
   MessageBox(langGetText(STR_TUTORIAL_START01), DIALOG_BOX_TITLE);
   MessageBox(langGetText(STR_TUTORIAL_START02), DIALOG_BOX_TITLE);
   MessageBox(langGetText(STR_TUTORIAL_START03), DIALOG_BOX_TITLE);
   MessageBox(langGetText(STR_TUTORIAL_START04), DIALOG_BOX_TITLE);
-  doingTutorial = false;
+  doingTutorial = FALSE;
   oldTick = timeGetTime();
   ttick = oldTick;
 }
@@ -2667,7 +2667,7 @@ void
 on_new1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  isQuiting = false;
+  isQuiting = FALSE;
   windowclose(window, NULL);
 }
 
@@ -2694,7 +2694,7 @@ on_save_map1_activate                  (GtkMenuItem     *menuitem,
   gtk_main();
   if (saveFileName[0] != '\0') {
     saveOK = screenSaveMap(saveFileName);
-    if (saveOK == false) {
+    if (saveOK == FALSE) {
       MessageBox(langGetText(STR_WBERR_SAVEMAP), DIALOG_BOX_TITLE);
      }
   }
@@ -2746,7 +2746,7 @@ on_network_information1_activate       (GtkMenuItem     *menuitem,
 {
   if (windowNetInfo == NULL) {
     windowNetInfo = dialogNetworkInformationCreate();
-    gtk_window_set_policy (GTK_WINDOW (windowNetInfo), false, false, false);
+    gtk_window_set_policy (GTK_WINDOW (windowNetInfo), FALSE, FALSE, FALSE);
     gtk_widget_realize(windowNetInfo);
     gtk_widget_show(windowNetInfo);
   } else {
@@ -2759,7 +2759,7 @@ void
 on_exit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  isQuiting = true;
+  isQuiting = TRUE;
   windowclose(window, NULL);
 }
 
@@ -2859,7 +2859,7 @@ void
 on_show_gunsight1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     showGunsight ^= 1;
     screenSetGunsight(showGunsight);
   }
@@ -2947,9 +2947,9 @@ on_hide_main_view1_activate            (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   hideMainView ^= 1;
-  if (hideMainView == true) {
+  if (hideMainView == TRUE) {
     frameMutexWaitFor();
-    drawDownloadScreen(0, true);
+    drawDownloadScreen(0, TRUE);
     frameMutexRelease();
   }
 }
@@ -2992,7 +2992,7 @@ on_change_player_name1_activate        (GtkMenuItem     *menuitem,
 {
   GtkWidget *g;
 
-  g = dialogSetNameCreate(true);
+  g = dialogSetNameCreate(TRUE);
   gtk_widget_show(g);
   gtk_grab_add(g);
   gtk_main();
@@ -3003,11 +3003,11 @@ void
 on_sound_effects1_activate             (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
-    isInMenu = true;
+  if (isInMenu == FALSE) {
+    isInMenu = TRUE;
     soundEffects ^= 1;
 //    gtk_widget_set_sensitive(background_sound1, soundEffects);
-    isInMenu = false;
+    isInMenu = FALSE;
   }
 }
 
@@ -3102,7 +3102,7 @@ void
 on_select_all1_activate                (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  screenCheckAllNonePlayers(true);
+  screenCheckAllNonePlayers(TRUE);
 }
 
 
@@ -3110,7 +3110,7 @@ void
 on_select_none1_activate               (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  screenCheckAllNonePlayers(false);
+  screenCheckAllNonePlayers(FALSE);
 }
 
 
@@ -3134,7 +3134,7 @@ void
 on_player1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player01);
   }
 }
@@ -3144,7 +3144,7 @@ void
 on_player_activate                     (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player02);
   }
 }
@@ -3154,7 +3154,7 @@ void
 on_player3_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player03);
   }
 }
@@ -3164,7 +3164,7 @@ void
 on_player4_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player04);
   }
 }
@@ -3174,7 +3174,7 @@ void
 on_player5_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player05);
   }
 }
@@ -3184,7 +3184,7 @@ void
 on_player6_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player06);
   }
 }
@@ -3194,7 +3194,7 @@ void
 on_player7_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player07);
   }
 }
@@ -3204,7 +3204,7 @@ void
 on_player8_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player08);
   }
 }
@@ -3214,7 +3214,7 @@ void
 on_player9_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player09);
   }
 }
@@ -3224,7 +3224,7 @@ void
 on_player10_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player10);
   }
 }
@@ -3234,7 +3234,7 @@ void
 on_player11_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player11);
   }
 }
@@ -3244,7 +3244,7 @@ void
 on_player12_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player12);
   }
 }
@@ -3254,7 +3254,7 @@ void
 on_player13_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player13);
   }
 }
@@ -3264,7 +3264,7 @@ void
 on_player14_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player14);
   }
 }
@@ -3274,7 +3274,7 @@ void
 on_player15_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player15);
   }
 }
@@ -3284,7 +3284,7 @@ void
 on_player16_activate                   (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
+  if (isInMenu == FALSE) {
     screenTogglePlayerCheckState(player16);
   }
 }
@@ -3294,10 +3294,10 @@ void
 on_manual1_activate                    (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (isInMenu == false) {
-    isInMenu = true;
+  if (isInMenu == FALSE) {
+    isInMenu = TRUE;
     brainsHandlerManual(NULL);
-    isInMenu = false;
+    isInMenu = FALSE;
   } 
 }
 
@@ -3436,7 +3436,7 @@ GtkWidget *background_sound1;
  
   accel_group = gtk_accel_group_new ();
 
-  vbox1 = gtk_vbox_new (false, 0);
+  vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
   gtk_object_set_data_full (GTK_OBJECT (window), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -3448,7 +3448,7 @@ GtkWidget *background_sound1;
   gtk_object_set_data_full (GTK_OBJECT (window), "menu_bar", menu_bar,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (menu_bar);
-  gtk_box_pack_start (GTK_BOX (vbox1), menu_bar, false, false, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), menu_bar, FALSE, FALSE, 0);
 
 
 
@@ -3491,7 +3491,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator1);
   gtk_container_add (GTK_CONTAINER (file1_menu), separator1);
-  gtk_widget_set_sensitive (separator1, false);
+  gtk_widget_set_sensitive (separator1, FALSE);
 
   game_information1 = gtk_menu_item_new_with_label ("Game Information");
   gtk_widget_ref (game_information1);
@@ -3520,7 +3520,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator2);
   gtk_container_add (GTK_CONTAINER (file1_menu), separator2);
-  gtk_widget_set_sensitive (separator2, false);
+  gtk_widget_set_sensitive (separator2, FALSE);
 
   exit1 = gtk_menu_item_new_with_label ("Exit");
   gtk_widget_ref (exit1);
@@ -3567,7 +3567,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (_4);
   gtk_container_add (GTK_CONTAINER (frame_rate1_menu), _4);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (_4), true);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (_4), TRUE);
 
   _8 = gtk_radio_menu_item_new_with_label (_2_group, "50");
   _2_group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (_8));
@@ -3638,7 +3638,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (normal1);
   gtk_container_add (GTK_CONTAINER (window_size1_menu), normal1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (normal1), true);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (normal1), TRUE);
 
   double1 = gtk_radio_menu_item_new_with_label (_3_group, "Double");
   _3_group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (double1));
@@ -3697,7 +3697,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (short1);
   gtk_container_add (GTK_CONTAINER (message_sender_names1_menu), short1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (short1), true);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (short1), TRUE);
 
   long1 = gtk_radio_menu_item_new_with_label (_0_group, "Long");
   _0_group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (long1));
@@ -3742,7 +3742,7 @@ GtkWidget *background_sound1;
   gtk_widget_add_accelerator (short2, "activate", accel_group,
                               GDK_2, GDK_CONTROL_MASK,
                               GTK_ACCEL_VISIBLE);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (short2), true);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (short2), TRUE);
 
   long2 = gtk_radio_menu_item_new_with_label (_1_group, "Long");
   _1_group = gtk_radio_menu_item_group (GTK_RADIO_MENU_ITEM (long2));
@@ -3788,7 +3788,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator3);
   gtk_container_add (GTK_CONTAINER (edit1_menu), separator3);
-  gtk_widget_set_sensitive (separator3, false);
+  gtk_widget_set_sensitive (separator3, FALSE);
 
   hide_main_view1 = gtk_check_menu_item_new_with_label ("Hide Main View");
   gtk_widget_ref (hide_main_view1);
@@ -3818,13 +3818,13 @@ GtkWidget *background_sound1;
   gtk_widget_ref (allow_new_players1);
   gtk_object_set_data_full (GTK_OBJECT (window), "allow_new_players1", allow_new_players1,
                             (GtkDestroyNotify) gtk_widget_unref);
-  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(allow_new_players1), true);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(allow_new_players1), TRUE);
   gtk_widget_show (allow_new_players1);
   gtk_container_add (GTK_CONTAINER (linbolo1_menu), allow_new_players1);
 
   allow_alliance_request1 = gtk_check_menu_item_new_with_label ("Allow Alliance Request");
   gtk_widget_ref (allow_alliance_request1);
-  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(allow_alliance_request1), true);
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(allow_alliance_request1), TRUE);
   gtk_object_set_data_full (GTK_OBJECT (window), "allow_alliance_request", allow_alliance_request1, (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (allow_alliance_request1);
   gtk_container_add (GTK_CONTAINER (linbolo1_menu), allow_alliance_request1);
@@ -3853,7 +3853,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator4);
   gtk_container_add (GTK_CONTAINER (linbolo1_menu), separator4);
-  gtk_widget_set_sensitive (separator4, false);
+  gtk_widget_set_sensitive (separator4, FALSE);
 
   sound_effects1 = gtk_check_menu_item_new_with_label ("Sound Effects");
   gtk_widget_ref (sound_effects1);
@@ -3867,8 +3867,8 @@ GtkWidget *background_sound1;
   gtk_object_set_data_full (GTK_OBJECT (window), "background_sound1", background_sound1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (background_sound1);
-  gtk_check_menu_item_set_state(GTK_CHECK_MENU_ITEM(background_sound1), false);
-  gtk_widget_set_sensitive(background_sound1, false);
+  gtk_check_menu_item_set_state(GTK_CHECK_MENU_ITEM(background_sound1), FALSE);
+  gtk_widget_set_sensitive(background_sound1, FALSE);
   gtk_container_add (GTK_CONTAINER (linbolo1_menu), background_sound1);
 
   separator5 = gtk_menu_item_new ();
@@ -3877,7 +3877,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator5);
   gtk_container_add (GTK_CONTAINER (linbolo1_menu), separator5);
-  gtk_widget_set_sensitive (separator5, false);
+  gtk_widget_set_sensitive (separator5, FALSE);
 
   newswire_messages1 = gtk_check_menu_item_new_with_label ("Newswire Messages");
   gtk_widget_ref (newswire_messages1);
@@ -3920,7 +3920,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator6);
   gtk_container_add (GTK_CONTAINER (linbolo1_menu), separator6);
-  gtk_widget_set_sensitive (separator6, false);
+  gtk_widget_set_sensitive (separator6, FALSE);
 
   request_alliance1 = gtk_menu_item_new_with_label ("Request Alliance");
   gtk_widget_ref (request_alliance1);
@@ -3969,7 +3969,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator7);
   gtk_container_add (GTK_CONTAINER (players1_menu), separator7);
-  gtk_widget_set_sensitive (separator7, false);
+  gtk_widget_set_sensitive (separator7, FALSE);
 
   select_all1 = gtk_menu_item_new_with_label ("Select All");
   gtk_widget_ref (select_all1);
@@ -4005,7 +4005,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator8);
   gtk_container_add (GTK_CONTAINER (players1_menu), separator8);
-  gtk_widget_set_sensitive (separator8, false);
+  gtk_widget_set_sensitive (separator8, FALSE);
 
   idc_player1 = gtk_check_menu_item_new_with_label ("1");
   gtk_widget_ref (idc_player1);
@@ -4143,7 +4143,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (manual1);
   gtk_container_add (GTK_CONTAINER (brains1_menu), manual1);
-  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (manual1), true);
+  gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (manual1), TRUE);
 
   separator9 = gtk_menu_item_new ();
   gtk_widget_ref (separator9);
@@ -4151,7 +4151,7 @@ GtkWidget *background_sound1;
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (separator9);
   gtk_container_add (GTK_CONTAINER (brains1_menu), separator9);
-  gtk_widget_set_sensitive (separator9, false);
+  gtk_widget_set_sensitive (separator9, FALSE);
 
   help1 = gtk_menu_item_new_with_label ("Help");
   gtk_widget_ref (help1);
@@ -4186,38 +4186,38 @@ GtkWidget *background_sound1;
   /* Apply check marks */
   switch (labelTank) {
   case lblNone:
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(none1), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(none1), TRUE);
     break;
   case lblShort:
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(short2), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(short2), TRUE);
     break;
   default:
     /* case lblLong: */
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(long2), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(long2), TRUE);
     break;
   }
  
   switch (frameRate) {
   case FRAME_RATE_10:
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_14), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_14), TRUE);
   break;
     case FRAME_RATE_12:
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_13), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_13), TRUE);
   break;
     case FRAME_RATE_15:
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_12), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_12), TRUE);
   break;
     case FRAME_RATE_20:
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_11), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_11), TRUE);
     break;
     case FRAME_RATE_30:
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_10), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_10), TRUE);
   break;
     case FRAME_RATE_50:
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_8), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_8), TRUE);
     break;
   case FRAME_RATE_60:
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_4), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_4), TRUE);
     break;
   }
 
@@ -4227,9 +4227,9 @@ GtkWidget *background_sound1;
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(don_t_label_own_tank1), !labelSelf);
 
   if (labelMsg == lblShort) {
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(short1), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(short1), TRUE);
   } else {
-    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(long1), true);
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(long1), TRUE);
   }
 
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(pillbox_labels1), showPillLabels);
@@ -4441,31 +4441,31 @@ GtkWidget *background_sound1;
                       NULL);
 
   gtk_window_add_accel_group (GTK_WINDOW (window), accel_group);
-  gtk_widget_set_sensitive(idc_player1, false);
-  gtk_widget_set_sensitive(idc_player2, false);
-  gtk_widget_set_sensitive(idc_player3, false);
-  gtk_widget_set_sensitive(idc_player4, false);
-  gtk_widget_set_sensitive(idc_player5, false);
-  gtk_widget_set_sensitive(idc_player6, false);
-  gtk_widget_set_sensitive(idc_player7, false);
-  gtk_widget_set_sensitive(idc_player8, false);
-  gtk_widget_set_sensitive(idc_player9, false);
-  gtk_widget_set_sensitive(idc_player10, false);
-  gtk_widget_set_sensitive(idc_player11, false);
-  gtk_widget_set_sensitive(idc_player12, false);
-  gtk_widget_set_sensitive(idc_player13, false);
-  gtk_widget_set_sensitive(idc_player14, false);
-  gtk_widget_set_sensitive(idc_player15, false);
-  gtk_widget_set_sensitive(idc_player16, false);
-  gtk_widget_set_sensitive(window_size1, false);
-  gtk_widget_set_sensitive(request_alliance1, false);
-  gtk_widget_set_sensitive(leave_alliance1, false);
+  gtk_widget_set_sensitive(idc_player1, FALSE);
+  gtk_widget_set_sensitive(idc_player2, FALSE);
+  gtk_widget_set_sensitive(idc_player3, FALSE);
+  gtk_widget_set_sensitive(idc_player4, FALSE);
+  gtk_widget_set_sensitive(idc_player5, FALSE);
+  gtk_widget_set_sensitive(idc_player6, FALSE);
+  gtk_widget_set_sensitive(idc_player7, FALSE);
+  gtk_widget_set_sensitive(idc_player8, FALSE);
+  gtk_widget_set_sensitive(idc_player9, FALSE);
+  gtk_widget_set_sensitive(idc_player10, FALSE);
+  gtk_widget_set_sensitive(idc_player11, FALSE);
+  gtk_widget_set_sensitive(idc_player12, FALSE);
+  gtk_widget_set_sensitive(idc_player13, FALSE);
+  gtk_widget_set_sensitive(idc_player14, FALSE);
+  gtk_widget_set_sensitive(idc_player15, FALSE);
+  gtk_widget_set_sensitive(idc_player16, FALSE);
+  gtk_widget_set_sensitive(window_size1, FALSE);
+  gtk_widget_set_sensitive(request_alliance1, FALSE);
+  gtk_widget_set_sensitive(leave_alliance1, FALSE);
 
   drawingarea1 = gtk_drawing_area_new ();
   gtk_widget_ref (drawingarea1);
   gtk_object_set_data_full (GTK_OBJECT (window), "drawingarea1", drawingarea1, (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show(drawingarea1);
-  gtk_box_pack_start (GTK_BOX (vbox1), drawingarea1, true, true, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), drawingarea1, TRUE, TRUE, 0);
   gtk_signal_connect(GTK_OBJECT(drawingarea1), "expose_event", GTK_SIGNAL_FUNC(windowGetFocus), 0);
 
   /* Done */
@@ -4484,10 +4484,10 @@ GtkWidget *background_sound1;
 * enabled
 *
 *ARGUMENTS:
-* allow - true to enable/False to disable
+* allow - TRUE to enable/False to disable
 *********************************************************/
 void windowAllowPlayerNameChange(bool allow) {
-  gtk_widget_set_sensitive(change_player_name1, false);
+  gtk_widget_set_sensitive(change_player_name1, FALSE);
 }
 
 // FIXME
