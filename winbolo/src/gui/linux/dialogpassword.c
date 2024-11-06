@@ -73,7 +73,7 @@ GtkWidget* dialogPasswordCreate(void) {
   gtk_window_set_modal (GTK_WINDOW (dailogPassword), TRUE);
   gtk_window_set_policy (GTK_WINDOW (dailogPassword), FALSE, FALSE, FALSE);
 
-  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dailogPassword));
+  vbox1 = gtk_dialog_get_content_area (GTK_DIALOG(dailogPassword));
   gtk_container_set_border_width (GTK_CONTAINER (vbox1), 4);
 
   label1 = gtk_label_new ("This game is password protected.\nEnter the correct password to join:");

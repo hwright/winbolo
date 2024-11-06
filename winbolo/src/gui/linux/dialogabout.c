@@ -61,7 +61,7 @@ GtkWidget* dialogAboutCreate(void) {
   gtk_window_set_modal (GTK_WINDOW (dialogAbout), TRUE);
   gtk_window_set_policy (GTK_WINDOW (dialogAbout), FALSE, FALSE, FALSE);
   gtk_container_set_border_width (GTK_CONTAINER (dialogAbout), 10);
-  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogAbout));
+  vbox1 = gtk_dialog_get_content_area (GTK_DIALOG (dialogAbout));
 
   hbox1 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox1);

@@ -125,7 +125,7 @@ GtkWidget* dialogSetNameCreate(bool inGame) {
   gtk_window_set_modal (GTK_WINDOW (dialogSetName), TRUE);
   gtk_window_set_policy (GTK_WINDOW (dialogSetName), FALSE, FALSE, FALSE);
 
-  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogSetName));
+  vbox1 = gtk_dialog_get_content_area (GTK_DIALOG (dialogSetName));
 
   label1 = gtk_label_new ("Enter the new player name for your tank");
   gtk_widget_ref (label1);

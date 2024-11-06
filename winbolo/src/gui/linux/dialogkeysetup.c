@@ -142,7 +142,7 @@ GtkWidget* dialogKeySetupCreate(keyItems *value) {
   gtk_window_set_modal (GTK_WINDOW (dialogKeySetup), TRUE);
   gtk_window_set_policy (GTK_WINDOW (dialogKeySetup), FALSE, FALSE, FALSE);
 
-  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogKeySetup));
+  vbox1 = gtk_dialog_get_content_area (GTK_DIALOG (dialogKeySetup));
 
   label1 = gtk_label_new ("Click on the option you wish to change then the next key pressed will be assigned to it.");
   gtk_widget_ref (label1);

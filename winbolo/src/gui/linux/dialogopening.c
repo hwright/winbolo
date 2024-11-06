@@ -118,7 +118,7 @@ GtkWidget* dialogOpeningCreate(void) {
   gtk_window_set_title (GTK_WINDOW (dialogOpening), "Network Selection");
   gtk_window_set_policy (GTK_WINDOW (dialogOpening), FALSE, FALSE, FALSE);
   gtk_window_set_position (GTK_WINDOW (dialogOpening), GTK_WIN_POS_CENTER);
-  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogOpening));
+  vbox1 = gtk_dialog_get_content_area (GTK_DIALOG (dialogOpening));
   
   pixmap_data = gdk_pixmap_colormap_create_from_xpm_d(NULL, gtk_widget_get_colormap(dialogOpening), &pixmap_mask, NULL, smalllogo_xpm);
   pixmap1 = gtk_pixmap_new(pixmap_data, pixmap_mask); 

@@ -504,7 +504,7 @@ GtkWidget* dialogGameFinderCreate(bool useTrack, char *title) {
   gtk_window_set_modal (GTK_WINDOW (dialogGameFinder), TRUE);
   gtk_window_set_position (GTK_WINDOW (dialogGameFinder), GTK_WIN_POS_CENTER);
   gtk_window_set_policy (GTK_WINDOW (dialogGameFinder), FALSE, FALSE, FALSE);
-  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogGameFinder));
+  vbox1 = gtk_dialog_get_content_area (GTK_DIALOG (dialogGameFinder));
 
   hbox1 = gtk_hbox_new (FALSE, 0);
   gtk_widget_ref (hbox1);
