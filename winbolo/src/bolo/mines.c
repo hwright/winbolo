@@ -50,7 +50,7 @@ void minesCreate(mines *visMines, bool allowHiddenMines) {
   New(*visMines);
   for (count1=0;count1<MINES_ARRAY_SIZE;count1++) {
     for (count2=0;count2<MINES_ARRAY_SIZE;count2++) {
-      (*visMines)->pos[count1][count2] = FALSE;
+      (*visMines)->pos[count1][count2] = false;
     }
   }
   (*visMines)->minesHiddenMines = allowHiddenMines;
@@ -100,10 +100,10 @@ bool minesGetAllowHiddenMines(mines *visMines) {
 *  yValue   - Y Map Coordinate
 *********************************************************/
 bool minesAddItem(mines *visMines, BYTE xValue, BYTE yValue) {
-  bool returnValue = FALSE; /* Value to return */
+  bool returnValue = false; /* Value to return */
 
   returnValue = (*visMines)->pos[xValue][yValue];
-  (*visMines)->pos[xValue][yValue] = TRUE;
+  (*visMines)->pos[xValue][yValue] = true;
   return returnValue;
 }
 
@@ -120,7 +120,7 @@ bool minesAddItem(mines *visMines, BYTE xValue, BYTE yValue) {
 *  yValue   - Y Map Coordinate
 *********************************************************/
 void minesRemoveItem(mines *visMines, BYTE xValue, BYTE yValue) {
-  (*visMines)->pos[xValue][yValue] = FALSE;
+  (*visMines)->pos[xValue][yValue] = false;
 }
 
 
@@ -139,11 +139,11 @@ void minesRemoveItem(mines *visMines, BYTE xValue, BYTE yValue) {
 *  yValue   - Y Map Coordinate
 *********************************************************/
 bool minesExistPos(mines *visMines, BYTE xValue, BYTE yValue) {
-  bool returnValue = TRUE; /* Value to return */
+  bool returnValue = true; /* Value to return */
   
   if (xValue <= MAP_MINE_EDGE_LEFT || xValue >= MAP_MINE_EDGE_RIGHT || yValue <= MAP_MINE_EDGE_TOP || yValue >= MAP_MINE_EDGE_BOTTOM) {
-    returnValue = TRUE;
-  } else if ((*visMines)->minesHiddenMines == TRUE) {
+    returnValue = true;
+  } else if ((*visMines)->minesHiddenMines == true) {
     returnValue = (*visMines)->pos[xValue][yValue];
   } else {
     returnValue = screenMapIsMine(xValue, yValue);

@@ -1451,7 +1451,7 @@ int mpShortCmp(const DIGIT_T a[], DIGIT_T b, size_t ndigits)
 /* Added [v2.2] */
 
 int mpIsNegative(const DIGIT_T x[], size_t ndigits)
-	/* Returns TRUE (1) if x < 0, else FALSE (0) */
+	/* Returns true (1) if x < 0, else false (0) */
 {
 	return ((x[ndigits-1] & HIBITMASK) != 0);
 }

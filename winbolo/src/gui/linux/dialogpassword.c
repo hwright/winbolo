@@ -44,18 +44,18 @@ gboolean dialogPasswordClose(GtkWidget *widget,  GdkEventButton *event, gpointer
   str = gtk_entry_get_text(GTK_ENTRY(idc_passwordtxt));
   strncpy(pass, str, MAP_STR_SIZE);
   
-  gameFrontSetGameOptions(pass, gameOpen, FALSE, FALSE, 0, 0, TRUE);
+  gameFrontSetGameOptions(pass, gameOpen, false, false, 0, 0, true);
   gtk_grab_remove(dialogPasswordUs);
   gtk_widget_destroy(dialogPasswordUs);
   gtk_main_quit();
-  return FALSE;
+  return false;
 }
 
 gboolean dialogPasswordKey(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   if (event->keyval == 65293) {
     dialogPasswordClose(dialogPasswordUs, NULL, NULL);
   }
-  return FALSE;
+  return false;
 }
 		  
 
@@ -70,8 +70,8 @@ GtkWidget* dialogPasswordCreate(void) {
   gtk_object_set_data (GTK_OBJECT (dailogPassword), "dailogPassword", dailogPassword);
   gtk_container_set_border_width (GTK_CONTAINER (dailogPassword), 7);
   gtk_window_set_title (GTK_WINDOW (dailogPassword), "Password");
-  gtk_window_set_modal (GTK_WINDOW (dailogPassword), TRUE);
-  gtk_window_set_policy (GTK_WINDOW (dailogPassword), FALSE, FALSE, FALSE);
+  gtk_window_set_modal (GTK_WINDOW (dailogPassword), true);
+  gtk_window_set_policy (GTK_WINDOW (dailogPassword), false, false, false);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
@@ -86,30 +86,30 @@ GtkWidget* dialogPasswordCreate(void) {
   gtk_object_set_data_full (GTK_OBJECT (dailogPassword), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label1);
-  gtk_box_pack_start (GTK_BOX (vbox1), label1, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), label1, false, false, 0);
   gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_LEFT);
 
-  hbox1 = gtk_hbox_new (FALSE, 0);
+  hbox1 = gtk_hbox_new (false, 0);
   gtk_widget_ref (hbox1);
   gtk_object_set_data_full (GTK_OBJECT (dailogPassword), "hbox1", hbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox1);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, true, true, 0);
 
   idc_passwordtxt = gtk_entry_new ();
   gtk_widget_ref (idc_passwordtxt);
   gtk_object_set_data_full (GTK_OBJECT (dailogPassword), "idc_passwordtxt", idc_passwordtxt,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_passwordtxt);
-  gtk_box_pack_start (GTK_BOX (hbox1), idc_passwordtxt, TRUE, TRUE, 0);
-  gtk_entry_set_visibility (GTK_ENTRY (idc_passwordtxt), FALSE);
+  gtk_box_pack_start (GTK_BOX (hbox1), idc_passwordtxt, true, true, 0);
+  gtk_entry_set_visibility (GTK_ENTRY (idc_passwordtxt), false);
 
   button1 = gtk_button_new_with_label ("OK");
   gtk_widget_ref (button1);
   gtk_object_set_data_full (GTK_OBJECT (dailogPassword), "button1", button1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (button1);
-  gtk_box_pack_start (GTK_BOX (hbox1), button1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), button1, true, true, 0);
   GTK_WIDGET_SET_FLAGS (button1, GTK_CAN_DEFAULT);
 
   gtk_widget_grab_focus (idc_passwordtxt);

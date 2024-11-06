@@ -40,14 +40,14 @@ gboolean messageBoxOK(GtkWidget *widget,  GdkEventButton *event, gpointer user_d
   gtk_grab_remove(mbUs);
   gtk_widget_destroy(mbUs);
   gtk_main_quit(); 
-  return FALSE;
+  return false;
 }
 
 gboolean messageBoxClose(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   gtk_grab_remove(mbUs);
   gtk_widget_destroy(mbUs);
   gtk_main_quit(); 
- return FALSE;
+ return false;
 }
 
 
@@ -60,9 +60,9 @@ GtkWidget* create_MessageBox (char *name, char *label) {
   MessageBox = gtk_window_new (GTK_WINDOW_DIALOG);
   gtk_object_set_data (GTK_OBJECT (MessageBox), "name", MessageBox);
   gtk_window_set_title (GTK_WINDOW (MessageBox), name);
-  gtk_window_set_policy (GTK_WINDOW (MessageBox), FALSE, FALSE, FALSE);
+  gtk_window_set_policy (GTK_WINDOW (MessageBox), false, false, false);
   gtk_window_set_position (GTK_WINDOW (MessageBox), GTK_WIN_POS_CENTER);
-  gtk_window_set_modal (GTK_WINDOW (MessageBox), TRUE);
+  gtk_window_set_modal (GTK_WINDOW (MessageBox), true);
 
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
@@ -78,7 +78,7 @@ GtkWidget* create_MessageBox (char *name, char *label) {
   gtk_object_set_data_full (GTK_OBJECT (MessageBox), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label1);
-  gtk_box_pack_start (GTK_BOX (vbox1), label1, FALSE, FALSE, 10);
+  gtk_box_pack_start (GTK_BOX (vbox1), label1, false, false, 10);
 
   idc_messageboxok = gtk_button_new_with_label ("OK");
   gtk_widget_ref (idc_messageboxok);
@@ -86,7 +86,7 @@ GtkWidget* create_MessageBox (char *name, char *label) {
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_container_set_border_width (GTK_CONTAINER (idc_messageboxok), 5);
   gtk_widget_show (idc_messageboxok);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_messageboxok, FALSE, FALSE, 5);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_messageboxok, false, false, 5);
   GTK_WIDGET_SET_FLAGS (idc_messageboxok, GTK_CAN_DEFAULT);
 
   gtk_widget_grab_focus (idc_messageboxok);

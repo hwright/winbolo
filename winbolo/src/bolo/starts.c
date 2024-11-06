@@ -166,11 +166,11 @@ bool startsExistPos(starts *value, BYTE xValue, BYTE yValue) {
   bool returnValue; /* Value to return  */
   BYTE count;       /* Looping variable */
 
-  returnValue = FALSE;
+  returnValue = false;
   count = 0;
-  while (count < (*value)->numStarts && returnValue == FALSE) {
+  while (count < (*value)->numStarts && returnValue == false) {
     if ((*value)->item[count].x == xValue && (*value)->item[count].y == yValue) {
-      returnValue = TRUE;
+      returnValue = true;
     }
     count++;
   }
@@ -210,19 +210,19 @@ void startsGetStart(starts *value, BYTE *x, BYTE *y, TURNTYPE *dir, BYTE playerN
   }
   srand((unsigned int) time(NULL));
   srand((unsigned int) (rand() * time(NULL)));
-  found = FALSE;
+  found = false;
   count = 0;
-  while (count < (*value)->numStarts && found == FALSE) {
-    okTank = TRUE;
+  while (count < (*value)->numStarts && found == false) {
+    okTank = true;
     rnd = (BYTE) ((rand()+1)% (*value)->numStarts);
     okTank = screenCheckTankRange((*value)->item[rnd].x, (*value)->item[rnd].y, playerNum, 512.0);
-    if (okTank == TRUE) {
-      found = TRUE;
+    if (okTank == true) {
+      found = true;
       val = rnd;
     }
     count++;
   }
-  if (found == TRUE) {
+  if (found == true) {
     *x = (*value)->item[val].x;
     *y = (*value)->item[val].y;
     bt = startsConvertDir(((*value)->item[val].dir));
@@ -265,22 +265,22 @@ void startsGetRandStart(starts *value, BYTE *x, BYTE *y, TURNTYPE *dir) {
   rnd = rand();
 
   if ((*value)->numStarts > 0) {
-    found = FALSE;
+    found = false;
     while (rnd < 0 || rnd > (*value)->numStarts) {
       rnd = rand() % (*value)->numStarts;
     }
     if (rnd == 0) {
       rnd = 1;
     }
-    while (found == FALSE) {
+    while (found == false) {
       testX = (*value)->item[(rnd-1)].x;
       testX <<= TANK_SHIFT_MAPSIZE;
       testY = (*value)->item[(rnd-1)].y;
       testY <<= TANK_SHIFT_MAPSIZE;
       testX += 256;
       testY += 256;
-      if (playersCheckCollision(screenGetPlayers(), playersGetSelf(screenGetPlayers()), testX, testY, &dummy1, &dummy2) == FALSE) {
-        found = TRUE;
+      if (playersCheckCollision(screenGetPlayers(), playersGetSelf(screenGetPlayers()), testX, testY, &dummy1, &dummy2) == false) {
+        found = true;
         *x = (*value)->item[(rnd-1)].x;
         *y = (*value)->item[(rnd-1)].y;
         bt = startsConvertDir(((*value)->item[(rnd-1)].dir));

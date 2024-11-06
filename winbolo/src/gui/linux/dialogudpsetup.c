@@ -39,7 +39,7 @@ GtkWidget *idc_updsetuptxtplayername;
 GtkWidget *idc_udpmachinename;
 GtkWidget *idc_updsetupremembername;
 GtkWidget *us;
-bool dialogUdpClosing = FALSE;
+bool dialogUdpClosing = false;
 
 /*********************************************************
 *NAME:          dialogUdpSetupDone
@@ -62,10 +62,10 @@ bool dialogUdpSetupDone(bool isJoin) {
   unsigned short udp;       /* Udp ports */
   unsigned short myUdp;
 
-  returnValue = TRUE;
+  returnValue = true;
   str = gtk_entry_get_text(GTK_ENTRY(idc_updsetuptxtplayername));
   if (str == NULL) {
-    returnValue = FALSE;
+    returnValue = false;
   } else {
     strncpy(pn, str, PLAYER_NAME_LEN);
   }
@@ -73,14 +73,14 @@ bool dialogUdpSetupDone(bool isJoin) {
   utilStripName(pn);
   if (pn[0] == EMPTY_CHAR) {
     MessageBox("Sorry, you can not leave this blank", DIALOG_BOX_TITLE);
-    returnValue = FALSE;
+    returnValue = false;
    } else if (pn[0] == '*') {
     MessageBox("Sorry, names can not begin with a '*'", DIALOG_BOX_TITLE);
-    returnValue = FALSE;
+    returnValue = false;
   }
   str = gtk_entry_get_text(GTK_ENTRY(idc_udpmachinename));
-  if (str == NULL && isJoin == TRUE) {
-    returnValue = FALSE;
+  if (str == NULL && isJoin == true) {
+    returnValue = false;
   } else {
     strcpy(add, str);
   }
@@ -90,13 +90,13 @@ bool dialogUdpSetupDone(bool isJoin) {
   str = gtk_entry_get_text(GTK_ENTRY(idc_updsetuptxtourport));
   myUdp = atoi(str);
 
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_updsetupremembername)) == TRUE) {
-    gameFrontSetRemeber(TRUE);
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_updsetupremembername)) == true) {
+    gameFrontSetRemeber(true);
   } else {
-    gameFrontSetRemeber(FALSE);
+    gameFrontSetRemeber(false);
   }
 
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     /* Send to the gamefront module */
     gameFrontSetUdpOptions(pn, add, udp, myUdp);
   }
@@ -110,7 +110,7 @@ gboolean dialogUdpSetupTracker(GtkWidget *widget,  GdkEventButton *event, gpoint
   gtk_widget_show(tracker);
   gtk_grab_add(tracker);
   gtk_main();
-  return FALSE;
+  return false;
 }
 
 gboolean dialogUdpSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
@@ -120,7 +120,7 @@ gboolean dialogUdpSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer 
   unsigned short targetUdp;
   char str[PLAYER_NAME_LEN];  /* Used to hold str of UDP */
   
-  dialogUdpClosing = FALSE;
+  dialogUdpClosing = false;
   gameFrontGetUdpOptions(pn, add, &targetUdp, &myUdp);
   /* Set the textboxes up */
   sprintf(str, "%i", targetUdp);
@@ -131,44 +131,44 @@ gboolean dialogUdpSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer 
   gtk_entry_set_text(GTK_ENTRY(idc_udpmachinename), add);
 
   gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(idc_updsetupremembername), gameFrontGetRemeber());
-  return FALSE;
+  return false;
 }
 
 gboolean dialogUdpSetupReJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
 
-  if (dialogUdpSetupDone(TRUE) == TRUE) {
+  if (dialogUdpSetupDone(true) == true) {
     gameFrontEnableRejoin();
-    dialogUdpClosing = TRUE;
-    gtk_widget_set_sensitive(us, FALSE);
+    dialogUdpClosing = true;
+    gtk_widget_set_sensitive(us, false);
     gdk_threads_leave();
-    while(g_main_iteration(FALSE));
+    while(g_main_iteration(false));
     gdk_threads_enter();
     dialogUdpClosing = gameFrontSetDlgState(us, openUdpJoin);
-    gtk_widget_set_sensitive(us, TRUE);
+    gtk_widget_set_sensitive(us, true);
   }
 
   
   //gameFrontSetDlgState(us, openWelcome);
-  return FALSE;
+  return false;
 }
 
 gboolean dialogUdpSetupJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
 
-  if (dialogUdpSetupDone(TRUE) == TRUE) {
-    dialogUdpClosing = TRUE;
-    gtk_widget_set_sensitive(us, FALSE);
+  if (dialogUdpSetupDone(true) == true) {
+    dialogUdpClosing = true;
+    gtk_widget_set_sensitive(us, false);
     gdk_threads_leave();
-    while(g_main_iteration(FALSE));
+    while(g_main_iteration(false));
     gdk_threads_enter();
     dialogUdpClosing = gameFrontSetDlgState(us, openUdpJoin);
-    if (dialogUdpClosing == FALSE) {
-      gtk_widget_set_sensitive(us, TRUE);
+    if (dialogUdpClosing == false) {
+      gtk_widget_set_sensitive(us, true);
     }
   }
 
   
   //gameFrontSetDlgState(us, openWelcome);
-  return FALSE;
+  return false;
 }
 
 
@@ -182,22 +182,22 @@ gboolean dialogUdpSetupNew(GtkWidget *widget,  GdkEventButton *event, gpointer u
   udp = atoi(str);
   if (myUdp == udp) {
      MessageBox(langGetText(STR_ERR_DLGTCP_PORTS), DIALOG_BOX_TITLE);
-  } else if (dialogUdpSetupDone(TRUE) == TRUE) {
-    dialogUdpClosing = TRUE;
+  } else if (dialogUdpSetupDone(true) == true) {
+    dialogUdpClosing = true;
     dialogUdpClosing = gameFrontSetDlgState(us, openUdpSetup);
   } else {
     MessageBox(langGetText(STR_ERR_DLGTCP_NOTRIGHT), DIALOG_BOX_TITLE);
   }
-  return FALSE;
+  return false;
 }
 
 
 gboolean dialogUdpSetupCancel(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
-  if (dialogUdpClosing == FALSE) {
-    dialogUdpClosing = TRUE;
+  if (dialogUdpClosing == false) {
+    dialogUdpClosing = true;
     gameFrontSetDlgState(us, openWelcome);
   }
-  return FALSE;
+  return false;
 }
 
 
@@ -229,9 +229,9 @@ GtkWidget* dialogUdpSetupCreate(void) {
   gtk_object_set_data (GTK_OBJECT (dialogUdpSetup), "dialogUdpSetup", dialogUdpSetup);
   gtk_container_set_border_width (GTK_CONTAINER (dialogUdpSetup), 15);
   gtk_window_set_title (GTK_WINDOW (dialogUdpSetup), "UDP (Internet) Setup");
-  gtk_window_set_policy (GTK_WINDOW (dialogUdpSetup), FALSE, FALSE, FALSE);
+  gtk_window_set_policy (GTK_WINDOW (dialogUdpSetup), false, false, false);
   gtk_window_set_position (GTK_WINDOW (dialogUdpSetup), GTK_WIN_POS_CENTER);
-  vbox1 = gtk_vbox_new (FALSE, 0);
+  vbox1 = gtk_vbox_new (false, 0);
   gtk_widget_ref (vbox1);
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -243,22 +243,22 @@ GtkWidget* dialogUdpSetupCreate(void) {
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "label", label,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label);
-  gtk_box_pack_start (GTK_BOX (vbox1), label, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), label, false, false, 0);
   gtk_label_set_justify (GTK_LABEL (label), GTK_JUSTIFY_LEFT);
 
-  hbox1 = gtk_hbox_new (FALSE, 0);
+  hbox1 = gtk_hbox_new (false, 0);
   gtk_widget_ref (hbox1);
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "hbox1", hbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox1);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 6);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, true, true, 6);
 
   label2 = gtk_label_new ("Machine Name (or IP address): ");
   gtk_widget_ref (label2);
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "label2", label2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label2);
-  gtk_box_pack_start (GTK_BOX (hbox1), label2, FALSE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), label2, false, true, 0);
   gtk_misc_set_alignment (GTK_MISC (label2), 0, 0.5);
 
   idc_udpmachinename = gtk_entry_new ();
@@ -266,14 +266,14 @@ GtkWidget* dialogUdpSetupCreate(void) {
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "idc_udpmachinename", idc_udpmachinename,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_udpmachinename);
-  gtk_box_pack_start (GTK_BOX (hbox1), idc_udpmachinename, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), idc_udpmachinename, true, true, 0);
 
-  table1 = gtk_table_new (3, 2, FALSE);
+  table1 = gtk_table_new (3, 2, false);
   gtk_widget_ref (table1);
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "table1", table1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table1);
-  gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), table1, true, true, 0);
 
   idc_updsetuptxtthereport = gtk_entry_new ();
   gtk_widget_ref (idc_updsetuptxtthereport);
@@ -334,55 +334,55 @@ GtkWidget* dialogUdpSetupCreate(void) {
                     (GtkAttachOptions) (0), 0, 0);
   gtk_label_set_justify (GTK_LABEL (label3), GTK_JUSTIFY_LEFT);
 
-  hbox2 = gtk_hbox_new (FALSE, 0);
+  hbox2 = gtk_hbox_new (false, 0);
   gtk_widget_ref (hbox2);
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "hbox2", hbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox2);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox2, FALSE, FALSE, 8);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox2, false, false, 8);
 
   label6 = gtk_label_new ("");
   gtk_widget_ref (label6);
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "label6", label6,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label6);
-  gtk_box_pack_start (GTK_BOX (hbox2), label6, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox2), label6, true, true, 0);
 
   idc_updsetupremembername = gtk_check_button_new_with_label ("Remember player name");
   gtk_widget_ref (idc_updsetupremembername);
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "idc_updsetupremembername", idc_updsetupremembername,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_updsetupremembername);
-  gtk_box_pack_start (GTK_BOX (hbox2), idc_updsetupremembername, FALSE, FALSE, 0);
-  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (idc_updsetupremembername), TRUE);
+  gtk_box_pack_start (GTK_BOX (hbox2), idc_updsetupremembername, false, false, 0);
+  gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (idc_updsetupremembername), true);
 
-  hbox3 = gtk_hbox_new (FALSE, 0);
+  hbox3 = gtk_hbox_new (false, 0);
   gtk_widget_ref (hbox3);
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "hbox3", hbox3,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox3);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox3, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox3, true, true, 0);
 
   label7 = gtk_label_new ("");
   gtk_widget_ref (label7);
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "label7", label7,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label7);
-  gtk_box_pack_start (GTK_BOX (hbox3), label7, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox3), label7, true, true, 0);
 
   idc_updsetuptracker = gtk_button_new_with_label ("Tracker Setup");
   gtk_widget_ref (idc_updsetuptracker);
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "idc_updsetuptracker", idc_updsetuptracker,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_updsetuptracker);
-  gtk_box_pack_start (GTK_BOX (hbox3), idc_updsetuptracker, FALSE, FALSE, 16);
+  gtk_box_pack_start (GTK_BOX (hbox3), idc_updsetuptracker, false, false, 16);
 
-  table2 = gtk_table_new (3, 3, FALSE);
+  table2 = gtk_table_new (3, 3, false);
   gtk_widget_ref (table2);
   gtk_object_set_data_full (GTK_OBJECT (dialogUdpSetup), "table2", table2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table2);
-  gtk_box_pack_start (GTK_BOX (vbox1), table2, TRUE, TRUE, 9);
+  gtk_box_pack_start (GTK_BOX (vbox1), table2, true, true, 9);
 
   idc_updsetupcmdcancel = gtk_button_new_with_label ("Cancel");
   gtk_widget_ref (idc_updsetupcmdcancel);

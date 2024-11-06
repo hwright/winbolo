@@ -140,37 +140,37 @@ bool drawSetup(GtkWidget *appWnd) {
   if (ret != 80438) {
     free(buff);
     MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
-    return FALSE;
+    return false;
   }
 
-  returnValue = TRUE;
+  returnValue = true;
   zoomFactor = 1; //FIXME: windowGetZoomFactor();
   //lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y , 0, 0);
   lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
   if (lpScreen == NULL) {
-    returnValue = FALSE;
+    returnValue = false;
     MessageBox("Can't build main surface", DIALOG_BOX_TITLE);
   }
   
 
   /* Create the back buffer surface */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     lpTemp = SDL_CreateRGBSurface(SDL_HWSURFACE, zoomFactor * MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X, zoomFactor * MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
     if (lpTemp == NULL) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
     } else {
       lpBackBuffer = SDL_DisplayFormat(lpTemp);
       SDL_FreeSurface(lpTemp);
       if (lpBackBuffer == NULL) {
-        returnValue = FALSE;
+        returnValue = false;
 	MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
       }
     }
   }
 
   /* Create the tile buffer and copy the bitmap into it */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     /* Create the buffer */
     fp = fopen(fileName, "wb");
     fwrite(buff, 80438, 1, fp);
@@ -178,19 +178,19 @@ bool drawSetup(GtkWidget *appWnd) {
     lpTiles = SDL_LoadBMP(fileName);
     unlink(fileName);
     if (lpTiles == NULL) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
     } else {
       /* Colour key */
       ret = SDL_SetColorKey(lpTiles, SDL_SRCCOLORKEY, SDL_MapRGB(lpTiles->format, 0, 0xFF, 0));
       if (ret == -1) {
         MessageBox("Couldn't map colour key", DIALOG_BOX_TITLE);
-	returnValue = FALSE; 
+	returnValue = false; 
       } else {
   //      lpTiles = SDL_DisplayFormat(lpTemp);
 //	SDL_FreeSurface(lpTemp);
 	if (lpTiles == NULL) {
-          returnValue = FALSE;
+          returnValue = false;
 	  MessageBox("Can't build a tile file", DIALOG_BOX_TITLE);
 	}
       }
@@ -203,17 +203,17 @@ bool drawSetup(GtkWidget *appWnd) {
   in.h = zoomFactor * TILE_SIZE_Y;
   
   /* Create the Base status window */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     lpTemp = SDL_CreateRGBSurface(0, zoomFactor * STATUS_BASES_WIDTH, zoomFactor * STATUS_BASES_HEIGHT, 16, 0, 0, 0, 0);
      if (lpTemp == NULL) {
-       returnValue = FALSE;
+       returnValue = false;
        MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
      } else {
        /* Fill the surface black */
        lpBasesStatus = SDL_DisplayFormat(lpTemp);
        SDL_FreeSurface(lpTemp);
        if (lpBasesStatus == NULL) {
-         returnValue = FALSE;
+         returnValue = false;
          MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
        } else {
          fill.x = 0;
@@ -231,16 +231,16 @@ bool drawSetup(GtkWidget *appWnd) {
      } 
   }
   /* Makes the pills status */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     lpTemp = SDL_CreateRGBSurface(0, zoomFactor * STATUS_PILLS_WIDTH, zoomFactor * STATUS_PILLS_HEIGHT, 16, 0, 0, 0, 0);
      if (lpTemp == NULL) {
-       returnValue = FALSE;
+       returnValue = false;
        MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
      } else {
        lpPillsStatus = SDL_DisplayFormat(lpTemp);
        SDL_FreeSurface(lpTemp);
-       if (lpTemp == FALSE) {
-         returnValue = FALSE;
+       if (lpTemp == false) {
+         returnValue = false;
          MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
        } else {	      
          /* Fill the surface black */
@@ -260,16 +260,16 @@ bool drawSetup(GtkWidget *appWnd) {
   }
  
    /* Makes the tanks status */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     lpTemp = SDL_CreateRGBSurface(0, zoomFactor * STATUS_TANKS_WIDTH, zoomFactor * STATUS_TANKS_HEIGHT, 16, 0, 0, 0, 0);
      if (lpTemp == NULL) {
-       returnValue = FALSE;
+       returnValue = false;
        MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
      } else {
        lpTankStatus = SDL_DisplayFormat(lpTemp);
        SDL_FreeSurface(lpTemp);
        if (lpTankStatus == NULL) {
-         returnValue = FALSE;
+         returnValue = false;
          MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
        } else {
          /* Fill the surface black */
@@ -287,15 +287,15 @@ bool drawSetup(GtkWidget *appWnd) {
        } 
     }
   }
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     if (TTF_Init() < 0) {
       MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
-      returnValue = FALSE;
+      returnValue = false;
     } else {
       lpFont = TTF_OpenFont("cour.ttf", 12);
       if (lpFont == NULL) {
         MessageBox("Couldn't open font file.\n Please place a courier font\ncalled \"cour.ttf\" in your\nLinBolo directory.", DIALOG_BOX_TITLE);
-	returnValue = FALSE;
+	returnValue = false;
       }
     }
   }
@@ -375,7 +375,7 @@ void drawSetManClear() {
   top = (zoomFactor * MAN_STATUS_Y);
   width = zoomFactor * MAN_STATUS_WIDTH + 5;
   height =  zoomFactor * MAN_STATUS_HEIGHT + 5;
-  gdk_draw_rectangle (drawingarea1->window, drawingarea1->style->black_gc, TRUE, left, top, width, height);
+  gdk_draw_rectangle (drawingarea1->window, drawingarea1->style->black_gc, true, left, top, width, height);
   lastManX = 0;
   lastManY = 0;
 //  gdk_threads_leave(); 
@@ -471,7 +471,7 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   }
   
  
-  if (needLocking == TRUE) { 
+  if (needLocking == true) { 
     gdk_threads_enter(); 
   }
   left = zoomFactor * MAN_STATUS_X;
@@ -481,22 +481,22 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   if (lastManX != 0) {
     gdk_draw_line (drawingarea1->window, drawingarea1->style->black_gc, zoomFactor * MAN_STATUS_CENTER_X + left , top + zoomFactor * MAN_STATUS_CENTER_Y, lastManX, lastManY);
   } else {
-     gdk_draw_rectangle (drawingarea1->window, drawingarea1->style->black_gc, TRUE, left, top, width, height);
+     gdk_draw_rectangle (drawingarea1->window, drawingarea1->style->black_gc, true, left, top, width, height);
   }
   addY += top;
   addX += left;
-  if (isDead == TRUE) {
+  if (isDead == true) {
      /* Draw dead circle */
-     gdk_draw_arc(drawingarea1->window, drawingarea1->style->white_gc, TRUE, left, top, width, height, 0, 360 * 64);
+     gdk_draw_arc(drawingarea1->window, drawingarea1->style->white_gc, true, left, top, width, height, 0, 360 * 64);
      lastManX = 0;
   } else {
-    gdk_draw_arc(drawingarea1->window, drawingarea1->style->white_gc, FALSE, left, top, width, height, 0, 360 * 64);
+    gdk_draw_arc(drawingarea1->window, drawingarea1->style->white_gc, false, left, top, width, height, 0, 360 * 64);
    gdk_draw_line(drawingarea1->window, drawingarea1->style->white_gc, zoomFactor * MAN_STATUS_CENTER_X + left , top + zoomFactor * MAN_STATUS_CENTER_Y, addX, addY);
 
     lastManX = addX;
     lastManY = addY;
   }
-  if (needLocking == TRUE) {
+  if (needLocking == true) {
     gdk_threads_leave(); 
   }
 }
@@ -1376,7 +1376,7 @@ void drawStartDelay(long srtDelay) {
 *  showBaseLabels - Show the base labels?
 *  srtDelay       - The start delay in ticks.
 *                  If greater then 0 should draw countdown
-*  isPillView     - TRUE if we are in pillbox view
+*  isPillView     - true if we are in pillbox view
 *  edgeX          - Edge X offset for smooth scrolling
 *  edgeY          - Edge Y offset for smooth scrolling
 *  useCursor      - True if to draw the cursor
@@ -1403,7 +1403,7 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
 
   x = 0;
   y = 0;
-  done = FALSE;
+  done = false;
   zoomFactor = 1; //FIXME: windowGetZoomFactor();
   in.w = zoomFactor * TILE_SIZE_X;
   in.h = zoomFactor * TILE_SIZE_Y;
@@ -1415,20 +1415,20 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
     drawStartDelay(srtDelay);
     return;
   }
-  while (done == FALSE) {
+  while (done == false) {
     pos = screenGetPos(value,x,y);
-    isPill = FALSE;
-    isBase = FALSE;
+    isPill = false;
+    isBase = false;
     outputX = drawPosX[pos];
     outputY = drawPosY[pos];
     if (pos == PILL_EVIL_15 || pos == PILL_EVIL_14 || pos == PILL_EVIL_13 || pos == PILL_EVIL_12 || pos == PILL_EVIL_11 || pos == PILL_EVIL_10 || pos == PILL_EVIL_9 || pos == PILL_EVIL_8 || pos == PILL_EVIL_7 || pos == PILL_EVIL_6 || pos == PILL_EVIL_5 || pos == PILL_EVIL_4 || pos == PILL_EVIL_3 || pos == PILL_EVIL_2 || pos == PILL_EVIL_1 || pos == PILL_EVIL_0) {
-      isPill = TRUE;
+      isPill = true;
     }
    if (pos == PILL_GOOD_15 || pos == PILL_GOOD_14 || pos == PILL_GOOD_13 || pos == PILL_GOOD_12 || pos == PILL_GOOD_11 || pos == PILL_GOOD_10 || pos == PILL_GOOD_9 || pos == PILL_GOOD_8 || pos == PILL_GOOD_7 || pos == PILL_GOOD_6 || pos == PILL_GOOD_5 || pos == PILL_GOOD_4 || pos == PILL_GOOD_3 || pos == PILL_GOOD_2 || pos == PILL_GOOD_1 || pos == PILL_GOOD_0) {
-      isPill = TRUE;
+      isPill = true;
     }
     if (pos == BASE_GOOD || pos == BASE_NEUTRAL || pos == BASE_EVIL) {
-      isBase = TRUE;
+      isBase = true;
     }
 
     /* Drawing */
@@ -1441,14 +1441,14 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
     SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
     
     /* Draw Mines */
-    if ((screenIsMine(mineView,x,y)) == TRUE) {
+    if ((screenIsMine(mineView,x,y)) == true) {
       in.x = zoomFactor * MINE_X;
       in.y = zoomFactor * MINE_Y;
       SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
     }
 
     /* Draw the pillNumber or base Number if required */
-    if (isPill == TRUE && showPillLabels == TRUE) {
+    if (isPill == true && showPillLabels == true) {
       labelNum = screenPillNumPos(x, y);
       sprintf(str, "%d", (labelNum-1));
       lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
@@ -1460,7 +1460,7 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
       SDL_FreeSurface(lpTextSurface);
     }
 
-    if (isBase == TRUE && showBaseLabels == TRUE) {
+    if (isBase == true && showBaseLabels == true) {
       labelNum = screenBaseNumPos(x, y);
       sprintf(str, "%d", (labelNum-1));
       lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
@@ -1479,7 +1479,7 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
       y++;
       x = 0;
       if (y == MAIN_BACK_BUFFER_SIZE_Y) {
-        done = TRUE;
+        done = true;
       }
     }
 
@@ -1509,7 +1509,7 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
   }
 
   /* Draw the Cursor Square if required */
-  if (useCursor == TRUE) {
+  if (useCursor == true) {
     in.x = zoomFactor * MOUSE_SQUARE_X;
     in.w = zoomFactor * TILE_SIZE_X;
     in.y = zoomFactor * MOUSE_SQUARE_Y;
@@ -1532,7 +1532,7 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
   output.w = in.w;
   output.h = in.h;
  
-  if (isPillView == TRUE) {
+  if (isPillView == true) {
     /* we are in pillbox view - Write text here */
     drawPillInView();
   }
@@ -1586,9 +1586,9 @@ bool drawBackground(int width, int height) {
   ret = lzwdecoding((char* )B_IMAGE, (char *)buff, 17099);
   if (ret != 168778) {
     free(buff);
-    return FALSE;
+    return false;
   }
-  returnValue = FALSE;
+  returnValue = false;
   //zoomFactor = 1; //FIXME: windowGetZoomFactor();
   fp = fopen(fileName, "wb");
   fwrite(buff, 168778, 1, fp);
@@ -1602,7 +1602,7 @@ bool drawBackground(int width, int height) {
     destRect.w = bg->w;
     destRect.h = bg->h;
     if (SDL_BlitSurface(bg, NULL, lpScreen, &destRect) == 0) {
-      returnValue = TRUE;
+      returnValue = true;
       SDL_UpdateRect(lpScreen, 0,0,0,0);
     }  
     SDL_FreeSurface(bg);
@@ -1898,7 +1898,7 @@ void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpBasesStatus, &dest);
-  if (labels == TRUE) {
+  if (labels == true) {
     /* Must draw the label */
     sprintf(str, "%d", (baseNum-1));
 /* FIXME    if (SUCCEEDED(lpDDSBasesStatus->lpVtbl->GetDC(lpDDSBasesStatus,&hDC))) {
@@ -2046,7 +2046,7 @@ void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpPillsStatus, &dest);
-  if (labels == TRUE) {
+  if (labels == true) {
     /* Must draw the label */
     sprintf(str, "%d", (pillNum-1));
 /* FIXME:    if (SUCCEEDED(lpDDSPillsStatus->lpVtbl->GetDC(lpDDSPillsStatus,&hDC))) {
@@ -2263,8 +2263,8 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines, BYTE ar
 
   zf = 1; //FIXME: windowGetZoomFactor();
 
-  if (lastShells != shells || lastMines != mines || lastArmour != armour || redraw == TRUE) {
-    if (redraw == FALSE) {
+  if (lastShells != shells || lastMines != mines || lastArmour != armour || redraw == true) {
+    if (redraw == false) {
       lastShells = shells;
       lastMines = mines;
       lastArmour = armour;
@@ -2582,10 +2582,10 @@ void drawRedrawAll(int width, int height, buildSelect value, bool showPillsStatu
   drawMessages(0, 0, top, bottom);
   screenGetKillsDeaths(&kills, &deaths);
   drawKillsDeaths(0, 0, kills, deaths);
-  drawStatusBaseBars(0, 0, 0, 0, 0, TRUE);
+  drawStatusBaseBars(0, 0, 0, 0, 0, true);
   screenGetLgmStatus(&lgmIsOut, &lgmIsDead, &lgmAngle);
-  if (lgmIsOut == TRUE) {
-    drawSetManStatus(lgmIsDead, lgmAngle, FALSE);
+  if (lgmIsOut == true) {
+    drawSetManStatus(lgmIsDead, lgmAngle, false);
   } 
   clientMutexRelease();
 }
@@ -2642,7 +2642,7 @@ void drawMessages(int xValue, int yValue, char *top, char *bottom) {
 *
 *ARGUMENTS:
 *  rcWindow  - Window Co-ordinates
-*  justBlack - TRUE if we want a black screen
+*  justBlack - true if we want a black screen
 *********************************************************/
 void drawDownloadScreen(bool justBlack) {
   BYTE zoomFactor;        /* scaling factor */
@@ -2653,7 +2653,7 @@ void drawDownloadScreen(bool justBlack) {
   /* Fill the area black */
   SDL_FillRect(lpBackBuffer, NULL, SDL_MapRGB(lpBackBuffer->format, 0, 0, 0)); 
   /* Fill the downloaded area white */
-  if (justBlack == FALSE) {
+  if (justBlack == false) {
     output.x = 0;
     output.y = 0;
     output.h = netGetDownloadPos();

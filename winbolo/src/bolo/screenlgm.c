@@ -72,7 +72,7 @@ void screenLgmPrepare(screenLgm *value, BYTE leftPos, BYTE rightPos, BYTE top, B
   BYTE py;
   BYTE frame;
 
-  if (lgmOnScreen(screenGetLgmFromPlayerNum(playersGetSelf(screenGetPlayers())), leftPos, rightPos, top, bottom) == TRUE) {
+  if (lgmOnScreen(screenGetLgmFromPlayerNum(playersGetSelf(screenGetPlayers())), leftPos, rightPos, top, bottom) == true) {
     lgmGetScreenCoords(screenGetLgmFromPlayerNum(playersGetSelf(screenGetPlayers())), leftPos, top, &mx, &my, &px, &py, &frame);
     screenLgmAddItem(value, mx, my, px ,py, frame);
   }

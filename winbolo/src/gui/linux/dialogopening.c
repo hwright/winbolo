@@ -46,7 +46,7 @@ gint opening_configure_event (GtkWidget *window, GdkEventConfigure *event) {
 
   pixmap = gdk_pixmap_create_from_xpm_d (window->window, &mask, &window->style->bg[GTK_STATE_NORMAL], boloicon_xpm);
   gdk_window_set_icon (window->window, NULL, pixmap, mask);
-  return TRUE;
+  return true;
 }
 
 
@@ -54,7 +54,7 @@ gint opening_configure_event (GtkWidget *window, GdkEventConfigure *event) {
 gboolean dialogOpeningClose(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   gtk_widget_destroy(us);
   gtk_main_quit();
-  return FALSE;
+  return false;
 }
 
 void dialogOpeningWinbolonet(GtkWidget *widget, gpointer user_data) {
@@ -68,13 +68,13 @@ void dialogOpeningWinbolonet(GtkWidget *widget, gpointer user_data) {
 }
 
 void dialogOpeningOK(GtkWidget *widget, gpointer user_data) {
-  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_opentcp)) == TRUE) {
+  if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_opentcp)) == true) {
     gameFrontSetDlgState(us, openUdp);
-  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_openlocal)) == TRUE) {
+  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_openlocal)) == true) {
     gameFrontSetDlgState(us, openLan);
-  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_openinternet)) == TRUE) {
+  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_openinternet)) == true) {
     gameFrontSetDlgState(us, openInternet);
-  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_opentutorial)) == TRUE) {
+  } else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_opentutorial)) == true) {
     gameFrontSetDlgState(us, openTutorial);
   } else {
     gameFrontSetDlgState(us, openSetup);
@@ -116,7 +116,7 @@ GtkWidget* dialogOpeningCreate(void) {
   gtk_object_set_data (GTK_OBJECT (dialogOpening), "dialogOpening", dialogOpening);
   gtk_container_set_border_width (GTK_CONTAINER (dialogOpening), 20);
   gtk_window_set_title (GTK_WINDOW (dialogOpening), "Network Selection");
-  gtk_window_set_policy (GTK_WINDOW (dialogOpening), FALSE, FALSE, FALSE);
+  gtk_window_set_policy (GTK_WINDOW (dialogOpening), false, false, false);
   gtk_window_set_position (GTK_WINDOW (dialogOpening), GTK_WIN_POS_CENTER);
   vbox1 = gtk_vbox_new (FALSE, 0);
   gtk_widget_ref (vbox1);
@@ -133,14 +133,14 @@ GtkWidget* dialogOpeningCreate(void) {
   gtk_object_set_data_full (GTK_OBJECT (dialogOpening), "pixmap1", pixmap1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (pixmap1);
-  gtk_box_pack_start (GTK_BOX (vbox1), pixmap1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), pixmap1, true, true, 0);
 
   label1 = gtk_label_new ("Welcome to LinBolo, the multiplayer tank game.\nPlease choose a game type from the list below:\n");
   gtk_widget_ref (label1);
   gtk_object_set_data_full (GTK_OBJECT (dialogOpening), "label1", label1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (label1);
-  gtk_box_pack_start (GTK_BOX (vbox1), label1, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), label1, false, false, 0);
   gtk_label_set_justify (GTK_LABEL (label1), GTK_JUSTIFY_LEFT);
 
   idc_opentutorial = gtk_radio_button_new_with_label (vbox1_group, "Tutorial (Instruction for first-time player)");
@@ -149,22 +149,22 @@ GtkWidget* dialogOpeningCreate(void) {
   gtk_object_set_data_full (GTK_OBJECT (dialogOpening), "idc_opentutorial", idc_opentutorial,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_opentutorial);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_opentutorial, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_opentutorial, false, false, 0);
 
   idc_opensingle = gtk_radio_button_new_with_label (vbox1_group, "Practise (Single Player; No Network)");
   vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (idc_opensingle));
   gtk_widget_ref (idc_opensingle);
   gtk_object_set_data_full (GTK_OBJECT (dialogOpening), "idc_opensingle", idc_opensingle, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(idc_opensingle), TRUE);
+  gtk_toggle_button_set_state(GTK_TOGGLE_BUTTON(idc_opensingle), true);
   gtk_widget_show (idc_opensingle);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_opensingle, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_opensingle, false, false, 0);
   idc_opentcp = gtk_radio_button_new_with_label (vbox1_group, "TCP/IP");
   vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (idc_opentcp));
   gtk_widget_ref (idc_opentcp);
   gtk_object_set_data_full (GTK_OBJECT (dialogOpening), "idc_opentcp", idc_opentcp,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_opentcp);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_opentcp, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_opentcp, false, false, 0);
 
   idc_openlocal = gtk_radio_button_new_with_label (vbox1_group, "Local Network (Broadcast Search)");
   vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (idc_openlocal));
@@ -172,7 +172,7 @@ GtkWidget* dialogOpeningCreate(void) {
   gtk_object_set_data_full (GTK_OBJECT (dialogOpening), "idc_openlocal", idc_openlocal,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_openlocal);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_openlocal, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_openlocal, false, false, 0);
 
   idc_openinternet = gtk_radio_button_new_with_label (vbox1_group, "Internet (Tracker Search)");
   vbox1_group = gtk_radio_button_group (GTK_RADIO_BUTTON (idc_openinternet));
@@ -180,22 +180,22 @@ GtkWidget* dialogOpeningCreate(void) {
   gtk_object_set_data_full (GTK_OBJECT (dialogOpening), "idc_openinternet", idc_openinternet,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_openinternet);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_openinternet, FALSE, FALSE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_openinternet, false, false, 0);
 
   idc_openskip = gtk_check_button_new_with_label ("Skip this dialog next time");
   gtk_widget_ref (idc_openskip);
   gtk_object_set_data_full (GTK_OBJECT (dialogOpening), "idc_openskip", idc_openskip,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_openskip);
-  gtk_box_pack_start (GTK_BOX (vbox1), idc_openskip, FALSE, FALSE, 10);
-  gtk_widget_set_sensitive (idc_openskip, FALSE);
+  gtk_box_pack_start (GTK_BOX (vbox1), idc_openskip, false, false, 10);
+  gtk_widget_set_sensitive (idc_openskip, false);
 
-  table1 = gtk_table_new (2, 2, FALSE);
+  table1 = gtk_table_new (2, 2, false);
   gtk_widget_ref (table1);
   gtk_object_set_data_full (GTK_OBJECT (dialogOpening), "table1", table1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table1);
-  gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), table1, true, true, 0);
 
   idc_openquit = gtk_button_new_with_label ("Quit");
   gtk_widget_ref (idc_openquit);
@@ -218,7 +218,7 @@ GtkWidget* dialogOpeningCreate(void) {
   idc_openlanguages = gtk_button_new_with_label ("WinBolo.net");
   gtk_widget_ref (idc_openlanguages);
   gtk_object_set_data_full (GTK_OBJECT (dialogOpening), "idc_openwinbolonet", idc_openlanguages, (GtkDestroyNotify) gtk_widget_unref);
-  gtk_widget_set_sensitive(idc_openlanguages, TRUE);
+  gtk_widget_set_sensitive(idc_openlanguages, true);
   gtk_widget_show (idc_openlanguages);
   gtk_table_attach (GTK_TABLE (table1), idc_openlanguages, 0, 1, 0, 1,
                     (GtkAttachOptions) (GTK_EXPAND | GTK_FILL),

@@ -122,27 +122,27 @@ bool soundSetup() {
   strcat(inFile, "bolosounds.bsd");
 
 
-  returnValue = TRUE;
-  dsLoadOK = TRUE;
-  isPlayable = TRUE;
+  returnValue = true;
+  dsLoadOK = true;
+  isPlayable = true;
 
   in = fopen(inFile, "rb");
   if (!in) {
 //    windowDisableSound();
-    isPlayable = FALSE;
+    isPlayable = false;
   //  MessageBox(langGetText(STR_SOUNDERR_FILENOTFOUND), DIALOG_BOX_TITLE);
   }
 	
   
-  if (returnValue == TRUE && isPlayable == TRUE) {
+  if (returnValue == true && isPlayable == true) {
     if (Mix_OpenAudio(22050, AUDIO_S16, 2, 512) < 0) {
       MessageBox("Couldn't start sound. Check to make sure\nthe device is not busy", DIALOG_BOX_TITLE);
-      isPlayable = FALSE;
-      returnValue = TRUE;
+      isPlayable = false;
+      returnValue = true;
     }
   }
   
-  if (returnValue == TRUE && isPlayable == TRUE) {
+  if (returnValue == true && isPlayable == true) {
   /* Load Sound Files In */
     lpDSBigExplosionFar = soundLoad(fileName, in, buff, 31332);
     lpDSBigExplosionNear = soundLoad(fileName, in, buff, 31332);
@@ -169,17 +169,17 @@ bool soundSetup() {
     lpDSTankSinkingFar = soundLoad(fileName, in, buff, 72252);
     lpDSTankSinkingNear = soundLoad(fileName, in, buff, 72252);
     if (lpDSBigExplosionFar == NULL || lpDSBigExplosionNear == NULL || lpDSBubbles == NULL || lpDSFarmingTreeFar == NULL || lpDSFarmingTreeNear == NULL || lpDSHitTankFar == NULL || lpDSHitTankNear == NULL || lpDSHitTankSelf == NULL || lpDSManBuildingFar == NULL || lpDSManBuildingNear == NULL || lpDSManDyingFar == NULL || lpDSManDyingNear == NULL || lpDSManLayingMineNear == NULL || lpDSMineExplosionFar == NULL || lpDSMineExplosionNear == NULL || lpDSShootFar == NULL || lpDSShootNear == NULL || lpDSShootSelf == NULL || lpDSShotBuildingFar == NULL || lpDSShotBuildingNear == NULL || lpDSShotTreeFar == NULL || lpDSShotTreeNear == NULL || lpDSTankSinkingFar == NULL || lpDSTankSinkingNear == NULL) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox(langGetText(STR_SOUNDERR_LOADSOUNDFAILED), DIALOG_BOX_TITLE);
     }
 
   }
 
-  if (dsLoadOK == FALSE) {
-    returnValue = TRUE;
+  if (dsLoadOK == false) {
+    returnValue = true;
   }
-  if (returnValue == FALSE) {
-    isPlayable = FALSE;
+  if (returnValue == false) {
+    isPlayable = false;
 //    windowDisableSound();
   }
   unlink(fileName);
@@ -300,9 +300,9 @@ void soundCleanup(void) {
     lpDSShootSelf = NULL;
   }
 
-  if (isPlayable == TRUE) {
+  if (isPlayable == true) {
     Mix_CloseAudio();
-    isPlayable = FALSE;
+    isPlayable = false;
   }
 }
 

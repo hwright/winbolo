@@ -44,7 +44,7 @@
 #define EMPTY_STRING "\0"
 
 GtkWidget *dialogGameFindUs;
-bool useTracker = TRUE;  /* Do we use the tracker for lookups */
+bool useTracker = true;  /* Do we use the tracker for lookups */
 char motd[4 *4096];
 currentGames cg = NULL;
 GtkWidget *idc_address;
@@ -69,7 +69,7 @@ GtkWidget *button6;
 GtkWidget *button8;
 GtkWidget *button7;
 GtkWidget *idc_gamefindmapname;
-bool dialogGameFinderClosing = FALSE;
+bool dialogGameFinderClosing = false;
 
 gboolean dialogGameFinderSelect(GtkWidget *widget, gpointer user_data);
 bool netClientFindBroadcastGames(GtkWidget *hWnd, currentGames *cg);
@@ -101,18 +101,18 @@ void dialogGameFinderClear() {
   gtk_label_set_text(GTK_LABEL(idc_gamefindbrains), EMPTY_STRING);
   gtk_label_set_text(GTK_LABEL(idc_gamefindmapname), EMPTY_STRING);
   
-  gtk_widget_set_sensitive (idc_gamefindjoin, FALSE);
-  gtk_widget_set_sensitive (idc_gamefindrejoin, FALSE);
+  gtk_widget_set_sensitive (idc_gamefindjoin, false);
+  gtk_widget_set_sensitive (idc_gamefindrejoin, false);
 
  gtk_list_clear_items(GTK_LIST(list1), 0, -1);
 }
 
 gboolean dialogGameFinderCancel(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
-  if (dialogGameFinderClosing == FALSE) {
-    dialogGameFinderClosing = TRUE;
+  if (dialogGameFinderClosing == false) {
+    dialogGameFinderClosing = true;
     gameFrontSetDlgState(dialogGameFindUs, openWelcome);
   }
-  return FALSE;
+  return false;
 }
 
 /*********************************************************
@@ -135,11 +135,11 @@ bool dialogGameFinderJoinTest() {
   unsigned short port;              /* Port of the machine to join    */
   gchar *str;
 
-  returnValue = TRUE;
+  returnValue = true;
   gtk_label_get(GTK_LABEL(idc_gamefindversion), &str);
   if (strncmp(str, STRVER,4) != 0) {
     MessageBox(langGetText(STR_DLGGAMEFINDER_WRONGVERSION),DIALOG_BOX_TITLE);
-    returnValue = FALSE;
+    returnValue = false;
   } else {
     gtk_label_get(GTK_LABEL(idc_gamefindport), &str);
     port = atoi(str);
@@ -155,28 +155,28 @@ bool dialogGameFinderJoinTest() {
 
 
 gboolean dialogGameFinderReJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
-  if (dialogGameFinderJoinTest() == TRUE) {
+  if (dialogGameFinderJoinTest() == true) {
     gameFrontEnableRejoin();
-    dialogGameFinderClosing = TRUE;
-    gtk_widget_set_sensitive(dialogGameFindUs, FALSE);
+    dialogGameFinderClosing = true;
+    gtk_widget_set_sensitive(dialogGameFindUs, false);
     gdk_threads_leave();
-    while(g_main_iteration(FALSE));
+    while(g_main_iteration(false));
     gdk_threads_enter();
-    if (gameFrontSetDlgState(dialogGameFindUs, openUdpJoin) == FALSE) {
-    gtk_widget_set_sensitive(dialogGameFindUs, TRUE);
-      dialogGameFinderClosing = FALSE;
+    if (gameFrontSetDlgState(dialogGameFindUs, openUdpJoin) == false) {
+    gtk_widget_set_sensitive(dialogGameFindUs, true);
+      dialogGameFinderClosing = false;
     }
   }
-  return FALSE;
+  return false;
 }
 
 gboolean dialogGameFinderNew(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
-  if (useTracker  == TRUE) {
+  if (useTracker  == true) {
     gameFrontSetDlgState(dialogGameFindUs, openInternetSetup); 
   } else {
     gameFrontSetDlgState(dialogGameFindUs, openLanSetup);
   }
-  return FALSE;
+  return false;
 }
 
 gboolean dialogGameFinderJoinByAddress(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
@@ -193,36 +193,36 @@ gboolean dialogGameFinderJoinByAddress(GtkWidget *widget,  GdkEventButton *event
     gameFrontGetPlayerName(playerName);
     gameFrontSetUdpOptions(playerName, address, port, 0);
   }
-  if (useTracker == TRUE) {
+  if (useTracker == true) {
     gameFrontSetDlgState(dialogGameFindUs, openInternetManual);
   } else {
     gameFrontSetDlgState(dialogGameFindUs, openLanManual);
   }
-  return FALSE;
+  return false;
 }
 
 gboolean dialogGameFinderJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
-  if (dialogGameFinderJoinTest() == TRUE) {
-    gtk_widget_set_sensitive(dialogGameFindUs, FALSE);
+  if (dialogGameFinderJoinTest() == true) {
+    gtk_widget_set_sensitive(dialogGameFindUs, false);
     gdk_threads_leave();
-    while(g_main_iteration(FALSE));
+    while(g_main_iteration(false));
     gdk_threads_enter();
-    if (gameFrontSetDlgState(dialogGameFindUs, openUdpJoin) == FALSE) {
-    gtk_widget_set_sensitive(dialogGameFindUs, TRUE);
+    if (gameFrontSetDlgState(dialogGameFindUs, openUdpJoin) == false) {
+    gtk_widget_set_sensitive(dialogGameFindUs, true);
     }
   }
-  return FALSE;
+  return false;
 }
 
 gboolean dialogGameFinderMOTD(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   MessageBox(motd, langGetText(STR_DLGGAMEFINDER_MESSAGEOFTHEDAY));
-  return FALSE;
+  return false;
 }
 
 gboolean dialogGameFinderShow(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
-  dialogGameFinderClosing = FALSE;
+  dialogGameFinderClosing = false;
   dialogGameFinderClear();
-  return FALSE;
+  return false;
 }
 
 /*********************************************************
@@ -242,8 +242,8 @@ void dialogGameFinderBuildList() {
   char server[FILENAME_MAX]; /* Server name */
   GtkWidget *item;
   
-  gtk_widget_set_sensitive (idc_gamefindjoin, FALSE);
-  gtk_widget_set_sensitive (idc_gamefindrejoin, FALSE);
+  gtk_widget_set_sensitive (idc_gamefindjoin, false);
+  gtk_widget_set_sensitive (idc_gamefindrejoin, false);
   total = currentGamesItemCount(&cg);
   if (total > 0) {
     count = 1;
@@ -306,14 +306,14 @@ void dialogGameFinderSearch() {
   bool dummy;              /* dummy variable  */
   bool ret;                /* Function return Value */
 
-  if (useTracker == TRUE) {
+  if (useTracker == true) {
     gameFrontGetTrackerOptions(addr, &port, &dummy);
     ret = netClientFindTrackedGames(idc_gamefindstatus, &cg, addr, port, motd);
     dialogGameFinderFixMotd(motd);
   } else {
     ret = netClientFindBroadcastGames(idc_gamefindstatus, &cg);
   }
-  if (ret == TRUE) {
+  if (ret == true) {
     sprintf(addr, "Status: %s", langGetText(STR_NETCLIENT_IDLE));
     gtk_label_set_text(GTK_LABEL(idc_gamefindstatus), addr);
     dialogGameFinderBuildList();
@@ -335,16 +335,16 @@ gboolean dialogGameFinderRefresh(GtkWidget *widget,  GdkEventButton *event, gpoi
 //  SetCursor(LoadCursor(NULL, IDC_WAIT));
   motd[0] = '\0';
  
-  gtk_widget_set_sensitive (button4, FALSE);
-  gtk_widget_set_sensitive (button2, FALSE);
-  gtk_widget_set_sensitive (button7, FALSE);
-  gtk_widget_set_sensitive (button6, FALSE);
-  gtk_widget_set_sensitive (button1, FALSE);
-  gtk_widget_set_sensitive (button9, FALSE);
-  gtk_widget_set_sensitive (button8, FALSE);
+  gtk_widget_set_sensitive (button4, false);
+  gtk_widget_set_sensitive (button2, false);
+  gtk_widget_set_sensitive (button7, false);
+  gtk_widget_set_sensitive (button6, false);
+  gtk_widget_set_sensitive (button1, false);
+  gtk_widget_set_sensitive (button9, false);
+  gtk_widget_set_sensitive (button8, false);
 
   gdk_threads_leave();
-  while(g_main_iteration(FALSE));
+  while(g_main_iteration(false));
   gdk_threads_enter();
  
   dialogGameFinderClear();
@@ -354,21 +354,21 @@ gboolean dialogGameFinderRefresh(GtkWidget *widget,  GdkEventButton *event, gpoi
 //  SetCursor(LoadCursor(NULL, IDC_ARROW));
 
 
-  gtk_widget_set_sensitive (button4, TRUE);
-  gtk_widget_set_sensitive (button2, TRUE);
-  gtk_widget_set_sensitive (button7, TRUE);
-  gtk_widget_set_sensitive (button6, TRUE);
-  gtk_widget_set_sensitive (button8, TRUE);
+  gtk_widget_set_sensitive (button4, true);
+  gtk_widget_set_sensitive (button2, true);
+  gtk_widget_set_sensitive (button7, true);
+  gtk_widget_set_sensitive (button6, true);
+  gtk_widget_set_sensitive (button8, true);
   
-  if (useTracker == TRUE) {
-    gtk_widget_set_sensitive (button1, TRUE);
-    gtk_widget_set_sensitive (button9, TRUE);
+  if (useTracker == true) {
+    gtk_widget_set_sensitive (button1, true);
+    gtk_widget_set_sensitive (button9, true);
   }
 
   
   
   
-  return FALSE;
+  return false;
 }
 
 
@@ -408,12 +408,12 @@ gboolean dialogGameFinderRefresh(GtkWidget *widget,  GdkEventButton *event, gpoi
   gtk_label_set_text(GTK_LABEL(idc_gamefindbases), str);
   sprintf(str, "%d", numPills);
   gtk_label_set_text(GTK_LABEL(idc_gamefindpills), str);
-  if (mines == TRUE) {
+  if (mines == true) {
     gtk_label_set_text(GTK_LABEL(idc_gamefindmines), langGetText(STR_YES));
   } else {
     gtk_label_set_text(GTK_LABEL(idc_gamefindmines), langGetText(STR_NO));
   }
-  if (password == TRUE) {
+  if (password == true) {
     gtk_label_set_text(GTK_LABEL(idc_gamefindpass), langGetText(STR_YES));
   } else {
     gtk_label_set_text(GTK_LABEL(idc_gamefindpass), langGetText(STR_NO));
@@ -444,21 +444,21 @@ gboolean dialogGameFinderRefresh(GtkWidget *widget,  GdkEventButton *event, gpoi
       break;
   }
   
-  gtk_widget_set_sensitive (idc_gamefindjoin, TRUE);
-  gtk_widget_set_sensitive (idc_gamefindrejoin, TRUE);
+  gtk_widget_set_sensitive (idc_gamefindjoin, true);
+  gtk_widget_set_sensitive (idc_gamefindrejoin, true);
 
-  return FALSE;
+  return false;
 }
 
 gboolean dialogGameFinderSetName(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   GtkWidget *g;
 
-  g = dialogSetNameCreate(FALSE);
+  g = dialogSetNameCreate(false);
   gtk_widget_show(g);
   gtk_grab_add(g);
   gtk_main();
 
-  return FALSE;
+  return false;
 }
 gboolean dialogGameFinderTracker(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   GtkWidget *tracker;
@@ -468,7 +468,7 @@ gboolean dialogGameFinderTracker(GtkWidget *widget,  GdkEventButton *event, gpoi
   gtk_grab_add(tracker);
   gtk_main();
 
-  return FALSE;
+  return false;
 }
 
 
@@ -501,46 +501,46 @@ GtkWidget* dialogGameFinderCreate(bool useTrack, char *title) {
   gtk_object_set_data (GTK_OBJECT (dialogGameFinder), "dialogGameFinder", dialogGameFinder);
   gtk_container_set_border_width (GTK_CONTAINER (dialogGameFinder), 15);
   gtk_window_set_title (GTK_WINDOW (dialogGameFinder), title);
-  gtk_window_set_modal (GTK_WINDOW (dialogGameFinder), TRUE);
+  gtk_window_set_modal (GTK_WINDOW (dialogGameFinder), true);
   gtk_window_set_position (GTK_WINDOW (dialogGameFinder), GTK_WIN_POS_CENTER);
-  gtk_window_set_policy (GTK_WINDOW (dialogGameFinder), FALSE, FALSE, FALSE);
-  vbox1 = gtk_vbox_new (FALSE, 0);
+  gtk_window_set_policy (GTK_WINDOW (dialogGameFinder), false, false, false);
+  vbox1 = gtk_vbox_new (false, 0);
   gtk_widget_ref (vbox1);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "vbox1", vbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox1);
   gtk_container_add (GTK_CONTAINER (dialogGameFinder), vbox1);
 
-  hbox1 = gtk_hbox_new (FALSE, 0);
+  hbox1 = gtk_hbox_new (false, 0);
   gtk_widget_ref (hbox1);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "hbox1", hbox1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (hbox1);
-  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox1), hbox1, true, true, 0);
 
   list1 = gtk_list_new ();
   gtk_widget_ref (list1);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "list1", list1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (list1);
-  gtk_box_pack_start (GTK_BOX (hbox1), list1, TRUE, TRUE, 10);
+  gtk_box_pack_start (GTK_BOX (hbox1), list1, true, true, 10);
 
-  vbox2 = gtk_vbox_new (FALSE, 0);
+  vbox2 = gtk_vbox_new (false, 0);
   gtk_widget_ref (vbox2);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "vbox2", vbox2,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (vbox2);
-  gtk_box_pack_start (GTK_BOX (hbox1), vbox2, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (hbox1), vbox2, true, true, 0);
 
   frame1 = gtk_frame_new ("Selected Game Information");
   gtk_widget_ref (frame1);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "frame1", frame1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (frame1);
-  gtk_box_pack_start (GTK_BOX (vbox2), frame1, TRUE, TRUE, 0);
+  gtk_box_pack_start (GTK_BOX (vbox2), frame1, true, true, 0);
   gtk_container_set_border_width (GTK_CONTAINER (frame1), 7);
 
-  table2 = gtk_table_new (11, 2, FALSE);
+  table2 = gtk_table_new (11, 2, false);
   gtk_widget_ref (table2);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "table2", table2,
                             (GtkDestroyNotify) gtk_widget_unref);
@@ -775,15 +775,15 @@ GtkWidget* dialogGameFinderCreate(bool useTrack, char *title) {
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "idc_gamefindstatus", idc_gamefindstatus,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (idc_gamefindstatus);
-  gtk_box_pack_start (GTK_BOX (vbox2), idc_gamefindstatus, FALSE, TRUE, 3);
+  gtk_box_pack_start (GTK_BOX (vbox2), idc_gamefindstatus, false, true, 3);
   gtk_misc_set_alignment (GTK_MISC (idc_gamefindstatus), 0.04, 0.5);
 
-  table1 = gtk_table_new (3, 4, FALSE);
+  table1 = gtk_table_new (3, 4, false);
   gtk_widget_ref (table1);
   gtk_object_set_data_full (GTK_OBJECT (dialogGameFinder), "table1", table1,
                             (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show (table1);
-  gtk_box_pack_start (GTK_BOX (vbox1), table1, TRUE, TRUE, 15);
+  gtk_box_pack_start (GTK_BOX (vbox1), table1, true, true, 15);
 
   button2 = gtk_button_new_with_label ("Join by Address");
   gtk_widget_ref (button2);
@@ -847,7 +847,7 @@ GtkWidget* dialogGameFinderCreate(bool useTrack, char *title) {
   gtk_table_attach (GTK_TABLE (table1), idc_gamefindjoin, 3, 4, 0, 1,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (idc_gamefindjoin, FALSE);
+  gtk_widget_set_sensitive (idc_gamefindjoin, false);
 
   idc_gamefindrejoin = gtk_button_new_with_label ("Rejoin");
   gtk_widget_ref (idc_gamefindrejoin);
@@ -857,7 +857,7 @@ GtkWidget* dialogGameFinderCreate(bool useTrack, char *title) {
   gtk_table_attach (GTK_TABLE (table1), idc_gamefindrejoin, 3, 4, 1, 2,
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
-  gtk_widget_set_sensitive (idc_gamefindrejoin, FALSE);
+  gtk_widget_set_sensitive (idc_gamefindrejoin, false);
 
   button7 = gtk_button_new_with_label ("Cancel");
   gtk_widget_ref (button7);
@@ -909,11 +909,11 @@ GtkWidget* dialogGameFinderCreate(bool useTrack, char *title) {
   gtk_signal_connect(GTK_OBJECT(button6), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderNew), 0);
   /* My Stuff */
   cg = currentGamesCreate();
-  if (useTracker == TRUE) {
+  if (useTracker == true) {
     strcpy(motd, langGetText(STR_DLGGAMEFINDER_REFRESHFIRST));
   } else {
-    gtk_widget_set_sensitive (button1, FALSE);
-    gtk_widget_set_sensitive (button9, FALSE);
+    gtk_widget_set_sensitive (button1, false);
+    gtk_widget_set_sensitive (button9, false);
   }
 
   dialogGameFindUs = dialogGameFinder;
