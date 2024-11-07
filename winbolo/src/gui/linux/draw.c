@@ -89,9 +89,10 @@ HPEN hManPen = NULL;
 DWORD	g_dwFrameTime = 0;
 /* Number of frames dispayed this second */
 DWORD	g_dwFrameCount = 0;
+#endif
 /* The total frames per second for last second */
 DWORD g_dwFrameTotal = 0;
-
+#if 0
 
 extern GtkWidget* drawingarea1;
 
@@ -103,6 +104,7 @@ void drawDownloadScreen(bool justBlack);
 int lzwdecoding(char *src, char *dest, int len);
 void clientMutexWaitFor(void);
 void clientMutexRelease(void);
+#endif
 
 int drawGetFrameRate() {
   return g_dwFrameTotal;
@@ -123,7 +125,8 @@ int drawGetFrameRate() {
 * appWnd  - Main Window Handle (Required for clipper)
 *********************************************************/
 bool drawSetup(GtkWidget *appWnd) {
-  bool returnValue;       /* Value to return */
+  bool returnValue = TRUE;       /* Value to return */
+#if 0
   BYTE zoomFactor;        /* scaling factor */
   int ret;            /* Direct Draw Function returns */
   SDL_Rect in;               /* Used for copying the bases & pills icon in */
@@ -307,6 +310,7 @@ bool drawSetup(GtkWidget *appWnd) {
   drawSetupArrays(zoomFactor);
 
   free(buff);
+#endif
   return returnValue;
 }
 
@@ -323,6 +327,7 @@ bool drawSetup(GtkWidget *appWnd) {
 *
 *********************************************************/
 void drawCleanup(void) {
+#if 0
   if (lpTiles != NULL) {
     SDL_FreeSurface(lpTiles);
     lpTiles = NULL;
@@ -351,7 +356,7 @@ void drawCleanup(void) {
     SDL_FreeSurface(lpScreen);
     lpScreen = NULL;
   }
-
+#endif
 }
 
 int lastManX = 0;
@@ -368,6 +373,7 @@ int lastManY = 0;
 *ARGUMENTS:
 *********************************************************/
 void drawSetManClear() {
+#if 0
   int zoomFactor, left, top, width, height;
 
 //  jm removed today gdk_threads_enter(); 
@@ -380,6 +386,7 @@ void drawSetManClear() {
   lastManX = 0;
   lastManY = 0;
 //  gdk_threads_leave(); 
+#endif
 }
 
 /*********************************************************
@@ -398,6 +405,7 @@ void drawSetManClear() {
 *  angle  - The angle the item is facing
 *********************************************************/
 void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
+#if 0
   //TURNTYPE oldAngle; /* Copy of the angle parameter */
   double dbAngle;    /* Angle in radians */
   double dbTemp;
@@ -500,8 +508,9 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   if (needLocking == TRUE) {
     gdk_threads_leave(); 
   }
+#endif
 }
-
+#if 0
 /*********************************************************
 *NAME:          drawShells
 *AUTHOR:        John Morrison
@@ -1356,6 +1365,7 @@ void drawStartDelay(long srtDelay) {
     SDL_FreeSurface(lpTextSurface);
   }
 }
+#endif
 
 /*********************************************************
 *NAME:          drawMainScreen
@@ -1385,6 +1395,7 @@ void drawStartDelay(long srtDelay) {
 *  cursorTop      - Cursor Top position
 *********************************************************/
 void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, screenGunsight *gs, screenBullets *sBullets, screenLgm *lgms, bool showPillLabels, bool showBaseLabels, long srtDelay, bool isPillView, int edgeX, int edgeY, bool useCursor, BYTE cursorLeft, BYTE cursorTop) {
+#if 0
   SDL_Rect output;     /* Output Rectangle */
   SDL_Rect textOutput; /* Text Output Rect */
   bool done;       /* Finished Looping */
@@ -1554,9 +1565,9 @@ sprintf(str, "%ld", g_dwFrameTotal);
 g_dwFrameTime = SDL_GetTicks();
 g_dwFrameCount = 0;
 }
-
+#endif
 }
-
+#if 0
 /*********************************************************
 *NAME:          drawBackground
 *AUTHOR:        John Morrison
@@ -1698,6 +1709,7 @@ void drawSetTanksStatusClear(void) {
   SDL_BlitSurface(lpTiles, &src, lpTankStatus, &dest);
   SDL_UpdateRect(lpTankStatus, 0, 0, 0, 0);
 }
+#endif
 
 /*********************************************************
 *NAME:          drawCopyBasesStatus
@@ -1712,6 +1724,7 @@ void drawSetTanksStatusClear(void) {
 *  yValue  - The top position of the window
 *********************************************************/
 void drawCopyBasesStatus() {
+#if 0
   SDL_Rect dest; /* Destination location */
   BYTE zf;   /* Zoom Factor */
 
@@ -1723,6 +1736,7 @@ void drawCopyBasesStatus() {
   dest.h = zf * STATUS_BASES_HEIGHT;
   SDL_BlitSurface(lpBasesStatus, NULL, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
+#endif
 }
 
 /*********************************************************
@@ -1738,6 +1752,7 @@ void drawCopyBasesStatus() {
  * *  yValue  - The top position of the window
  * *********************************************************/
 void drawCopyPillsStatus() {
+#if 0
   SDL_Rect dest; /* Destination location */
   BYTE zf;   /* Zoom Factor */
 
@@ -1749,6 +1764,7 @@ void drawCopyPillsStatus() {
   dest.h = zf * STATUS_PILLS_HEIGHT;
   SDL_BlitSurface(lpPillsStatus, NULL, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
+#endif
 }
 
 /*********************************************************
@@ -1764,6 +1780,7 @@ void drawCopyPillsStatus() {
 *  yValue  - The top position of the window
 *********************************************************/
 void drawCopyTanksStatus() {
+#if 0
   SDL_Rect dest; /* Destination location */
   BYTE zf;   /* Zoom Factor */
 
@@ -1775,8 +1792,8 @@ void drawCopyTanksStatus() {
   dest.h = zf * STATUS_TANKS_HEIGHT;
   SDL_BlitSurface(lpTankStatus, NULL, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
+#endif
 }  
-
 /*********************************************************
 *NAME:          drawStatusBase
 *AUTHOR:        John Morrison
@@ -1791,6 +1808,7 @@ void drawCopyTanksStatus() {
 *  labels  - Should the label be shown
 *********************************************************/
 void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
+#if 0
   SDL_Rect src;  /* The src square on the tile file to retrieve */
   SDL_Rect dest; /* The dest square to draw it */
   BYTE zf;   /* Scaling factor */
@@ -1912,6 +1930,7 @@ void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
   }
   SDL_UpdateRects(lpBasesStatus, 1, &dest);
   gdk_threads_leave();
+#endif
 }
 
 /*********************************************************
@@ -1928,6 +1947,7 @@ void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
 *  labels  - Should labels be drawn?
 *********************************************************/
 void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
+#if 0
   SDL_Rect src;    /* The src square on the tile file to retrieve */
   SDL_Rect dest;   /* The dest square to draw it */
   BYTE zf;     /* Scaling factor */
@@ -2059,6 +2079,7 @@ void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
     } */
   }
   SDL_UpdateRects(lpPillsStatus, 1, &dest);
+#endif
 }
 
 /*********************************************************
@@ -2074,6 +2095,7 @@ void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
 *  ta      - The allience of the pillbox
 *********************************************************/
 void drawStatusTank(BYTE tankNum, tankAlliance ta) {
+#if 0
   SDL_Rect src;    /* The src square on the tile file to retrieve */
   SDL_Rect dest;   /* The dest square to draw it */
   BYTE zf;     /* Scaling factor */
@@ -2176,6 +2198,7 @@ void drawStatusTank(BYTE tankNum, tankAlliance ta) {
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpTankStatus, &dest);
   SDL_UpdateRects(lpTankStatus, 1, &dest);
+#endif
 }
 
 /*********************************************************
@@ -2195,6 +2218,7 @@ void drawStatusTank(BYTE tankNum, tankAlliance ta) {
 *  trees   - Amount of trees
 *********************************************************/
 void drawStatusTankBars(int xValue, int yValue, BYTE shells, BYTE mines, BYTE armour, BYTE trees) {
+#if 0
   SDL_Rect dest;              /* The dest square to draw it */
   SDL_Rect fill;
   BYTE zf;   /* Scaling factor */
@@ -2236,6 +2260,7 @@ void drawStatusTankBars(int xValue, int yValue, BYTE shells, BYTE mines, BYTE ar
   SDL_FillRect(lpScreen, &dest, color);
 
   SDL_UpdateRects(lpScreen, 1, &fill);
+#endif
 }
 /*********************************************************
 *NAME:          drawStatusBaseBars
@@ -2254,6 +2279,7 @@ void drawStatusTankBars(int xValue, int yValue, BYTE shells, BYTE mines, BYTE ar
 *  redraw  - If set to true use the redraw last amounts
 *********************************************************/
 void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines, BYTE armour, bool redraw) {
+#if 0
   SDL_Rect dest;              /* The dest square to draw it */
   SDL_Rect fill;
   static BYTE lastShells = 0;  /* Last amount of stuff to save on rendering and flicker */
@@ -2299,6 +2325,7 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines, BYTE ar
     }
     SDL_UpdateRects(lpScreen, 1, &fill);
   }
+#endif
 }
 
 /*********************************************************
@@ -2317,6 +2344,7 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines, BYTE ar
 *  yValue  - The top position of the window
 *********************************************************/
 void drawSelectIndentsOn(buildSelect value, int xValue, int yValue) {
+#if 0
   SDL_Rect src;        /* The src square on the tile file to retrieve */
   SDL_Rect dest;       /* The dest square to draw it */
   BYTE zoomFactor; /* Scaling factor */
@@ -2402,6 +2430,7 @@ void drawSelectIndentsOn(buildSelect value, int xValue, int yValue) {
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
+#endif
 }
 
 /*********************************************************
@@ -2420,6 +2449,7 @@ void drawSelectIndentsOn(buildSelect value, int xValue, int yValue) {
 *  yValue  - The top position of the window
 *********************************************************/
 void drawSelectIndentsOff(buildSelect value, int xValue, int yValue) {
+#if 0
   SDL_Rect src;        /* The src square on the tile file to retrieve */
   SDL_Rect dest;       /* The dest square to draw it */
   BYTE zoomFactor; /* Scaling factor */
@@ -2505,6 +2535,7 @@ void drawSelectIndentsOff(buildSelect value, int xValue, int yValue) {
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
+#endif
     
 }
 
@@ -2525,6 +2556,7 @@ void drawSelectIndentsOff(buildSelect value, int xValue, int yValue) {
 *  showBasesStatus - Should the the base status be shown
 *********************************************************/
 void drawRedrawAll(int width, int height, buildSelect value, bool showPillsStatus, bool showBasesStatus) {
+#if 0
   BYTE total;      /* Total number of elements */
   BYTE count;      /* Looping Variable */
   BYTE ba;         /* Base, tanks and pill Alliences */
@@ -2589,6 +2621,7 @@ void drawRedrawAll(int width, int height, buildSelect value, bool showPillsStatu
     drawSetManStatus(lgmIsDead, lgmAngle, FALSE);
   } 
   clientMutexRelease();
+#endif
 }
 
 /*********************************************************
@@ -2606,6 +2639,7 @@ void drawRedrawAll(int width, int height, buildSelect value, bool showPillsStatu
 *  bottom - The bottom string to draw
 *********************************************************/
 void drawMessages(int xValue, int yValue, char *top, char *bottom) {
+#if 0
   SDL_Surface *lpTextSurface;
   SDL_Rect dest;   /* The dest square to draw it */
   BYTE zf;     /* Scaling factor */
@@ -2631,6 +2665,7 @@ void drawMessages(int xValue, int yValue, char *top, char *bottom) {
     SDL_UpdateRects(lpScreen, 1, &dest);
     SDL_FreeSurface(lpTextSurface);
   } 
+#endif
 }
 
 /*********************************************************
@@ -2646,6 +2681,7 @@ void drawMessages(int xValue, int yValue, char *top, char *bottom) {
 *  justBlack - TRUE if we want a black screen
 *********************************************************/
 void drawDownloadScreen(bool justBlack) {
+#if 0
   BYTE zoomFactor;        /* scaling factor */
   SDL_Rect output;        /* Output RECT */
   SDL_Rect in;
@@ -2675,6 +2711,7 @@ void drawDownloadScreen(bool justBlack) {
 
   SDL_BlitSurface(lpBackBuffer, &in, lpScreen, &output);
   SDL_UpdateRect(lpScreen, output.x, output.y, output.w, output.h);
+#endif
 }
 
 
@@ -2694,6 +2731,7 @@ void drawDownloadScreen(bool justBlack) {
 *  deaths - The number of times the tank has died
 *********************************************************/
 void drawKillsDeaths(int xValue, int yValue, int kills, int deaths) {
+#if 0
   SDL_Surface *lpTextSurface;
   SDL_Rect dest;   /* The dest square to draw it */
   BYTE zf;     /* Scaling factor */
@@ -2723,8 +2761,9 @@ void drawKillsDeaths(int xValue, int yValue, int kills, int deaths) {
     SDL_UpdateRects(lpScreen, 1, &dest);
     SDL_FreeSurface(lpTextSurface);
   } 
+#endif
 }
-
+#if 0
 
 
 /*********************************************************
