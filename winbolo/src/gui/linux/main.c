@@ -262,15 +262,15 @@ gint windowclose(GtkWidget *widget, gpointer gdata) {
   brainsHandlerManual(NULL);
   isInMenu = FALSE;
   gameFrontCloseServer(); 
-  if (timerGameID != NULL) {
+  if (timerGameID != 0) {
    SDL_RemoveTimer(timerGameID);
-   timerGameID = NULL;
+   timerGameID = 0;
   }
   frameRateTime = 0;
   usleep(2500);
-  if (timerFrameID != NULL) {
+  if (timerFrameID != 0) {
     SDL_RemoveTimer(timerFrameID);
-    timerFrameID = NULL;
+    timerFrameID = 0;
   }
 
   gameFrontPutPrefs(&keys);
@@ -1072,9 +1072,9 @@ void gameFrontGetTrackerOptions(char *address, unsigned short *port, bool *enabl
 void startTimers() {
   oldFrameTick = SDL_GetTicks();
   oldTick = SDL_GetTicks();
-  timerGameID = SDL_AddTimer(GAME_TICK_LENGTH, (SDL_NewTimerCallback) windowGameTimer, (void *) NULL);
+  timerGameID = SDL_AddTimer(GAME_TICK_LENGTH, windowGameTimer, (void *) NULL);
 
-  timerFrameID = SDL_AddTimer(frameRateTime, (SDL_NewTimerCallback) windowFrameRateTimer, (void *) NULL);
+  timerFrameID = SDL_AddTimer(frameRateTime, windowFrameRateTimer, (void *) NULL);
   isQuiting = TRUE; 
 } 
 
@@ -1255,8 +1255,8 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
       oldFrameTick = SDL_GetTicks();
       oldTick = SDL_GetTicks();
       sendBackendMenuOptions();
-      timerGameID = SDL_AddTimer(GAME_TICK_LENGTH, (SDL_NewTimerCallback) windowGameTimer, (void *) NULL);
-      timerFrameID = SDL_AddTimer(frameRateTime, (SDL_NewTimerCallback) windowFrameRateTimer, (void *) NULL);
+      timerGameID = SDL_AddTimer(GAME_TICK_LENGTH, windowGameTimer, (void *) NULL);
+      timerFrameID = SDL_AddTimer(frameRateTime, windowFrameRateTimer, (void *) NULL);
       isQuiting = TRUE; 
       gtk_widget_show(window);
       gtk_widget_destroy(oldWindow);

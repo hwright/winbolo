@@ -75,7 +75,7 @@ bool dnsLookupsCreate(void) {
 
   /* create thread and run */
   if (returnValue == TRUE) {
-    hDnsThread = SDL_CreateThread(dnsLookupsRun, NULL);
+    hDnsThread = SDL_CreateThread(dnsLookupsRun, NULL, NULL);
     if (hDnsThread  == NULL) {
       SDL_DestroyMutex(hDnsMutexHandle);
       hDnsMutexHandle = NULL;

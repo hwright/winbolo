@@ -14,9 +14,9 @@
 # GNU General Public License for more details.
 
 
-CFLAGS = -g -std=c11
-BOLO_CFLAGS = ${CFLAGS} `sdl-config --cflags` `pkg-config gtk+-2.0 minizip --cflags` -Wall  -Wno-missing-braces
-LDFLAGS = `sdl-config --libs` `pkg-config minizip gtk+-2.0 gmodule-2.0 gthread-2.0 --libs`
+CFLAGS = -g -std=gnu11
+BOLO_CFLAGS = ${CFLAGS} `pkg-config sdl2 gtk+-2.0 minizip --cflags` -Wall  -Wno-missing-braces
+LDFLAGS = `pkg-config sdl2 minizip gtk+-2.0 gmodule-2.0 gthread-2.0 --libs`
 #-s
 #CFLAGS = -s -O3 -ffast-math -fomit-frame-pointer -mpentium -march=pentium `sdl-config --cflags` `gtk-config --cflags` `glib-config --cflags` 
 BOLODIR = ../../bolo/

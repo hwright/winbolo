@@ -59,6 +59,7 @@
 #include "tiles.xph"
 #include "background.xph"
 
+#if 0
 /* #include "..\winbolo.h"
 #include "..\cursor.h"
 #include "..\font.h"
@@ -3147,3 +3148,4 @@ void drawSetupArrays(BYTE zoomFactor) {
   drawTankPosX[TANK_SELFBOAT_15] = zoomFactor * TANK_SELFBOAT_15_X;
   drawTankPosY[TANK_SELFBOAT_15] = zoomFactor * TANK_SELFBOAT_15_Y; */
 }
+#endif

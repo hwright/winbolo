@@ -97,7 +97,7 @@ bool winbolonetThreadCreate(void) {
   }
 #else
   if (returnValue == TRUE) {
-    hWbnThread = SDL_CreateThread(winbolonetThreadRun, NULL);
+    hWbnThread = SDL_CreateThread(winbolonetThreadRun, NULL, NULL);
     if (hWbnThread  == NULL) {
       SDL_DestroyMutex(hWbnMutexHandle);
       hWbnMutexHandle = NULL;

@@ -18,6 +18,7 @@
 #ifndef _BRAINS_H
 #define _BRAINS_H
 
+#include <stdint.h>
 
 #pragma pack(8)
 #include "global.h"
@@ -102,13 +103,9 @@ A base bust have one armour unit or more to resist a shell --
 /* Only define it if we need it */
 #ifdef _WIN32
 #include <winsock.h>
-typedef unsigned char  u_char;
-typedef unsigned short u_short;
-typedef unsigned long  u_long;
-
-typedef u_char  NIBBLE;	/* to be interpreted as four bits */
-typedef u_char  BYTE;
-typedef u_short WORD;
+typedef uint8_t  NIBBLE;	/* to be interpreted as four bits */
+typedef uint8_t  BYTE;
+typedef uint16_t WORD;
 
 #else
 #include <sys/socket.h>
@@ -119,7 +116,7 @@ typedef u_short WORD;
 typedef struct {
   struct in_addr serveraddress;
   unsigned short serverport;
-  u_long start_time;
+  uint64_t start_time;
 } GAMEID;
 #endif
 
@@ -127,7 +124,7 @@ typedef WORD WORLD_X, WORLD_Y;
 
 #ifndef UCHAR36_DEFINED
 #define UCHAR36_DEFINED
-  typedef struct { u_char c[36]; } u_char36;
+  typedef struct { uint8_t c[36]; } u_char36;
 #endif
 
 
@@ -151,7 +148,7 @@ typedef struct
 
 /* *********************************************************************/
 
-typedef u_short OBJECT;
+typedef uint16_t OBJECT;
 enum
 	{
 	OBJECT_TANK=0,
@@ -186,9 +183,9 @@ actually holds the armour strength */
 
 typedef struct
 	{
-	u_short sender;
+	uint16_t sender;
 	PlayerBitMap *receivers;
-	u_char *message;
+	uint8_t *message;
 	} MessageInfo;
 
 /* This header file describes Bolo BrainInfo structure version 3 */
@@ -198,21 +195,21 @@ enum { BRAIN_OPEN=0, BRAIN_CLOSE, BRAIN_THINK, BRAIN_MENU=200 };
 
 typedef struct
 	{
-	u_short BoloVersion;	// two hex bytes, eg. 0x0098 means version 0.98
-	u_short InfoVersion;	// current version of the BrainInfo structure is 1
+	uint16_t BoloVersion;	// two hex bytes, eg. 0x0098 means version 0.98
+	uint16_t InfoVersion;	// current version of the BrainInfo structure is 1
 	void *userdata;		// Initially points to address of your CODE resource
-	u_short PrefsVRefNum;
-	u_char *PrefsFileName;
-	u_short operation;		// 0=OPEN, 1=CLOSE, 2=THINK, 200= menu
-	u_short menu_item;
+	uint16_t PrefsVRefNum;
+	uint8_t *PrefsFileName;
+	uint16_t operation;		// 0=OPEN, 1=CLOSE, 2=THINK, 200= menu
+	uint16_t menu_item;
 
 	// Interface providing information about the Bolo world
 	
-	u_short max_players;	// Players are numbered from 0 to max_players-1
-	u_short max_pillboxes;	// Pillboxes are numbered from 0 to max_pillboxes-1
-	u_short max_refbases;	// Bases are numbered from 0 to max_refbases-1
-	u_short player_number;	// Who Am I?
-	u_short num_players;	// How many players currently active in this game?
+	uint16_t max_players;	// Players are numbered from 0 to max_players-1
+	uint16_t max_pillboxes;	// Pillboxes are numbered from 0 to max_pillboxes-1
+	uint16_t max_refbases;	// Bases are numbered from 0 to max_refbases-1
+	uint16_t player_number;	// Who Am I?
+	uint16_t num_players;	// How many players currently active in this game?
 	u_char36 **playernames;	// Array of pointers to pascal strings
 	PlayerBitMap *allies;	// Who you are currently allied to
 
@@ -259,18 +256,18 @@ typedef struct
 	TERRAIN *viewdata;		// view_width*view_height bytes of terrain data
 
 	WORD padding5;			// unused at present
-	u_short num_objects;	// number of moving objects visible
+	uint16_t num_objects;	// number of moving objects visible
 	ObjectInfo *objects;	// array information about those objects
 
 	MessageInfo *message;	// Set if you recevied a message
 
 	// Interface to control the tank
-	u_long *holdkeys;
-	u_long *tapkeys;
+	uint64_t *holdkeys;
+	uint64_t *tapkeys;
 	BuildInfo *build;
 	PlayerBitMap *wantallies;// Who you want to be allied to
 	PlayerBitMap *messagedest;
-	u_char *sendmessage;
+	uint8_t *sendmessage;
 	
 	// New additions for version 3
 	const TERRAIN *theWorld;// Pointer to 256x256 map squares (arranged in rows)

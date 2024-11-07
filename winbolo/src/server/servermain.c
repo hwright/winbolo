@@ -321,7 +321,7 @@ void CALLBACK serverGameTimer(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWOR
 
   tick = winboloTimer();
 #else
-  Uint32 serverGameTimer (Uint32 interval) {
+  Uint32 serverGameTimer (Uint32 interval, void* data) {
   DWORD tick;     /* Number of ticks passed */
   static int wbnTime = 0;
   static int trackerTime = 5500;   /* When we should update the tracker */
@@ -830,7 +830,7 @@ return 0;
   serverTimerGameID = timeSetEvent(SERVER_TICK_LENGTH, 10, serverGameTimer, 0, TIME_PERIODIC);
 #else
   oldTick = winboloTimer();
-  serverTimerGameID = SDL_SetTimer(SERVER_TICK_LENGTH, (SDL_TimerCallback) serverGameTimer);
+  serverTimerGameID = SDL_AddTimer(SERVER_TICK_LENGTH, serverGameTimer, NULL);
 
 #endif
 
@@ -840,7 +840,7 @@ return 0;
 #ifdef _WIN32  
   timeKillEvent(serverTimerGameID);
 #else
-  SDL_SetTimer(0, NULL);
+  SDL_RemoveTimer(serverTimerGameID);
 #endif
   serverNetDestroy();
   threadsDestroy();
