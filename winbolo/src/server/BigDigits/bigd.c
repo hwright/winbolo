@@ -1,27 +1,28 @@
 /* $Id: bigd.c $ */
 
-/******************** SHORT COPYRIGHT NOTICE**************************
-This source code is part of the BigDigits multiple-precision
-arithmetic library Version 2.2 originally written by David Ireland,
-copyright (c) 2001-8 D.I. Management Services Pty Limited, all rights
-reserved. It is provided "as is" with no warranties. You may use
-this software under the terms of the full copyright notice
-"bigdigitsCopyright.txt" that should have been included with this
-library or can be obtained from <www.di-mgt.com.au/bigdigits.html>.
-This notice must always be retained in any copy.
-******************* END OF COPYRIGHT NOTICE***************************/
+/***** BEGIN LICENSE BLOCK *****
+ *
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ *
+ * Copyright (c) 2001-16 David Ireland, D.I. Management Services Pty Limited
+ * <http://www.di-mgt.com.au/bigdigits.html>. All rights reserved.
+ *
+ ***** END LICENSE BLOCK *****/
 /*
-	Last updated:
-	$Date: 2008-07-31 12:54:00 $
-	$Revision: 2.2.0 $
-	$Author: dai $
-*/
+ * Last updated:
+ * $Date: 2016-03-31 09:51:00 $
+ * $Revision: 2.6.1 $
+ * $Author: dai $
+ */
 
 /* BIGD "bd" wrapper functions around BigDigits "mp" functions */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 #include <assert.h>
 #include "bigd.h"
 #include "bigdigits.h"
@@ -35,6 +36,8 @@ struct T
 	size_t maxdigits;	/* Max size allocated */
 	/*int is_signed;*/	/* (for future use) */
 };
+
+#define OCTETS_PER_DIGIT (sizeof(bdigit_t))
 
 /* 
 All these functions MUST make sure that there are always
@@ -184,6 +187,38 @@ Better:
 	return 0;
 }
 
+/* New in [v2.6]: A more compact way to allocate and free BIGD variables */
+
+void bdNewVars(BIGD *pb1, ...)
+{
+	BIGD *pbd;
+	va_list ap;
+
+	va_start(ap, pb1);
+	while ((pbd = va_arg(ap, BIGD*))) {
+		*pbd = bdNew();
+	}
+	va_end(ap);
+	/* Deal with the first argument */
+	*pb1 = bdNew();
+}
+
+void bdFreeVars(BIGD *pb1, ...)
+{
+	BIGD *pbd;
+	va_list ap;
+
+	/* NB the stdarg macros do not permit programmers to code a function with no fixed arguments
+	* So this skips the first argument */
+	va_start(ap, pb1);
+	while ((pbd = va_arg(ap, BIGD*))) {
+		bdFree(pbd);
+	}
+	va_end(ap);
+	/* Deal with the first argument */
+	bdFree(pb1);
+}
+
 size_t bdConvFromOctets(T b, const unsigned char *c, size_t nbytes)
 /* Converts nbytes octets into big digit b, resizing if necessary */
 {
@@ -223,7 +258,7 @@ size_t bdConvToOctets(T b, unsigned char *c, size_t nbytes)
 
 	n = mpConvToOctets(b->digits, b->ndigits, c, nbytes);
 
-	return noctets;
+	return n;
 }
 
 size_t bdConvFromHex(T b, const char *s)
@@ -281,6 +316,14 @@ int bdSetShort(T b, bdigit_t value)
 	return 0;
 }
 
+/** Returns the least significant digit in b */
+bdigit_t bdToShort(T b)
+{
+	assert(b);
+	return mpToShort(b->digits, b->ndigits);
+}
+
+
 size_t bdBitLength(T b)
 	/* Returns base-1 index to most significant bit in b */
 {
@@ -295,15 +338,18 @@ size_t bdSizeof(T b)
 	return mpSizeof(b->digits, b->ndigits);
 }
 
-/* Print function for bigdigit_t structures */
 
+/* Print function for bigdigit_t structures [OBSOLETE] */
 void bdPrint(T p, size_t flags)
 {
 	size_t n;
 
 	assert(p);
 	n = p->ndigits;
-	if (n == 0) n = 1;
+	if (n == 0) {
+		bdSetZero(p);	// Added [v2.6]
+		n = 1;
+	}
 
 	if (flags & BD_PRINT_TRIM)	/* Trim leading zeroes */
 	{
@@ -321,64 +367,143 @@ void bdPrint(T p, size_t flags)
 	}
 }
 
-int bdIsEqual(T a, T b)
+void bdPrintHex(const char *prefix, T p, const char *suffix)
 {
-	/*	Returns true if a == b, else false */
-	size_t n, na, nb;
+	size_t n;
 
-	assert(a && b);
-	/* We can't trust ndigits */
-	na = mpSizeof(a->digits, a->ndigits);
-	nb = mpSizeof(b->digits, b->ndigits);
-	
-	if (na != nb)
-		return FALSE;
-	if (na == 0 && nb == 0)
-		return TRUE;
-
-	/* Otherwise we have equal lengths */
-	n = na;
-	while (n--)
-	{
-		if (a->digits[n] != b->digits[n])
-			return FALSE;
+	assert(p);
+	n = p->ndigits;
+	if (n == 0) {
+		bdSetZero(p);	// Added [v2.6]
+		n = 1;
 	}
-
-	return TRUE;
+	mpPrintHex(prefix, p->digits, n, suffix);
 }
 
+void bdPrintDecimal(const char *prefix, T p, const char *suffix)
+{
+	size_t n;
+
+	assert(p);
+	n = p->ndigits;
+	if (n == 0) {
+		bdSetZero(p);	// Added [v2.6]
+		n = 1;
+	}
+	mpPrintDecimal(prefix, p->digits, n, suffix);
+}
+
+void bdPrintBits(const char *prefix, T p, const char *suffix)
+{
+	size_t n;
+
+	assert(p);
+	n = p->ndigits;
+	if (n == 0) {
+		bdSetZero(p);	// Added [v2.6]
+		n = 1;
+	}
+	mpPrintBits(prefix, p->digits, n, suffix);
+}
+
+/** Returns true if a == 0, else false */
 int bdIsZero(T a)
-	/* Returns true if a == 0, else false */
 {
 	assert(a);
 	return mpIsZero(a->digits, a->ndigits);
 }
 
-int bdShortCmp(T a, bdigit_t d)
-	/* Returns sign of (a-d) */
+int bdIsZero_ct(T a)
 {
 	assert(a);
-	return mpShortCmp(a->digits, d, a->ndigits);
+	/* [v2.6] Use constant-time fn */
+	return mpIsZero_ct(a->digits, a->ndigits);
 }
 
-int bdCompare(T a, T b)
-	/*	Returns sign of (a-b) */
+/**	Returns true if a == b, else false */
+static int isequal_local(T a, T b, int ct)
 {
 	size_t n, na, nb;
 
 	assert(a && b);
-	if (a->ndigits != b->ndigits)
-	{
+	if (a->ndigits != b->ndigits) {
+		na = mpSizeof(a->digits, a->ndigits);
+		nb = mpSizeof(b->digits, b->ndigits);
+	
+		if (na != nb)
+			return FALSE;
+		if (na == 0 && nb == 0)
+			return TRUE;
+		n = na;
+	} else {
+		n = a->ndigits;
+	}
+
+	/* [v2.5] Use constant-time fn if equal length */
+	/* [v2.6] ... only if _ct function is called */
+	if (ct)
+		return mpEqual_ct(a->digits, b->digits, n);
+	else
+		return mpEqual(a->digits, b->digits, n);
+}
+
+/**	Returns true if a == b, else false */
+int bdIsEqual(T a, T b)
+{
+	return isequal_local(a, b, 0);
+}
+int bdIsEqual_ct(T a, T b)
+{
+	return isequal_local(a, b, 1);
+}
+
+/**	Returns sign of (a-b) */
+static int compare_local(T a, T b, int ct)
+{
+	size_t n, na, nb;
+
+	assert(a && b);
+	if (a->ndigits != b->ndigits) {
 		na = mpSizeof(a->digits, a->ndigits);
 		nb = mpSizeof(b->digits, b->ndigits);
 		if (na > nb) return 1;
 		if (na < nb) return -1;
 		n = na;
-	}
-	else
+	} else {
 		n = a->ndigits;
+	}
 
-	return mpCompare(a->digits, b->digits, n);
+	/* [v2.5] Use constant-time fn if equal length */
+	/* [v2.6] ... only if _ct function is called */
+	if (ct)
+		return mpCompare_ct(a->digits, b->digits, n);
+	else
+		return mpCompare(a->digits, b->digits, n);
+
+}
+
+/**	Returns sign of (a-b) */
+int bdCompare(T a, T b)
+{
+	return compare_local(a, b, 0);
+}
+int bdCompare_ct(T a, T b)
+{
+	return compare_local(a, b, 0);
+}
+
+/** Returns sign of (a-d) */
+int bdShortCmp(T a, bdigit_t d)
+{
+	assert(a);
+	return mpShortCmp(a->digits, d, a->ndigits);
+}
+
+/** Returns true if a == d, else false, where d is a single digit */
+int bdShortIsEqual(BIGD a, bdigit_t d)
+{
+	assert(a);
+	return mpShortIsEqual(a->digits, d, a->ndigits);
 }
 
 int bdIsEven(T a)
@@ -408,7 +533,8 @@ int bdSetZero(T a)
 	/* Sets a = 0 */
 {
 	assert(a);
-	mpSetZero(a->digits, a->ndigits);
+	/* [v2.6] changed a->ndigits to a->maxdigits to make sure we clear any residual */
+	mpSetZero(a->digits, a->maxdigits);
 	a->ndigits = 0;
 	return 0;
 }
@@ -438,7 +564,7 @@ int bdShortAdd(T w, T u, bdigit_t d)
 }
 
 int bdAdd(T w, T u, T v)
-	/* Compute w = u + v, w#v*/
+	/* Compute w = u + v, w#v */
 {
 	size_t dig_size;
 	DIGIT_T carry;
@@ -571,6 +697,14 @@ int bdShortMult(T w, T u, bdigit_t d)
 	size_t dig_size = u->ndigits;
 
 	assert(w && u);
+	/***************************************************/
+	// [2013-06-05]: catch empty u; make sure w is empty
+	if (dig_size == 0 || d == 0)
+	{	/* u == 0 */
+		bd_resize(w, 0);
+		return 0;
+	}
+	/***************************************************/
 	bd_resize(w, dig_size+1);
 
 	overflow = mpShortMult(w->digits, u->digits, d, dig_size);
@@ -671,6 +805,32 @@ int bdSquare_s(T w, T x)
 	return 0;
 }
 
+int bdPower(BIGD y, BIGD g, unsigned short int n)
+/* Computes y = g^n (up to available memory!) */
+{
+	BIGD z;
+	z = bdNew();
+	/* Use Right-Left Binary */
+	/* 1. Set y <-- 1, z <-- g */
+	bdSetShort(y, 1);
+	bdSetEqual(z, g);
+	/* If n = 0, output y and stop */
+	while (n > 0)
+	{
+		/* 2. If n is odd, set y <-- z.y */
+		if (n & 0x1)
+			bdMultiply_s(y, z, y);
+		/* 3. Set n <-- [n/2]. If n = 0, output y and stop */
+		n >>= 1;
+		if (n > 0)
+			/* 3b. Otherwise set z <-- z.z and go to step 2 */
+			bdSquare_s(z, z);
+	}
+	bdFree(&z);
+	/* Result is in y */
+	return 0;
+}
+
 int bdSqrt(BIGD s, BIGD x)
 	/* Computes integer square root s = floor(sqrt(x)) */
 {
@@ -681,6 +841,21 @@ int bdSqrt(BIGD s, BIGD x)
 	dig_size = x->ndigits;
 	bd_resize(s, dig_size);
 	r = mpSqrt(s->digits, x->digits, dig_size);
+	s->ndigits = mpSizeof(s->digits, dig_size);
+
+	return r;
+}
+
+int bdCubeRoot(BIGD s, BIGD x)
+	/* Computes integer cube root s = floor(cuberoot(x)) */
+{
+	size_t dig_size;
+	int r;
+
+	assert(s && x);
+	dig_size = x->ndigits;
+	bd_resize(s, dig_size);
+	r = mpCubeRoot(s->digits, x->digits, dig_size);
 	s->ndigits = mpSizeof(s->digits, dig_size);
 
 	return r;
@@ -992,11 +1167,9 @@ void bdModPowerOf2(BIGD a, size_t L)
 	a->ndigits = mpSizeof(a->digits, n);
 }
 
-int bdModExp(T y, T x, T e, T m)
+/** Compute y = x^e mod m, x,e < m */
+static int modexp_internal(T y, T x, T e, T m, int constant_time)
 {
-	/* Compute y = x^e mod m 
-	   x,e < m */
-
 	size_t n;
 	int status;
 
@@ -1011,15 +1184,30 @@ int bdModExp(T y, T x, T e, T m)
 	bd_resize(m, n);
 
 	/* Finally, do the business */
-	status = mpModExp(y->digits, x->digits, e->digits, m->digits, n);
+	if (constant_time)
+		status = mpModExp_ct(y->digits, x->digits, e->digits, m->digits, n);
+	else
+		status = mpModExp(y->digits, x->digits, e->digits, m->digits, n);
 
 	y->ndigits = mpSizeof(y->digits, n);
 
 	return status;
 }
 
+/** Compute y = x^e mod m, x,e < m */
+int bdModExp(BIGD y, BIGD x, BIGD e, BIGD m)
+{
+	return modexp_internal(y, x, e, m, 0);
+}
+
+/** Compute y = x^e mod m in constant time */
+int bdModExp_ct(BIGD y, BIGD x, BIGD e, BIGD m)
+{
+	return modexp_internal(y, x, e, m, 1);
+}
+
+/** Compute a = (x * y) mod m */
 int bdModMult(T a, T x, T y, T m)
-	/* Compute a = (x * y) mod m */
 {
 	size_t n;
 	int status;
@@ -1042,9 +1230,114 @@ int bdModMult(T a, T x, T y, T m)
 	return status;
 }
 
+/** Computes a = x^2 mod m */
+int bdModSquare(BIGD a, BIGD x, BIGD m)
+{
+	size_t n;
+	int status;
 
+	assert(a && x && m);
+	/* Make sure all variables are the same size */
+	n = max(x->ndigits, m->ndigits);
+
+	bd_resize(a, n);
+	bd_resize(x, n);
+	bd_resize(m, n);
+
+	/* Do the business */
+	status = mpModSquare(a->digits, x->digits, m->digits, n);
+
+	a->ndigits = mpSizeof(a->digits, n);
+
+	return status;
+}
+
+/** Computes x = sqrt(a) mod p */
+int bdModSqrt(BIGD x, BIGD a, BIGD p)
+{
+	size_t n;
+	int status;
+
+	assert(x && a && p);
+	/* Make sure all variables are the same size */
+	n = max(a->ndigits, p->ndigits);
+
+	bd_resize(x, n);
+	bd_resize(a, n);
+	bd_resize(p, n);
+
+	/* Do the business */
+	status = mpModSqrt(x->digits, a->digits, p->digits, n);
+
+	x->ndigits = mpSizeof(x->digits, n);
+
+	return status;
+}
+
+/** Computes w = u/2 (mod p) for an odd prime p */
+void bdModHalve(BIGD w, const BIGD u, const BIGD p)
+{
+	size_t n;
+
+	assert(w && u && p);
+	/* Make sure all variables are the same size */
+	n = max(u->ndigits, p->ndigits);
+
+	bd_resize(w, n);
+	bd_resize(u, n);
+	bd_resize(p, n);
+
+	/* Do the business */
+	mpModHalve(w->digits, u->digits, p->digits, n);
+
+	w->ndigits = mpSizeof(w->digits, n);
+}
+
+
+/* Computes w = u + v (mod m) for 0 <= u,v < m*/
+void bdModAdd(BIGD w, BIGD u, BIGD v, BIGD m)
+{
+	size_t n;
+
+	assert(w && u && v && m);
+	/* Make sure all variables are the same size */
+	n = max(v->ndigits, m->ndigits);
+	n = max(u->ndigits, n);
+
+	bd_resize(w, n);
+	bd_resize(u, n);
+	bd_resize(v, n);
+	bd_resize(m, n);
+
+	/* Do the business */
+	mpModAdd(w->digits, u->digits, v->digits, m->digits, n);
+
+	w->ndigits = mpSizeof(w->digits, n);
+}
+
+/* Computes w = u - v (mod m) for 0 <= u,v < m*/
+void bdModSub(BIGD w, BIGD u, BIGD v, BIGD m)
+{
+	size_t n;
+
+	assert(w && u && v && m);
+	/* Make sure all variables are the same size */
+	n = max(v->ndigits, m->ndigits);
+	n = max(u->ndigits, n);
+
+	bd_resize(w, n);
+	bd_resize(u, n);
+	bd_resize(v, n);
+	bd_resize(m, n);
+
+	/* Do the business */
+	mpModSub(w->digits, u->digits, v->digits, m->digits, n);
+
+	w->ndigits = mpSizeof(w->digits, n);
+}
+
+/** Compute x = a^-1 mod m */
 int bdModInv(T x, T a, T m)
-	/* Compute x = a^-1 mod m */
 {
 	size_t n;
 	int status;
@@ -1120,43 +1413,51 @@ int bdRabinMiller(T b, size_t ntests)
 
 /* [Version 2.1: bdRandDigit moved to bdRand.c] */
 
+
+/* Make a random BIGD of up to `ndigits` digits
+	-- NB just for doing tests
+	Return # digits actually set
+*/
 size_t bdSetRandTest(T a, size_t ndigits)
-/* Make a random bigd a of up to ndigits digits 
-   -- NB just for testing 
-   Return # digits actually set */ 
 {
-	size_t i, n, bits;
-	DIGIT_T mask;
+	/* Re-written [v2.6] */
+	size_t n;
+	size_t nbitstarget = ndigits * BITS_PER_DIGIT;
 
-	assert(a);
-	/* Pick a random size */
-	n = (size_t)spSimpleRand(1, (DIGIT_T)ndigits);
-	
-	/* Check allocated memory */
-	bd_resize(a, n);
-	
-	/* Now fill with random digits */
-	for (i = 0; i < n; i++)
-		a->digits[i] = spSimpleRand(0, MAX_DIGIT);
-
-	a->ndigits = n;
-
-	/*	Zero out a random number of bits in leading digit 
-		about half the time */
-	bits = (size_t)spSimpleRand(0, 2*BITS_PER_DIGIT);
-	if (bits != 0 && bits < BITS_PER_DIGIT)
-	{
-		mask = HIBITMASK;
-		for (i = 1; i < bits; i++)
-		{
-			mask |= (mask >> 1);
-		}
-		mask = ~mask;
-		a->digits[n-1] &= mask;
+	/* Half the time, pick a shorter bitlength at random from [4,nbits] 
+	   so at least a >= 16 */
+	if (spSimpleRand(0, 1)) {
+		n = (size_t)spSimpleRand(4, (DIGIT_T)nbitstarget);
 	}
-	return n;
+	else {
+		n = nbitstarget;
+	}
+
+	bdQuickRandBits(a, n);
+	/* Make sure a > 1 */
+	if (bdShortCmp(a, 2) < 0)
+		bdQuickRandBits(a, nbitstarget);
+
+	return bdSizeof(a);
+
 }
 
+/** Generate a quick-and-dirty random number a <= 2^{nbits}-1 using plain-old-rand 
+ *  @return Number of digits actually set
+ *  @remark Not crypto secure
+ */	/* Added [v2.4] */
+size_t bdQuickRandBits(T a, size_t nbits)
+{
+	size_t n;
+
+	assert(a);
+	n = (nbits + BITS_PER_DIGIT - 1) / BITS_PER_DIGIT;
+	bd_resize(a, n);
+	n = mpQuickRandBits(a->digits, n, nbits);
+	a->ndigits = n;
+
+	return n;
+}
 
 int bdRandomSeeded(T a, size_t nbits, const unsigned char *seed, 
 	size_t seedlen, BD_RANDFUNC RandFunc)
@@ -1248,9 +1549,15 @@ int bdGeneratePrime(T b, size_t nbits, size_t ntests,
 	return (done ? 0 : 1);
 }
 
-/* Version Info - added in ver 2.0.2 */
+/* Version Info - added in [v2.0.2] */
 int bdVersion(void)
 {
 	return mpVersion();
+}
+
+/* Added [v2.6] */
+const char *bdCompileTime(void)
+{
+	return __DATE__" "__TIME__;
 }
 
