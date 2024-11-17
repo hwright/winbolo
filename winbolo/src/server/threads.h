@@ -28,6 +28,8 @@
 #ifndef _THREADS_H
 #define _THREADS_H
 
+#include <stdbool.h>
+
 #include "../bolo/global.h"
 
 /*********************************************************

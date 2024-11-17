@@ -104,7 +104,7 @@ long sGmeLength;
 time_t sTimeStart;
 
 /* Are we running? */
-bool serverCoreGameRunning = FALSE;
+bool serverCoreGameRunning = false;
 
 void serverMessagesSetLogFile(char *logFile);
 void tankResetHitCount(tank *value);
@@ -115,7 +115,7 @@ void tankResetHitCount(tank *value);
 *CREATION DATE: 10/8/99
 *LAST MODIFIED:  5/5/00
 *PURPOSE:
-*  Creates a new server. Returns FALSE if an error occured
+*  Creates a new server. Returns false if an error occured
 *  such as error loading map
 *
 *ARGUMENTS:
@@ -165,10 +165,10 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines, int srtDe
 
   returnValue = mapRead(fileName, &mp, &pb, &bs, &ss);
 
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     utilExtractMapName(fileName, sMapName);
     basesClearMines(&bs, &mp);
-    serverCoreGameRunning = TRUE;
+    serverCoreGameRunning = true;
   } else {
     serverCoreDestroy();
   }
@@ -183,7 +183,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines, int srtDe
 *LAST MODIFIED: 5/05/01
 *PURPOSE:
 *  Creates a new server via loading a compressed map
-*  structure. Returns FALSE if an error occured such as 
+*  structure. Returns false if an error occured such as 
 *  error loading map
 *
 *ARGUMENTS:
@@ -236,10 +236,10 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, char *mapn, gameType ga
 
   returnValue = mapLoadCompressedMap(&mp, &pb, &bs, &ss, buff, buffLen);
 
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     strcpy(sMapName, mapn);
     basesClearMines(&bs, &mp);
-    serverCoreGameRunning = TRUE;
+    serverCoreGameRunning = true;
   } else {
     serverCoreDestroy();
   }
@@ -262,7 +262,7 @@ void serverCoreDestroy() {
   BYTE count; /* Looping variable */
 
   messageAdd(globalMessage, (char *) "Core Simulation Shutdown", (char *) "");
-  serverCoreGameRunning = FALSE;
+  serverCoreGameRunning = false;
   for (count=0;count<MAX_TANKS;count++) {
     tankDestroy(&tk[count], &mp, &pb, &bs);
     lgmDestroy(&lgman[count]);
@@ -291,7 +291,7 @@ void serverCoreDestroy() {
 
 /* FIXME: Comment */
 void serverCoreLogTick() {
-  if (logIsRecording() == TRUE) {
+  if (logIsRecording() == true) {
     BYTE temp1, temp2, temp3, mx, my;
     int count, entries;
     screenBullets sb = screenBulletsCreate();
@@ -301,7 +301,7 @@ void serverCoreLogTick() {
         mx = tankGetMX(&tk[count]);
         my = tankGetMY(&tk[count]);
         logAddEvent(log_PlayerLocation, (BYTE) count, mx, my, utilPutNibble(tankGetPX(&tk[count]), tankGetPY(&tk[count])), (BYTE) utilPutNibble(tankGetDir(&tk[count]), tankIsOnBoat(&tk[count])), NULL);
-        if (lgmIsOut(&lgman[count]) == TRUE) {
+        if (lgmIsOut(&lgman[count]) == true) {
           logAddEvent(log_LgmLocation, utilPutNibble((BYTE) count, lgmGetFrame(&lgman[count])), lgmGetMX(&lgman[count]), lgmGetMY(&lgman[count]), utilPutNibble(lgmGetPX(&lgman[count]), lgmGetPY(&lgman[count])), 0, NULL);
         }
       }
@@ -341,7 +341,7 @@ void serverCoreGameTick() {
   BYTE numTanks;       /* Number of tanks  */
   
 
-  if (serverCoreGameRunning == FALSE ) {
+  if (serverCoreGameRunning == false ) {
     return;
   }
   if (sGmeStartDelay > 0) {
@@ -353,9 +353,9 @@ void serverCoreGameTick() {
     sGmeLength--;
     if (sGmeLength == 0) {
       /* Game Times Up. */
-      serverCoreGameRunning = FALSE;
+      serverCoreGameRunning = false;
       frontEndGameOver();
-      serverCoreGameRunning = FALSE;
+      serverCoreGameRunning = false;
       return;
     }
   }
@@ -367,7 +367,7 @@ void serverCoreGameTick() {
   numTanks = 0;
   for (count=0;count<MAX_TANKS;count++) {
     if (tk[count] != NULL) {
-      tankUpdate(&(tk[count]), &mp, &bs, &pb, &shs, &ss, TNONE, FALSE, FALSE);
+      tankUpdate(&(tk[count]), &mp, &bs, &pb, &shs, &ss, TNONE, false, false);
       lgmUpdate(&lgman[count], &mp, &pb, &bs, &tk[count]);
       ta[numTanks] = tk[count];
       lgms[numTanks] = (struct lgmObj *) (&(lgman[count])); /* FIXME: Yeah bigass type cast warning there */
@@ -376,7 +376,7 @@ void serverCoreGameTick() {
   } 
   
   tkExplosionUpdate(&serverTankExp, &mp, &pb, &bs, (lgm **) lgms, numTanks, &tk[0]); /*set this to tk[0] becuase it doesn't use the tank structure if its the server calling it.*/
-  shellsUpdate(&shs, &mp, &pb, &bs, ta, numTanks, TRUE);
+  shellsUpdate(&shs, &mp, &pb, &bs, ta, numTanks, true);
   explosionsUpdate(&serverExpl);
   minesExpUpdate(&serverMinesExp, &mp, &pb, &bs, (lgm **) lgms, numTanks); 
   floodUpdate(&serverFF, &mp, &pb, &bs);
@@ -393,7 +393,7 @@ void serverCoreGameTick() {
   tickCount++;
   if (tickCount == 20 * 30) {
     tickCount = 0;
-    logWriteSnapshot(&mp, &pb, &bs, &ss, &splrs, TRUE);
+    logWriteSnapshot(&mp, &pb, &bs, &ss, &splrs, true);
   }
 }
 
@@ -624,7 +624,7 @@ int serverCoreMakeMapNetRun(BYTE *buff, BYTE yPos) {
 void serverCorePlayerJoin(BYTE playerNum) {
   tankCreate(&tk[playerNum], &ss);
   lgman[playerNum] = lgmCreate(playerNum);
-  tankSetWorld(&tk[playerNum], 0, 0, 0.0f , FALSE);
+  tankSetWorld(&tk[playerNum], 0, 0, 0.0f , false);
 }
 
 /*********************************************************
@@ -658,11 +658,11 @@ void serverCorePlayerLeave(BYTE playerNum) {
     basesSetNeutralOwner(&bs, playerNum);
   } else {
     count = 0;
-    found = FALSE;
-    while (count < MAX_TANKS && found == FALSE) {
+    found = false;
+    while (count < MAX_TANKS && found == false) {
       if (playerNum != count) {
-        if (playersIsAllie(&splrs, count, playerNum) == TRUE) {
-          found = TRUE;
+        if (playersIsAllie(&splrs, count, playerNum) == true) {
+          found = true;
         }
       }
       count++;
@@ -782,7 +782,7 @@ bool serverCoreTankInView(BYTE playerNum, BYTE checkX, BYTE checkY) {
   BYTE gapX;
   BYTE gapY;
 
-  returnValue = FALSE;
+  returnValue = false;
   if (playerNum < MAX_TANKS) {
     mx = tankGetMX(&tk[playerNum]);
     my = tankGetMY(&tk[playerNum]);
@@ -800,7 +800,7 @@ bool serverCoreTankInView(BYTE playerNum, BYTE checkX, BYTE checkY) {
   
 
     if (gapX <= MAIN_SCREEN_SIZE_X +2 && gapY <= MAIN_SCREEN_SIZE_Y +2) { /* Give it a littl buffer */
-      returnValue = TRUE;
+      returnValue = true;
     } else {
       /* Check for pill views */
       returnValue = pillsIsInView(&pb, playerNum, checkX, checkY);
@@ -835,7 +835,7 @@ void serverCorePreparePosPackets() {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if (playersIsInUse(&splrs, count) == TRUE && tk[count] != NULL) {
+    if (playersIsInUse(&splrs, count) == true && tk[count] != NULL) {
       playersPosData[count].len = 0;
       pos = 0;
 
@@ -887,7 +887,7 @@ void serverCorePreparePosPackets() {
 *ARGUMENTS:
 *  buff      - Data Buffer of packet
 *  noPlayer  - Player not to make data for
-*  sendStale - TRUE if we want to send out stale values
+*  sendStale - true if we want to send out stale values
 *              aswell
 *********************************************************/
 int serverCoreMakePosPackets(BYTE *buff, BYTE noPlayer, bool sendStale) {
@@ -905,38 +905,38 @@ int serverCoreMakePosPackets(BYTE *buff, BYTE noPlayer, bool sendStale) {
     if (playersPosData[count].len != -1) {
       /* Is the player's LGM out of their tank? */
       lgmInView = lgmIsOut(&lgman[count]);
-      if (lgmInView == TRUE) {
+      if (lgmInView == true) {
 		/* LGM is parachuting in */
 		if (lgmGetFrame(&lgman[count]) == LGM_HELICOPTER_FRAME) {
-          lgmInView = TRUE;
+          lgmInView = true;
 		}
 		else {
 		  /* Is the LGM within view of their tank or any friendly pillbox? */
           lgmInView = serverCoreTankInView(noPlayer, (BYTE) (lgmGetWX(&lgman[count]) >> M_W_SHIFT_SIZE), (BYTE) (lgmGetWY(&lgman[count])  >> M_W_SHIFT_SIZE));
 		}
       }
-      tankInView = FALSE;
+      tankInView = false;
       if (noPlayer != count) {
         tankInView = playersNeedUpdate(&splrs, count);
-        if (tankInView == FALSE) {
+        if (tankInView == false) {
           tankInView = serverCoreTankInView(noPlayer, tankGetMX(&tk[count]), tankGetMY(&tk[count]));
         }
       }
-      if (tankInView == TRUE || lgmInView == TRUE) {
+      if (tankInView == true || lgmInView == true) {
         *loc = utilPutNibble(count, (BYTE) (((tankInView << 2) + lgmInView)));
         loc++;
         pos++;
-        if (tankInView == TRUE) {
+        if (tankInView == true) {
           memcpy(loc, playersPosData[count].buff, 4);
           loc += 4;
           pos += 4;
         }
-        if (lgmInView == TRUE) {
+        if (lgmInView == true) {
           memcpy(loc, (playersPosData[count].buff+4), 4);
           loc += 4;
           pos += 4;
         }
-      } else if (sendStale == TRUE && noPlayer != count) {
+      } else if (sendStale == true && noPlayer != count) {
         /* Send off stale data */
         *loc = utilPutNibble(count, 0xF);
         loc++;
@@ -962,7 +962,7 @@ int serverCoreMakePosPackets(BYTE *buff, BYTE noPlayer, bool sendStale) {
 *  len  - Length of the buffer
 *********************************************************/
 void serverCoreExtractShellData(BYTE *buff, BYTE len) {
-  shellsNetExtract(&shs, &pb, buff, len, TRUE);
+  shellsNetExtract(&shs, &pb, buff, len, true);
 }
 
 /*********************************************************
@@ -1100,7 +1100,7 @@ void severCoreExtractClientMapData(BYTE *buff, BYTE len, BYTE playerNum) {
     pos++;
     terrain = buff[pos];
     pos++;    
-    mapSetPos(&mp, mx, my, terrain, TRUE, FALSE);
+    mapSetPos(&mp, mx, my, terrain, true, false);
   }
 }
 
@@ -1117,7 +1117,7 @@ void severCoreExtractClientMapData(BYTE *buff, BYTE len, BYTE playerNum) {
 *  len  - Length of the buffer
 *********************************************************/
 void serverCoreExtractPNBData(BYTE *buff, BYTE len) {
-  netPNBExtract(&serverPNB, &mp, &bs, &pb, buff, len, TRUE);
+  netPNBExtract(&serverPNB, &mp, &bs, &pb, buff, len, true);
 }
 
 /*********************************************************
@@ -1164,7 +1164,7 @@ BYTE serverCoreMakeTkData(BYTE *buff) {
 *  len  - Length of the buffer
 ********************************************************/
 void serverCoreExtractNMTData(BYTE *buff, BYTE len) {
-  netMNTExtract(&serverNMT, &mp, &pb, &bs, NULL, buff, len, FALSE);
+  netMNTExtract(&serverNMT, &mp, &pb, &bs, NULL, buff, len, false);
 }
 
 /*********************************************************
@@ -1310,14 +1310,14 @@ void serverCoreLgmOperation(BYTE playerNum, BYTE destX, BYTE destY, BYTE operati
 *  y      - Pointer to hold World Y Co-ordinates
 *********************************************************/
 void serverCoreGetTankWorldFromLgm(lgm *lgmans, WORLD *x, WORLD *y) {
-  bool found = FALSE; /* Loop guard */
+  bool found = false; /* Loop guard */
   BYTE count = 0;     /* Loop variant */
 
   *x = 0;
   *y = 0;
-  while (count < MAX_TANKS && found == FALSE) {
+  while (count < MAX_TANKS && found == false) {
     if (lgmans == &lgman[count]) {
-      found = TRUE;
+      found = true;
       tankGetWorld(&tk[count], x, y);
     }
     count++;
@@ -1363,9 +1363,9 @@ void serverCoreGetStartPosition(BYTE playerNum, BYTE *xValue, BYTE *yValue, TURN
 
   startsGetStart(&ss, xValue, yValue, angel, playerNum);
   gameTypeGetItems(&sGame, numShells, numMines, &numArmour, &numTrees);
-  tankSetWorld(&tk[playerNum], *xValue, *yValue, *angel, FALSE);
+  tankSetWorld(&tk[playerNum], *xValue, *yValue, *angel, false);
   tankSetStats(&tk[playerNum], *numShells, *numMines, numArmour, numTrees);
-  tankSetOnBoat(&tk[playerNum], TRUE);
+  tankSetOnBoat(&tk[playerNum], true);
   tankResetHitCount(&tk[playerNum]);
 
 }
@@ -1377,13 +1377,13 @@ void serverCoreGetStartPosition(BYTE playerNum, BYTE *xValue, BYTE *yValue, TURN
 *LAST MODIFIED: 11/04/01
 *PURPOSE:
 * Checks to see if there is enemy tank within range
-* supplied. Returns TRUE if we are in the clear
+* supplied. Returns true if we are in the clear
 *
 *ARGUMENTS:
 *  xValue    - X Value
 *  yValue    - Y Value
 *  playerNum - Player number to check against
-*  distance  - Distance to be less then to return FALSE
+*  distance  - Distance to be less then to return false
 *********************************************************/
 bool serverCoreCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
   bool returnValue; /* Value to return */
@@ -1394,12 +1394,12 @@ bool serverCoreCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
   WORLD testWY;
   double dummy;
 
-  returnValue = TRUE;
+  returnValue = true;
   ourWX = (x << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
   ourWY = (y << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
   
   count = 0;
-  while (count < MAX_TANKS && returnValue == TRUE) {
+  while (count < MAX_TANKS && returnValue == true) {
     if (playerNum != count && tk[count] != NULL && count != playerNum) {
       tankGetWorld(&tk[count], &testWX, &testWY);
       returnValue = !(utilIsItemInRange(ourWX, ourWY, testWX, testWY, (WORLD) distance, &dummy));
@@ -1417,7 +1417,7 @@ bool serverCoreCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
 *LAST MODIFIED: 9/04/01
 *PURPOSE:
 * Checks to see if there is enemy pill within range
-* supplied. Returns TRUE if we are in the clear
+* supplied. Returns true if we are in the clear
 *
 *ARGUMENTS:
 *  xValue    - X Value
@@ -1437,14 +1437,14 @@ bool serverCoreCheckPillsRange(BYTE xValue, BYTE yValue, BYTE playerNum, double 
   double dummy;
   
 
-  returnValue = TRUE;
+  returnValue = true;
   startX = (xValue << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
   startY = (yValue << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
   count = 1;
   total = pillsGetNumPills(&pb);
-  while (returnValue == TRUE && count <= total) {
+  while (returnValue == true && count <= total) {
     pillsGetPill(&pb, &pill, count);
-    if (playersIsAllie(&splrs, playerNum, pill.owner) == FALSE) {
+    if (playersIsAllie(&splrs, playerNum, pill.owner) == false) {
       testX = (pill.x << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
       testY = (pill.y << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
       returnValue = !(utilIsItemInRange(startX, startY, testX, testY, (WORLD) distance, &dummy));
@@ -1476,7 +1476,7 @@ void serverCoreSendTeams() {
 
   count = 0;
   while (count < MAX_TANKS) {
-    donePlayers[count] = FALSE;
+    donePlayers[count] = false;
     count++;
   }
   arraySize = 0;
@@ -1484,7 +1484,7 @@ void serverCoreSendTeams() {
   count = 0;
   arrayPos = 1;
   while (count < MAX_TANKS) {
-    if (donePlayers[count] == FALSE && tk[count] != NULL) {
+    if (donePlayers[count] == false && tk[count] != NULL) {
       /* This is a new team */
       numTeams++;
       count2 = 0;
@@ -1494,10 +1494,10 @@ void serverCoreSendTeams() {
       array[arrayPos] = count;
       arrayPos++;
       arraySize++;
-      donePlayers[count] = TRUE;
+      donePlayers[count] = true;
       while (count2 < MAX_TANKS) {
         if (count2 != count && tk[count2] != NULL && playersIsAllie(&splrs, count, count2)) {
-          donePlayers[count2] = TRUE;
+          donePlayers[count2] = true;
           array[arrayPos] = count2;
           arrayPos++;
           arraySize++;
@@ -1523,11 +1523,11 @@ void serverCoreSendTeams() {
 * alliance
 *
 *ARGUMENTS:
-*  printWinners - If TRUE print out the list of winners
+*  printWinners - If true print out the list of winners
 *********************************************************/
 bool serverCoreCheckGameWin(bool printWinners) {
-  static bool doneOnce = FALSE; /* Have we done this once successfully */
-  static bool doneWbnOnce = FALSE; /* Have we done this once successfully */
+  static bool doneOnce = false; /* Have we done this once successfully */
+  static bool doneWbnOnce = false; /* Have we done this once successfully */
   bool returnValue; /* Value to return */
   BYTE count;       /* Looping variable */
   BYTE max;         /* Max number of bases */
@@ -1538,14 +1538,14 @@ bool serverCoreCheckGameWin(bool printWinners) {
   BYTE minesAmount;
   BYTE armourAmount;
 
-  returnValue = TRUE;
+  returnValue = true;
   max = basesGetNumBases(&bs);
   count = 1;
-  while (count <= max && returnValue == TRUE) {
+  while (count <= max && returnValue == true) {
     current = basesGetBaseOwner(&bs, count);
     basesGetStats(&bs, count, &shellsAmount, &minesAmount, &armourAmount);
     if (current == NEUTRAL || armourAmount <= MIN_ARMOUR_CAPTURE) {
-      returnValue = FALSE;
+      returnValue = false;
     } else {
       if (count == 1) {
         first = current;
@@ -1556,20 +1556,20 @@ bool serverCoreCheckGameWin(bool printWinners) {
     count++;
   }
 
-  if (returnValue == TRUE && doneWbnOnce == FALSE) {
+  if (returnValue == true && doneWbnOnce == false) {
     serverCoreSendTeams();
     /* Tell WinBolo.net about it */
-    winbolonetAddEvent(WINBOLO_NET_EVENT_WIN, TRUE, first, WINBOLO_NET_NO_PLAYER);
-    doneWbnOnce = TRUE;
+    winbolonetAddEvent(WINBOLO_NET_EVENT_WIN, true, first, WINBOLO_NET_NO_PLAYER);
+    doneWbnOnce = true;
   }
 
-  if (returnValue == TRUE && printWinners == TRUE && doneOnce == FALSE) {
-    doneOnce = TRUE;
+  if (returnValue == true && printWinners == true && doneOnce == false) {
+    doneOnce = true;
     serverMessageConsoleMessage("Winners");
     count = 0;
     while (count < MAX_TANKS) {
       if (tk[count] != NULL) {
-        if (playersIsAllie(&splrs, first, count) == TRUE) {
+        if (playersIsAllie(&splrs, first, count) == true) {
           /* Print it */
           playersGetPlayerName(&splrs, count, dest);
           serverMessageConsoleMessage(dest);
@@ -1595,16 +1595,16 @@ bool serverCoreCheckGameWin(bool printWinners) {
 *
 *********************************************************/
 bool serverCoreCheckAutoClose() {
-  static bool hadPlayers = FALSE; /* Have we done this once successfully */
-  bool returnValue = FALSE; /* Value to return */
+  static bool hadPlayers = false; /* Have we done this once successfully */
+  bool returnValue = false; /* Value to return */
 
-  if (hadPlayers == FALSE) {
+  if (hadPlayers == false) {
     if (playersGetNumPlayers(&splrs) > 0) {
-      hadPlayers = TRUE;
+      hadPlayers = true;
     }
   } else {
     if (playersGetNumPlayers(&splrs) == 0) {
-      returnValue = TRUE;
+      returnValue = true;
     }
   }
 
@@ -1930,7 +1930,7 @@ void serverCoreInformation() {
   fprintf(stdout, "\n");
   fprintf(stdout, BOLO_VERSION_STRING);
   fprintf(stdout, "\nGame start time: %sMap Name: %s - Locked: ", asctime(gmtime(&sTimeStart)), sMapName);
-  if (serverNetGetIsLocked() == TRUE) {
+  if (serverNetGetIsLocked() == true) {
     fprintf(stdout, "Yes");
   } else {
     fprintf(stdout, "No");
@@ -1942,7 +1942,7 @@ void serverCoreInformation() {
     
     count = 0;
     while (count < MAX_TANKS) {
-      if (playersIsInUse(&splrs, count) == TRUE) {
+      if (playersIsInUse(&splrs, count) == true) {
         playersGetPlayerName(&splrs, count, name);
         playersGetPlayerLocation(&splrs, count, location);
         fprintf(stderr, "%s@%s - (P:%d B: %d)\n", name, location, pillsGetNumberOwnedByPlayer(&pb, count), basesGetNumberOwnedByPlayer(&bs, count));

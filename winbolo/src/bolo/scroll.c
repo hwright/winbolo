@@ -33,13 +33,13 @@
 #include "scroll.h"
 
 /* Is it auto scrolling or not */
-bool autoScroll = FALSE;
+bool autoScroll = false;
 BYTE scrollX = 0;
 BYTE scrollY = 0;
-BYTE xPositive = TRUE;
-BYTE yPositive = TRUE;
-bool autoScrollOverRide = FALSE;
-bool mods = FALSE;
+BYTE xPositive = true;
+BYTE yPositive = true;
+bool autoScrollOverRide = false;
+bool mods = false;
 
 
 /*********************************************************
@@ -55,11 +55,11 @@ bool mods = FALSE;
 *********************************************************/
 void scrollSetScrollType(bool isAuto) {
   autoScroll = isAuto;
-  autoScrollOverRide = FALSE;
-  if (isAuto == FALSE) {
+  autoScrollOverRide = false;
+  if (isAuto == false) {
     scrollX = 0;
     scrollY = 0;
-    mods = FALSE;
+    mods = false;
   } 
 }
 
@@ -80,7 +80,7 @@ void scrollSetScrollType(bool isAuto) {
 void scrollCenterObject(BYTE *xValue, BYTE *yValue, BYTE objectX, BYTE objectY) {
   *xValue = objectX - SCROLL_CENTER;
   *yValue = objectY - SCROLL_CENTER;
-  autoScrollOverRide = FALSE;
+  autoScrollOverRide = false;
 }
 
 /*********************************************************
@@ -112,12 +112,12 @@ void scrollCenterObject(BYTE *xValue, BYTE *yValue, BYTE objectX, BYTE objectY) 
 bool scrollUpdate(pillboxes *pb, BYTE *xValue, BYTE *yValue, BYTE objectX, BYTE objectY, bool isTank, BYTE gunsightX, BYTE gunsightY, BYTE speed, BYTE armour, TURNTYPE angle, bool manual) {
   bool returnValue; /* Value to return */
   
-  returnValue = TRUE;
-  if (screenTankIsDead() == TRUE) {
-    returnValue = FALSE;
-  } else if (manual == TRUE) {
+  returnValue = true;
+  if (screenTankIsDead() == true) {
+    returnValue = false;
+  } else if (manual == true) {
     returnValue = scrollManual(xValue, yValue, objectX, objectY, angle);
-  } else if (autoScroll == TRUE && isTank == TRUE && armour <= TANK_FULL_ARMOUR && autoScrollOverRide == FALSE) {
+  } else if (autoScroll == true && isTank == true && armour <= TANK_FULL_ARMOUR && autoScrollOverRide == false) {
     /* Calculate using the autoscroll function */
     returnValue = scrollAutoScroll(pb, xValue, yValue, objectX, objectY, gunsightX, gunsightY, speed, angle);
   } else {
@@ -146,21 +146,21 @@ bool scrollUpdate(pillboxes *pb, BYTE *xValue, BYTE *yValue, BYTE objectX, BYTE 
 bool scrollCheck(BYTE xValue, BYTE yValue, BYTE objectX, BYTE objectY) {
   bool returnValue; /* Used internally */
     
-  returnValue = TRUE;
+  returnValue = true;
   /* Check to see if moving towards screen edge */
   if ((objectX - xValue) > MAIN_SCREEN_SIZE_X) {
     xValue++;
-    returnValue = FALSE;
+    returnValue = false;
   }
   if ((objectX-1) < xValue) {
     xValue--;
-    returnValue = FALSE;
+    returnValue = false;
   }
   if ((objectY - yValue) > MAIN_SCREEN_SIZE_Y) {
-    returnValue = FALSE;
+    returnValue = false;
   }
   if (objectY <= yValue) {
-   returnValue = FALSE;
+   returnValue = false;
   }
 
   return returnValue;
@@ -190,46 +190,46 @@ bool scrollManual(BYTE *xValue, BYTE *yValue, BYTE objectX, BYTE objectY, TURNTY
   bool upPos;
   bool downPos;
 
-  leftPos = FALSE;
-  rightPos = FALSE;
-  upPos = FALSE;
-  downPos = FALSE;
-  returnValue = FALSE;
-  autoScrollOverRide = TRUE;
+  leftPos = false;
+  rightPos = false;
+  upPos = false;
+  downPos = false;
+  returnValue = false;
+  autoScrollOverRide = true;
 
   if (angle >= BRADIANS_SSWEST && angle <= BRADIANS_NNWEST) {
-    rightPos = TRUE;
+    rightPos = true;
   }
   if (angle >= BRADIANS_NNEAST && angle <= BRADIANS_SSEAST) {
-    leftPos = TRUE;
+    leftPos = true;
   }
   if (angle >= BRADIANS_SEASTE  && angle <= BRADIANS_SWESTW) {
-    downPos = TRUE;
+    downPos = true;
   }
   if (angle <= BRADIANS_NEASTE || angle >= BRADIANS_NWESTW) {
-    upPos = TRUE;
+    upPos = true;
   }
 
   
   /* Check to see if moving towards screen edge */
-  if ((objectX - (*xValue)) > MAIN_SCREEN_SIZE_X && leftPos == TRUE) {
+  if ((objectX - (*xValue)) > MAIN_SCREEN_SIZE_X && leftPos == true) {
     (*xValue)++;
-    returnValue = TRUE;
+    returnValue = true;
   }
-  if ((objectX-2) < (*xValue) && rightPos == FALSE) {
+  if ((objectX-2) < (*xValue) && rightPos == false) {
     (*xValue)--;
-    returnValue = TRUE;
+    returnValue = true;
   }
-  if ((objectY - (*yValue)) > MAIN_SCREEN_SIZE_Y && downPos == TRUE) {
+  if ((objectY - (*yValue)) > MAIN_SCREEN_SIZE_Y && downPos == true) {
     (*yValue)++;
-    returnValue = TRUE;
+    returnValue = true;
   }
-  if (objectY <= (*yValue) && upPos == TRUE) {
+  if (objectY <= (*yValue) && upPos == true) {
    (*yValue)--;
-   returnValue = TRUE;
+   returnValue = true;
   }
-  if (mods == TRUE && returnValue == TRUE) {
-    mods = FALSE;
+  if (mods == true && returnValue == true) {
+    mods = false;
   }
 
   return returnValue;
@@ -260,47 +260,47 @@ bool scrollNoAutoScroll(BYTE *xValue, BYTE *yValue, BYTE objectX, BYTE objectY, 
   bool upPos;
   bool downPos;
 
-  leftPos = FALSE;
-  rightPos = FALSE;
-  upPos = FALSE;
-  downPos = FALSE;
-  returnValue = FALSE;
+  leftPos = false;
+  rightPos = false;
+  upPos = false;
+  downPos = false;
+  returnValue = false;
 
   if (angle >= BRADIANS_SSWEST && angle <= BRADIANS_NNWEST) {
-    rightPos = TRUE;
+    rightPos = true;
   }
   if (angle >= BRADIANS_NNEAST && angle <= BRADIANS_SSEAST) {
-    leftPos = TRUE;
+    leftPos = true;
   }
   if (angle >= BRADIANS_SEASTE  && angle <= BRADIANS_SWESTW) {
-    downPos = TRUE;
+    downPos = true;
   }
   if (angle <= BRADIANS_NEASTE || angle >= BRADIANS_NWESTW) {
-    upPos = TRUE;
+    upPos = true;
   }
 
   /* Check to see if moving towards screen edge */
-  if ((objectX - (*xValue)) >= (MAIN_SCREEN_SIZE_X-NO_SCROLL_EDGE) && leftPos == TRUE) {
+  if ((objectX - (*xValue)) >= (MAIN_SCREEN_SIZE_X-NO_SCROLL_EDGE) && leftPos == true) {
     (*xValue)++;
-    returnValue = TRUE;
+    returnValue = true;
   }
-  if ((objectX-1) < (*xValue)+NO_SCROLL_EDGE && rightPos == TRUE) {
+  if ((objectX-1) < (*xValue)+NO_SCROLL_EDGE && rightPos == true) {
     (*xValue)--;
-    returnValue = TRUE;
+    returnValue = true;
   }
-  if ((objectY - (*yValue)) >= (MAIN_SCREEN_SIZE_Y-NO_SCROLL_EDGE) && downPos == TRUE) {
+  if ((objectY - (*yValue)) >= (MAIN_SCREEN_SIZE_Y-NO_SCROLL_EDGE) && downPos == true) {
     (*yValue)++;
-    returnValue = TRUE;
+    returnValue = true;
   }
-  if (objectY <= (*yValue)+NO_SCROLL_EDGE && upPos == TRUE) {
+  if (objectY <= (*yValue)+NO_SCROLL_EDGE && upPos == true) {
    (*yValue)--;
-   returnValue = TRUE;
+   returnValue = true;
   }
-  if (mods == TRUE && returnValue == TRUE) {
-    mods = FALSE;
+  if (mods == true && returnValue == true) {
+    mods = false;
   }
-  if (returnValue == TRUE) {
-    autoScrollOverRide = FALSE;
+  if (returnValue == true) {
+    autoScrollOverRide = false;
   }
 
   return returnValue;
@@ -331,7 +331,7 @@ bool scrollNoAutoScroll(BYTE *xValue, BYTE *yValue, BYTE objectX, BYTE objectY, 
 bool scrollAutoScroll(pillboxes *pb, BYTE *xValue, BYTE *yValue, BYTE objectX, BYTE objectY, BYTE gunsightX, BYTE gunsightY, BYTE speed, TURNTYPE angle) {
   bool returnValue;        /* Value to return */
 
-  returnValue = FALSE;
+  returnValue = false;
 
 
   if (scrollX == 0 && scrollY == 0) {
@@ -341,16 +341,16 @@ bool scrollAutoScroll(pillboxes *pb, BYTE *xValue, BYTE *yValue, BYTE objectX, B
       if (scrollX == 0) {
         scrollX = 1;
       }
-      xPositive = TRUE;
-      mods = TRUE;
+      xPositive = true;
+      mods = true;
     }
     if ((gunsightX) < (*xValue)) {
       scrollX = (BYTE) (speed / SCROLL_DIVIDE);
       if (scrollX == 0) {
         scrollX = 1;
       }
-      xPositive = FALSE;
-      mods = TRUE;
+      xPositive = false;
+      mods = true;
     }
     if (((gunsightY-1)- (*yValue)) >= (MAIN_SCREEN_SIZE_Y)) {
       scrollY = (BYTE) (speed / SCROLL_DIVIDE);
@@ -358,8 +358,8 @@ bool scrollAutoScroll(pillboxes *pb, BYTE *xValue, BYTE *yValue, BYTE objectX, B
         scrollY = 1;
       }
 
-      yPositive = TRUE;
-      mods = TRUE;
+      yPositive = true;
+      mods = true;
     }
     if (gunsightY < (*yValue)) {
       scrollY = (BYTE) (speed / SCROLL_DIVIDE);
@@ -367,16 +367,16 @@ bool scrollAutoScroll(pillboxes *pb, BYTE *xValue, BYTE *yValue, BYTE objectX, B
         scrollY = 1;
       }
 
-      yPositive = FALSE;
-      mods = TRUE;
+      yPositive = false;
+      mods = true;
     } 
   }
 
 
   if (scrollX > 0) {
-    returnValue = TRUE;
+    returnValue = true;
     scrollX--;
-    if (xPositive == TRUE) {
+    if (xPositive == true) {
       (*xValue)++;
     } else {
       (*xValue)--;
@@ -384,15 +384,15 @@ bool scrollAutoScroll(pillboxes *pb, BYTE *xValue, BYTE *yValue, BYTE objectX, B
   }
   if (scrollY > 0) {
     scrollY--;
-    returnValue = TRUE;
-    if (yPositive == TRUE) {
+    returnValue = true;
+    if (yPositive == true) {
       (*yValue)++;
     } else {
       (*yValue)--;
     }
   }
   if (scrollX == 0 && scrollY == 0) {
-    mods = FALSE;
+    mods = false;
   }
 
   return returnValue;

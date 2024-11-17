@@ -32,14 +32,6 @@ typedef float SPEEDTYPE;
 typedef unsigned char u_char;
 #endif
 
-/* Boolean type */
-#undef TRUE
-#define TRUE 1
-#undef FALSE
-#define FALSE 0
-typedef BYTE bool;
-/*typedef BYTE Bool; */
-
 
 /* The world co-ordinate for tank - It is a 16 bit number*/
 /* Top 8 bits (or byte) represent position on the map */

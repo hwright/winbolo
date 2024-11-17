@@ -54,21 +54,21 @@ HANDLE hClientMutexHandle = NULL;
 bool clientMutexCreate(void) {
   bool returnValue; /* Value to return */
 
-  returnValue = TRUE;
+  returnValue = true;
 #ifdef _WIN32
   sprintf(name, "%s%d", DIALOG_BOX_TITLE, GetTickCount());
-  hClientMutexHandle = CreateMutex(NULL, FALSE, name);
+  hClientMutexHandle = CreateMutex(NULL, false, name);
   if (hClientMutexHandle == NULL) {
     DWORD d = GetLastError();
     if (d == ERROR_ALREADY_EXISTS) {
       d= 1;
     }
-    returnValue = FALSE;
+    returnValue = false;
   }
 #else
   hClientMutexHandle = SDL_CreateMutex();
   if (hClientMutexHandle == NULL) {
-    returnValue = FALSE;
+    returnValue = false;
   }
 #endif
 

@@ -124,7 +124,7 @@ void netMNTAdd(netMntContext *nmtc, BYTE event, BYTE itemNum, BYTE owner, BYTE o
     New(add1);
     add1->item = utilPutNibble(event, itemNum);
     add1->owner = owner;
-    if (threadsGetContext() == TRUE) {
+    if (threadsGetContext() == true) {
       add1->id = (*nmtc)->netMntUpto;
       (*nmtc)->netMntUpto++;
       if ((*nmtc)->netMntUpto == 250) {
@@ -211,25 +211,25 @@ int netMNTMake(netMntContext *nmtc, BYTE *buff) {
 *********************************************************/
 bool netMNTExtractServer(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs, BYTE event, BYTE itemNum, BYTE owner, BYTE opt1, BYTE opt2) {
   BYTE pos; /* Map position */
-  bool returnValue = TRUE; /* Value to return */
+  bool returnValue = true; /* Value to return */
   tank *tk;
   BYTE amount;
   switch (event) {
   case NMNT_PILLMIGRATE:
-    pillsSetPillOwner(pb, (BYTE) (itemNum+1), owner, TRUE);
+    pillsSetPillOwner(pb, (BYTE) (itemNum+1), owner, true);
     break;
   case NMNT_KILLME:
     /* WinBolo.net Stuff */
     if (opt1 != NEUTRAL) {
-      winbolonetAddEvent(WINBOLO_NET_EVENT_TANK_KILL, TRUE, opt1, owner);
+      winbolonetAddEvent(WINBOLO_NET_EVENT_TANK_KILL, true, opt1, owner);
       logAddEvent(log_KillPlayer, owner, opt1, 0, 0, 0, NULL);
     } else {
       logAddEvent(log_PlayerDied, owner, 0, 0, 0, 0, NULL);
     }
     tk = screenGetTankFromPlayer(owner);
     tankDropPills(tk, mp, pb, bs);
-    tankSetWorld(tk, 0, 0, 0, FALSE);
-    tankSetOnBoat(tk, TRUE);
+    tankSetWorld(tk, 0, 0, 0, false);
+    tankSetOnBoat(tk, true);
     tankResetHitCount(tk);
     break;
   case NMNT_MINEPLACE:
@@ -240,9 +240,9 @@ bool netMNTExtractServer(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
     if (pos < MINE_START && amount >= 1 ) {
       amount--;
       tankSetMines(tk, amount); 
-      mapSetPos(mp, opt1, opt2, (BYTE) (pos + MINE_SUBTRACT), FALSE, FALSE);
+      mapSetPos(mp, opt1, opt2, (BYTE) (pos + MINE_SUBTRACT), false, false);
     } else {
-      returnValue = FALSE;
+      returnValue = false;
     }
     logAddEvent(log_SoundMineLay, opt1, opt2, 0, 0, 0, NULL);
     break;
@@ -253,7 +253,7 @@ bool netMNTExtractServer(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
     break;
   case NMNT_MANACTION:
     serverCoreLgmOperation(owner, opt1, opt2, itemNum);
-    returnValue = FALSE;
+    returnValue = false;
     break;
   case NMNT_RUBBLE:
     rubbleAddItem(screenGetRubble(), opt1, opt2);
@@ -262,7 +262,7 @@ bool netMNTExtractServer(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
     swampAddItem(screenGetSwamp(), opt1, opt2);
     break;
   case NMNT_BASEMIGRATE:
-    basesSetOwner(bs, opt1, opt2, owner, TRUE);
+    basesSetOwner(bs, opt1, opt2, owner, true);
     break;
   case NMNT_BASERELOAD:
     basesServerRefuel(bs, itemNum, owner);
@@ -323,10 +323,10 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
   bool needCalc; /* Screen needs a recalc */
   BYTE pos;      /* Map position */
 
-  needCalc = FALSE;
+  needCalc = false;
   switch (event) {
   case NMNT_PILLMIGRATE:
-    pillsSetPillOwner(pb, (BYTE) (itemNum+1), owner, TRUE);
+    pillsSetPillOwner(pb, (BYTE) (itemNum+1), owner, true);
     break;
   case NMNT_KILLME:
     {
@@ -350,21 +350,21 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
   case NMNT_MINEPLACE:
     pos = mapGetPos(mp, opt1, opt2);
     if (pos < MINE_START) {
-      mapSetPos(mp, opt1, opt2, (BYTE) (pos + MINE_SUBTRACT), FALSE, FALSE);
+      mapSetPos(mp, opt1, opt2, (BYTE) (pos + MINE_SUBTRACT), false, false);
     }
-    if (playersIsAllie(screenGetPlayers(), playersGetSelf(screenGetPlayers()), owner) == TRUE) {
-      needCalc = TRUE;
+    if (playersIsAllie(screenGetPlayers(), playersGetSelf(screenGetPlayers()), owner) == true) {
+      needCalc = true;
       minesAddItem(screenGetMines(), opt1, opt2);
     }
     /* Play the sound */
     soundDist(manLayingMineNear, opt1, opt2);
     break;
   case NMNT_MINETANKPLACE:
-    needCalc = TRUE;
+    needCalc = true;
     minesAddItem(screenGetMines(), opt1, opt2);
     pos = mapGetPos(mp, opt1, opt2);
     if (pos < MINE_START) {
-      mapSetPos(mp, opt1, opt2, (BYTE) (pos + MINE_SUBTRACT), FALSE, FALSE);
+      mapSetPos(mp, opt1, opt2, (BYTE) (pos + MINE_SUBTRACT), false, false);
     }
     if (owner != playersGetSelf(screenGetPlayers())) {
       /* Play the sound */
@@ -393,24 +393,24 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
     swampAddItem(screenGetSwamp(), opt1, opt2);
     break;
   case NMNT_BASEMIGRATE:
-    basesSetOwner(bs, opt1, opt2, owner, TRUE);
+    basesSetOwner(bs, opt1, opt2, owner, true);
     break;
   case NMNT_BASERELOAD:
     basesServerRefuel(bs, itemNum, owner);
     break;
   case NMNT_BUILDBOAT:
-    mapSetPos(mp, opt1, opt2, BOAT, FALSE, FALSE);
-    needCalc = TRUE;
+    mapSetPos(mp, opt1, opt2, BOAT, false, false);
+    needCalc = true;
     break;
   case NMNT_BUILDBUILDING:
-    mapSetPos(mp, opt1, opt2, BUILDING, FALSE, FALSE);
+    mapSetPos(mp, opt1, opt2, BUILDING, false, false);
     soundDist(manBuildingNear, opt1, opt2);
     buildingRemovePos(screenGetBuildings(), opt1, opt2);
-    needCalc = TRUE;
+    needCalc = true;
     break;
   case NMNT_DROPBOAT:
     if (mapGetPos(mp, opt1, opt2) == BOAT) {
-      mapSetPos(mp, opt1, opt2, RIVER, FALSE, FALSE);
+      mapSetPos(mp, opt1, opt2, RIVER, false, false);
     }
     break;
   case NMNT_RUNOVERBOAT:
@@ -433,7 +433,7 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
 *Creation Date: 19/3/99
 *Last Modified:  8/1/00
 *PURPOSE:
-* Extracts the netNMT data. Returns FALSE upon an error
+* Extracts the netNMT data. Returns false upon an error
 *
 *ARGUMENTS:
 *  nmtc    - Pointer to the netMntContext object
@@ -460,11 +460,11 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs, tank 
   bool isServer;    /* Are we server */
   bool errOccurred; /* Has an packet avert error occurred? */
 
-  errOccurred = FALSE;
+  errOccurred = false;
   count = 0;
-  needCalc = FALSE;
+  needCalc = false;
   isServer = threadsGetContext();
-  returnValue = TRUE;
+  returnValue = true;
 
   while (count < dataLen) {
     utilGetNibbles(buff[count],&event, &itemNum);
@@ -479,30 +479,30 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs, tank 
     opt2 = buff[count];
     count++;
     /* Process the occurence */
-    if (isServer == TRUE) {
-      if (netMNTExtractServer(nmtc, mp, pb, bs, event, itemNum, owner, opt1, opt2) == TRUE) {
+    if (isServer == true) {
+      if (netMNTExtractServer(nmtc, mp, pb, bs, event, itemNum, owner, opt1, opt2) == true) {
         netMNTAdd(nmtc, event, itemNum, owner, opt1, opt2);
       }
     } else {
       testCalc = netMNTExtractClient(nmtc, mp, pb, bs, tnk, event, itemNum, owner, opt1, opt2);
-      if (needCalc == FALSE) {
+      if (needCalc == false) {
         needCalc = testCalc;
       }
     }
 
   }
   /* Recalc Screen if required */
-  if (needCalc == TRUE) {
+  if (needCalc == true) {
     screenReCalc();
   }
 
-  if (returnValue == FALSE) {
+  if (returnValue == false) {
     messageAdd(networkMessage, (char *) "\0", (char *) "mnt-no");
   }
-  if (errOccurred == TRUE) {
+  if (errOccurred == true) {
     messageAdd(networkMessage, (char *) "\0", (char *) "nmt-a");
   }
-  return TRUE;
+  return true;
 //  return returnValue;
 }
 
