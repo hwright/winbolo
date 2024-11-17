@@ -835,7 +835,7 @@ return 0;
 #endif
 
   // Comment out to quit straight away
-  processKeys(isQuiet);
+  processKeys();
   serverNetSendQuitMessage();
 #ifdef _WIN32  
   timeKillEvent(serverTimerGameID);
