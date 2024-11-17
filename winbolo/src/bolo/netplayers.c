@@ -78,9 +78,7 @@ void netPlayersDestroy(netPlayers *value) {
   BYTE count;
 
   for (count=0;count<MAX_TANKS;count++) {
-    if ((*value).udpp != NULL) {
-      udpPacketsDestroy(&(*value).udpp[count]);
-    }
+    udpPacketsDestroy(&(*value).udpp[count]);
     (*value).udpp[count] = NULL;
   }
   
