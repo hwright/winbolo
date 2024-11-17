@@ -41,7 +41,7 @@
 
   extern char messageBody[16*1024];
   extern char messageTitle[256];
-  extern bool hasMessage;
+  extern uint8_t numMessages;
 /*  typedef int DWORD; */
 #endif
 
@@ -1935,7 +1935,7 @@ void netLostConnection() {
 #else
   strcpy(messageTitle, DIALOG_BOX_TITLE);
   strcpy(messageBody, langGetText(NETERR_LOSTCONNECTION));
-  hasMessage = TRUE;
+  numMessages = 1;
 #endif
   
   netDestroy();
