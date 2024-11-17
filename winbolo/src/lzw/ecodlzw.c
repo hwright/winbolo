@@ -52,7 +52,7 @@ static inline void conwrite_byte(char c) {
   compressLen++;
 }
 
-void conwrite_array(char *c, int numBytes) {
+void conwrite_array(unsigned char *c, int numBytes) {
   int count = 0;
   while (count < numBytes) {
     compressDest[compressLen] = c[count];
