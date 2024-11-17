@@ -692,7 +692,7 @@ void serverCoreSetPosData(BYTE *buff) {
   BYTE my;
   BYTE px;        /* Pixel X and Y position */
   BYTE py;
-  bool onBoat;    /* Is player on boat */
+  BYTE onBoat;    /* Is player on boat */
   BYTE lgmMX;     /* Lgm Data */
   BYTE lgmMY;
   BYTE lgmPX;
@@ -739,7 +739,7 @@ void serverCoreSetPosData(BYTE *buff) {
 
 
     if (wx == 0 && wy == 0) {
-      onBoat = TRUE;
+      onBoat = 1;
     }
 
     /* Update Players */
@@ -754,10 +754,10 @@ void serverCoreSetPosData(BYTE *buff) {
         }
       }
 	  if(tankGetDeathWait(&tk[playerNum])==0){
-	    tankSetLocationData(&tk[playerNum], wx, wy, ang, st, onBoat);
+	    tankSetLocationData(&tk[playerNum], wx, wy, ang, st, onBoat != 0);
 	  }
     }
-    playersUpdate(&splrs, playerNum, mx, my, px, py, frame, onBoat, lgmMX, lgmMY, lgmPX, lgmPY, lgmFrame);
+    playersUpdate(&splrs, playerNum, mx, my, px, py, frame, onBoat != 0, lgmMX, lgmMY, lgmPX, lgmPY, lgmFrame);
   }
 }
 
