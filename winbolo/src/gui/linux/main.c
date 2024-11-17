@@ -1187,7 +1187,7 @@ bool gameFrontLoadTutorial() {
   bool returnValue; /* Value to return */
   BYTE buff[6000] = TUT_MAP;
 
-  returnValue = screenLoadCompressedMap(buff, 4182, "Inbuilt Tutorial", gameStrictTournament, FALSE, 0, -1, langGetText(STR_DLGGAMESETUP_DEFAULTNAME), FALSE);
+  returnValue = FALSE; //screenLoadCompressedMap(buff, 4182, "Inbuilt Tutorial", gameStrictTournament, FALSE, 0, -1, langGetText(STR_DLGGAMESETUP_DEFAULTNAME), FALSE);
   if (returnValue == TRUE) {
     netSetup(netSingle, gameFrontMyUdp, gameFrontUdpAddress, gameFrontTargetUdp, password, FALSE, gameFrontTrackerAddr, gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin, FALSE, "");
     startTimers();
@@ -1415,7 +1415,7 @@ bool startSinglePlayer() {
       screenLoadMap(fileName, gametype, hiddenMines, startDelay, timeLen, gameFrontName, FALSE);
     } else {
        BYTE emap[6000] = E_MAP;
-       screenLoadCompressedMap(emap, 5097, "Everard Island", gametype, hiddenMines, startDelay, timeLen, gameFrontName, FALSE); 
+       //screenLoadCompressedMap(emap, 5097, "Everard Island", gametype, hiddenMines, startDelay, timeLen, gameFrontName, FALSE);
     }
   }
   if (returnValue == TRUE) {

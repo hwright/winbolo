@@ -1618,7 +1618,7 @@ int basesHalfTickCalulator(int typeSelector) {
 			return (int) floor(tempShell);
 		}
 	  } else {
-	    return BASE_REFUEL_SHELLS;
+	    return (int) BASE_REFUEL_SHELLS;
 	  }
 	  break;
 	case BASES_HALFTICK_TYPE_MINE: 
@@ -1632,7 +1632,7 @@ int basesHalfTickCalulator(int typeSelector) {
 			return (int) floor(tempMine);
 		}
 	  } else {
-	    return BASE_REFUEL_MINES;
+	    return (int) BASE_REFUEL_MINES;
 	  }
 	  break;
 	case BASES_HALFTICK_TYPE_ARMOUR: 
