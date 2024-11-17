@@ -570,20 +570,20 @@ char messageBody2[16*1024];
 char messageTitle2[256];
 char messageBody3[16*1024];
 char messageTitle3[256];
-bool hasMessage = FALSE;
+uint8_t numMessages = 0;
 
 gint windowMessageCheck(gpointer data) {
-  if (hasMessage == TRUE) {
-    hasMessage = FALSE;
+  if (numMessages == 1) {
+    numMessages = 0;
     gdk_threads_enter();
     MessageBox(messageBody, messageTitle);
     gdk_threads_leave();
     oldTick = timeGetTime();
     ttick = oldTick;
     doingTutorial = FALSE;
-  } else if (hasMessage > 1) {
-    BYTE temp = hasMessage;
-    hasMessage = FALSE;
+  } else if (numMessages > 1) {
+    BYTE temp = numMessages;
+    numMessages = 0;
     /* Process each message until FALSE Max messages is 3*/
     gdk_threads_enter();
     switch (temp) {
@@ -1770,7 +1770,7 @@ void frontEndGameOver(void) {
   SDL_RemoveTimer(timerFrameID);
   strcpy(messageTitle, DIALOG_BOX_TITLE);
   strcpy(messageBody, langGetText(STR_WBTIMELIMIT_END));
-  hasMessage = TRUE;
+  numMessages = 1;
 }
 
 /*********************************************************
@@ -2404,7 +2404,7 @@ bool frontEndTutorial(BYTE pos) {
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL01));
-        hasMessage = TRUE;
+        numMessages = 1;
         returnValue = TRUE;
         upTo++; 
      }
@@ -2415,7 +2415,7 @@ bool frontEndTutorial(BYTE pos) {
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL02));
-        hasMessage = TRUE;
+        numMessages = 1;
         returnValue = TRUE;
         upTo++;
       }
@@ -2426,7 +2426,7 @@ bool frontEndTutorial(BYTE pos) {
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL03));
-        hasMessage = TRUE;
+        numMessages = 1;
         returnValue = TRUE;
         upTo++;
      }
@@ -2437,7 +2437,7 @@ bool frontEndTutorial(BYTE pos) {
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL04));
-        hasMessage = TRUE;
+        numMessages = 1;
         returnValue = TRUE;
         upTo++;
       }
@@ -2448,7 +2448,7 @@ bool frontEndTutorial(BYTE pos) {
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL05));
-        hasMessage = TRUE;
+        numMessages = 1;
         returnValue = TRUE;
         upTo++;
       }
@@ -2459,7 +2459,7 @@ bool frontEndTutorial(BYTE pos) {
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL06));
-        hasMessage = TRUE;
+        numMessages = 1;
         returnValue = TRUE;
         upTo++;
        }
@@ -2470,7 +2470,7 @@ bool frontEndTutorial(BYTE pos) {
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL07));
-        hasMessage = TRUE;
+        numMessages = 1;
         returnValue = TRUE;
         upTo++;
       }
@@ -2483,7 +2483,7 @@ bool frontEndTutorial(BYTE pos) {
         strcpy(messageBody, langGetText(STR_TUTORIAL09));
         strcpy(messageTitle2, DIALOG_BOX_TITLE);
         strcpy(messageBody2, langGetText(STR_TUTORIAL08));
-	hasMessage = 2;
+	    numMessages = 2;
         returnValue = TRUE;
         upTo++;
 	upTo++;
@@ -2500,7 +2500,7 @@ bool frontEndTutorial(BYTE pos) {
         strcpy(messageBody, langGetText(STR_TUTORIAL11));
         strcpy(messageTitle2, DIALOG_BOX_TITLE);
         strcpy(messageBody2, langGetText(STR_TUTORIAL10));
-	hasMessage = 2;
+	    numMessages = 2;
         returnValue = TRUE;
         upTo++;
 	upTo++;
@@ -2515,7 +2515,7 @@ bool frontEndTutorial(BYTE pos) {
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL12));
-        hasMessage = TRUE;
+        numMessages = 1;
         returnValue = TRUE;
         upTo++;
      }
@@ -2528,7 +2528,7 @@ bool frontEndTutorial(BYTE pos) {
         strcpy(messageBody, langGetText(STR_TUTORIAL14));
         strcpy(messageTitle2, DIALOG_BOX_TITLE);
         strcpy(messageBody2, langGetText(STR_TUTORIAL13));
-	hasMessage = 2;
+	    numMessages = 2;
         returnValue = TRUE;
         upTo++;
 	upTo++;
@@ -2543,7 +2543,7 @@ bool frontEndTutorial(BYTE pos) {
         clientMutexRelease();
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody, langGetText(STR_TUTORIAL15));
-        hasMessage = TRUE;
+        numMessages = 1;
         returnValue = TRUE;
         upTo++;
       }
@@ -2554,7 +2554,7 @@ bool frontEndTutorial(BYTE pos) {
 	clientMutexRelease();
 	strcpy(messageTitle, DIALOG_BOX_TITLE);
 	strcpy(messageBody, langGetText(STR_TUTORIAL16));
-	hasMessage = TRUE;
+	numMessages = 1;
 	returnValue = TRUE;
 	upTo++;
       }
@@ -2565,7 +2565,7 @@ bool frontEndTutorial(BYTE pos) {
 	clientMutexRelease();
 	strcpy(messageTitle, DIALOG_BOX_TITLE);
 	strcpy(messageBody, langGetText(STR_TUTORIAL17));
-	hasMessage = TRUE;
+	numMessages = 1;
 	returnValue = TRUE;
 	upTo++;
       }
@@ -2578,7 +2578,7 @@ bool frontEndTutorial(BYTE pos) {
         strcpy(messageBody, langGetText(STR_TUTORIAL19));
         strcpy(messageTitle2, DIALOG_BOX_TITLE);
         strcpy(messageBody2, langGetText(STR_TUTORIAL18));
-	hasMessage = 2;
+	    numMessages = 2;
         returnValue = TRUE;
         upTo++;
 	upTo++;
@@ -2595,7 +2595,7 @@ bool frontEndTutorial(BYTE pos) {
         strcpy(messageBody, langGetText(STR_TUTORIAL21));
         strcpy(messageTitle2, DIALOG_BOX_TITLE);
         strcpy(messageBody2, langGetText(STR_TUTORIAL20));
-	hasMessage = 2;
+	    numMessages = 2;
         returnValue = TRUE;
         upTo++;
 	upTo++;
@@ -2614,7 +2614,7 @@ bool frontEndTutorial(BYTE pos) {
         strcpy(messageTitle, DIALOG_BOX_TITLE);
         strcpy(messageBody2, langGetText(STR_TUTORIAL23));
         strcpy(messageBody, langGetText(STR_TUTORIAL24));
-	hasMessage = 3;
+	    numMessages = 3;
         returnValue = TRUE;
         upTo++;
 	upTo++;
@@ -2632,7 +2632,7 @@ bool frontEndTutorial(BYTE pos) {
 	clientMutexRelease();
 	strcpy(messageTitle, DIALOG_BOX_TITLE);
 	strcpy(messageBody, langGetText(STR_TUTORIAL25));
-	hasMessage = TRUE;
+	numMessages = 1;
 	returnValue = TRUE;
 	upTo++;
         frameRateTime = 0;
