@@ -1506,7 +1506,7 @@ void playersGetLgmDetails(players *plrs, BYTE playerNumber, BYTE *mx, BYTE *my ,
 *********************************************************/
 bool playersCheckCollision(players *plrs, BYTE playerNum, WORLD xValue, WORLD yValue, int *leftPos, int *downPos) {
   bool returnValue; /* Value to return */
-  bool count;       /* Looping Variable */
+  BYTE count;       /* Looping Variable */
   WORLD conv;   /* Used for conversions */
   WORLD mx;     /* Tank map offsets */
   WORLD my;
@@ -2161,7 +2161,7 @@ void playerNeedUpdateDone(players *plrs) {
 *********************************************************/
 bool playersCheckSameSquare(players *plrs, BYTE playerNum, BYTE xValue, BYTE yValue) {
   bool returnValue; /* Value to return */
-  bool count;       /* Looping Variable */
+  BYTE count;       /* Looping Variable */
   WORLD conv;   /* Used for conversions */
   WORLD mx;     /* Tank map offsets */
   WORLD my;
