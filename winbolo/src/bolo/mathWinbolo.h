@@ -16,7 +16,6 @@
  * GNU General Public License for more details.
  */
 
-
 /*
  * Filename:      mathWinbolo.h
  * Author:        Chris Lesnieski
@@ -29,59 +28,53 @@
 #ifndef MATHWINBOLO_H
 #define MATHWINBOLO_H
 
+#include "types.h"
+
 struct mathVectorBody {
-	TURNTYPE  angle;
-	TURNTYPE  angle_prev;
-	SPEEDTYPE speedX;
-	SPEEDTYPE speedY;
-	SPEEDTYPE speedX_prev;
-	SPEEDTYPE speedY_prev;
+  TURNTYPE angle;
+  TURNTYPE angle_prev;
+  SPEEDTYPE speedX;
+  SPEEDTYPE speedY;
+  SPEEDTYPE speedX_prev;
+  SPEEDTYPE speedY_prev;
 };
 
-
-
-
 /*
- * TODO: add a parameter that let's someone specify the number of places they want after the decimal.
+ * TODO: add a parameter that let's someone specify the number of places they
+ * want after the decimal.
  */
 float mathConvertRadianToDegree(float);
-
 
 /*
  */
 float mathConvertDegreeToRadian(float);
 
-
 /*
- * Usually, this will be used when converting tank direction to some other sort of direction.
- * Tank direction is stored as binary radians (256 slices of a circle).
+ * Usually, this will be used when converting tank direction to some other sort
+ * of direction. Tank direction is stored as binary radians (256 slices of a
+ * circle).
  */
 int mathConvertBradianToDegree(float);
-
 
 /*
  * Is this shit even right?
  */
 float mathConvertDegreeToBradian(float);
 
-
 /*
  * Gets a radian when passed a bradian
  */
 float mathConvertBradianToRadian(float);
-
 
 /*
  * Gets a bradian when passed a radian
  */
 float mathConvertRadianToBradian(float);
 
-
 /*
  * Gets the X speed of the body in question.
  */
 SPEEDTYPE mathComponentXSpeed(SPEEDTYPE, TURNTYPE);
-
 
 /*
  * Gets the Y speed of the body in question.  Since WinBolo's Y direction is
@@ -90,30 +83,30 @@ SPEEDTYPE mathComponentXSpeed(SPEEDTYPE, TURNTYPE);
  */
 SPEEDTYPE mathComponentYSpeed(SPEEDTYPE, TURNTYPE);
 
-
 /*
  * This will return the component (X or Y) speed after a collision.
  * If you're looking for the Y component be sure to multiply by -1.
  * Returns a integer that will denote that component's speed.
  */
-SPEEDTYPE mathCollisionPostComponentSpeed(int massA, SPEEDTYPE speedA, int massB, SPEEDTYPE speedB);
-
+SPEEDTYPE mathCollisionPostComponentSpeed(int massA, SPEEDTYPE speedA,
+                                          int massB, SPEEDTYPE speedB);
 
 /*
  * This will return, in degrees, the direction of the body after a collision.
- * Please pass in the WinBolo Y-component so that the degrees returned is accurate.
+ * Please pass in the WinBolo Y-component so that the degrees returned is
+ * accurate.
  */
 int mathAngleTravelUsingComponents(float, float);
 
 /*
  * Gonna be lots of explanation for this one, I suspect...
  */
-void mathUpdateVectorBody(struct mathVectorBody*, SPEEDTYPE, WORLD, WORLD, WORLD, WORLD, TURNTYPE);
+void mathUpdateVectorBody(struct mathVectorBody*, SPEEDTYPE, WORLD, WORLD,
+                          WORLD, WORLD, TURNTYPE);
 
 /*
  * Returns the distance between two points based on WORLD coordinates.
  */
 float mathGetDistanceBetweenTwoPoints(WORLD x1, WORLD y1, WORLD x2, WORLD y2);
-
 
 #endif /* MATHWINBOLO_H */

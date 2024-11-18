@@ -14,20 +14,19 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          BoloSounds
-*Filename:      BoloSounds.h
-*Author:        John Morrison
-*Creation Date: 28/12/98
-*Last Modified: 28/12/98
-*Purpose:
-*  Provides Macro Defines for accessing the Sounds in the
-*  BoloSounds.dll File. 
-*
-* Notes: The DLL contains Resources all of type "WAV"
-* with String Identifiers as follows.
-*********************************************************/
+ *Name:          BoloSounds
+ *Filename:      BoloSounds.h
+ *Author:        John Morrison
+ *Creation Date: 28/12/98
+ *Last Modified: 28/12/98
+ *Purpose:
+ *  Provides Macro Defines for accessing the Sounds in the
+ *  BoloSounds.dll File.
+ *
+ * Notes: The DLL contains Resources all of type "WAV"
+ * with String Identifiers as follows.
+ *********************************************************/
 
 #ifndef _BOLOSOUNDS_H
 #define _BOLOSOUNDS_H
@@ -58,4 +57,3 @@
 #define IDW_TANK_SINKING_NEAR "tank_sinking_near.wav"
 
 #endif /* _BOLOSOUNDS_H */
-

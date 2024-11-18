@@ -14,47 +14,45 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Building
-*Filename:      building.h
-*Author:        John Morrison
-*Creation Date: 30/12/98
-*Last Modified: 04/10/03
-*Purpose:
-*  Responsable for tracking lifetime of buildings.
-*  buildings can be shot 5 times before being destroyed
-*********************************************************/
+ *Name:          Building
+ *Filename:      building.h
+ *Author:        John Morrison
+ *Creation Date: 30/12/98
+ *Last Modified: 04/10/03
+ *Purpose:
+ *  Responsable for tracking lifetime of buildings.
+ *  buildings can be shot 5 times before being destroyed
+ *********************************************************/
 
-#include "global.h"
 #include "building.h"
 
-/*********************************************************
-*NAME:          buildingCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 30/12/98
-*LAST MODIFIED: 30/12/98
-*PURPOSE:
-*  Sets up the building data structure
-*
-*ARGUMENTS:
-* bld - Pointer to the buildings object
-*********************************************************/
-void buildingCreate(building *bld) {
-  *bld = nullptr;
-}
+#include "global.h"
 
 /*********************************************************
-*NAME:          buildingDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 30/12/98
-*LAST MODIFIED: 30/12/98
-*PURPOSE:
-*  Destroys and frees memory for the building data structure
-*
-*ARGUMENTS:
-* bld - Pointer to the buildings object
-*********************************************************/
+ *NAME:          buildingCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 30/12/98
+ *LAST MODIFIED: 30/12/98
+ *PURPOSE:
+ *  Sets up the building data structure
+ *
+ *ARGUMENTS:
+ * bld - Pointer to the buildings object
+ *********************************************************/
+void buildingCreate(building *bld) { *bld = nullptr; }
+
+/*********************************************************
+ *NAME:          buildingDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 30/12/98
+ *LAST MODIFIED: 30/12/98
+ *PURPOSE:
+ *  Destroys and frees memory for the building data structure
+ *
+ *ARGUMENTS:
+ * bld - Pointer to the buildings object
+ *********************************************************/
 void buildingDestroy(building *bld) {
   building q;
 
@@ -66,20 +64,20 @@ void buildingDestroy(building *bld) {
 }
 
 /*********************************************************
-*NAME:          buildingeAddItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 30/12/98
-*LAST MODIFIED: 25/04/01
-*PURPOSE:
-*  Adds an item to the building data structure.
-*  If it already exists returns the terrain type of the
-*  item and decrements its lifetime.
-*
-*ARGUMENTS:
-*  bld   - Pointer to the buildings object
-*  x     - X co-ord
-*  y     - Y co-ord
-*********************************************************/
+ *NAME:          buildingeAddItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 30/12/98
+ *LAST MODIFIED: 25/04/01
+ *PURPOSE:
+ *  Adds an item to the building data structure.
+ *  If it already exists returns the terrain type of the
+ *  item and decrements its lifetime.
+ *
+ *ARGUMENTS:
+ *  bld   - Pointer to the buildings object
+ *  x     - X co-ord
+ *  y     - Y co-ord
+ *********************************************************/
 BYTE buildingAddItem(building *bld, BYTE x, BYTE y) {
   BYTE returnValue; /* Value to return */
   bool found;       /* Is the item found */
@@ -91,7 +89,7 @@ BYTE buildingAddItem(building *bld, BYTE x, BYTE y) {
   found = false;
   returnValue = HALFBUILDING;
   count = 0;
-  
+
   while (!found && NonEmpty(inc)) {
     count++;
     if (inc->x == x && inc->y == y) {
@@ -100,11 +98,11 @@ BYTE buildingAddItem(building *bld, BYTE x, BYTE y) {
       if (inc->life == BUILDING_DEATH) {
         returnValue = RUBBLE;
         buildingDeleteItem(bld, count);
-      } 
-	  }
+      }
+    }
     if (!found) {
-		  inc = BuildingTail(inc);
-    }    
+      inc = BuildingTail(inc);
+    }
   }
 
   /* If not found add a new item */
@@ -121,17 +119,17 @@ BYTE buildingAddItem(building *bld, BYTE x, BYTE y) {
 }
 
 /*********************************************************
-*NAME:          buildingDeleteItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 30/12/98
-*LAST MODIFIED: 30/12/98
-*PURPOSE:
-*  Deletes the item for the given number
-*
-*ARGUMENTS:
-*  bld     - Pointer to the buildings object
-*  itemNum - The item number to get
-*********************************************************/
+ *NAME:          buildingDeleteItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 30/12/98
+ *LAST MODIFIED: 30/12/98
+ *PURPOSE:
+ *  Deletes the item for the given number
+ *
+ *ARGUMENTS:
+ *  bld     - Pointer to the buildings object
+ *  itemNum - The item number to get
+ *********************************************************/
 void buildingDeleteItem(building *bld, int itemNum) {
   building prev; /* The previous item to link to the delete items next */
   building del;  /* The item to delete */
@@ -144,7 +142,7 @@ void buildingDeleteItem(building *bld, int itemNum) {
   } else {
     count = 1;
     prev = *bld;
-    while (count < (itemNum-1)) {
+    while (count < (itemNum - 1)) {
       prev = BuildingTail(prev);
       count++;
     }
@@ -154,31 +152,30 @@ void buildingDeleteItem(building *bld, int itemNum) {
   }
 }
 
-
 /*********************************************************
-*NAME:          buildingRemovePos
-*AUTHOR:        John Morrison
-*CREATION DATE: 18/1/99
-*LAST MODIFIED: 18/1/99
-*PURPOSE:
-*  Removes an item from the building data structure if it 
-*  exists at a specific loaction. Otherwise the function
-*  does nothing
-*
-*ARGUMENTS:
-*  bld   - Pointer to the buildings object
-*  x     - X co-ord
-*  y     - Y co-ord
-*********************************************************/
+ *NAME:          buildingRemovePos
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 18/1/99
+ *LAST MODIFIED: 18/1/99
+ *PURPOSE:
+ *  Removes an item from the building data structure if it
+ *  exists at a specific loaction. Otherwise the function
+ *  does nothing
+ *
+ *ARGUMENTS:
+ *  bld   - Pointer to the buildings object
+ *  x     - X co-ord
+ *  y     - Y co-ord
+ *********************************************************/
 void buildingRemovePos(building *bld, BYTE x, BYTE y) {
-  bool found;       /* Is the item found */
-  int count;        /* Looping Variable */
+  bool found; /* Is the item found */
+  int count;  /* Looping Variable */
   building inc;
 
   inc = *bld;
   found = false;
   count = 0;
-  
+
   while (!found && NonEmpty(inc)) {
     count++;
     if (inc->x == x && inc->y == y) {

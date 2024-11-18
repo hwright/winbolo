@@ -14,16 +14,15 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          frameMutex
-*Filename:      frameMutex.h
-*Author:        John Morrison
-*Creation Date: 27/5/00
-*Last Modified: 27/5/00
-*Purpose:
-*  WinBolo Server Thread manager
-*********************************************************/
+ *Name:          frameMutex
+ *Filename:      frameMutex.h
+ *Author:        John Morrison
+ *Creation Date: 27/5/00
+ *Last Modified: 27/5/00
+ *Purpose:
+ *  WinBolo Server Thread manager
+ *********************************************************/
 
 #ifndef _FRAME_MUTEX_H
 #define _FRAME_MUTEX_H
@@ -37,58 +36,57 @@
 
 #include "../../bolo/global.h"
 
-
 /*********************************************************
-*NAME:          frameMutexCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Creates the frame Mutex. Returns success
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          frameMutexCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Creates the frame Mutex. Returns success
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 bool frameMutexCreate(void);
 
 /*********************************************************
-*NAME:          frameMutexCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Destroys the frame Mutex.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          frameMutexCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Destroys the frame Mutex.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void frameMutexDestroy(void);
 
 /*********************************************************
-*NAME:          frameMutexWaitFor
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Destroys the frame Mutex.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          frameMutexWaitFor
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Destroys the frame Mutex.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void frameMutexWaitFor(void);
 
 /*********************************************************
-*NAME:          frameMutexRelease
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Frees the lock on the frame Mutex so other waiting
-*  subsystems can aquire it.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          frameMutexRelease
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Frees the lock on the frame Mutex so other waiting
+ *  subsystems can aquire it.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void frameMutexRelease(void);
 
 #endif /* _CLIENT_MUTEX_H */

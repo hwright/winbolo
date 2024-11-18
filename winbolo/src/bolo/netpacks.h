@@ -14,35 +14,33 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Network Packet Types
-*Filename:      netpacks.h
-*Author:        John Morrison
-*Creation Date: 30/10/99
-*Last Modified: 20/09/02
-*Purpose:
-*  Defines all the different network packet types
-*********************************************************/
+ *Name:          Network Packet Types
+ *Filename:      netpacks.h
+ *Author:        John Morrison
+ *Creation Date: 30/10/99
+ *Last Modified: 20/09/02
+ *Purpose:
+ *  Defines all the different network packet types
+ *********************************************************/
 
 #ifndef _NETPACKS_H
 #define _NETPACKS_H
 
-
 #define MAX_UDPPACKET_SIZE 1024
 #define MAX_TCPPACKET_SIZE 1024
 
-#define BOLO_VERSION_MAJOR       0x01
-#define BOLO_VERSION_MAJORPOS    4
-#define BOLO_VERSION_MINOR       0x01
-#define BOLO_VERSION_MINORPOS    5
-#define BOLO_VERSION_REVISION    0x07
+#define BOLO_VERSION_MAJOR 0x01
+#define BOLO_VERSION_MAJORPOS 4
+#define BOLO_VERSION_MINOR 0x01
+#define BOLO_VERSION_MINORPOS 5
+#define BOLO_VERSION_REVISION 0x07
 #define BOLO_VERSION_REVISIONPOS 6
 
 /* Packet types */
 /* Info Packet */
-#define BOLOPACKET_INFOREQUEST   13
-#define BOLOPACKET_INFORESPONSE  14
+#define BOLOPACKET_INFOREQUEST 13
+#define BOLOPACKET_INFORESPONSE 14
 /* Ping packet */
 #define BOLOPACKET_PINGREQUEST 15
 #define BOLOPACKET_PINGRESPONSE 16
@@ -51,17 +49,17 @@
 #define BOLOPACKET_PASSWORDACCEPT 18 /* Password OK     */
 #define BOLOPACKET_PASSWORDFAIL 19   /* Password failed */
 /* Check for player name availability */
-#define BOLOPACKET_NAMECHECK 20       /* Check name        */
-#define BOLOPACKET_NAMEACCEPT 21      /* Name check OK     */
-#define BOLOPACKET_NAMEFAIL 22        /* Name check failed */
+#define BOLOPACKET_NAMECHECK 20  /* Check name        */
+#define BOLOPACKET_NAMEACCEPT 21 /* Name check OK     */
+#define BOLOPACKET_NAMEFAIL 22   /* Name check failed */
 /* Player Data */
 #define BOLOPACKET_PLAYERDATAREQUEST 23  /* Check name      */
 #define BOLOPACKET_PLAYERDATARESPONSE 24 /* Name check OK   */
 /* Player number */
-#define BOLOPACKET_PLAYERNUMREQUEST 25   /* Check name      */
-#define BOLOPACKET_PLAYERNUMRESPONSE 26  /* Name check OK   */
+#define BOLOPACKET_PLAYERNUMREQUEST 25  /* Check name      */
+#define BOLOPACKET_PLAYERNUMRESPONSE 26 /* Name check OK   */
 /* New player packet info */
-#define BOLOPACKET_PLAYERNEWPLAYER 27    /* New Player data */
+#define BOLOPACKET_PLAYERNEWPLAYER 27 /* New Player data */
 /* Base Data */
 #define BOLOPACKET_BASESDATAREQUEST 29
 #define BOLOPACKET_BASESDATARESPONSE 30
@@ -118,8 +116,6 @@
 #define BOLOPACKET_PACKETREREQUEST 60
 #define BOLOPACKET_PACKETQUIT 61
 
-
-
 /* LGM Out working */
 #define BOLOPACKET_LGM_OUTWORKING 62
 
@@ -141,26 +137,122 @@
 #define BOLOPACKET_RSAACCEPT 68
 #define BOLOPACKET_RSAFAIL 69
 
-#define INFOREQUESTHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOPACKET_INFOREQUEST }
-#define TOKENHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOPACKET_TOKEN }
-#define DATAHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOPACKET_DATA }
-#define GENERICHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION }
-#define MESSAGEHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOPACKET_MESSAGE }
-#define MESSAGEHEADER_ALLPLAYERS { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOPACKET_MESSAGE_ALL_PLAYERS }
-#define POSHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOPOSITION_DATA }
-#define VALIDHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOPACKET_VALID }
-#define INVALIDHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOPACKET_INVALID }
-#define TIMEHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOPACKET_TIMERESPONSE }
-#define CLIENTHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOCLIENT_DATA }
-#define SEVERMSGHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOSERVERMESSAGE }
-#define ALLOWPLAYERSHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOALLOWNEWPLAYERS }
-#define DISALLOWPLAYERSHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLONOALLOWNEWPLAYERS }
-#define REQUESTHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOREJOINREQUEST };
-#define LGMRETURNHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOLGMRETURN };
-#define LGMWORKINGHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOPACKET_LGM_OUTWORKING};
+#define INFOREQUESTHEADER                                       \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOPACKET_INFOREQUEST           \
+  }
+#define TOKENHEADER                                             \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOPACKET_TOKEN                 \
+  }
+#define DATAHEADER                                              \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOPACKET_DATA                  \
+  }
+#define GENERICHEADER                                           \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION                                   \
+  }
+#define MESSAGEHEADER                                           \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOPACKET_MESSAGE               \
+  }
+#define MESSAGEHEADER_ALLPLAYERS                                \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOPACKET_MESSAGE_ALL_PLAYERS   \
+  }
+#define POSHEADER                                               \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOPOSITION_DATA                \
+  }
+#define VALIDHEADER                                             \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOPACKET_VALID                 \
+  }
+#define INVALIDHEADER                                           \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOPACKET_INVALID               \
+  }
+#define TIMEHEADER                                              \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOPACKET_TIMERESPONSE          \
+  }
+#define CLIENTHEADER                                            \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOCLIENT_DATA                  \
+  }
+#define SEVERMSGHEADER                                          \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOSERVERMESSAGE                \
+  }
+#define ALLOWPLAYERSHEADER                                      \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLOALLOWNEWPLAYERS              \
+  }
+#define DISALLOWPLAYERSHEADER                                   \
+  {                                                             \
+    'B', 'o', 'l', 'o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, \
+        BOLO_VERSION_REVISION, BOLONOALLOWNEWPLAYERS            \
+  }
+#define REQUESTHEADER     \
+  {'B',                   \
+   'o',                   \
+   'l',                   \
+   'o',                   \
+   BOLO_VERSION_MAJOR,    \
+   BOLO_VERSION_MINOR,    \
+   BOLO_VERSION_REVISION, \
+   BOLOREJOINREQUEST};
+#define LGMRETURNHEADER   \
+  {'B',                   \
+   'o',                   \
+   'l',                   \
+   'o',                   \
+   BOLO_VERSION_MAJOR,    \
+   BOLO_VERSION_MINOR,    \
+   BOLO_VERSION_REVISION, \
+   BOLOLGMRETURN};
+#define LGMWORKINGHEADER  \
+  {'B',                   \
+   'o',                   \
+   'l',                   \
+   'o',                   \
+   BOLO_VERSION_MAJOR,    \
+   BOLO_VERSION_MINOR,    \
+   BOLO_VERSION_REVISION, \
+   BOLOPACKET_LGM_OUTWORKING};
 
-#define STARTREQUESTHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLOREQUEST_STARTPOS };
-#define STARTRESPONSEHEADER { 'B','o','l','o', BOLO_VERSION_MAJOR, BOLO_VERSION_MINOR, BOLO_VERSION_REVISION, BOLORESPONSE_STARTPOS };
+#define STARTREQUESTHEADER \
+  {'B',                    \
+   'o',                    \
+   'l',                    \
+   'o',                    \
+   BOLO_VERSION_MAJOR,     \
+   BOLO_VERSION_MINOR,     \
+   BOLO_VERSION_REVISION,  \
+   BOLOREQUEST_STARTPOS};
+#define STARTRESPONSEHEADER \
+  {'B',                     \
+   'o',                     \
+   'l',                     \
+   'o',                     \
+   BOLO_VERSION_MAJOR,      \
+   BOLO_VERSION_MINOR,      \
+   BOLO_VERSION_REVISION,   \
+   BOLORESPONSE_STARTPOS};
 
 /* Size of the request packet */
 #define BOLOPACKET_REQUEST_SIZE 8
@@ -184,7 +276,6 @@
 /* Size of the option data header */
 #define BOLO_PACKET_OPTDATAHEADER 2
 
-
 #define BOLO_PACKET_CRC_SIZE 2
 
 /* Mines */
@@ -197,7 +288,4 @@
 /* String displayed in single player games rather then address */
 #define NET_SINGLE_PLAYER_GAME "Single Player Game\0"
 
-
-
 #endif /* _NETPACKS_H */
-

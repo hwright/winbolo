@@ -14,50 +14,49 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Dialog - About
-*Filename:      dialogAbout.h
-*Author:        John Morrison
-*Creation Date: 4/11/99
-*Last Modified: 28/4/00
-*Purpose:
-*  Looks after the About dialog
-*********************************************************/
+ *Name:          Dialog - About
+ *Filename:      dialogAbout.h
+ *Author:        John Morrison
+ *Creation Date: 4/11/99
+ *Last Modified: 28/4/00
+ *Purpose:
+ *  Looks after the About dialog
+ *********************************************************/
 
 #ifndef DIALOG_ABOUT_H
 #define DIALOG_ABOUT_H
 
-
 #include <windows.h>
 
 /*********************************************************
-*NAME:          dialogAboutCallback
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/1/99
-*LAST MODIFIED: 27/1/99
-*PURPOSE:
-*  The About Dialog call back function.
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*  msg    - The message
-*  wParam - Message parameters
-*  lParam - More Message parameters
-*********************************************************/
-BOOL CALLBACK dialogAboutCallback( HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam );
+ *NAME:          dialogAboutCallback
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/1/99
+ *LAST MODIFIED: 27/1/99
+ *PURPOSE:
+ *  The About Dialog call back function.
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *  msg    - The message
+ *  wParam - Message parameters
+ *  lParam - More Message parameters
+ *********************************************************/
+BOOL CALLBACK dialogAboutCallback(HWND hWnd, unsigned uMsg, WPARAM wParam,
+                                  LPARAM lParam);
 
 /*********************************************************
-*NAME:          dialogAboutInit
-*AUTHOR:        John Morrison
-*CREATION DATE: 28/4/00
-*LAST MODIFIED: 28/4/00
-*PURPOSE:
-*  The About Dialog init function
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*********************************************************/
+ *NAME:          dialogAboutInit
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 28/4/00
+ *LAST MODIFIED: 28/4/00
+ *PURPOSE:
+ *  The About Dialog init function
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *********************************************************/
 void dialogAboutInit(HWND hWnd);
 
 #endif /* DIALOG_ABOUT_H */

@@ -14,7 +14,6 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef _DIALOGOPENING_H
 #define _DIALOGOPENING_H
 #include <gtk/gtk.h>
@@ -22,4 +21,3 @@
 GtkWidget* dialogOpeningCreate(void);
 
 #endif
-

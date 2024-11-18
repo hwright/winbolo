@@ -14,70 +14,72 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Screen Tanks
-*Filename:      screenTanks.c
-*Author:        John Morrison
-*Creation Date: 15/2/99
-*Last Modified: 26/1/02
-*Purpose:
-*  Responsable for tanks on the screen
-*********************************************************/
+ *Name:          Screen Tanks
+ *Filename:      screenTanks.c
+ *Author:        John Morrison
+ *Creation Date: 15/2/99
+ *Last Modified: 26/1/02
+ *Purpose:
+ *  Responsable for tanks on the screen
+ *********************************************************/
+
+#include "screentank.h"
 
 #include <string.h>
+
+#include "frontend.h"
 #include "global.h"
-#include "tank.h"
 #include "labels.h"
 #include "messages.h"
-#include "screentank.h"
 #include "players.h"
-#include "frontend.h"
+#include "tank.h"
 
 /*********************************************************
-*NAME:          screenTanksCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 15/2/99
-*LAST MODIFIED: 15/2/99
-*PURPOSE:
-*  Sets up the screen tanks data structure
-*
-*ARGUMENTS:
-*  value - New item to create
-*********************************************************/
+ *NAME:          screenTanksCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 15/2/99
+ *LAST MODIFIED: 15/2/99
+ *PURPOSE:
+ *  Sets up the screen tanks data structure
+ *
+ *ARGUMENTS:
+ *  value - New item to create
+ *********************************************************/
 void screenTanksCreate(screenTanks *value) {
   BYTE count; /* Looping variable */
   /*  New(*value); */
   (*value).numTanksScreen = 0;
-  for (count=0;count<MAX_TANKS;count++) {
+  for (count = 0; count < MAX_TANKS; count++) {
     (*value).pos[count].playerName[0] = '\0';
   }
 }
 
 /*********************************************************
-*NAME:          screenTanksPrepare
-*AUTHOR:        John Morrison
-*CREATION DATE: 15/2/99
-*LAST MODIFIED: 26/1/02
-*PURPOSE:
-*  Prepares the screenTanks data structure prior to
-*  displaying
-*
-*ARGUMENTS:
-*  value  - Pointer to the screenTanks data structure
-*  tnk    - Pointer to your tank data structure
-*  left   - Left bounds of the screen
-*  right  - Right bounds of the screen
-*  top    - Top bounds of the screen
-*  bottom - Bottom bounds of the screen
-*********************************************************/
-void screenTanksPrepare(screenTanks *value, tank *tnk, BYTE leftPos, BYTE rightPos, BYTE top, BYTE bottom) {
+ *NAME:          screenTanksPrepare
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 15/2/99
+ *LAST MODIFIED: 26/1/02
+ *PURPOSE:
+ *  Prepares the screenTanks data structure prior to
+ *  displaying
+ *
+ *ARGUMENTS:
+ *  value  - Pointer to the screenTanks data structure
+ *  tnk    - Pointer to your tank data structure
+ *  left   - Left bounds of the screen
+ *  right  - Right bounds of the screen
+ *  top    - Top bounds of the screen
+ *  bottom - Bottom bounds of the screen
+ *********************************************************/
+void screenTanksPrepare(screenTanks *value, tank *tnk, BYTE leftPos,
+                        BYTE rightPos, BYTE top, BYTE bottom) {
   char playerName[PLAYER_NAME_LEN] = "\0"; /* Player Name */
-  BYTE x; /* X and Y map pos of it */
+  BYTE x;                                  /* X and Y map pos of it */
   BYTE y;
   BYTE count; /* Looping variable */
 
-  for (count=0;count<MAX_TANKS;count++) {
+  for (count = 0; count < MAX_TANKS; count++) {
     (*value).pos[count].playerName[0] = '\0';
   }
   (*value).numTanksScreen = 0;
@@ -96,63 +98,65 @@ void screenTanksPrepare(screenTanks *value, tank *tnk, BYTE leftPos, BYTE rightP
     /* Get the tanks names */
     (*value).pos[0].playerName[0] = '\0';
     if (tankGetArmour(tnk) <= TANK_FULL_ARMOUR) {
-      playersGetPlayerName(screenGetPlayers(), playersGetSelf(screenGetPlayers()), playerName);
-      labelMakeTankLabel((*value).pos[0].playerName, playerName, langGetText(MESSAGE_THIS_COMPUTER), true);
+      playersGetPlayerName(screenGetPlayers(),
+                           playersGetSelf(screenGetPlayers()), playerName);
+      labelMakeTankLabel((*value).pos[0].playerName, playerName,
+                         langGetText(MESSAGE_THIS_COMPUTER), true);
     }
   }
   /* Add the rest of the tanks as required */
-  playersMakeScreenTanks(screenGetPlayers(), value, leftPos, rightPos, top, bottom);
+  playersMakeScreenTanks(screenGetPlayers(), value, leftPos, rightPos, top,
+                         bottom);
 }
 
 /*********************************************************
-*NAME:          screenTanksGetNumEntries
-*AUTHOR:        John Morrison
-*CREATION DATE: 15/2/99
-*LAST MODIFIED: 15/2/99
-*PURPOSE:
-*  Returns the number of elements in the data structure
-*
-*ARGUMENTS:
-*  value - Pointer to the screenTanks data structure
-*********************************************************/
+ *NAME:          screenTanksGetNumEntries
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 15/2/99
+ *LAST MODIFIED: 15/2/99
+ *PURPOSE:
+ *  Returns the number of elements in the data structure
+ *
+ *ARGUMENTS:
+ *  value - Pointer to the screenTanks data structure
+ *********************************************************/
 BYTE screenTanksGetNumEntries(screenTanks *value) {
   return ((*value).numTanksScreen);
 }
 
 /*********************************************************
-*NAME:          screenTanksDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 15/2/99
-*LAST MODIFIED: 15/2/99
-*PURPOSE:
-*  Destroys and frees memory for the data structure
-*
-*ARGUMENTS:
-*  value - Pointer to the screenTanks data structure
-*********************************************************/
-void screenTanksDestroy(screenTanks *value) {
-/*  Dispose(*value); */
-}
+ *NAME:          screenTanksDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 15/2/99
+ *LAST MODIFIED: 15/2/99
+ *PURPOSE:
+ *  Destroys and frees memory for the data structure
+ *
+ *ARGUMENTS:
+ *  value - Pointer to the screenTanks data structure
+ *********************************************************/
+void screenTanksDestroy(screenTanks *value) { /*  Dispose(*value); */ }
 
 /*********************************************************
-*NAME:          screenTanksAddItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 18/2/98
-*LAST MODIFIED: 26/1/02
-*PURPOSE:
-*  Adds a data set for a specific tank
-*
-*ARGUMENTS:
-*  value      - Pointer to the screenBullets data structure
-*  mx         - X co-ord of the map position
-*  my         - Y co-ord of the map position
-*  px         - X pixel offset
-*  py         - Y pixel offset
-*  frame      - Frame identifer of the tank
-*  playerNum  - Player Number of this tank
-*  playerName - String to hold the player name
-*********************************************************/
-void screenTanksAddItem(screenTanks *value, BYTE mx, BYTE my, BYTE px, BYTE py, BYTE frame, BYTE playerNum, char *playerName) {
+ *NAME:          screenTanksAddItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 18/2/98
+ *LAST MODIFIED: 26/1/02
+ *PURPOSE:
+ *  Adds a data set for a specific tank
+ *
+ *ARGUMENTS:
+ *  value      - Pointer to the screenBullets data structure
+ *  mx         - X co-ord of the map position
+ *  my         - Y co-ord of the map position
+ *  px         - X pixel offset
+ *  py         - Y pixel offset
+ *  frame      - Frame identifer of the tank
+ *  playerNum  - Player Number of this tank
+ *  playerName - String to hold the player name
+ *********************************************************/
+void screenTanksAddItem(screenTanks *value, BYTE mx, BYTE my, BYTE px, BYTE py,
+                        BYTE frame, BYTE playerNum, char *playerName) {
   (*value).pos[(*value).numTanksScreen].mx = mx;
   (*value).pos[(*value).numTanksScreen].my = my;
   (*value).pos[(*value).numTanksScreen].px = px;
@@ -165,25 +169,27 @@ void screenTanksAddItem(screenTanks *value, BYTE mx, BYTE my, BYTE px, BYTE py, 
 }
 
 /*********************************************************
-*NAME:          screenTanksGetItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 15/2/98
-*LAST MODIFIED: 26/1/02
-*PURPOSE:
-*  Gets data for a specific item
-*
-*ARGUMENTS:
-*  value      - Pointer to the screenBullets data structure
-*  itemNum    - The item number to get
-*  mx         - X co-ord of the map position
-*  my         - Y co-ord of the map position
-*  px         - X pixel offset
-*  py         - Y pixel offset
-*  frame      - Frame identifer of the tank
-*  playerNum  - Player Number of this tank
-*  playerName - String to hold the player name
-*********************************************************/
-void screenTanksGetItem(screenTanks *value, BYTE itemNum, BYTE *mx, BYTE *my, BYTE *px, BYTE *py, BYTE *frame, BYTE *playerNum, char *playerName) {
+ *NAME:          screenTanksGetItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 15/2/98
+ *LAST MODIFIED: 26/1/02
+ *PURPOSE:
+ *  Gets data for a specific item
+ *
+ *ARGUMENTS:
+ *  value      - Pointer to the screenBullets data structure
+ *  itemNum    - The item number to get
+ *  mx         - X co-ord of the map position
+ *  my         - Y co-ord of the map position
+ *  px         - X pixel offset
+ *  py         - Y pixel offset
+ *  frame      - Frame identifer of the tank
+ *  playerNum  - Player Number of this tank
+ *  playerName - String to hold the player name
+ *********************************************************/
+void screenTanksGetItem(screenTanks *value, BYTE itemNum, BYTE *mx, BYTE *my,
+                        BYTE *px, BYTE *py, BYTE *frame, BYTE *playerNum,
+                        char *playerName) {
   itemNum--;
   if (itemNum <= (*value).numTanksScreen) {
     *mx = (*value).pos[itemNum].mx;

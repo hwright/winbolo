@@ -14,23 +14,22 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Font
-*Filename:      font.h
-*Author:        John Morrison
-*Creation Date:  3/1/99
-*Last Modified: 19/6/00
-*Purpose:
-*  Create/Select Font Routines
-*********************************************************/
+ *Name:          Font
+ *Filename:      font.h
+ *Author:        John Morrison
+ *Creation Date:  3/1/99
+ *Last Modified: 19/6/00
+ *Purpose:
+ *  Create/Select Font Routines
+ *********************************************************/
 
 #ifndef _FONT_H
 #define _FONT_H
 
 #include <windows.h>
-#include "..\bolo\global.h"
 
+#include "..\bolo\global.h"
 
 /* Font Name */
 #define FONT_NAME "Courier New"
@@ -41,74 +40,72 @@
 #define TINY_FONT_HEIGHT 5
 
 /*********************************************************
-*NAME:          fontCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 3/1/99
-*LAST MODIFIED: 3/1/99
-*PURPOSE:
-*  Loads Font
-*
-*ARGUMENTS:
-* appInst - Handle to the application (Required to 
-*           load bitmaps from resources)
-* appWnd  - Main Window Handle (Required for clipper)
-*********************************************************/
+ *NAME:          fontCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 3/1/99
+ *LAST MODIFIED: 3/1/99
+ *PURPOSE:
+ *  Loads Font
+ *
+ *ARGUMENTS:
+ * appInst - Handle to the application (Required to
+ *           load bitmaps from resources)
+ * appWnd  - Main Window Handle (Required for clipper)
+ *********************************************************/
 bool fontSetup(HINSTANCE appInst, HWND appWnd);
 
 /*********************************************************
-*NAME:          fontCleanup
-*AUTHOR:        John Morrison
-*CREATION DATE: 3/1/99
-*LAST MODIFIED: 3/1/99
-*PURPOSE:
-*  Destroys font
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          fontCleanup
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 3/1/99
+ *LAST MODIFIED: 3/1/99
+ *PURPOSE:
+ *  Destroys font
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void fontCleanup(void);
 
 /*********************************************************
-*NAME:          fontSelect
-*AUTHOR:        John Morrison
-*CREATION DATE: 3/1/99
-*LAST MODIFIED: 3/1/99
-*PURPOSE:
-*  Selects the font into the DC
-*
-*ARGUMENTS:
-* hDC - The Decive context to select into
-*********************************************************/
+ *NAME:          fontSelect
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 3/1/99
+ *LAST MODIFIED: 3/1/99
+ *PURPOSE:
+ *  Selects the font into the DC
+ *
+ *ARGUMENTS:
+ * hDC - The Decive context to select into
+ *********************************************************/
 void fontSelect(HDC hDC);
 
 /*********************************************************
-*NAME:          fontSelectTiny
-*AUTHOR:        John Morrison
-*CREATION DATE: 23/1/99
-*LAST MODIFIED: 23/1/99
-*PURPOSE:
-*  Selects the tiny font into the DC
-*
-*ARGUMENTS:
-* hDC - The Decive context to select into
-*********************************************************/
+ *NAME:          fontSelectTiny
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 23/1/99
+ *LAST MODIFIED: 23/1/99
+ *PURPOSE:
+ *  Selects the tiny font into the DC
+ *
+ *ARGUMENTS:
+ * hDC - The Decive context to select into
+ *********************************************************/
 void fontSelectTiny(HDC hDC);
 
 /*********************************************************
-*NAME:          fontPointToHeight
-*AUTHOR:        John Morrison
-*CREATION DATE: 13/9/98
-*LAST MODIFIED: 13/9/98
-*PURPOSE:
-*  Turns a font height from points to logical Height
-*  (Used by createFont)
-*
-*ARGUMENTS:
-*  pntSize   - Size of Font in Points
-*  hWindowDC - Handle to the Window
-*********************************************************/
+ *NAME:          fontPointToHeight
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 13/9/98
+ *LAST MODIFIED: 13/9/98
+ *PURPOSE:
+ *  Turns a font height from points to logical Height
+ *  (Used by createFont)
+ *
+ *ARGUMENTS:
+ *  pntSize   - Size of Font in Points
+ *  hWindowDC - Handle to the Window
+ *********************************************************/
 int fontPointToHeight(int pntSize, HDC hWindowDC);
 
 #endif /* _FONT_H */
-
-

@@ -14,24 +14,24 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          TankExplosions
-*Filename:      tankexp.h
-*Author:        John Morrison
-*Creation Date: 15/1/99
-*Last Modified: 3/10/00
-*Purpose:
-*  Responsable for moving dead tank explosions
-*********************************************************/
+ *Name:          TankExplosions
+ *Filename:      tankexp.h
+ *Author:        John Morrison
+ *Creation Date: 15/1/99
+ *Last Modified: 3/10/00
+ *Purpose:
+ *  Responsable for moving dead tank explosions
+ *********************************************************/
 
 #ifndef TK_EXPLOSION_H
 #define TK_EXPLOSION_H
 
 #include "global.h"
 #include "lgm.h"
+#include "screenbullet.h"
 
-#define IsEmpty(list) ((list) ==NULL)
+#define IsEmpty(list) ((list) == NULL)
 #define NonEmpty(list) (!IsEmpty(list))
 #define TkExplosionTail(list) ((list)->next);
 
@@ -64,191 +64,199 @@
 
 typedef struct tkExplosionObj *tkExplosion;
 struct tkExplosionObj {
-  tkExplosion next;  /* Next Explosion */
-  tkExplosion prev;  /* Previous Item */
-  WORLD x;           /* X position */
-  WORLD y;           /* Y position */
-  TURNTYPE angle;    /* Direction of travel */
-  BYTE length;       /* Distance to travel  */
-  BYTE explodeType;  /* Type of the explosion - Big or small */
-  bool packSent;     /* Has this tkexplosion been included in a network packet yet */
-  bool own;          /* Did we create this explosions or the network? */
-  BYTE creator;      /* Creators player number */
+  tkExplosion next; /* Next Explosion */
+  tkExplosion prev; /* Previous Item */
+  WORLD x;          /* X position */
+  WORLD y;          /* Y position */
+  TURNTYPE angle;   /* Direction of travel */
+  BYTE length;      /* Distance to travel  */
+  BYTE explodeType; /* Type of the explosion - Big or small */
+  bool
+      packSent; /* Has this tkexplosion been included in a network packet yet */
+  bool own;     /* Did we create this explosions or the network? */
+  BYTE creator; /* Creators player number */
 };
 
 /* Prototypes */
 
 /*********************************************************
-*NAME:          tkExplosionCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 15/1/99
-*LAST MODIFIED: 15/1/99
-*PURPOSE:
-*  Sets up the tkExplosion data structure
-*
-*ARGUMENTS:
-*  tke - Pointer to the tank explosions object
-*********************************************************/
+ *NAME:          tkExplosionCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 15/1/99
+ *LAST MODIFIED: 15/1/99
+ *PURPOSE:
+ *  Sets up the tkExplosion data structure
+ *
+ *ARGUMENTS:
+ *  tke - Pointer to the tank explosions object
+ *********************************************************/
 void tkExplosionCreate(tkExplosion *tke);
 
 /*********************************************************
-*NAME:          tkExplosionDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 15/1/99
-*LAST MODIFIED: 15/1/99
-*PURPOSE:
-*  Destroys and frees memory for the tkExplosion data 
-*  structure
-*
-*ARGUMENTS:
-*  tke - Pointer to the tank explosions object
-*********************************************************/
+ *NAME:          tkExplosionDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 15/1/99
+ *LAST MODIFIED: 15/1/99
+ *PURPOSE:
+ *  Destroys and frees memory for the tkExplosion data
+ *  structure
+ *
+ *ARGUMENTS:
+ *  tke - Pointer to the tank explosions object
+ *********************************************************/
 void tkExplosionDestroy(tkExplosion *tke);
 
 /*********************************************************
-*NAME:          tkExplosionAddItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 15/1/99
-*LAST MODIFIED: 31/10/99
-*PURPOSE:
-*  Adds an item to the tkExplosion data structure. 
-*
-*ARGUMENTS:
-*  tke         - Pointer to the tank explosions object
-*  x           - World X Co-orindate
-*  y           - World X Co-orindate
-*  angle       - Angle of travel
-*  length      - Length of travel 
-*  explodeType - Type of explosions (big - small)
-*********************************************************/
-void tkExplosionAddItem(tkExplosion *tke, WORLD x, WORLD y, TURNTYPE angle, BYTE length, BYTE explodeType);
+ *NAME:          tkExplosionAddItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 15/1/99
+ *LAST MODIFIED: 31/10/99
+ *PURPOSE:
+ *  Adds an item to the tkExplosion data structure.
+ *
+ *ARGUMENTS:
+ *  tke         - Pointer to the tank explosions object
+ *  x           - World X Co-orindate
+ *  y           - World X Co-orindate
+ *  angle       - Angle of travel
+ *  length      - Length of travel
+ *  explodeType - Type of explosions (big - small)
+ *********************************************************/
+void tkExplosionAddItem(tkExplosion *tke, WORLD x, WORLD y, TURNTYPE angle,
+                        BYTE length, BYTE explodeType);
 
 /*********************************************************
-*NAME:          tkExplosionUpdate
-*AUTHOR:        John Morrison
-*CREATION DATE: 15/01/99
-*LAST MODIFIED: 05/02/09
-*PURPOSE:
-*  Updates each tkExplosion position
-*
-*ARGUMENTS:
-*  tke    - Pointer to the tank explosions object
-*  mp     - Pointer to the map structure
-*  pb     - Pointer to the pillbox structure
-*  bs     - Pointer to the bases structure
-*  lgms   - Array of lgms
-*  numLgm - Number of lgms in the array
-*  tank   - Pointer to the tank object
-*********************************************************/
-void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs, lgm **lgms, BYTE numLgm, tank *tank);
+ *NAME:          tkExplosionUpdate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 15/01/99
+ *LAST MODIFIED: 05/02/09
+ *PURPOSE:
+ *  Updates each tkExplosion position
+ *
+ *ARGUMENTS:
+ *  tke    - Pointer to the tank explosions object
+ *  mp     - Pointer to the map structure
+ *  pb     - Pointer to the pillbox structure
+ *  bs     - Pointer to the bases structure
+ *  lgms   - Array of lgms
+ *  numLgm - Number of lgms in the array
+ *  tank   - Pointer to the tank object
+ *********************************************************/
+void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs,
+                       lgm **lgms, BYTE numLgm, tank *tank);
 
 /*********************************************************
-*NAME:          tkExplosionDeleteItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 15/1/99
-*LAST MODIFIED: 15/1/99
-*PURPOSE:
-*  Deletes the item for the given number
-*
-*ARGUMENTS:
-*  tke     - Pointer to the tank explosions object
-*  itemNum - The item number to get
-*********************************************************/
+ *NAME:          tkExplosionDeleteItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 15/1/99
+ *LAST MODIFIED: 15/1/99
+ *PURPOSE:
+ *  Deletes the item for the given number
+ *
+ *ARGUMENTS:
+ *  tke     - Pointer to the tank explosions object
+ *  itemNum - The item number to get
+ *********************************************************/
 void tkExplosionDeleteItem(tkExplosion *tkem, tkExplosion *value);
 
 /*********************************************************
-*NAME:          tkExplosionCalcScreenBullets
-*AUTHOR:        John Morrison
-*CREATION DATE: 15/1/98
-*LAST MODIFIED: 15/1/98
-*PURPOSE:
-*  Adds items to the sceenBullets data structure if they
-*  are on screen
-*
-*ARGUMENTS:
-*  tke       - Pointer to the tank explosions object
-*  sBullet   - The screenBullets Data structure
-*  leftPos   - X Map offset start
-*  rightPos  - X Map offset end
-*  topPos    - Y Map offset end
-*  bottomPos - Y Map offset end
-*********************************************************/
-void tkExplosionCalcScreenBullets(tkExplosion *tke, screenBullets *sBullets, BYTE leftPos, BYTE rightPos, BYTE topPos, BYTE bottomPos);
+ *NAME:          tkExplosionCalcScreenBullets
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 15/1/98
+ *LAST MODIFIED: 15/1/98
+ *PURPOSE:
+ *  Adds items to the sceenBullets data structure if they
+ *  are on screen
+ *
+ *ARGUMENTS:
+ *  tke       - Pointer to the tank explosions object
+ *  sBullet   - The screenBullets Data structure
+ *  leftPos   - X Map offset start
+ *  rightPos  - X Map offset end
+ *  topPos    - Y Map offset end
+ *  bottomPos - Y Map offset end
+ *********************************************************/
+void tkExplosionCalcScreenBullets(tkExplosion *tke, screenBullets *sBullets,
+                                  BYTE leftPos, BYTE rightPos, BYTE topPos,
+                                  BYTE bottomPos);
 
 /*********************************************************
-*NAME:          tkExplosionCheckRemove
-*AUTHOR:        John Morrison
-*CREATION DATE: 18/1/98
-*LAST MODIFIED: 18/1/98
-*PURPOSE:
-*  An explosion has happened. Check to see if it should
-*  remove from grass/building data structures etc.
-*
-*ARGUMENTS:
-*  tke     - Pointer to the tank explosions object
-*  terrain - Terrain type of the sqaure
-*  mx      - Map X position 
-*  my      - Map Y position
-*********************************************************/
+ *NAME:          tkExplosionCheckRemove
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 18/1/98
+ *LAST MODIFIED: 18/1/98
+ *PURPOSE:
+ *  An explosion has happened. Check to see if it should
+ *  remove from grass/building data structures etc.
+ *
+ *ARGUMENTS:
+ *  tke     - Pointer to the tank explosions object
+ *  terrain - Terrain type of the sqaure
+ *  mx      - Map X position
+ *  my      - Map Y position
+ *********************************************************/
 void tkExplosionCheckRemove(tkExplosion *tke, BYTE terrain, BYTE mx, BYTE my);
 
 /*********************************************************
-*NAME:          tkExplosionBigExplosion
-*AUTHOR:        John Morrison
-*CREATION DATE: 18/01/98
-*LAST MODIFIED: 04/04/02
-*PURPOSE:
-*  An explosion has happened. do all the work involved 
-*  to do it.
-*
-*ARGUMENTS:
-*  tke     - Pointer to the tank explosions object
-*  mp      - Pointer to map structure 
-*  pb      - Pointer to pillboxes structure
-*  bs      - Pointer to bases strucutre
-*  mx      - Map X position 
-*  my      - Map Y position
-*  moveX   - Moving X direction (positive/Negative)
-*  moveY   - Moving Y direction (positive/Negative)
-*  own     - Do we own this tkExplosion?
-*  lgms   - Array of lgms
-*  numLgm - Number of lgms in the array
-*********************************************************/
-void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs, BYTE mx, BYTE my, int moveX, int moveY, bool own, lgm **lgms, BYTE numLgm);
+ *NAME:          tkExplosionBigExplosion
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 18/01/98
+ *LAST MODIFIED: 04/04/02
+ *PURPOSE:
+ *  An explosion has happened. do all the work involved
+ *  to do it.
+ *
+ *ARGUMENTS:
+ *  tke     - Pointer to the tank explosions object
+ *  mp      - Pointer to map structure
+ *  pb      - Pointer to pillboxes structure
+ *  bs      - Pointer to bases strucutre
+ *  mx      - Map X position
+ *  my      - Map Y position
+ *  moveX   - Moving X direction (positive/Negative)
+ *  moveY   - Moving Y direction (positive/Negative)
+ *  own     - Do we own this tkExplosion?
+ *  lgms   - Array of lgms
+ *  numLgm - Number of lgms in the array
+ *********************************************************/
+void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb,
+                             bases *bs, BYTE mx, BYTE my, int moveX, int moveY,
+                             bool own, lgm **lgms, BYTE numLgm);
 
 /*********************************************************
-*NAME:          tkExplosionNetMake
-*AUTHOR:        John Morrison
-*CREATION DATE: 11/3/99
-*LAST MODIFIED: 11/3/99
-*PURPOSE:
-*  When we have the token we inform all the players of
-*  tke we have made since last time we had the token.
-*  Returns the length of the data created
-*  
-*ARGUMENTS:
-*  tke   - Pointer to the tank explosions object
-*  buff  - Pointer to a buffer to hold the shells 
-*          net data
-*********************************************************/
+ *NAME:          tkExplosionNetMake
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 11/3/99
+ *LAST MODIFIED: 11/3/99
+ *PURPOSE:
+ *  When we have the token we inform all the players of
+ *  tke we have made since last time we had the token.
+ *  Returns the length of the data created
+ *
+ *ARGUMENTS:
+ *  tke   - Pointer to the tank explosions object
+ *  buff  - Pointer to a buffer to hold the shells
+ *          net data
+ *********************************************************/
 BYTE tkExplosionNetMake(tkExplosion *tke, BYTE *buff);
 
 /*********************************************************
-*NAME:          tkExplosionNetExtract
-*AUTHOR:        John Morrison
-*CREATION DATE: 11/3/99
-*LAST MODIFIED: 14/9/00
-*PURPOSE:
-* Network tke data have arrived. Add them to our 
-* tke structure here.
-*  
-*ARGUMENTS:
-*  tke       - Pointer to the tank explosions object
-*  buff      - Pointer to a buffer to hold the shells 
-*              net data
-*  dataLen   - Length of the data
-*  playerNum - This players number 
-*********************************************************/
-void tkExplosionNetExtract(tkExplosion *tke, BYTE *buff, BYTE dataLen, BYTE playerNum);
+ *NAME:          tkExplosionNetExtract
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 11/3/99
+ *LAST MODIFIED: 14/9/00
+ *PURPOSE:
+ * Network tke data have arrived. Add them to our
+ * tke structure here.
+ *
+ *ARGUMENTS:
+ *  tke       - Pointer to the tank explosions object
+ *  buff      - Pointer to a buffer to hold the shells
+ *              net data
+ *  dataLen   - Length of the data
+ *  playerNum - This players number
+ *********************************************************/
+void tkExplosionNetExtract(tkExplosion *tke, BYTE *buff, BYTE dataLen,
+                           BYTE playerNum);
 
 #endif /* TK_EXPLOSION_H */

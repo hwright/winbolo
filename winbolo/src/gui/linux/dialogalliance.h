@@ -14,16 +14,15 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef _DIALOGALLIANCE_H
 #define _DIALOGALLIANCE_H
 
 #include <gtk/gtk.h>
+
 #include "../../bolo/global.h"
 
-void dialogAllianceSetName(char *playerName, BYTE playerNum);
+void dialogAllianceSetName(char* playerName, BYTE playerNum);
 
-GtkWidget* dialogAllianceCreate(); 
+GtkWidget* dialogAllianceCreate();
 
 #endif
-

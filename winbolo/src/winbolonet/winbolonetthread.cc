@@ -14,39 +14,40 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          winbolonetThread
-*Filename:      winbolonetThread.c
-*Author:        John Morrison
-*Creation Date: 16/02/03
-*Last Modified: 16/02/03
-*Purpose:
-*  WinBolo.net Thread manager - Used to stop updates
-*  causing game problems
-*********************************************************/
+ *Name:          winbolonetThread
+ *Filename:      winbolonetThread.c
+ *Author:        John Morrison
+ *Creation Date: 16/02/03
+ *Last Modified: 16/02/03
+ *Purpose:
+ *  WinBolo.net Thread manager - Used to stop updates
+ *  causing game problems
+ *********************************************************/
 
 #ifdef _WIN32
 //  #include <windows.h>
 //  #include <string.h>
 #else
-	#include "SDL.h"
-	#include "SDL_thread.h"
-	typedef SDL_mutex *HANDLE;
-  	typedef int DWORD; /* Not used by required by windows code */
+#include "SDL.h"
+#include "SDL_thread.h"
+typedef SDL_mutex *HANDLE;
+typedef int DWORD; /* Not used by required by windows code */
 #endif
-#include <unistd.h>
+#include "winbolonetthread.h"
+
 #include <string.h>
+#include <unistd.h>
+
 #include "../bolo/global.h"
 #include "http.h"
-#include "winbolonetthread.h"
 
 HANDLE hWbnMutexHandle = nullptr;
 #ifdef _WIN32
-  HANDLE hWbnThread;
-  DWORD wbnThreadID;
+HANDLE hWbnThread;
+DWORD wbnThreadID;
 #else
-  SDL_Thread *hWbnThread;
+SDL_Thread *hWbnThread;
 #endif
 
 wbnList wbnProcessing;
@@ -55,29 +56,29 @@ bool wbnShouldRun;
 bool wbnFinished;
 
 /*********************************************************
-*NAME:          winbolonetThreadCreate 
-*AUTHOR:        John Morrison
-*CREATION DATE: 16/02/03
-*LAST MODIFIED: 16/02/03
-*PURPOSE:
-*  Creates the winbolonet update thread. Returns success
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          winbolonetThreadCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 16/02/03
+ *LAST MODIFIED: 16/02/03
+ *PURPOSE:
+ *  Creates the winbolonet update thread. Returns success
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 bool winbolonetThreadCreate(void) {
-  bool returnValue;        /* Value to return */
+  bool returnValue; /* Value to return */
 
   returnValue = true;
   wbnProcessing = nullptr;
   wbnWaiting = nullptr;
   wbnShouldRun = true;
   wbnFinished = false;
-  
+
 #ifdef _WIN32
   char name[FILENAME_MAX]; /* Used in Mutex creation */
   sprintf(name, "%s%d", "WBNUPDATE", GetTickCount());
-  hWbnMutexHandle = CreateMutex(NULL, false, (LPCTSTR ) name);
+  hWbnMutexHandle = CreateMutex(NULL, false, (LPCTSTR)name);
 #else
   hWbnMutexHandle = SDL_CreateMutex();
 #endif
@@ -88,7 +89,9 @@ bool winbolonetThreadCreate(void) {
   /* create thread and run */
 #ifdef _WIN32
   if (returnValue == true) {
-    hWbnThread = CreateThread((LPSECURITY_ATTRIBUTES) NULL, 0, (LPTHREAD_START_ROUTINE) winbolonetThreadRun, 0, 0, &wbnThreadID);
+    hWbnThread = CreateThread((LPSECURITY_ATTRIBUTES)NULL, 0,
+                              (LPTHREAD_START_ROUTINE)winbolonetThreadRun, 0, 0,
+                              &wbnThreadID);
     if (hWbnThread == NULL) {
       CloseHandle(hWbnMutexHandle);
       hWbnMutexHandle = NULL;
@@ -98,7 +101,7 @@ bool winbolonetThreadCreate(void) {
 #else
   if (returnValue) {
     hWbnThread = SDL_CreateThread(winbolonetThreadRun, nullptr);
-    if (hWbnThread  == nullptr) {
+    if (hWbnThread == nullptr) {
       SDL_DestroyMutex(hWbnMutexHandle);
       hWbnMutexHandle = nullptr;
       returnValue = false;
@@ -110,20 +113,21 @@ bool winbolonetThreadCreate(void) {
 }
 
 /*********************************************************
-*NAME:          winbolonetThreadDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 16/02/03
-*LAST MODIFIED: 16/02/03
-*PURPOSE:
-*  Destroys the WBN update thread.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          winbolonetThreadDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 16/02/03
+ *LAST MODIFIED: 16/02/03
+ *PURPOSE:
+ *  Destroys the WBN update thread.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void winbolonetThreadDestroy(void) {
-  wbnList del;   /* Use to delete our queues */
+  wbnList del; /* Use to delete our queues */
 
-  if (hWbnMutexHandle != nullptr) { /* FIXME: Will be non null if we started it OK. Is there a better way? (threadid?) */
+  if (hWbnMutexHandle != nullptr) { /* FIXME: Will be non null if we started it
+                                       OK. Is there a better way? (threadid?) */
     /* Wait for all events to be sent... */
     while (wbnProcessing != nullptr || wbnWaiting != nullptr) {
 #ifdef _WIN32
@@ -152,7 +156,7 @@ void winbolonetThreadDestroy(void) {
     if (val == STILL_ACTIVE) {
       TerminateThread(hWbnThread, 0);
     }
-    
+
     CloseHandle(hWbnThread);
 #else
     SDL_WaitThread(hWbnThread, nullptr);
@@ -174,7 +178,7 @@ void winbolonetThreadDestroy(void) {
       del = wbnWaiting;
       wbnWaiting = wbnWaiting->next;
       delete del;
-    } 
+    }
 
 #ifdef _WIN32
     ReleaseMutex(hWbnMutexHandle);
@@ -183,24 +187,23 @@ void winbolonetThreadDestroy(void) {
     SDL_mutexV(hWbnMutexHandle);
     SDL_DestroyMutex(hWbnMutexHandle);
 #endif
-    
+
     hWbnMutexHandle = nullptr;
   }
 }
 
-
 /*********************************************************
-*NAME:          winbolonetThreadAddRequest
-*AUTHOR:        John Morrison
-*CREATION DATE: 16/02/03
-*LAST MODIFIED: 16/02/03
-*PURPOSE:
-*  Adds a request to the WBN update queue
-*
-*ARGUMENTS:
-*  data - Data to send 
-*  len  - Length of the data 
-*********************************************************/
+ *NAME:          winbolonetThreadAddRequest
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 16/02/03
+ *LAST MODIFIED: 16/02/03
+ *PURPOSE:
+ *  Adds a request to the WBN update queue
+ *
+ *ARGUMENTS:
+ *  data - Data to send
+ *  len  - Length of the data
+ *********************************************************/
 void winbolonetThreadAddRequest(BYTE *data, int len) {
   wbnList add; /* Used to add to the queue */
 
@@ -211,7 +214,7 @@ void winbolonetThreadAddRequest(BYTE *data, int len) {
 #ifdef _WIN32
     WaitForSingleObject(hWbnMutexHandle, INFINITE);
     add->next = wbnWaiting;
-    wbnWaiting = add;    
+    wbnWaiting = add;
     ReleaseMutex(hWbnMutexHandle);
 #else
     SDL_mutexP(hWbnMutexHandle);
@@ -222,44 +225,43 @@ void winbolonetThreadAddRequest(BYTE *data, int len) {
   }
 }
 
-
 /*********************************************************
-*NAME:          winbolonetThreadRun
-*AUTHOR:        John Morrison
-*CREATION DATE: 16/02/03
-*LAST MODIFIED: 16/02/03
-*PURPOSE:
-*  The update thread run method
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          winbolonetThreadRun
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 16/02/03
+ *LAST MODIFIED: 16/02/03
+ *PURPOSE:
+ *  The update thread run method
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 int winbolonetThreadRun(void *) {
   char dest[512]; /* Destination address space */
   wbnList q;      /* Used to iterate through the list */
-  wbnList prev;      /* Used to iterate through the list */
+  wbnList prev;   /* Used to iterate through the list */
 
   while (wbnShouldRun) {
-
 #ifdef _WIN32
     WaitForSingleObject(hWbnMutexHandle, INFINITE);
     wbnProcessing = wbnWaiting;
-    wbnWaiting = NULL;   
+    wbnWaiting = NULL;
     ReleaseMutex(hWbnMutexHandle);
 #else
     SDL_mutexP(hWbnMutexHandle);
     wbnProcessing = wbnWaiting;
     wbnWaiting = nullptr;
     SDL_mutexV(hWbnMutexHandle);
-#endif    
-    
+#endif
+
     while (NonEmpty(wbnProcessing) && wbnShouldRun) {
       /* Get last entry */
       if (wbnProcessing->next == nullptr) {
         /* Only one entry */
-        httpSendMessage(wbnProcessing->data, wbnProcessing->len, (BYTE *) dest, 512);
+        httpSendMessage(wbnProcessing->data, wbnProcessing->len, (BYTE *)dest,
+                        512);
         delete wbnProcessing;
-	wbnProcessing = nullptr; 
+        wbnProcessing = nullptr;
       } else {
         prev = wbnProcessing;
         q = wbnProcessing;
@@ -269,7 +271,7 @@ int winbolonetThreadRun(void *) {
         }
         /* Got last entry */
         prev->next = nullptr;
-        httpSendMessage(q->data, q->len, (BYTE *) dest, 512);
+        httpSendMessage(q->data, q->len, (BYTE *)dest, 512);
         delete q;
       }
     }
@@ -282,4 +284,3 @@ int winbolonetThreadRun(void *) {
   wbnFinished = true;
   return 0;
 }
-

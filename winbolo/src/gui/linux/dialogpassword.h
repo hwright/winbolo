@@ -14,11 +14,9 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef _DIALOG_PASSWORD_H
 #define _DIALOG_PASSWORD_H
 
 #include <gtk/gtk.h>
-GtkWidget* dialogPasswordCreate(void); 
+GtkWidget* dialogPasswordCreate(void);
 #endif
-

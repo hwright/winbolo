@@ -14,14 +14,12 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef _DIALOG_KEYSETUP_H
 #define _DIALOG_KEYSETUP_H
 
 #include <gtk/gtk.h>
+
 #include "input.h"
-GtkWidget* dialogKeySetupCreate(keyItems *value); 
+GtkWidget* dialogKeySetupCreate(keyItems* value);
 
 #endif
-
-

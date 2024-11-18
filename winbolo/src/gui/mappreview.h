@@ -15,75 +15,75 @@
  */
 
 /*********************************************************
-*Name:          map preview
-*Filename:      mappreview.h
-*Author:        John Morrison
-*Creation Date: 2/7/00
-*Last Modified: 2/7/00
-*Purpose:
-*  Map previews in file open dialog box
-*********************************************************/
+ *Name:          map preview
+ *Filename:      mappreview.h
+ *Author:        John Morrison
+ *Creation Date: 2/7/00
+ *Last Modified: 2/7/00
+ *Purpose:
+ *  Map previews in file open dialog box
+ *********************************************************/
 
 #ifndef _MAPPREVIEW_H
 #define _MAPPREVIEW_H
 
 #include <windows.h>
-#include "..\bolo\global.h"
-#include "..\bolo\backend.h"
 
+#include "..\bolo\backend.h"
+#include "..\bolo\global.h"
 
 /*********************************************************
-*NAME:          mapPreviewSetup
-*AUTHOR:        John Morrison
-*CREATION DATE: 2/7/00
-*LAST MODIFIED: 2/7/00
-*PURPOSE:
-*  Sets up map preview.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          mapPreviewSetup
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 2/7/00
+ *LAST MODIFIED: 2/7/00
+ *PURPOSE:
+ *  Sets up map preview.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void mapPreviewSetup();
 
 /*********************************************************
-*NAME:          mapPreviewDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 2/7/00
-*LAST MODIFIED: 2/7/00
-*PURPOSE:
-*  Destroys map preview.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          mapPreviewDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 2/7/00
+ *LAST MODIFIED: 2/7/00
+ *PURPOSE:
+ *  Destroys map preview.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void mapPreviewDestroy();
 
 /*********************************************************
-*NAME:          mapPreviewDraw
-*AUTHOR:        John Morrison
-*CREATION DATE: 2/7/00
-*LAST MODIFIED: 2/7/00
-*PURPOSE:
-*  loads the map in filename and draws it in dest if it
-*  is a valid map.
-*
-*ARGUMENTS:
-*  fileName - Map to load
-*  dest     - Destination device context
-*********************************************************/
+ *NAME:          mapPreviewDraw
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 2/7/00
+ *LAST MODIFIED: 2/7/00
+ *PURPOSE:
+ *  loads the map in filename and draws it in dest if it
+ *  is a valid map.
+ *
+ *ARGUMENTS:
+ *  fileName - Map to load
+ *  dest     - Destination device context
+ *********************************************************/
 void mapPreviewDraw(char *fileName, HDC dest);
 
 /*********************************************************
-*NAME:          mapPreviewCopy
-*AUTHOR:        John Morrison
-*CREATION DATE: 2/7/00
-*LAST MODIFIED: 2/7/00
-*PURPOSE:
-*  Copies a map preview into dest for redrawing purposes
-*
-*ARGUMENTS:
-*  dest     - Destination device context
-*********************************************************/
+ *NAME:          mapPreviewCopy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 2/7/00
+ *LAST MODIFIED: 2/7/00
+ *PURPOSE:
+ *  Copies a map preview into dest for redrawing purposes
+ *
+ *ARGUMENTS:
+ *  dest     - Destination device context
+ *********************************************************/
 void mapPreviewCopy(HDC dest);
 
 #endif /* _MAPPREVIEW_H */

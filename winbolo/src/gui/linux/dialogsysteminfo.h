@@ -14,50 +14,44 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Dialog - System Info
-*Filename:      dialogsysteminfo.c
-*Author:        John Morrison
-*Creation Date: 23/1/99
-*Last Modified: 29/4/00
-*Purpose:
-*  Looks after the system info dialog box.
-**********************************************************/
+ *Name:          Dialog - System Info
+ *Filename:      dialogsysteminfo.c
+ *Author:        John Morrison
+ *Creation Date: 23/1/99
+ *Last Modified: 29/4/00
+ *Purpose:
+ *  Looks after the system info dialog box.
+ **********************************************************/
 
 #ifndef _DIALOG_SYS_INFO
 #define _DIALOG_SYS_INFO
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
-
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "../../bolo/global.h"
-
 
 /* There are 1000 miliseconds in a second */
 #define SECOND 1000.0
 
-
 /*********************************************************
-*NAME:          dialogSysInfoUpdate
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/1/99
-*LAST MODIFIED: 23/1/99
-*PURPOSE:
-* Updates the system info dialog box
-*
-*ARGUMENTS:
-*  hWnd - The dialog window handle
-*********************************************************/
+ *NAME:          dialogSysInfoUpdate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/1/99
+ *LAST MODIFIED: 23/1/99
+ *PURPOSE:
+ * Updates the system info dialog box
+ *
+ *ARGUMENTS:
+ *  hWnd - The dialog window handle
+ *********************************************************/
 gint dialogSysInfoUpdate(gpointer data);
 
 GtkWidget* dialogSystemInfoCreate(void);
 
 #endif
-

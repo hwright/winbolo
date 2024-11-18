@@ -14,25 +14,25 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          winbolonetThread
-*Filename:      winbolonetThread.c
-*Author:        John Morrison
-*Creation Date: 16/02/03
-*Last Modified: 16/02/03
-*Purpose:
-*  WinBolo.net Thread manager - Used to stop updates
-*  causing game problems
-*********************************************************/
+ *Name:          winbolonetThread
+ *Filename:      winbolonetThread.c
+ *Author:        John Morrison
+ *Creation Date: 16/02/03
+ *Last Modified: 16/02/03
+ *Purpose:
+ *  WinBolo.net Thread manager - Used to stop updates
+ *  causing game problems
+ *********************************************************/
 
 #ifndef __WINBOLONET_THREAD_H
 #define __WINBOLONET_THREAD_H
 
 #include <string.h>
+
 #include "../bolo/global.h"
 
-#define IsEmpty(list) ((list) ==NULL)
+#define IsEmpty(list) ((list) == NULL)
 #define NonEmpty(list) (!IsEmpty(list))
 
 /* Time to sleep between checks (MS) */
@@ -46,69 +46,64 @@
 /* Amount of time to wait for the thread to shutdown (MS) */
 #define WBN_WAIT_THREAD_EXIT 1000
 
-
 typedef struct wbnListObj *wbnList;
 struct wbnListObj {
-  wbnList next;  /* Next item */
-  BYTE data[2048];  /* Data to send */
-  int len;    /* Data length */
+  wbnList next;    /* Next item */
+  BYTE data[2048]; /* Data to send */
+  int len;         /* Data length */
 };
 
-
-
-
 /*********************************************************
-*NAME:          winbolonetThreadCreate 
-*AUTHOR:        John Morrison
-*CREATION DATE: 16/02/03
-*LAST MODIFIED: 16/02/03
-*PURPOSE:
-*  Creates the winbolonet update thread. Returns success
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          winbolonetThreadCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 16/02/03
+ *LAST MODIFIED: 16/02/03
+ *PURPOSE:
+ *  Creates the winbolonet update thread. Returns success
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 bool winbolonetThreadCreate(void);
 
 /*********************************************************
-*NAME:          winbolonetThreadDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 16/02/03
-*LAST MODIFIED: 16/02/03
-*PURPOSE:
-*  Destroys the DNS lookup Thread.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          winbolonetThreadDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 16/02/03
+ *LAST MODIFIED: 16/02/03
+ *PURPOSE:
+ *  Destroys the DNS lookup Thread.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void winbolonetThreadDestroy(void);
 
 /*********************************************************
-*NAME:          winbolonetThreadAddRequest
-*AUTHOR:        John Morrison
-*CREATION DATE: 16/02/03
-*LAST MODIFIED: 16/02/03
-*PURPOSE:
-*  Adds a request to the DNS lookup queue
-*
-*ARGUMENTS:
-* data - Data to send 
-* len  - Length of the data 
-*********************************************************/
+ *NAME:          winbolonetThreadAddRequest
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 16/02/03
+ *LAST MODIFIED: 16/02/03
+ *PURPOSE:
+ *  Adds a request to the DNS lookup queue
+ *
+ *ARGUMENTS:
+ * data - Data to send
+ * len  - Length of the data
+ *********************************************************/
 void winbolonetThreadAddRequest(BYTE *data, int len);
 
 /*********************************************************
-*NAME:          winbolonetThreadRun
-*AUTHOR:        John Morrison
-*CREATION DATE: 16/02/03
-*LAST MODIFIED: 16/02/03
-*PURPOSE:
-*  The DNS Lookups thread run method
-*
-*ARGUMENTS:
-*
-*********************************************************/
-int winbolonetThreadRun(void*);
+ *NAME:          winbolonetThreadRun
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 16/02/03
+ *LAST MODIFIED: 16/02/03
+ *PURPOSE:
+ *  The DNS Lookups thread run method
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+int winbolonetThreadRun(void *);
 
 #endif /* __WINBOLONET_THREAD_H */
-

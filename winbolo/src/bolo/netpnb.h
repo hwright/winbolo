@@ -14,22 +14,22 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Net Pills n Bases
-*Filename:      Netpnb.h
-*Author:        John Morrison
-*Creation Date: 09/03/99
-*Last Modified: 20/08/02
-*Purpose:
-*  Handles keeping of base and pill events for transport
-*  across the network.
-*********************************************************/
+ *Name:          Net Pills n Bases
+ *Filename:      Netpnb.h
+ *Author:        John Morrison
+ *Creation Date: 09/03/99
+ *Last Modified: 20/08/02
+ *Purpose:
+ *  Handles keeping of base and pill events for transport
+ *  across the network.
+ *********************************************************/
 
 #ifndef NET_PANDB_H
 #define NET_PANDB_H
 
 #include "global.h"
+#include "types.h"
 
 /* Defines */
 
@@ -52,21 +52,19 @@
 #define NPNB_SAVEMAP 15
 
 /* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) ==NULL)
+#define IsEmpty(list) ((list) == NULL)
 #define NonEmpty(list) (!IsEmpty(list))
 #define NetPNBTail(list) ((list)->next);
-
-
 
 /* NetPNB Type */
 
 typedef struct netPNBObj *netPnb;
 struct netPNBObj {
-  netPnb next;  /* Next item               */ 
-  BYTE item;    /* Value of this item      */
-  BYTE owner;   /* Owner of this event     */
-  BYTE id;      /* Item Id                 */
-  BYTE x;       /* Item X & Y Co-ordinates */
+  netPnb next; /* Next item               */
+  BYTE item;   /* Value of this item      */
+  BYTE owner;  /* Owner of this event     */
+  BYTE id;     /* Item Id                 */
+  BYTE x;      /* Item X & Y Co-ordinates */
   BYTE y;
   BYTE opt;
 };
@@ -81,157 +79,163 @@ struct netPnbContextObj {
 /* Prototypes */
 
 /*********************************************************
-*NAME:          netPNBCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 9/3/99
-*LAST MODIFIED: 9/3/99
-*PURPOSE:
-* Creates an netPNB struncture
-*
-*ARGUMENTS:
-*  pnbc    - Pointer to the netPnbContext object
-*********************************************************/
+ *NAME:          netPNBCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 9/3/99
+ *LAST MODIFIED: 9/3/99
+ *PURPOSE:
+ * Creates an netPNB struncture
+ *
+ *ARGUMENTS:
+ *  pnbc    - Pointer to the netPnbContext object
+ *********************************************************/
 void netPNBCreate(netPnbContext *pnbc);
 
 /*********************************************************
-*NAME:          netPNBDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 9/3/99
-*LAST MODIFIED: 9/3/99
-*PURPOSE:
-* Destroys a netPNB structure
-*
-*ARGUMENTS:
-*  pnbc    - Pointer to the netPnbContext object
-*********************************************************/
+ *NAME:          netPNBDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 9/3/99
+ *LAST MODIFIED: 9/3/99
+ *PURPOSE:
+ * Destroys a netPNB structure
+ *
+ *ARGUMENTS:
+ *  pnbc    - Pointer to the netPnbContext object
+ *********************************************************/
 void netPNBDestroy(netPnbContext *pnbc);
 
 /*********************************************************
-*NAME:          netPNBAdd
-*AUTHOR:        John Morrison
-*CREATION DATE:  9/3/99
-*LAST MODIFIED: 31/10/99
-*PURPOSE:
-* Adds an item to the netPNB structure
-*
-*ARGUMENTS:
-*  pnbc    - Pointer to the netPnbContext object
-*  event   - Event type
-*  itemNum - Item Number which the event occured to
-*  owner   - Owner of the event
-*  opt1    - Optional location data
-*  opt2    - Optional location data
-*  opt3    - Optional data
-*********************************************************/
-void netPNBAdd(netPnbContext *pnbc, BYTE event, BYTE itemNum, BYTE owner, BYTE opt1, BYTE opt2, BYTE opt3);
+ *NAME:          netPNBAdd
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  9/3/99
+ *LAST MODIFIED: 31/10/99
+ *PURPOSE:
+ * Adds an item to the netPNB structure
+ *
+ *ARGUMENTS:
+ *  pnbc    - Pointer to the netPnbContext object
+ *  event   - Event type
+ *  itemNum - Item Number which the event occured to
+ *  owner   - Owner of the event
+ *  opt1    - Optional location data
+ *  opt2    - Optional location data
+ *  opt3    - Optional data
+ *********************************************************/
+void netPNBAdd(netPnbContext *pnbc, BYTE event, BYTE itemNum, BYTE owner,
+               BYTE opt1, BYTE opt2, BYTE opt3);
 
 /*********************************************************
-*NAME:          netPNBMake
-*AUTHOR:        John Morrison
-*CREATION DATE: 9/3/99
-*LAST MODIFIED: 20/08/02
-*PURPOSE:
-* Makes the network packet and returns its length.
-*
-*ARGUMENTS:
-*  pnbc    - Pointer to the netPnbContext object
-*  buff    - Pointer to buffer to put data in
-*********************************************************/
+ *NAME:          netPNBMake
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 9/3/99
+ *LAST MODIFIED: 20/08/02
+ *PURPOSE:
+ * Makes the network packet and returns its length.
+ *
+ *ARGUMENTS:
+ *  pnbc    - Pointer to the netPnbContext object
+ *  buff    - Pointer to buffer to put data in
+ *********************************************************/
 int netPNBMake(netPnbContext *pnbc, BYTE *buff);
 
 /*********************************************************
-*NAME:          netPNBExtractItemServer
-*AUTHOR:        John Morrison
-*CREATION DATE: 11/11/99
-*LAST MODIFIED:  21/9/00
-*PURPOSE:
-* Extracts a ntPNB item as a server. Returns whether we
-* should add the item (cheater check)
-*
-*ARGUMENTS:
-*  pnbc    - Pointer to the netPnbContext object
-*  mp      - Pointer to the map sturcture
-*  pb      - Pointer to the pillbox sturcture
-*  bs      - Pointer to the bases sturcture
-*  event   - netPNB Event
-*  itemNum - Item number event occurred to
-*  owner   - Owner of the event
-*  opt1    - Optional data 1
-*  opt2    - Optional data 2
-*  opt3    - Optional data 3
-*********************************************************/
-bool netPNBExtractItemServer(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb, BYTE event, BYTE itemNum, BYTE owner, BYTE opt1, BYTE opt2, BYTE opt3);
+ *NAME:          netPNBExtractItemServer
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 11/11/99
+ *LAST MODIFIED:  21/9/00
+ *PURPOSE:
+ * Extracts a ntPNB item as a server. Returns whether we
+ * should add the item (cheater check)
+ *
+ *ARGUMENTS:
+ *  pnbc    - Pointer to the netPnbContext object
+ *  mp      - Pointer to the map sturcture
+ *  pb      - Pointer to the pillbox sturcture
+ *  bs      - Pointer to the bases sturcture
+ *  event   - netPNB Event
+ *  itemNum - Item number event occurred to
+ *  owner   - Owner of the event
+ *  opt1    - Optional data 1
+ *  opt2    - Optional data 2
+ *  opt3    - Optional data 3
+ *********************************************************/
+bool netPNBExtractItemServer(netPnbContext *pnbc, map *mp, bases *bs,
+                             pillboxes *pb, BYTE event, BYTE itemNum,
+                             BYTE owner, BYTE opt1, BYTE opt2, BYTE opt3);
 
 /*********************************************************
-*NAME:          netPNBExtractItemClient
-*AUTHOR:        John Morrison
-*CREATION DATE: 11/11/99
-*LAST MODIFIED: 11/11/99
-*PURPOSE:
-* Extracts a ntPNB item as a client. Returns if an screen
-* update is required.
-*
-*ARGUMENTS:
-*  pnbc    - Pointer to the netPnbContext object
-*  mp      - Pointer to the map sturcture
-*  pb      - Pointer to the pillbox sturcture
-*  bs      - Pointer to the bases sturcture
-*  event   - netPNB Event
-*  itemNum - Item number event occurred to
-*  owner   - Owner of the event
-*  opt1    - Optional data 1
-*  opt2    - Optional data 2
-*  opt3    - Optional data 3
-*********************************************************/
-bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb, BYTE event, BYTE itemNum, BYTE owner, BYTE opt1, BYTE opt2, BYTE opt3);
+ *NAME:          netPNBExtractItemClient
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 11/11/99
+ *LAST MODIFIED: 11/11/99
+ *PURPOSE:
+ * Extracts a ntPNB item as a client. Returns if an screen
+ * update is required.
+ *
+ *ARGUMENTS:
+ *  pnbc    - Pointer to the netPnbContext object
+ *  mp      - Pointer to the map sturcture
+ *  pb      - Pointer to the pillbox sturcture
+ *  bs      - Pointer to the bases sturcture
+ *  event   - netPNB Event
+ *  itemNum - Item number event occurred to
+ *  owner   - Owner of the event
+ *  opt1    - Optional data 1
+ *  opt2    - Optional data 2
+ *  opt3    - Optional data 3
+ *********************************************************/
+bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
+                             pillboxes *pb, BYTE event, BYTE itemNum,
+                             BYTE owner, BYTE opt1, BYTE opt2, BYTE opt3);
 
 /*********************************************************
-*NAME:          netPNBExtract
-*AUTHOR:        John Morrison
-*CREATION DATE: 9/3/99
-*LAST MODIFIED: 8/1/00
-*PURPOSE:
-* Extracts the data and plays appropriate sounds. Returns
-* FALSE if a pnb-no error occurs else TRUE
-*
-*ARGUMENTS:
-*  pnbc    - Pointer to the netPnbContext object
-*  mp      - Pointer to the map sturcture
-*  pb      - Pointer to the pillbox sturcture
-*  bs      - Pointer to the bases sturcture
-*  buff    - Pointer to buffer to put data in
-*  dataLen - Length of the data.
-*  isTcp   - Did this data arrive via TCP
-*********************************************************/
-bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb, BYTE *buff, int dataLen, bool isTcp);
+ *NAME:          netPNBExtract
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 9/3/99
+ *LAST MODIFIED: 8/1/00
+ *PURPOSE:
+ * Extracts the data and plays appropriate sounds. Returns
+ * FALSE if a pnb-no error occurs else TRUE
+ *
+ *ARGUMENTS:
+ *  pnbc    - Pointer to the netPnbContext object
+ *  mp      - Pointer to the map sturcture
+ *  pb      - Pointer to the pillbox sturcture
+ *  bs      - Pointer to the bases sturcture
+ *  buff    - Pointer to buffer to put data in
+ *  dataLen - Length of the data.
+ *  isTcp   - Did this data arrive via TCP
+ *********************************************************/
+bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb,
+                   BYTE *buff, int dataLen, bool isTcp);
 
 /*********************************************************
-*NAME:          netPNBMessage
-*AUTHOR:        John Morrison
-*CREATION DATE: 14/3/99
-*LAST MODIFIED: 14/3/99
-*PURPOSE:
-* Some messages need to be displayed to the screen. Do so
-* here
-*
-*ARGUMENTS:
-*  playerNum - The player number.
-*  msg       - Message to display
-*********************************************************/
+ *NAME:          netPNBMessage
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 14/3/99
+ *LAST MODIFIED: 14/3/99
+ *PURPOSE:
+ * Some messages need to be displayed to the screen. Do so
+ * here
+ *
+ *ARGUMENTS:
+ *  playerNum - The player number.
+ *  msg       - Message to display
+ *********************************************************/
 void netPNBMessage(BYTE playerNum, char *msg);
 
 /*********************************************************
-*NAME:          netPNBDeleteItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 8/1/99
-*LAST MODIFIED: 8/1/99
-*PURPOSE:
-*  Deletes the item for the given number
-*
-*ARGUMENTS:
-*  pnbc    - Pointer to the netPnbContext object
-*  itemNum - The item number to delete
-*********************************************************/
+ *NAME:          netPNBDeleteItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 8/1/99
+ *LAST MODIFIED: 8/1/99
+ *PURPOSE:
+ *  Deletes the item for the given number
+ *
+ *ARGUMENTS:
+ *  pnbc    - Pointer to the netPnbContext object
+ *  itemNum - The item number to delete
+ *********************************************************/
 void netPNBDeleteItem(netPnbContext *pnbc, int itemNum);
 
 #endif /* NET_PANDB_H */

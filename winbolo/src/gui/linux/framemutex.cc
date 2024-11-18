@@ -14,43 +14,42 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          frameMutex
-*Filename:      frameMutex.c
-*Author:        John Morrison
-*Creation Date: 27/5/00
-*Last Modified: 27/5/00
-*Purpose:
-*  WinBolo Server Thread manager
-*********************************************************/
+ *Name:          frameMutex
+ *Filename:      frameMutex.c
+ *Author:        John Morrison
+ *Creation Date: 27/5/00
+ *Last Modified: 27/5/00
+ *Purpose:
+ *  WinBolo Server Thread manager
+ *********************************************************/
 
 #ifdef _WIN32
-#include <windows.h>
 #include <winbase.h>
+#include <windows.h>
 #else
 #include "SDL.h"
 typedef SDL_mutex *HANDLE;
 #endif
 #include <string.h>
 #include <time.h>
+
 #include "../../bolo/global.h"
 #include "framemutex.h"
 
 static HANDLE hFrameMutexHandle = nullptr;
 
-
 /*********************************************************
-*NAME:          frameMutexCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Creates the frame Mutex. Returns success
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          frameMutexCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Creates the frame Mutex. Returns success
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 bool frameMutexCreate(void) {
   bool returnValue; /* Value to return */
 
@@ -61,7 +60,7 @@ bool frameMutexCreate(void) {
   if (hFrameMutexHandle == NULL) {
     DWORD d = GetLastError();
     if (d == ERROR_ALREADY_EXISTS) {
-      d= 1;
+      d = 1;
     }
     returnValue = false;
   }
@@ -76,16 +75,16 @@ bool frameMutexCreate(void) {
 }
 
 /*********************************************************
-*NAME:          frameMutexCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Destroys the frame Mutex.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          frameMutexCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Destroys the frame Mutex.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void frameMutexDestroy(void) {
 #ifdef _WIN32
   CloseHandle(hFrameMutexHandle);
@@ -95,18 +94,17 @@ void frameMutexDestroy(void) {
   hFrameMutexHandle = nullptr;
 }
 
-
 /*********************************************************
-*NAME:          frameMutexWaitFor
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Destroys the frame Mutex.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          frameMutexWaitFor
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Destroys the frame Mutex.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void frameMutexWaitFor(void) {
 #ifdef _WIN32
   WaitForSingleObject(hFrameMutexHandle, INFINITE);
@@ -116,17 +114,17 @@ void frameMutexWaitFor(void) {
 }
 
 /*********************************************************
-*NAME:          frameMutexRelease
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Frees the lock on the frame Mutex so other waiting
-*  subsystems can aquire it.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          frameMutexRelease
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Frees the lock on the frame Mutex so other waiting
+ *  subsystems can aquire it.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void frameMutexRelease(void) {
 #ifdef _WIN32
   ReleaseMutex(hFrameMutexHandle);

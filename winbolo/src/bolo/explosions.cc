@@ -14,51 +14,49 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Explosion
-*Filename:      explosion.c
-*Author:        John Morrison
-*Creation Date: 01/01/99
-*Last Modified: 04/10/03
-*Purpose:
-*  Responsable for Explosions
-*********************************************************/
+ *Name:          Explosion
+ *Filename:      explosion.c
+ *Author:        John Morrison
+ *Creation Date: 01/01/99
+ *Last Modified: 04/10/03
+ *Purpose:
+ *  Responsable for Explosions
+ *********************************************************/
 
-#include "global.h"
-#include "screenbullet.h"
-#include "screen.h"
-#include "rubble.h"
-#include "frontend.h"
 #include "explosions.h"
 
-/*********************************************************
-*NAME:          explosionsCreate
-*AUTHOR:        John Morrison
-*CREATION DATE:  1/1/99
-*LAST MODIFIED:  1/1/99
-*PURPOSE:
-*  Sets up the explosions data structure
-*
-*ARGUMENTS:
-*  expl - Pointer to the explosions object
-*********************************************************/
-void explosionsCreate(explosions *expl) {
-	*expl = nullptr;
-}
+#include "frontend.h"
+#include "global.h"
+#include "rubble.h"
+#include "screen.h"
+#include "screenbullet.h"
 
 /*********************************************************
-*NAME:          explosionsDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE:  1/1/99
-*LAST MODIFIED:  1/1/99
-*PURPOSE:
-*  Destroys and frees memory for the explosions data 
-*  structure
-*
-*ARGUMENTS:
-*  expl - Pointer to the explosions object
-*********************************************************/
+ *NAME:          explosionsCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  1/1/99
+ *LAST MODIFIED:  1/1/99
+ *PURPOSE:
+ *  Sets up the explosions data structure
+ *
+ *ARGUMENTS:
+ *  expl - Pointer to the explosions object
+ *********************************************************/
+void explosionsCreate(explosions *expl) { *expl = nullptr; }
+
+/*********************************************************
+ *NAME:          explosionsDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  1/1/99
+ *LAST MODIFIED:  1/1/99
+ *PURPOSE:
+ *  Destroys and frees memory for the explosions data
+ *  structure
+ *
+ *ARGUMENTS:
+ *  expl - Pointer to the explosions object
+ *********************************************************/
 void explosionsDestroy(explosions *expl) {
   explosions q;
 
@@ -70,23 +68,24 @@ void explosionsDestroy(explosions *expl) {
 }
 
 /*********************************************************
-*NAME:          explosionsAddItem
-*AUTHOR:        John Morrison
-*CREATION DATE:  1/1/99
-*LAST MODIFIED: 15/1/99
-*PURPOSE:
-*  Adds an item to the explosions data structure. 
-*
-*ARGUMENTS:
-*  expl   - Pointer to the explosions object
-*  value  - Pointer to the shells data structure
-*  mx     - Map X co-ord of the explosion
-*  my     - Map Y co-ord of the explosion
-*  px     - Pixel X co-ord of the explosion
-*  py     - Pixel Y co-ord of the explosion
-*  startPos  - How far through the explosion does it start
-*********************************************************/
-void explosionsAddItem(explosions *expl, BYTE mx, BYTE my, BYTE px, BYTE py, BYTE startPos) {
+ *NAME:          explosionsAddItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  1/1/99
+ *LAST MODIFIED: 15/1/99
+ *PURPOSE:
+ *  Adds an item to the explosions data structure.
+ *
+ *ARGUMENTS:
+ *  expl   - Pointer to the explosions object
+ *  value  - Pointer to the shells data structure
+ *  mx     - Map X co-ord of the explosion
+ *  my     - Map Y co-ord of the explosion
+ *  px     - Pixel X co-ord of the explosion
+ *  py     - Pixel Y co-ord of the explosion
+ *  startPos  - How far through the explosion does it start
+ *********************************************************/
+void explosionsAddItem(explosions *expl, BYTE mx, BYTE my, BYTE px, BYTE py,
+                       BYTE startPos) {
   explosions q;
 
   q = new explosionsObj;
@@ -100,25 +99,25 @@ void explosionsAddItem(explosions *expl, BYTE mx, BYTE my, BYTE px, BYTE py, BYT
   if (NonEmpty(*expl)) {
     (*expl)->prev = q;
   }
-  
+
   *expl = q;
 }
 
 /*********************************************************
-*NAME:          explosionsUpdate
-*AUTHOR:        John Morrison
-*CREATION DATE:  1/1/99
-*LAST MODIFIED:  1/1/99
-*PURPOSE:
-*  Updates each explosion position
-*
-*ARGUMENTS:
-*  expl - Pointer to the explosions object
-*********************************************************/
+ *NAME:          explosionsUpdate
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  1/1/99
+ *LAST MODIFIED:  1/1/99
+ *PURPOSE:
+ *  Updates each explosion position
+ *
+ *ARGUMENTS:
+ *  expl - Pointer to the explosions object
+ *********************************************************/
 void explosionsUpdate(explosions *expl) {
-  static BYTE update =0;  /* The update time */
-  explosions position; /* Position throught the items */
-  bool needUpdate;     /* Whether an update is needed or not */
+  static BYTE update = 0; /* The update time */
+  explosions position;    /* Position throught the items */
+  bool needUpdate;        /* Whether an update is needed or not */
 
   update++;
   if (update != EXPLOAD_UPDATE_TIME) {
@@ -132,13 +131,13 @@ void explosionsUpdate(explosions *expl) {
   while (NonEmpty(position)) {
     needUpdate = true;
     if (position->length > EXPLODE_DEATH) {
-        position->length--;
+      position->length--;
     } else {
       /* Remove from data structure */
       needUpdate = false;
       explosionDeleteItem(expl, &position);
     }
-    
+
     /* Get the next Item */
     if (*expl != nullptr && needUpdate) {
       position = ExplosionsTail(position);
@@ -147,19 +146,19 @@ void explosionsUpdate(explosions *expl) {
 }
 
 /*********************************************************
-*NAME:          explosionDeleteItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 1/1/99
-*LAST MODIFIED: 1/1/99
-*PURPOSE:
-*  Deletes the item for the given number
-*
-*ARGUMENTS:
-*  expl  - Pointer to the explosions object
-*  value - Position to destroy (places next in it)
-*********************************************************/
+ *NAME:          explosionDeleteItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 1/1/99
+ *LAST MODIFIED: 1/1/99
+ *PURPOSE:
+ *  Deletes the item for the given number
+ *
+ *ARGUMENTS:
+ *  expl  - Pointer to the explosions object
+ *  value - Position to destroy (places next in it)
+ *********************************************************/
 void explosionDeleteItem(explosions *expl, explosions *value) {
-  explosions del;  /* The item to delete */
+  explosions del; /* The item to delete */
 
   del = *value;
   (*value) = ExplosionsTail(del);
@@ -170,7 +169,7 @@ void explosionDeleteItem(explosions *expl, explosions *value) {
     *expl = ExplosionsTail(*expl);
     if (NonEmpty(*expl)) {
       (*expl)->prev = nullptr;
-    } 
+    }
   }
 
   if (del->next != nullptr) {
@@ -180,29 +179,33 @@ void explosionDeleteItem(explosions *expl, explosions *value) {
 }
 
 /*********************************************************
-*NAME:          explosionCalcScreenBullets
-*AUTHOR:        John Morrison
-*CREATION DATE: 1/1/98
-*LAST MODIFIED: 1/1/98
-*PURPOSE:
-*  Adds items to the sceenBullets data structure if they
-*  are on screen
-*
-*ARGUMENTS:
-*  expl       - Pointer to the explosions object
-*  sBullet    - The screenBullets Data structure
-*  leftPos    - X Map offset start
-*  rightPos   - X Map offset end
-*  topPos     - Y Map offset end
-*  bottomPos  - Y Map offset end
-*********************************************************/
-void explosionsCalcScreenBullets(explosions *expl, screenBullets *sBullets, BYTE leftPos, BYTE rightPos, BYTE topPos, BYTE bottomPos) {
-  explosions q;   /* Temp Pointer */
+ *NAME:          explosionCalcScreenBullets
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 1/1/98
+ *LAST MODIFIED: 1/1/98
+ *PURPOSE:
+ *  Adds items to the sceenBullets data structure if they
+ *  are on screen
+ *
+ *ARGUMENTS:
+ *  expl       - Pointer to the explosions object
+ *  sBullet    - The screenBullets Data structure
+ *  leftPos    - X Map offset start
+ *  rightPos   - X Map offset end
+ *  topPos     - Y Map offset end
+ *  bottomPos  - Y Map offset end
+ *********************************************************/
+void explosionsCalcScreenBullets(explosions *expl, screenBullets *sBullets,
+                                 BYTE leftPos, BYTE rightPos, BYTE topPos,
+                                 BYTE bottomPos) {
+  explosions q; /* Temp Pointer */
 
   q = *expl;
   while (NonEmpty(q)) {
-    if (q->mx >= leftPos && q->mx < rightPos && q->my >= topPos && q->my < bottomPos) {
-      screenBulletsAddItem(sBullets, (BYTE) (q->mx-leftPos), (BYTE) (q->my-topPos), q->px, q->py, q->length);
+    if (q->mx >= leftPos && q->mx < rightPos && q->my >= topPos &&
+        q->my < bottomPos) {
+      screenBulletsAddItem(sBullets, (BYTE)(q->mx - leftPos),
+                           (BYTE)(q->my - topPos), q->px, q->py, q->length);
     }
     q = ExplosionsTail(q);
   }

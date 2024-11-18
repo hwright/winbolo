@@ -14,23 +14,20 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Dialog - Languages
-*Filename:      dialogLanguages.h
-*Author:        John Morrison
-*Creation Date: 29/4/00
-*Last Modified: 29/4/00
-*Purpose:
-*  Looks after the languages dialog
-*********************************************************/
+ *Name:          Dialog - Languages
+ *Filename:      dialogLanguages.h
+ *Author:        John Morrison
+ *Creation Date: 29/4/00
+ *Last Modified: 29/4/00
+ *Purpose:
+ *  Looks after the languages dialog
+ *********************************************************/
 
 #ifndef _DIALOG_LANGUAGES_H
 #define _DIALOG_LANGUAGES_H
 
-
 #include <windows.h>
-
 
 #define SLASH_STRING "\\"
 #define SLASH_CHAR '\\'
@@ -39,59 +36,60 @@
 #define LANG_EXTENSION ".wbl"
 
 /*********************************************************
-*NAME:          dialogLanguagesCallback
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/4/00
-*LAST MODIFIED: 29/4/00
-*PURPOSE:
-*  The Languages Dialog call back function.
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*  msg    - The message
-*  wParam - Message parameters
-*  lParam - More Message parameters
-*********************************************************/
-BOOL CALLBACK dialogLanguagesCallback( HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam);
+ *NAME:          dialogLanguagesCallback
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/4/00
+ *LAST MODIFIED: 29/4/00
+ *PURPOSE:
+ *  The Languages Dialog call back function.
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *  msg    - The message
+ *  wParam - Message parameters
+ *  lParam - More Message parameters
+ *********************************************************/
+BOOL CALLBACK dialogLanguagesCallback(HWND hWnd, unsigned uMsg, WPARAM wParam,
+                                      LPARAM lParam);
 
 /*********************************************************
-*NAME:          dialogLanguagesInit
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/4/00
-*LAST MODIFIED: 29/4/00
-*PURPOSE:
-*  The Languages Dialog init function
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*********************************************************/
+ *NAME:          dialogLanguagesInit
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/4/00
+ *LAST MODIFIED: 29/4/00
+ *PURPOSE:
+ *  The Languages Dialog init function
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *********************************************************/
 void dialogLanguagesInit(HWND hWnd);
 
 /*********************************************************
-*NAME:          dialogLanguagesLoadList
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/4/00
-*LAST MODIFIED: 29/4/00
-*PURPOSE:
-*  Loads the list of available languages into the 
-*  dialog box
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*********************************************************/
+ *NAME:          dialogLanguagesLoadList
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/4/00
+ *LAST MODIFIED: 29/4/00
+ *PURPOSE:
+ *  Loads the list of available languages into the
+ *  dialog box
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *********************************************************/
 void dialogLanguagesLoadList(HWND hWnd);
 
 /*********************************************************
-*NAME:          dialogLanguagesSetText
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/4/00
-*LAST MODIFIED: 29/4/00
-*PURPOSE:
-*  Sets the text in the dialog box
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*********************************************************/
+ *NAME:          dialogLanguagesSetText
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/4/00
+ *LAST MODIFIED: 29/4/00
+ *PURPOSE:
+ *  Sets the text in the dialog box
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *********************************************************/
 void dialogLanguagesSetText(HWND hWnd);
 
 #endif /* _DIALOG_LANGUAGES_H */

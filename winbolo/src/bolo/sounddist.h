@@ -14,17 +14,16 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Sound Distancing
-*Filename:      sounddist.h
-*Author:        John Morrison
-*Creation Date: 19/1/99
-*Last Modified: 05/05/01
-*Purpose:
-*  Responsible for differentiating between playing soft
-*  sound effects and loud sound effects.
-*********************************************************/
+ *Name:          Sound Distancing
+ *Filename:      sounddist.h
+ *Author:        John Morrison
+ *Creation Date: 19/1/99
+ *Last Modified: 05/05/01
+ *Purpose:
+ *  Responsible for differentiating between playing soft
+ *  sound effects and loud sound effects.
+ *********************************************************/
 
 #ifndef _SOUNDDIST_H
 #define _SOUNDDIST_H
@@ -40,40 +39,37 @@
 /* 40 map squares then play no sound */
 #define SDIST_NONE 40
 
-
 /* Prototypes */
 
 /*********************************************************
-*NAME:          soundDist
-*AUTHOR:        John Morrison
-*CREATION DATE: 19/1/99
-*LAST MODIFIED: 19/1/99
-*PURPOSE:
-*  Calculates whether a soft sound of a loud sound should 
-*  be played and passes paremeters to frontend
-*
-*ARGUMENTS:
-*  value - Sound effect to be played
-*  mx    - Map X co-ordinatate for the sound origin
-*  my    - Map Y co-ordinatate for the sound origin
-*********************************************************/
+ *NAME:          soundDist
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 19/1/99
+ *LAST MODIFIED: 19/1/99
+ *PURPOSE:
+ *  Calculates whether a soft sound of a loud sound should
+ *  be played and passes paremeters to frontend
+ *
+ *ARGUMENTS:
+ *  value - Sound effect to be played
+ *  mx    - Map X co-ordinatate for the sound origin
+ *  my    - Map Y co-ordinatate for the sound origin
+ *********************************************************/
 void soundDist(sndEffects value, BYTE mx, BYTE my);
 
 /*********************************************************
-*NAME:          soundDistLog
-*AUTHOR:        John Morrison
-*CREATION DATE: 05/05/01
-*LAST MODIFIED: 05/05/01
-*PURPOSE:
-*  Calculates the item to be logged
-*
-*ARGUMENTS:
-*  value - Sound effect to be played
-*  mx    - Map X co-ordinatate for the sound origin
-*  my    - Map Y co-ordinatate for the sound origin
-*********************************************************/
+ *NAME:          soundDistLog
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 05/05/01
+ *LAST MODIFIED: 05/05/01
+ *PURPOSE:
+ *  Calculates the item to be logged
+ *
+ *ARGUMENTS:
+ *  value - Sound effect to be played
+ *  mx    - Map X co-ordinatate for the sound origin
+ *  my    - Map Y co-ordinatate for the sound origin
+ *********************************************************/
 void soundDistLog(sndEffects value, BYTE mx, BYTE my);
 
 #endif /* _SOUNDDIST_H */
-
-

@@ -14,12 +14,10 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef _DIALOGABOUT_H
 #define _DIALOGABOUT_H
 
 #include <gtk/gtk.h>
 
-GtkWidget* dialogAboutCreate(void); 
+GtkWidget* dialogAboutCreate(void);
 #endif
-

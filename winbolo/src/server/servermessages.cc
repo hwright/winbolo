@@ -14,28 +14,25 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          ServerMessages
-*Filename:      ServerMessages.c
-*Author:        John Morrison
-*Creation Date:  10/8/99
-*Last Modified:  10/8/99
-*Purpose:
-*  Responsable for messages.
-*********************************************************/
+ *Name:          ServerMessages
+ *Filename:      ServerMessages.c
+ *Author:        John Morrison
+ *Creation Date:  10/8/99
+ *Last Modified:  10/8/99
+ *Purpose:
+ *  Responsable for messages.
+ *********************************************************/
 
 #include <stdio.h>
+
 #include "../bolo/messages.h"
 
-
-bool isServerQuiet = false;              /* Is the server running in quiet mode */
+bool isServerQuiet = false; /* Is the server running in quiet mode */
 char serverMessageLogFile[FILENAME_MAX]; /* FileName to save to */
-bool serverMessageUseLogFile = false; /* Are we using a log file */
+bool serverMessageUseLogFile = false;    /* Are we using a log file */
 
-void serverMessageSetQuietMode(bool modeOn) {
-  isServerQuiet = modeOn;
-}
+void serverMessageSetQuietMode(bool modeOn) { isServerQuiet = modeOn; }
 
 void serverMessagesSetLogFile(char *logFile) {
   strcpy(serverMessageLogFile, logFile);
@@ -43,26 +40,27 @@ void serverMessagesSetLogFile(char *logFile) {
 }
 
 /*********************************************************
-*NAME:          serverMessageAdd
-*AUTHOR:        John Morrison
-*CREATION DATE:  3/1/99
-*LAST MODIFIED:  3/1/99
-*PURPOSE:
-*  Functions call this to display a message. They must
-*  pass the message type so that it can be determined
-*  whether the header should be printed etc.
-*
-*ARGUMENTS:
-*  msgType - The type of the message
-*  top     - The message to print in the top line
-*  bottom  - The message to print in the bottom line
-*********************************************************/
-void serverMessageAdd(messageType msgType, const char *top, const char *bottom) {
+ *NAME:          serverMessageAdd
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  3/1/99
+ *LAST MODIFIED:  3/1/99
+ *PURPOSE:
+ *  Functions call this to display a message. They must
+ *  pass the message type so that it can be determined
+ *  whether the header should be printed etc.
+ *
+ *ARGUMENTS:
+ *  msgType - The type of the message
+ *  top     - The message to print in the top line
+ *  bottom  - The message to print in the bottom line
+ *********************************************************/
+void serverMessageAdd(messageType msgType, const char *top,
+                      const char *bottom) {
   FILE *fp; /* File to write to */
   if (msgType != assistantMessage && !isServerQuiet) {
     if (!serverMessageUseLogFile) {
       fprintf(stdout, "%s\n%s\n", top, bottom);
-     } else {
+    } else {
       fp = fopen(serverMessageLogFile, "a");
       if (fp) {
         fprintf(fp, "%s\n%s\n", top, bottom);
@@ -86,4 +84,3 @@ void serverMessageConsoleMessage(const char *msg) {
     }
   }
 }
-

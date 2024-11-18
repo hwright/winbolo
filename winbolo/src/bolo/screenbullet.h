@@ -14,16 +14,15 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Screen Bullets
-*Filename:      screenbullet.h
-*Author:        John Morrison
-*Creation Date: 25/12/98
-*Last Modified: 25/12/98
-*Purpose:
-*  Responsable for Shells tracking/collision detect etc.
-*********************************************************/
+ *Name:          Screen Bullets
+ *Filename:      screenbullet.h
+ *Author:        John Morrison
+ *Creation Date: 25/12/98
+ *Last Modified: 25/12/98
+ *Purpose:
+ *  Responsable for Shells tracking/collision detect etc.
+ *********************************************************/
 
 #ifndef SCREENBULLETS_H
 #define SCREENBULLETS_H
@@ -31,7 +30,7 @@
 #include "global.h"
 
 /* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) ==NULL)
+#define IsEmpty(list) ((list) == NULL)
 #define NonEmpty(list) (!IsEmpty(list))
 #define ScreenBulletHeadMX(list) ((list)->mx);
 #define ScreenBulletHeadMY(list) ((list)->my);
@@ -55,80 +54,81 @@ struct screenBulletsObj {
 /* Prototypes */
 
 /*********************************************************
-*NAME:          screenBulletsCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/12/98
-*LAST MODIFIED: 26/12/98
-*PURPOSE:
-*  Sets up the screen bullets data structure
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenBulletsCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/12/98
+ *LAST MODIFIED: 26/12/98
+ *PURPOSE:
+ *  Sets up the screen bullets data structure
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 screenBullets screenBulletsCreate(void);
 
 /*********************************************************
-*NAME:          screenBulletsAddItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/12/98
-*LAST MODIFIED: 26/12/98
-*PURPOSE:
-*  Adds an item to the screenBullets data structure.
-*
-*ARGUMENTS:
-*  value - Pointer to the screenBullets data structure
-*  mx    - X co-ord of the map position
-*  my    - Y co-ord of the map position
-*  px    - X pixel offset
-*  py    - Y pixel offset
-*  frame - Frame identifer of the bullet
-*********************************************************/
-void screenBulletsAddItem(screenBullets *value, BYTE mx, BYTE my, BYTE px, BYTE py, BYTE frame);
+ *NAME:          screenBulletsAddItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/12/98
+ *LAST MODIFIED: 26/12/98
+ *PURPOSE:
+ *  Adds an item to the screenBullets data structure.
+ *
+ *ARGUMENTS:
+ *  value - Pointer to the screenBullets data structure
+ *  mx    - X co-ord of the map position
+ *  my    - Y co-ord of the map position
+ *  px    - X pixel offset
+ *  py    - Y pixel offset
+ *  frame - Frame identifer of the bullet
+ *********************************************************/
+void screenBulletsAddItem(screenBullets *value, BYTE mx, BYTE my, BYTE px,
+                          BYTE py, BYTE frame);
 
 /*********************************************************
-*NAME:          screenBulletsGetNumEntries
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/12/98
-*LAST MODIFIED: 26/12/98
-*PURPOSE:
-*  Returns the number of elements in the data structure
-*
-*ARGUMENTS:
-*  value - Pointer to the screenBullets data structure
-*********************************************************/
+ *NAME:          screenBulletsGetNumEntries
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/12/98
+ *LAST MODIFIED: 26/12/98
+ *PURPOSE:
+ *  Returns the number of elements in the data structure
+ *
+ *ARGUMENTS:
+ *  value - Pointer to the screenBullets data structure
+ *********************************************************/
 int screenBulletsGetNumEntries(screenBullets *value);
 
 /*********************************************************
-*NAME:          screenBulletsDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/12/98
-*LAST MODIFIED: 26/12/98
-*PURPOSE:
-*  Destroys and frees memory for the data structure
-*
-*ARGUMENTS:
-*  value - Pointer to the screenBullets data structure
-*********************************************************/
+ *NAME:          screenBulletsDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/12/98
+ *LAST MODIFIED: 26/12/98
+ *PURPOSE:
+ *  Destroys and frees memory for the data structure
+ *
+ *ARGUMENTS:
+ *  value - Pointer to the screenBullets data structure
+ *********************************************************/
 void screenBulletsDestroy(screenBullets *value);
 
 /*********************************************************
-*NAME:          screenBulletsGetItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/12/98
-*LAST MODIFIED: 26/12/98
-*PURPOSE:
-*  Gets data for a specific item
-*
-*ARGUMENTS:
-*  value   - Pointer to the screenBullets data structure
-*  itemNum - The item number to get
-*  mx    - X co-ord of the map position
-*  my    - Y co-ord of the map position
-*  px    - X pixel offset
-*  py    - Y pixel offset
-*  frame - Frame identifer of the bullet
-*********************************************************/
-void screenBulletsGetItem(screenBullets *value, int itemNum, BYTE *mx, BYTE *my, BYTE *px, BYTE *py, BYTE *frame);
+ *NAME:          screenBulletsGetItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/12/98
+ *LAST MODIFIED: 26/12/98
+ *PURPOSE:
+ *  Gets data for a specific item
+ *
+ *ARGUMENTS:
+ *  value   - Pointer to the screenBullets data structure
+ *  itemNum - The item number to get
+ *  mx    - X co-ord of the map position
+ *  my    - Y co-ord of the map position
+ *  px    - X pixel offset
+ *  py    - Y pixel offset
+ *  frame - Frame identifer of the bullet
+ *********************************************************/
+void screenBulletsGetItem(screenBullets *value, int itemNum, BYTE *mx, BYTE *my,
+                          BYTE *px, BYTE *py, BYTE *frame);
 
 #endif /* SCREENBULLETS_H */
-

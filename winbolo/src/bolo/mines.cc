@@ -14,42 +14,42 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Mines
-*Filename:      mines.c 
-*Author:        John Morrison
-*Creation Date: 29/1/99
-*Last Modified: 2/11/99
-*Purpose:
-*  Handles what mines are visible to the user
-*********************************************************/
+ *Name:          Mines
+ *Filename:      mines.c
+ *Author:        John Morrison
+ *Creation Date: 29/1/99
+ *Last Modified: 2/11/99
+ *Purpose:
+ *  Handles what mines are visible to the user
+ *********************************************************/
 
-#include "global.h"
-#include "bolo_map.h" 
-#include "screen.h"
 #include "mines.h"
+
+#include "bolo_map.h"
+#include "global.h"
+#include "screen.h"
 
 /* Prototypes */
 
 /*********************************************************
-*NAME:          minesCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/1/98
-*LAST MODIFIED: 29/1/98
-*PURPOSE:
-*  Creates and initilises the mines structure.
-*
-*ARGUMENTS:
-*  value - Pointer to the map file
-*********************************************************/
+ *NAME:          minesCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/1/98
+ *LAST MODIFIED: 29/1/98
+ *PURPOSE:
+ *  Creates and initilises the mines structure.
+ *
+ *ARGUMENTS:
+ *  value - Pointer to the map file
+ *********************************************************/
 void minesCreate(mines *visMines, bool allowHiddenMines) {
   int count1; /* Looping Variables */
   int count2;
 
   *visMines = new minesObj;
-  for (count1=0;count1<MINES_ARRAY_SIZE;count1++) {
-    for (count2=0;count2<MINES_ARRAY_SIZE;count2++) {
+  for (count1 = 0; count1 < MINES_ARRAY_SIZE; count1++) {
+    for (count2 = 0; count2 < MINES_ARRAY_SIZE; count2++) {
       (*visMines)->pos[count1][count2] = false;
     }
   }
@@ -57,48 +57,46 @@ void minesCreate(mines *visMines, bool allowHiddenMines) {
 }
 
 /*********************************************************
-*NAME:          mapDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/10/98
-*LAST MODIFIED: 29/10/98
-*PURPOSE:
-*  Destroys the mines data structure. Also frees memory.
-*
-*ARGUMENTS:
-*
-*********************************************************/
-void minesDestroy(mines *visMines) {
-  delete *visMines;
-}
+ *NAME:          mapDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/10/98
+ *LAST MODIFIED: 29/10/98
+ *PURPOSE:
+ *  Destroys the mines data structure. Also frees memory.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+void minesDestroy(mines *visMines) { delete *visMines; }
 
 /*********************************************************
-*NAME:          minesGetAllowHiddenMines
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/1/99
-*LAST MODIFIED: 29/1/99
-*PURPOSE:
-*  Returns whether hidden mines are allowed or not
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          minesGetAllowHiddenMines
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/1/99
+ *LAST MODIFIED: 29/1/99
+ *PURPOSE:
+ *  Returns whether hidden mines are allowed or not
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 bool minesGetAllowHiddenMines(mines *visMines) {
   return (*visMines)->minesHiddenMines;
 }
 
 /*********************************************************
-*NAME:          minesAddItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/1/99
-*LAST MODIFIED:  3/2/99
-*PURPOSE:
-* Adds a mine to the structure. Returns whether a mine
-* already existed at that position.
-*
-*ARGUMENTS:
-*  xValue   - X Map Coordinate
-*  yValue   - Y Map Coordinate
-*********************************************************/
+ *NAME:          minesAddItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/1/99
+ *LAST MODIFIED:  3/2/99
+ *PURPOSE:
+ * Adds a mine to the structure. Returns whether a mine
+ * already existed at that position.
+ *
+ *ARGUMENTS:
+ *  xValue   - X Map Coordinate
+ *  yValue   - Y Map Coordinate
+ *********************************************************/
 bool minesAddItem(mines *visMines, BYTE xValue, BYTE yValue) {
   bool returnValue = false; /* Value to return */
 
@@ -108,40 +106,40 @@ bool minesAddItem(mines *visMines, BYTE xValue, BYTE yValue) {
 }
 
 /*********************************************************
-*NAME:          minesRemoveItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 8/1/99
-*LAST MODIFIED: 8/2/99
-*PURPOSE:
-* Removes a mine to the structure.
-*
-*ARGUMENTS:
-*  xValue   - X Map Coordinate
-*  yValue   - Y Map Coordinate
-*********************************************************/
+ *NAME:          minesRemoveItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 8/1/99
+ *LAST MODIFIED: 8/2/99
+ *PURPOSE:
+ * Removes a mine to the structure.
+ *
+ *ARGUMENTS:
+ *  xValue   - X Map Coordinate
+ *  yValue   - Y Map Coordinate
+ *********************************************************/
 void minesRemoveItem(mines *visMines, BYTE xValue, BYTE yValue) {
   (*visMines)->pos[xValue][yValue] = false;
 }
 
-
 /*********************************************************
-*NAME:          minesExistPos
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/1/99
-*LAST MODIFIED: 29/1/99
-*PURPOSE:
-* Returns whether a mine can be seen at that position.
-* Only called if a mine does exist at the map square
-* but checking here to see if the player knows about it
-*
-*ARGUMENTS:
-*  xValue   - X Map Coordinate
-*  yValue   - Y Map Coordinate
-*********************************************************/
+ *NAME:          minesExistPos
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/1/99
+ *LAST MODIFIED: 29/1/99
+ *PURPOSE:
+ * Returns whether a mine can be seen at that position.
+ * Only called if a mine does exist at the map square
+ * but checking here to see if the player knows about it
+ *
+ *ARGUMENTS:
+ *  xValue   - X Map Coordinate
+ *  yValue   - Y Map Coordinate
+ *********************************************************/
 bool minesExistPos(mines *visMines, BYTE xValue, BYTE yValue) {
   bool returnValue = true; /* Value to return */
-  
-  if (xValue <= MAP_MINE_EDGE_LEFT || xValue >= MAP_MINE_EDGE_RIGHT || yValue <= MAP_MINE_EDGE_TOP || yValue >= MAP_MINE_EDGE_BOTTOM) {
+
+  if (xValue <= MAP_MINE_EDGE_LEFT || xValue >= MAP_MINE_EDGE_RIGHT ||
+      yValue <= MAP_MINE_EDGE_TOP || yValue >= MAP_MINE_EDGE_BOTTOM) {
     returnValue = true;
   } else if ((*visMines)->minesHiddenMines) {
     returnValue = (*visMines)->pos[xValue][yValue];
@@ -150,4 +148,3 @@ bool minesExistPos(mines *visMines, BYTE xValue, BYTE yValue) {
   }
   return returnValue;
 }
-

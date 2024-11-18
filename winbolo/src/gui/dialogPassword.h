@@ -14,37 +14,38 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Dialog - Password
-*Filename:      dialogpassword.h
-*Author:        John Morrison
-*Creation Date: 24/2/99
-*Last Modified: 24/2/99
-*Purpose:
-*  Looks after the Get password dialog box
-*********************************************************/
+ *Name:          Dialog - Password
+ *Filename:      dialogpassword.h
+ *Author:        John Morrison
+ *Creation Date: 24/2/99
+ *Last Modified: 24/2/99
+ *Purpose:
+ *  Looks after the Get password dialog box
+ *********************************************************/
 
 #ifndef DIALOG_PASSWORD_H
 #define DIALOG_PASSWORD_H
 
 #include <windows.h>
+
 #include "..\bolo\global.h"
 
 /*********************************************************
-*NAME:          dialogPasswordCallback
-*AUTHOR:        John Morrison
-*CREATION DATE: 24/2/99
-*LAST MODIFIED: 24/2/99
-*PURPOSE:
-*  The Opening Dialog call back function.
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*  msg    - The message
-*  wParam - Message parameters
-*  lParam - More Message parameters
-*********************************************************/
-BOOL CALLBACK dialogPasswordCallback( HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam );
+ *NAME:          dialogPasswordCallback
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 24/2/99
+ *LAST MODIFIED: 24/2/99
+ *PURPOSE:
+ *  The Opening Dialog call back function.
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *  msg    - The message
+ *  wParam - Message parameters
+ *  lParam - More Message parameters
+ *********************************************************/
+BOOL CALLBACK dialogPasswordCallback(HWND hWnd, unsigned uMsg, WPARAM wParam,
+                                     LPARAM lParam);
 
 #endif /* DIALOG_PASSWORD_H */

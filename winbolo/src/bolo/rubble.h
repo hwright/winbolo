@@ -14,17 +14,16 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Rubble
-*Filename:      rubble.h
-*Author:        John Morrison
-*Creation Date: 30/12/98
-*Last Modified: 30/12/98
-*Purpose:
-*  Responsable for tracking lifetime of rubble.
-*  buildings can be shot 5 times before being destroyed
-*********************************************************/
+ *Name:          Rubble
+ *Filename:      rubble.h
+ *Author:        John Morrison
+ *Creation Date: 30/12/98
+ *Last Modified: 30/12/98
+ *Purpose:
+ *  Responsable for tracking lifetime of rubble.
+ *  buildings can be shot 5 times before being destroyed
+ *********************************************************/
 
 #ifndef RUBBLE_H
 #define RUBBLE_H
@@ -32,7 +31,7 @@
 #include "global.h"
 
 /* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) ==NULL)
+#define IsEmpty(list) ((list) == NULL)
 #define NonEmpty(list) (!IsEmpty(list))
 #define RubbleHeadX(list) ((list)->x);
 #define RubbleHeadY(list) ((list)->y);
@@ -49,86 +48,86 @@
 
 typedef struct rubbleObj *rubble;
 struct rubbleObj {
-  rubble next; /* Next item */ 
+  rubble next; /* Next item */
   BYTE x;      /* X and Y positions */
   BYTE y;
-  BYTE life;   /* Life time of the rubble */
+  BYTE life; /* Life time of the rubble */
 };
 
 /* Prototypes */
 
 /*********************************************************
-*NAME:          rubbleCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 30/12/98
-*LAST MODIFIED: 30/12/98
-*PURPOSE:
-*  Sets up the rubble data structure
-*
-*ARGUMENTS:
-*  rbl - Pointer to the rubbble object
-*********************************************************/
+ *NAME:          rubbleCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 30/12/98
+ *LAST MODIFIED: 30/12/98
+ *PURPOSE:
+ *  Sets up the rubble data structure
+ *
+ *ARGUMENTS:
+ *  rbl - Pointer to the rubbble object
+ *********************************************************/
 void rubbleCreate(rubble *rbl);
 
 /*********************************************************
-*NAME:          rubbleDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 30/12/98
-*LAST MODIFIED: 30/12/98
-*PURPOSE:
-*  Destroys and frees memory for the rubble data structure
-*
-*ARGUMENTS:
-*  rbl - Pointer to the rubbble object
-*********************************************************/
+ *NAME:          rubbleDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 30/12/98
+ *LAST MODIFIED: 30/12/98
+ *PURPOSE:
+ *  Destroys and frees memory for the rubble data structure
+ *
+ *ARGUMENTS:
+ *  rbl - Pointer to the rubbble object
+ *********************************************************/
 void rubbleDestroy(rubble *rbl);
 
 /*********************************************************
-*NAME:          rubbleAddItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 30/12/98
-*LAST MODIFIED: 25/04/01
-*PURPOSE:
-*  Adds an item to the rubble data structure.
-*  If it already exists returns the terrain type of the
-*  item and decrements its lifetime.
-*
-*ARGUMENTS:
-*  rbl - Pointer to the rubbble object
-*  x   - X co-ord
-*  y   - Y co-ord
-*********************************************************/
+ *NAME:          rubbleAddItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 30/12/98
+ *LAST MODIFIED: 25/04/01
+ *PURPOSE:
+ *  Adds an item to the rubble data structure.
+ *  If it already exists returns the terrain type of the
+ *  item and decrements its lifetime.
+ *
+ *ARGUMENTS:
+ *  rbl - Pointer to the rubbble object
+ *  x   - X co-ord
+ *  y   - Y co-ord
+ *********************************************************/
 BYTE rubbleAddItem(rubble *rbl, BYTE x, BYTE y);
 
 /*********************************************************
-*NAME:          rubbleDeleteItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 30/12/98
-*LAST MODIFIED: 30/12/98
-*PURPOSE:
-*  Deletes the item for the given number
-*
-*ARGUMENTS:
-*  rbl     - Pointer to the rubbble object
-*  itemNum - The item number to get
-*********************************************************/
+ *NAME:          rubbleDeleteItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 30/12/98
+ *LAST MODIFIED: 30/12/98
+ *PURPOSE:
+ *  Deletes the item for the given number
+ *
+ *ARGUMENTS:
+ *  rbl     - Pointer to the rubbble object
+ *  itemNum - The item number to get
+ *********************************************************/
 void rubbleDeleteItem(rubble *rbl, int itemNum);
 
 /*********************************************************
-*NAME:          rubbleRemovePos
-*AUTHOR:        John Morrison
-*CREATION DATE: 18/1/99
-*LAST MODIFIED: 18/1/99
-*PURPOSE:
-*  Removes an item from the rubble data structure if it 
-*  exists at a specific loaction. Otherwise the function
-*  does nothing
-*
-*ARGUMENTS:
-*  rbl - Pointer to the rubbble object
-*  x   - X co-ord
-*  y   - Y co-ord
-*********************************************************/
+ *NAME:          rubbleRemovePos
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 18/1/99
+ *LAST MODIFIED: 18/1/99
+ *PURPOSE:
+ *  Removes an item from the rubble data structure if it
+ *  exists at a specific loaction. Otherwise the function
+ *  does nothing
+ *
+ *ARGUMENTS:
+ *  rbl - Pointer to the rubbble object
+ *  x   - X co-ord
+ *  y   - Y co-ord
+ *********************************************************/
 void rubbleRemovePos(rubble *rbl, BYTE x, BYTE y);
 
 #endif /* RUBBLE_H */

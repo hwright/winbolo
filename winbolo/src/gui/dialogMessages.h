@@ -14,16 +14,15 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Dialog - Messages
-*Filename:      dialogmessages.h
-*Author:        John Morrison
-*Creation Date: 5/2/99
-*Last Modified: 5/2/99
-*Purpose:
-*  Looks after the send messages dialog box.
-*********************************************************/
+ *Name:          Dialog - Messages
+ *Filename:      dialogmessages.h
+ *Author:        John Morrison
+ *Creation Date: 5/2/99
+ *Last Modified: 5/2/99
+ *Purpose:
+ *  Looks after the send messages dialog box.
+ *********************************************************/
 
 #ifndef DIALOG_MESSAGES_H
 #define DIALOG_MESSAGES_H
@@ -31,58 +30,59 @@
 #include <windows.h>
 
 /*********************************************************
-*NAME:          dialogMessagesCallback
-*AUTHOR:        John Morrison
-*CREATION DATE: 5/1/99
-*LAST MODIFIED: 5/1/99
-*PURPOSE:
-*  The Messages dialogbox call back function
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*  msg    - The message
-*  wParam - Message parameters
-*  lParam - More Message parameters
-*********************************************************/
-BOOL CALLBACK dialogMessagesCallback( HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam );
+ *NAME:          dialogMessagesCallback
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 5/1/99
+ *LAST MODIFIED: 5/1/99
+ *PURPOSE:
+ *  The Messages dialogbox call back function
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *  msg    - The message
+ *  wParam - Message parameters
+ *  lParam - More Message parameters
+ *********************************************************/
+BOOL CALLBACK dialogMessagesCallback(HWND hWnd, unsigned uMsg, WPARAM wParam,
+                                     LPARAM lParam);
 
 /*********************************************************
-*NAME:          dialogMessagesSetup
-*AUTHOR:        John Morrison
-*CREATION DATE: 5/1/99
-*LAST MODIFIED: 5/1/99
-*PURPOSE:
-* Sets up the send message dialog box
-*
-*ARGUMENTS:
-*  hWnd - The dialog window handle
-*********************************************************/
+ *NAME:          dialogMessagesSetup
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 5/1/99
+ *LAST MODIFIED: 5/1/99
+ *PURPOSE:
+ * Sets up the send message dialog box
+ *
+ *ARGUMENTS:
+ *  hWnd - The dialog window handle
+ *********************************************************/
 void dialogMessagesSetup(HWND hWnd);
 
 /*********************************************************
-*NAME:          dialogMessagesSend
-*AUTHOR:        John Morrison
-*CREATION DATE: 5/1/99
-*LAST MODIFIED: 5/1/99
-*PURPOSE:
-* Send message button has been pressed. Process it here
-*
-*ARGUMENTS:
-*  hWnd - The dialog window handle
-*********************************************************/
+ *NAME:          dialogMessagesSend
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 5/1/99
+ *LAST MODIFIED: 5/1/99
+ *PURPOSE:
+ * Send message button has been pressed. Process it here
+ *
+ *ARGUMENTS:
+ *  hWnd - The dialog window handle
+ *********************************************************/
 void dialogMessagesSend(HWND hWnd);
 
 /*********************************************************
-*NAME:          dialogMessagesChange
-*AUTHOR:        John Morrison
-*CREATION DATE: 7/4/99
-*LAST MODIFIED: 7/4/99
-*PURPOSE:
-* Changes the "Sending to X players" message 
-*
-*ARGUMENTS:
-*  hWnd - The dialog window handle
-*********************************************************/
+ *NAME:          dialogMessagesChange
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 7/4/99
+ *LAST MODIFIED: 7/4/99
+ *PURPOSE:
+ * Changes the "Sending to X players" message
+ *
+ *ARGUMENTS:
+ *  hWnd - The dialog window handle
+ *********************************************************/
 void dialogMessagesChange(HWND hWnd);
 
 #endif /* DIALOG_MESSAGES_H */

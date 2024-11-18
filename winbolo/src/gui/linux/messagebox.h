@@ -14,7 +14,6 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef _MESSAGE_BOX_H
 #define _MESSAGE_BOX_H
 #include "../../bolo/global.h"
@@ -22,9 +21,10 @@
 
 void MessageBox(const char *label, const char *title);
 
-void MessageBox2(const char *label, const char *title, const char *label2, const char *title2);
+void MessageBox2(const char *label, const char *title, const char *label2,
+                 const char *title2);
 
-void MessageBox3(const char *label, const char *title, const char *label2, const char *title2, const char *label3, const char *title3); 
+void MessageBox3(const char *label, const char *title, const char *label2,
+                 const char *title2, const char *label3, const char *title3);
 
 #endif
-

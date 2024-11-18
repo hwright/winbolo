@@ -14,32 +14,31 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          dnsLookups
-*Filename:      dnsLookups.c
-*Author:        John Morrison
-*Creation Date: 10/04/01
-*Last Modified: 10/04/01
-*Purpose:
-*  WinBolo Server Thread manager
-*********************************************************/
+ *Name:          dnsLookups
+ *Filename:      dnsLookups.c
+ *Author:        John Morrison
+ *Creation Date: 10/04/01
+ *Last Modified: 10/04/01
+ *Purpose:
+ *  WinBolo Server Thread manager
+ *********************************************************/
 
 #ifdef _WIN32
-	#include <windows.h>
-	#include <winbase.h>
+#include <windows.h>
+#include <winbase.h>
 #else
-	#include "SDL.h"
-	#include "SDL_thread.h"
-	typedef SDL_mutex *HANDLE;
+#include "SDL.h"
+#include "SDL_thread.h"
+typedef SDL_mutex *HANDLE;
 #endif
-#include <unistd.h>
-#include <string.h>
-#include "../../bolo/global.h"
-#include "../netclient.h"
 #include "../dnsLookups.h"
 
+#include <string.h>
+#include <unistd.h>
 
+#include "../../bolo/global.h"
+#include "../netclient.h"
 
 static HANDLE hDnsMutexHandle = nullptr;
 static SDL_Thread *hDnsThread;
@@ -49,25 +48,25 @@ static bool dnsShouldRun;
 static bool dnsFinished;
 
 /*********************************************************
-*NAME:          eCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 10/04/01
-*LAST MODIFIED: 10/04/01
-*PURPOSE:
-*  Creates the DNS Lookups thread. Returns success
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          eCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 10/04/01
+ *LAST MODIFIED: 10/04/01
+ *PURPOSE:
+ *  Creates the DNS Lookups thread. Returns success
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 bool dnsLookupsCreate(void) {
-  bool returnValue;        /* Value to return */
+  bool returnValue; /* Value to return */
 
   returnValue = true;
   dnsProcessing = nullptr;
   dnsWaiting = nullptr;
   dnsShouldRun = true;
   dnsFinished = false;
-  
+
   hDnsMutexHandle = SDL_CreateMutex();
   if (hDnsMutexHandle == nullptr) {
     returnValue = false;
@@ -76,31 +75,31 @@ bool dnsLookupsCreate(void) {
   /* create thread and run */
   if (returnValue) {
     hDnsThread = SDL_CreateThread(dnsLookupsRun, nullptr);
-    if (hDnsThread  == nullptr) {
+    if (hDnsThread == nullptr) {
       SDL_DestroyMutex(hDnsMutexHandle);
       hDnsMutexHandle = nullptr;
       returnValue = false;
     }
-
   }
   return returnValue;
 }
 
 /*********************************************************
-*NAME:          dnsLookupsDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 10/04/01
-*LAST MODIFIED: 10/04/01
-*PURPOSE:
-*  Destroys the DNS lookup Thread.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          dnsLookupsDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 10/04/01
+ *LAST MODIFIED: 10/04/01
+ *PURPOSE:
+ *  Destroys the DNS lookup Thread.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void dnsLookupsDestroy(void) {
   dnsList del; /* Use to delete our queues */
 
-  if (hDnsMutexHandle != nullptr) { /* FIXME: Will be non null if we started it OK. Is there a better way? (threadid?) */
+  if (hDnsMutexHandle != nullptr) { /* FIXME: Will be non null if we started it
+                                       OK. Is there a better way? (threadid?) */
     /* Wait for current to finish */
     dnsShouldRun = false;
     while (!dnsFinished) {
@@ -120,7 +119,7 @@ void dnsLookupsDestroy(void) {
       del = dnsWaiting;
       dnsWaiting = dnsWaiting->next;
       delete del;
-    } 
+    }
     SDL_mutexV(hDnsMutexHandle);
 
     /* Remove the locking mutex */
@@ -129,21 +128,20 @@ void dnsLookupsDestroy(void) {
   }
 }
 
-
 /*********************************************************
-*NAME:          dnsLookupsAddRequest
-*AUTHOR:        John Morrison
-*CREATION DATE: 10/04/01
-*LAST MODIFIED: 10/04/01
-*PURPOSE:
-*  Adds a request to the DNS lookup queue
-*
-*ARGUMENTS:
-*  ip   - The IP address or DNS name to lookup
-*  func - The function to call back when the results have
-*         have be determined
-*********************************************************/
-void dnsLookupsAddRequest(char *ip, void (*func)(char*, char*)) {
+ *NAME:          dnsLookupsAddRequest
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 10/04/01
+ *LAST MODIFIED: 10/04/01
+ *PURPOSE:
+ *  Adds a request to the DNS lookup queue
+ *
+ *ARGUMENTS:
+ *  ip   - The IP address or DNS name to lookup
+ *  func - The function to call back when the results have
+ *         have be determined
+ *********************************************************/
+void dnsLookupsAddRequest(char *ip, void (*func)(char *, char *)) {
   dnsList add; /* Used to add to the queue */
 
   if (dnsShouldRun) {
@@ -157,19 +155,18 @@ void dnsLookupsAddRequest(char *ip, void (*func)(char*, char*)) {
   }
 }
 
-
 /*********************************************************
-*NAME:          dnsLookupsRun
-*AUTHOR:        John Morrison
-*CREATION DATE: 10/04/01
-*LAST MODIFIED: 10/04/01
-*PURPOSE:
-*  The DNS Lookups thread run method
-*
-*ARGUMENTS:
-*
-*********************************************************/
-int dnsLookupsRun(void*) {
+ *NAME:          dnsLookupsRun
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 10/04/01
+ *LAST MODIFIED: 10/04/01
+ *PURPOSE:
+ *  The DNS Lookups thread run method
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+int dnsLookupsRun(void *) {
   char dest[512]; /* Destination address space */
   dnsList q;      /* Used to iterate through the list */
 
@@ -178,12 +175,12 @@ int dnsLookupsRun(void*) {
     dnsProcessing = dnsWaiting;
     dnsWaiting = nullptr;
     SDL_mutexV(hDnsMutexHandle);
-    
+
     while (NonEmpty(dnsProcessing) && dnsShouldRun) {
       q = dnsProcessing;
       netClientGetAddress(q->ip, dest);
-/*      func = q->func;
-      func(q->ip, dest); */
+      /*      func = q->func;
+            func(q->ip, dest); */
       /* FIXME: Hardcoded because I don't know how to call back in linux */
       netProcessedDnsLookup(q->ip, dest);
       dnsProcessing = q->next;
@@ -194,4 +191,3 @@ int dnsLookupsRun(void*) {
   dnsFinished = true;
   return 0;
 }
-
