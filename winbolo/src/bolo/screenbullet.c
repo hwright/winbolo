@@ -61,7 +61,7 @@ void screenBulletsDestroy(screenBullets *value) {
   while (!IsEmpty(*value)) {
     q = *value;
     *value = ScreenBulletTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -84,7 +84,7 @@ void screenBulletsDestroy(screenBullets *value) {
 void screenBulletsAddItem(screenBullets *value, BYTE mx, BYTE my, BYTE px, BYTE py, BYTE frame) {
   screenBullets q;
   
-  New (q);
+  q = malloc(sizeof(*q));
   q->mx = mx;
   q->my = my;
   q->px = px;

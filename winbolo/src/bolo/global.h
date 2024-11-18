@@ -67,12 +67,6 @@ typedef char StringBuf[STRINGSIZE];
 typedef char ShortStringBuf[SHORTSTRINGSIZE];
 
 
-Generic emalloc(size_t size);
-void efree(Generic object);
-
-#define	New(p)		((p) = emalloc(sizeof(*(p))))
-#define	Dispose(p)	(efree(p))
-
 /* An Null Charector */
 #define EMPTY_CHAR '\0'
 

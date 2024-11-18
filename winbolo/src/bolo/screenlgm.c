@@ -120,7 +120,7 @@ void screenLgmDestroy(screenLgm *value) {
   while(NonEmpty(*value)) {
     q = *value;
     (*value) = ScreenLgmsTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -143,7 +143,7 @@ void screenLgmDestroy(screenLgm *value) {
 void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py, BYTE frame) {
   screenLgm q;
 
-  New(q);
+  q = malloc(sizeof(*q));
   q->mx = mx;
   q->my = my;
   q->px = px;

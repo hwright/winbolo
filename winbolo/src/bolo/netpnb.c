@@ -56,7 +56,7 @@ void tankAddHit(tank *value, int amount);
 *  pnbc    - Pointer to the netPnbContext object
 *********************************************************/
 void netPNBCreate(netPnbContext *pnbc) {
-  New(*pnbc);
+  *pnbc = malloc(sizeof(**pnbc));
   (*pnbc)->pnb = NULL;
   (*pnbc)->netPnbUpto = 0;
 }
@@ -79,9 +79,9 @@ void netPNBDestroy(netPnbContext *pnbc) {
     while (NonEmpty((*pnbc)->pnb)) {
       q = (*pnbc)->pnb;
       (*pnbc)->pnb = NetPNBTail(q);
-      Dispose(q);
+      free(q);
     }
-    Dispose(*pnbc);
+    free(*pnbc);
     *pnbc = NULL;
   }
 }
@@ -109,7 +109,7 @@ void netPNBAdd(netPnbContext *pnbc, BYTE event, BYTE itemNum, BYTE owner, BYTE o
 	* Could be client or server.
 	*/
 	if (netGetType() != netSingle && playersGetNumPlayers(screenGetPlayers()) > 0) {
-		New(add1);
+		add1 = malloc(sizeof(*add1));
 		add1->item = utilPutNibble(event, itemNum);
 		add1->owner = owner;
 		add1->x = opt1;
@@ -658,7 +658,7 @@ void netPNBDeleteItem(netPnbContext *pnbc, int itemNum) {
   if (itemNum == 1) {
     del = (*pnbc)->pnb;
     (*pnbc)->pnb = del->next;
-    Dispose(del);
+    free(del);
   } else {
     count = 1;
     prev = (*pnbc)->pnb;
@@ -668,6 +668,6 @@ void netPNBDeleteItem(netPnbContext *pnbc, int itemNum) {
     }
     del = NetPNBTail(prev);
     prev->next = del->next;
-    Dispose(del);
+    free(del);
   }
 }

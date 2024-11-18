@@ -76,7 +76,7 @@ udpPackets udpPacketsCreate(void) {
   udpPackets returnValue; /* Value to return */
   BYTE count;             /* Looping variable */
 
-  New(returnValue);
+  returnValue = malloc(sizeof(*returnValue));
   if (returnValue != NULL) {
     returnValue->inUpTo = 0;
     returnValue->inSequenceNumber = 1; /* In sequence number is always +1 */
@@ -106,7 +106,7 @@ udpPackets udpPacketsCreate(void) {
 *********************************************************/
 void udpPacketsDestroy(udpPackets *value) {
   if (*value != NULL) {
-    Dispose(*value);
+    free(*value);
     *value = NULL;
   }
 }

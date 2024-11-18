@@ -93,7 +93,7 @@ void shellsDestroy(shells *value) {
   while (!IsEmpty(*value)) {
     q = *value;
     *value = ShellsTail(q);
-    Dispose(q);
+    free(q);
   }
   c = true;
 }
@@ -136,7 +136,7 @@ void shellsAddItem(shells *value, WORLD x, WORLD y, TURNTYPE angle, TURNTYPE len
     y -= 22;
   }
 */
-  New (q);
+  q = malloc(sizeof(*q));
   q->x = x;
   q->y = y;
   q->angle = angle;
@@ -330,7 +330,7 @@ void shellsDeleteItem(shells *master, shells *value) {
   if (del->next != NULL) {
     del->next->prev = del->prev;
   }
-  Dispose(del);
+  free(del);
   c= true;
 }
 
@@ -926,7 +926,7 @@ void shellsNetExtract(shells *value, pillboxes *pb, BYTE *buff, BYTE dataLen, bo
 
     /* Add it if required */
     if (shouldAdd == true) {
-      New(q);
+      q = malloc(sizeof(*q));
       if (isServer == true) {
         q->packSent = false;
       } else {

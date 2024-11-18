@@ -57,7 +57,7 @@
 void pillsCreate(pillboxes *value) {
   BYTE count; /* Looping variable */
 
-  New(*value);
+  *value = malloc(sizeof(**value));
   memset(*value, 0, sizeof(**value));
   ((*value)->numPills) = 0;
 
@@ -84,7 +84,7 @@ void pillsCreate(pillboxes *value) {
 *********************************************************/
 void pillsDestroy(pillboxes *value) {
   if (*value != NULL) {
-    Dispose(*value);
+    free(*value);
   }
 }
 

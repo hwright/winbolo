@@ -76,7 +76,7 @@ void tkExplosionDestroy(tkExplosion *tke) {
   while (!IsEmpty(*tke)) {
     q = *tke;
     *tke = TkExplosionTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -99,7 +99,7 @@ void tkExplosionDestroy(tkExplosion *tke) {
 void tkExplosionAddItem(tkExplosion *tke, WORLD x, WORLD y, TURNTYPE angle, BYTE length, BYTE explodeType) {
   tkExplosion q;
   
-  New (q);
+  q = malloc(sizeof(*q));
   q->own = true;
   q->x = x;
   q->y = y;
@@ -341,7 +341,7 @@ void tkExplosionDeleteItem(tkExplosion *tke, tkExplosion *value) {
   if (del->next != NULL) {
     del->next->prev = del->prev;
   }
-  Dispose(del);
+  free(del);
 
 }
 
@@ -676,7 +676,7 @@ void tkExplosionNetExtract(tkExplosion *tke, BYTE *buff, BYTE dataLen, BYTE play
       }
 
 
-      New(q);
+      q = malloc(sizeof(*q));
       q->packSent = isSent;
       q->own = isServer;
       q->x= wx;

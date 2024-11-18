@@ -61,7 +61,7 @@ void allienceDestroy(allience *value) {
   while (!IsEmpty(*value)) {
     q = *value;
     *value = AllienceTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -82,7 +82,7 @@ void allienceAdd(allience *value, BYTE playerNum) {
 
   if ((allienceExist(value, playerNum)) == false) {
     /* Doesn't exist yet. Add */
-    New(q);
+    q = malloc(sizeof(*q));
     q->playerNum = playerNum;
     q->next = *value;
     *value = q;
@@ -123,7 +123,7 @@ void allienceRemove(allience *value, BYTE playerNum) {
     } else {
       (*value) = (*value)->next;
     }
-    Dispose(q);
+    free(q);
   }
 }
 

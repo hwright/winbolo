@@ -203,8 +203,8 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   brainBuildInfo = (BuildInfo*) malloc(sizeof(brainBuildInfo));
   brainBuildInfo->action = 0;
 
-  New(view);
-  New(mineView);
+  view = malloc(sizeof(*view));
+  mineView = malloc(sizeof(*mineView));
 /*  messageAdd(globalMessage, BOLO_VERSION_STRING, OLD_BOLO_COPYRIGHT_STRING);
   messageAdd(globalMessage, BOLO_VERSION_STRING,NEW_BOLO_COPYRIGHT_STRING);  */
   
@@ -251,10 +251,10 @@ void screenDestroy() {
   pillsDestroy(&mypb);
   playersDestroy(&plyrs);
   if (view != NULL) {
-    Dispose(view);
+    free(view);
   }
   if (mineView != NULL) {
-    Dispose(mineView);
+    free(mineView);
   }
   if (brainBuildInfo != NULL) {
     free(brainBuildInfo);

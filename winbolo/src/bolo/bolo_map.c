@@ -73,7 +73,7 @@ void mapCreate(map *value) {
   int count;  /* Looping variable */
   int count2; /* Looping variable */
 
-  New(*value);
+  *value = malloc(sizeof(**value));
   for (count=0;count<MAP_ARRAY_SIZE ;count++) {
     for (count2=0;count2<MAP_ARRAY_SIZE;count2++) {
       ((*value)->mapItem[count][count2]) = DEEP_SEA;
@@ -101,19 +101,19 @@ void mapDestroy(map *value) {
     q = (*value)->mn;
     while (NonEmpty((*value)->mn)) {
       (*value)->mn = MapNetTail(q);
-      Dispose(q);
+      free(q);
       q = (*value)->mn;
     }
 
     q = (*value)->mninc;
     while (NonEmpty((*value)->mninc)) {
       (*value)->mninc = MapNetTail(q);
-      Dispose(q);
+      free(q);
       q = (*value)->mninc;
     }
     (*value)->mn = NULL;
     (*value)->mninc = NULL;
-    Dispose(*value);
+    free(*value);
   }
   *value = NULL;
 }
@@ -1360,7 +1360,7 @@ void mapNetAdd(map *value, BYTE mx, BYTE my, BYTE terrain, bool needSend) {
         if (q->next != NULL) {
           q->next->prev = q->prev;
         }
-        Dispose(q);
+        free(q);
         done = true;
       } else {
         q = MapNetTail(q);
@@ -1388,7 +1388,7 @@ void mapNetAdd(map *value, BYTE mx, BYTE my, BYTE terrain, bool needSend) {
     } 
     /* If not found then add it */
     if (done == false) {
-      New(q);
+      q = malloc(sizeof(*q));
       q->mx = mx;
       q->my = my;
       q->terrain = terrain;
@@ -1458,7 +1458,7 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
       }
       del = q;
       q = MapNetTail(q);
-      Dispose(del);
+      free(del);
     } else {
       q = MapNetTail(q);
     }
@@ -1486,7 +1486,7 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
       }
       del = q;
       q = MapNetTail(q);
-      Dispose(del);
+      free(del);
     } else {
       q = MapNetTail(q);
     }
@@ -1544,7 +1544,7 @@ void mapNetIncomingItem(map *value, BYTE mx, BYTE my, BYTE terrain) {
       }
       del = q;
       q = MapNetTail(q);
-      Dispose(del);
+      free(del);
     } else {
       q = MapNetTail(q);
     }
@@ -1565,7 +1565,7 @@ void mapNetIncomingItem(map *value, BYTE mx, BYTE my, BYTE terrain) {
   /* If it isn't added */
   if (done == false) {
 //      if (terrain != BUILDING && terrain != BOAT && terrain != ROAD && terrain < MINE_START) {
-      New(q);
+      q = malloc(sizeof(*q));
       q->mx = mx;
       q->my = my;
       q->terrain = terrain;
@@ -1621,7 +1621,7 @@ void mapNetPacket(map *value, BYTE mx, BYTE my, BYTE terrain) {
       }
       del = q;
       q = MapNetTail(q);
-      Dispose(del);
+      free(del);
       done = true;
     } else {
       q = MapNetTail(q);
@@ -1667,7 +1667,7 @@ BYTE mapNetMakePacket(map *value, BYTE *buff) {
     returnValue++;
     q = (*value)->mn;
     (*value)->mn = MapNetTail((*value)->mn);
-    Dispose(q);
+    free(q);
   }
   return returnValue;
 }

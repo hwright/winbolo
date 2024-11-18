@@ -61,7 +61,7 @@ void grassDestroy(grass *grs) {
   while (!IsEmpty(*grs)) {
     q = *grs;
     *grs = GrassTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -109,7 +109,7 @@ BYTE grassAddItem(grass *grs, BYTE x, BYTE y) {
 
   /* If not found add a new item */
   if (found == false) {
-    New (q);
+    q = malloc(sizeof(*q));
     q->x = x;
     q->y = y;
     q->life = GRASS_LIFE;
@@ -140,7 +140,7 @@ void grassDeleteItem(grass *grs, int itemNum) {
   if (itemNum == 1) {
     del = *grs;
     *grs = del->next;
-    Dispose(del);
+    free(del);
   } else {
     count = 1;
     prev = *grs;
@@ -150,7 +150,7 @@ void grassDeleteItem(grass *grs, int itemNum) {
     }
     del = GrassTail(prev);
     prev->next = del->next;
-    Dispose(del);
+    free(del);
   }
 }
 

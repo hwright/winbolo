@@ -75,7 +75,7 @@ static char streamText[2048];
 lgm lgmCreate(BYTE playerNum) {
   lgm lgman;
 
-  New(lgman);
+  lgman = malloc(sizeof(*lgman));
   lgman->playerNum = playerNum;
   lgman->x = 0;
   lgman->y = 0;
@@ -110,7 +110,7 @@ lgm lgmCreate(BYTE playerNum) {
 *********************************************************/
 void lgmDestroy(lgm *value) {
   if (*value != NULL) {
-    Dispose(*value);
+    free(*value);
   }
 }
 

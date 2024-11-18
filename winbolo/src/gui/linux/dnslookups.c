@@ -114,12 +114,12 @@ void dnsLookupsDestroy(void) {
     while (NonEmpty(dnsProcessing)) {
       del = dnsProcessing;
       dnsProcessing = dnsProcessing->next;
-      Dispose(del);
+      free(del);
     }
     while (NonEmpty(dnsWaiting)) {
       del = dnsWaiting;
       dnsWaiting = dnsWaiting->next;
-      Dispose(del);
+      free(del);
     } 
     SDL_mutexV(hDnsMutexHandle);
 
@@ -147,7 +147,7 @@ void dnsLookupsAddRequest(char *ip, void *func) {
   dnsList add; /* Used to add to the queue */
 
   if (dnsShouldRun == true) {
-    New(add);
+    add = malloc(sizeof(*add));
     strcpy(add->ip, ip);
     add->func = func;
     SDL_mutexP(hDnsMutexHandle);
@@ -187,7 +187,7 @@ int dnsLookupsRun() {
       /* FIXME: Hardcoded because I don't know how to call back in linux */
       netProcessedDnsLookup(q->ip, dest);
       dnsProcessing = q->next;
-      Dispose(q);
+      free(q);
     }
     sleep(DNS_THREAD_SLEEP_TIME_LINUX);
   }

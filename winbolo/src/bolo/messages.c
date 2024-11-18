@@ -98,7 +98,7 @@ void messageDestroy(void) {
   while (!IsEmpty(msg)) {
     q = msg;
     msg = MessageTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -371,7 +371,7 @@ void messageAddItem(char *top, char *bottom) {
   
   if (IsEmpty(msg)) {
     newQ = true;
-    New(msg);
+    msg = malloc(sizeof(*msg));
     msg->next = NULL;
   }
 
@@ -394,7 +394,7 @@ void messageAddItem(char *top, char *bottom) {
   /* Add the items to the data structure */
   count = 0;
   while (count <= (longest)) {
-    New(add);
+    add = malloc(sizeof(*add));
     if (count < lenTop) {
       add->topLine = top[count];
     } else {
@@ -415,7 +415,7 @@ void messageAddItem(char *top, char *bottom) {
   if (newQ == true) {
     q = msg;
     msg = MessageTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -443,7 +443,7 @@ void messageUpdate(void) {
     /* Delete the item */
     q = msg;
     msg = MessageTail(q);
-    Dispose(q);
+    free(q);
 
     /* Move the message */
     count = 0;

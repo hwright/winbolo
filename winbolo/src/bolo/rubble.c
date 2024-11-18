@@ -61,7 +61,7 @@ void rubbleDestroy(rubble *rbl) {
   while (!IsEmpty(*rbl)) {
     q = *rbl;
     *rbl = RubbleTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -109,7 +109,7 @@ BYTE rubbleAddItem(rubble *rbl, BYTE x, BYTE y) {
 
   /* If not found add a new item */
   if (found == false) {
-    New (q);
+    q = malloc(sizeof(*q));
     q->x = x;
     q->y = y;
     q->life = RUBBLE_LIFE;
@@ -140,7 +140,7 @@ void rubbleDeleteItem(rubble *rbl, int itemNum) {
   if (itemNum == 1) {
     del = *rbl;
     *rbl = del->next;
-    Dispose(del);
+    free(del);
   } else {
     count = 1;
     prev = *rbl;
@@ -150,7 +150,7 @@ void rubbleDeleteItem(rubble *rbl, int itemNum) {
     }
     del = RubbleTail(prev);
     prev->next = del->next;
-    Dispose(del);
+    free(del);
   }
 }
 
