@@ -90,7 +90,7 @@ void minesExpAddItem(minesExp *me, map *mp, BYTE x, BYTE y) {
 
   /* If not found add a new item */
   if (found == false) {
-    New(q);
+    q = malloc(sizeof(*q));
     q->x = x;
     q->y = y;
     q->time = MINES_EXPLOSION_WAIT;
@@ -128,7 +128,7 @@ void minesExpDestroy(minesExp *me) {
   while (!IsEmpty(*me)) {
     q = *me;
     *me = MinesExpTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -207,7 +207,7 @@ void minesExpDeleteItem(minesExp *me, minesExp *value) {
   if (del->next != NULL) {
     del->next->prev = del->prev;
   }
-  Dispose(del);
+  free(del);
 }
 
 /*********************************************************

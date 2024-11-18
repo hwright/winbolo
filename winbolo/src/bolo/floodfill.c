@@ -68,7 +68,7 @@ void floodDestroy(floodFill *ff) {
   while (!IsEmpty(*ff)) {
     q = *ff;
     *ff = FloodFillTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -104,14 +104,14 @@ void floodAddItem(floodFill *ff, BYTE x, BYTE y) {
 
   /* If not found add a new item */
   if (found == false && IsEmpty(*ff)) {
-    New(q);
+    q = malloc(sizeof(*q));
     q->x = x;
     q->y = y;
     q->time = FLOOD_FILL_WAIT;
     q->next = *ff;
     *ff = q;
   } else if (found == false) {
-    New (q);
+    q = malloc(sizeof(*q));
     q->x = x;
     q->y = y;
     q->time = FLOOD_FILL_WAIT;
@@ -185,7 +185,7 @@ void floodDeleteItem(floodFill *ff, int itemNum) {
   if (itemNum == 1) {
     del = *ff;
     *ff = del->next;
-    Dispose(del);
+    free(del);
   } else {
     count = 1;
     prev = *ff;
@@ -195,7 +195,7 @@ void floodDeleteItem(floodFill *ff, int itemNum) {
     }
     del = FloodFillTail(prev);
     prev->next = del->next;
-    Dispose(del);
+    free(del);
   }
 }
 

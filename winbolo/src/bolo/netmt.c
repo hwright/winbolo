@@ -69,7 +69,7 @@ netPlayers *serverNetGetNetPlayers();
 *  nmtc - Pointer to the netMntContext object
 *********************************************************/
 void netMNTCreate(netMntContext *nmtc) {
-  New(*nmtc);
+  *nmtc = malloc(sizeof(**nmtc));
   (*nmtc)->nmt = NULL;
   (*nmtc)->netMntUpto = 0;
 }
@@ -93,9 +93,9 @@ void netNMTDestroy(netMntContext *nmtc) {
     while (NonEmpty((*nmtc)->nmt)) {
       q = (*nmtc)->nmt;
       (*nmtc)->nmt = NetMNTTail(q);
-      Dispose(q);
+      free(q);
     }
-    Dispose(*nmtc);
+    free(*nmtc);
     *nmtc = NULL;
   }
 }
@@ -121,7 +121,7 @@ void netMNTAdd(netMntContext *nmtc, BYTE event, BYTE itemNum, BYTE owner, BYTE o
 
   if (netGetType() != netSingle && playersGetNumPlayers(screenGetPlayers()) > 0) {
   /* Check for multiplayer game */
-    New(add1);
+    add1 = malloc(sizeof(*add1));
     add1->item = utilPutNibble(event, itemNum);
     add1->owner = owner;
     if (threadsGetContext() == true) {
@@ -554,7 +554,7 @@ void netMNTDeleteItem(netMntContext *nmtc, int itemNum) {
   if (itemNum == 1) {
     del = (*nmtc)->nmt;
     (*nmtc)->nmt = del->next;
-    Dispose(del);
+    free(del);
   } else {
     count = 1;
     prev = (*nmtc)->nmt;
@@ -564,6 +564,6 @@ void netMNTDeleteItem(netMntContext *nmtc, int itemNum) {
     }
     del = NetMNTTail(prev);
     prev->next = del->next;
-    Dispose(del);
+    free(del);
   }
 }

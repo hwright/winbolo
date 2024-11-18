@@ -48,7 +48,7 @@
 *  value - Pointer to the starts structure 
 *********************************************************/
 void startsCreate(starts *value) {
-  New(*value);
+  *value = malloc(sizeof(**value));
   memset(*value, 0, sizeof(**value));
   ((*value)->numStarts) = 0;
 }
@@ -67,7 +67,7 @@ void startsCreate(starts *value) {
 *********************************************************/
 void startsDestroy(starts *value) {
   if (*value != NULL) {
-    Dispose(*value);
+    free(*value);
   }
 }
 

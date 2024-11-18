@@ -168,12 +168,12 @@ void winbolonetThreadDestroy(void) {
     while (NonEmpty(wbnProcessing)) {
       del = wbnProcessing;
       wbnProcessing = wbnProcessing->next;
-      Dispose(del);
+      free(del);
     }
     while (NonEmpty(wbnWaiting)) {
       del = wbnWaiting;
       wbnWaiting = wbnWaiting->next;
-      Dispose(del);
+      free(del);
     } 
 
 #ifdef _WIN32
@@ -205,7 +205,7 @@ void winbolonetThreadAddRequest(BYTE *data, int len) {
   wbnList add; /* Used to add to the queue */
 
   if (wbnShouldRun == true) {
-    New(add);
+    add = malloc(sizeof(*add));
     memcpy(add->data, data, len);
     add->len = len;
 #ifdef _WIN32
@@ -258,7 +258,7 @@ int winbolonetThreadRun() {
       if (wbnProcessing->next == NULL) {
         /* Only one entry */
         httpSendMessage(wbnProcessing->data, wbnProcessing->len, (BYTE *) dest, 512);
-        Dispose(wbnProcessing);
+        free(wbnProcessing);
 	wbnProcessing = NULL; 
       } else {
         prev = wbnProcessing;
@@ -270,7 +270,7 @@ int winbolonetThreadRun() {
         /* Got last entry */
         prev->next = NULL;
         httpSendMessage(q->data, q->len, (BYTE *) dest, 512);
-        Dispose(q);
+        free(q);
       }
     }
 #ifdef _WIN32

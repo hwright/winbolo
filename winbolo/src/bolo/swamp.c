@@ -61,7 +61,7 @@ void swampDestroy(swamp *swmp) {
   while (!IsEmpty(*swmp)) {
     q = *swmp;
     *swmp = SwampTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -109,7 +109,7 @@ BYTE swampAddItem(swamp *swmp, BYTE x, BYTE y) {
 
   /* If not found add a new item */
   if (found == false) {
-    New (q);
+    q = malloc(sizeof(*q));
     q->x = x;
     q->y = y;
     q->life = SWAMP_LIFE;
@@ -139,7 +139,7 @@ void swampDeleteItem(swamp *swmp, int itemNum) {
   if (itemNum == 1) {
     del = *swmp;
     *swmp = del->next;
-    Dispose(del);
+    free(del);
   } else {
     count = 1;
     prev = *swmp;
@@ -149,7 +149,7 @@ void swampDeleteItem(swamp *swmp, int itemNum) {
     }
     del = SwampTail(prev);
     prev->next = del->next;
-    Dispose(del);
+    free(del);
   }
 }
 

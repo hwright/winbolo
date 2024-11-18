@@ -61,7 +61,7 @@ void currentGamesDestroy(currentGames *value) {
   while (NonEmpty(*value)) {
     q = *value;
     *value = CurrentTail(*value);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -90,7 +90,7 @@ void currentGamesDestroy(currentGames *value) {
 void currentGamesAddItem(currentGames *value, char *address, unsigned short port, char *mapName, char *version, BYTE numPlayers, BYTE numBases, BYTE numPills, bool mines, gameType game, aiType ai, bool password) {
   currentGames q;
 
-  New(q);
+  q = malloc(sizeof(*q));
   strcpy(q->address, address);
   strcpy(q->mapName, mapName);
   strcpy(q->version, version);

@@ -53,7 +53,6 @@ add_executable(linbolo
                ../../bolo/floodfill.c
                ../../bolo/gametype.c
                ../../bolo/grass.c
-               ../../bolo/global.c
                ../../bolo/labels.c
                ../../bolo/lgm.c
                ../../bolo/log.c

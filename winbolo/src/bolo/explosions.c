@@ -65,7 +65,7 @@ void explosionsDestroy(explosions *expl) {
   while (!IsEmpty(*expl)) {
     q = *expl;
     *expl = ExplosionsTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -89,7 +89,7 @@ void explosionsDestroy(explosions *expl) {
 void explosionsAddItem(explosions *expl, BYTE mx, BYTE my, BYTE px, BYTE py, BYTE startPos) {
   explosions q;
 
-  New (q);
+  q = malloc(sizeof(*q));
   q->mx = mx;
   q->my = my;
   q->px = px;
@@ -176,7 +176,7 @@ void explosionDeleteItem(explosions *expl, explosions *value) {
   if (del->next != NULL) {
     del->next->prev = del->prev;
   }
-  Dispose(del);
+  free(del);
 }
 
 /*********************************************************

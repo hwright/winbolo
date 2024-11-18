@@ -66,7 +66,7 @@ void basesRemoveTimer(int playerNumber){
 void basesCreate(bases *value) {
   BYTE count; /* Looping variable */
 
-  New(*value);
+  *value = malloc(sizeof(**value));
   memset(*value, 0, sizeof(**value));
   (*value)->numBases = 0;
 
@@ -96,7 +96,7 @@ void basesCreate(bases *value) {
 *********************************************************/
 void basesDestroy(bases *value) {
   if (*value != NULL) {
-    Dispose(*value);
+    free(*value);
   }
 }
 

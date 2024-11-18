@@ -28,7 +28,7 @@
 #include "../bolo/global.h"
 #include "winbolonetevents.h"
 
-winbolonetEvents wbe; /* Winbolo.net Event */
+static winbolonetEvents wbe; /* Winbolo.net Event */
 
 /*********************************************************
 *NAME:          winbolonetEventsCreate
@@ -63,7 +63,7 @@ void winbolonetEventsDestroy(void) {
   while (!IsEmpty(wbe)) {
     q = wbe;
     wbe = winbolonetEventsTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -83,8 +83,7 @@ void winbolonetEventsDestroy(void) {
 void winbolonetEventsAddItem(BYTE itemType, BYTE *keyA, BYTE *keyB) {
   winbolonetEvents q;
 
-  q = wbe;
-  New (q);
+  q = malloc(sizeof(*q));
   q->itemType = itemType;
   memcpy(q->keyA, keyA, WINBOLONET_KEY_LEN);
   memcpy(q->keyB, keyB, WINBOLONET_KEY_LEN);
@@ -163,7 +162,7 @@ BYTE winbolonetEventsRemove(BYTE *keyA, BYTE *keyB) {
         /* We are the first item */
         wbe = NULL;
       }
-      Dispose(prev);
+      free(prev);
     }
   }
   return returnValue;

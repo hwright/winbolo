@@ -47,7 +47,7 @@ void minesCreate(mines *visMines, bool allowHiddenMines) {
   int count1; /* Looping Variables */
   int count2;
 
-  New(*visMines);
+  *visMines = malloc(sizeof(**visMines));
   for (count1=0;count1<MINES_ARRAY_SIZE;count1++) {
     for (count2=0;count2<MINES_ARRAY_SIZE;count2++) {
       (*visMines)->pos[count1][count2] = false;
@@ -68,7 +68,7 @@ void minesCreate(mines *visMines, bool allowHiddenMines) {
 *
 *********************************************************/
 void minesDestroy(mines *visMines) {
-  Dispose(*visMines);
+  free(*visMines);
 }
 
 /*********************************************************

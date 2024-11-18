@@ -61,7 +61,7 @@ void buildingDestroy(building *bld) {
   while (!IsEmpty(*bld)) {
     q = *bld;
     *bld = BuildingTail(q);
-    Dispose(q);
+    free(q);
   }
 }
 
@@ -109,7 +109,7 @@ BYTE buildingAddItem(building *bld, BYTE x, BYTE y) {
 
   /* If not found add a new item */
   if (found == false) {
-    New (q);
+    q = malloc(sizeof(*q));
     q->x = x;
     q->y = y;
     q->life = BUILDING_LIFE;
@@ -140,7 +140,7 @@ void buildingDeleteItem(building *bld, int itemNum) {
   if (itemNum == 1) {
     del = *bld;
     *bld = del->next;
-    Dispose(del);
+    free(del);
   } else {
     count = 1;
     prev = *bld;
@@ -150,7 +150,7 @@ void buildingDeleteItem(building *bld, int itemNum) {
     }
     del = BuildingTail(prev);
     prev->next = del->next;
-    Dispose(del);
+    free(del);
   }
 }
 

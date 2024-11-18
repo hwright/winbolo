@@ -87,7 +87,7 @@ void tankCreate(tank *value, starts *sts) {
 
   tankShuttingDown = false;
   
-  New(*value);
+  *value = malloc(sizeof(**value));
   (*value)->x = 0;
   (*value)->y = 0;
   gameTypeGetItems(screenGetGameType(), &shellsAmount, &minesAmount, &armourAmount, &treesAmount);
@@ -161,11 +161,11 @@ void tankDestroy(tank *value, map *mp, pillboxes *pb, bases *bs) {
   while ((*value) != NULL && !IsEmpty((*value)->carryPills)) {
     q = (*value)->carryPills;
     (*value)->carryPills = TankPillsTail(q);
-    Dispose(q);
+    free(q);
   }
   
   if ((*value) != NULL) {
-    Dispose(*value);
+    free(*value);
   }
 }
 
@@ -1776,7 +1776,7 @@ void tankCheckPillCapture(tank *value, pillboxes *pb) {
 				if (threadsGetContext() == false) {
 					frontEndStatusPillbox(pillNum, (pillsGetAllianceNum(pb, pillNum)));
 				}
-				New(q);
+				q = malloc(sizeof(*q));
 				q->pillNum = pillNum;
 				q->next = (*value)->carryPills;
 				(*value)->carryPills = q;
@@ -1880,7 +1880,7 @@ void tankDropPills(tank *value, map *mp, pillboxes *pb, bases *bs) {
               frontEndStatusPillbox(q->pillNum, (pillsGetAllianceNum(pb, q->pillNum)));
             }
             (*value)->carryPills = TankPillsTail(q);
-            Dispose(q);
+            free(q);
           }
         }
         count++;
@@ -1891,7 +1891,7 @@ void tankDropPills(tank *value, map *mp, pillboxes *pb, bases *bs) {
         }
       } else {
 //        (*value)->carryPills = TankPillsTail(q);
-//        Dispose(q);
+//        free(q);
       }
 
     }
@@ -2081,7 +2081,7 @@ bool tankGetCarriedPill(tank *value, BYTE *pillNum, bool perform) {
       q = (*value)->carryPills;
       (*value)->carryPills = TankPillsTail(q);
       *pillNum = q->pillNum;
-      Dispose(q);
+      free(q);
     }
     returnValue = true;
   }
@@ -2103,7 +2103,7 @@ void tankGetCarriedPillNum(tank *value, BYTE pillNum) {
       } else {
         prev->next = q->next;
       }
-      Dispose(q);
+      free(q);
     } else {
       prev = q;
       q = q->next;
@@ -2125,7 +2125,7 @@ void tankGetCarriedPillNum(tank *value, BYTE pillNum) {
 void tankPutCarriedPill(tank *value, BYTE pillNum) {
   tankCarryPb q;  /* Temp pointer for adding PBs to tank */
 
-  New(q);
+  q = malloc(sizeof(*q));
   q->pillNum = pillNum;
   q->next = (*value)->carryPills;
   (*value)->carryPills = q;
@@ -2166,7 +2166,7 @@ void tankStopCarryingPill(tank *value, BYTE pillNum) {
 					} else {
 						prev->next = q->next;
 					}
-					Dispose(q);
+					free(q);
 				} else {
 					prev = q;
 					q = q->next;
@@ -2870,7 +2870,7 @@ void tankPutPill(tank *value, pillboxes *pb, BYTE pillNum) {
   if (threadsGetContext() == false) {
     frontEndStatusPillbox(pillNum, (pillsGetAllianceNum(pb, pillNum)));
   }
-  New(q);
+  q = malloc(sizeof(*q));
   q->pillNum = pillNum;
   q->next = (*value)->carryPills;
   (*value)->carryPills = q;

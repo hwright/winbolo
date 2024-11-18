@@ -62,7 +62,7 @@ static char myLastPlayerName[PLAYER_NAME_LEN];
 void playersCreate(players *plrs) {
   BYTE count; /* Looping variable */
 
-  New(*plrs);
+  *plrs = malloc(sizeof(**plrs));
   memset(*plrs, 0, sizeof(**plrs));
   if (backendGetContext() == false) {
     myLastPlayerName[0] = EMPTY_CHAR;
@@ -99,7 +99,7 @@ void playersDestroy(players *plrs) {
       allienceDestroy(&((*plrs)->item[count].allie));
     }
     if (*plrs != NULL) {
-      Dispose(*plrs);
+      free(*plrs);
     }
     (*plrs) = NULL;
   }
