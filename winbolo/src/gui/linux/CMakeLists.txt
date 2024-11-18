@@ -85,6 +85,8 @@ add_executable(linbolo
                ../../winbolonet/winbolonetthread.c
                ../../winbolonet/winbolonet.c)
 
+target_compile_options(linbolo PRIVATE -Wno-compound-token-split-by-macro)
+
 include_directories(${MINIZIP_INCLUDE_DIRS})
 include_directories(${SDL_INCLUDE_DIRS})
 include_directories(${GTK_INCLUDE_DIRS})
