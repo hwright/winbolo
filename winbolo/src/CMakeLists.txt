@@ -12,7 +12,7 @@ pkg_check_modules(MINIZIP REQUIRED minizip)
 pkg_check_modules(SDL REQUIRED sdl)
 pkg_check_modules(GTK REQUIRED gtk+)
 
-add_compile_options(-g -Wall -Wno-missing-braces)
+add_compile_options(-Wall -Wno-missing-braces)
 
 add_subdirectory(gui/linux)
 add_subdirectory(server)

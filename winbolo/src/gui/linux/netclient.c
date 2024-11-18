@@ -764,7 +764,7 @@ void gameFinderProcessV1(currentGames *cg, char *buff, int len, char *motd) {
   char *ptr;
   int numMotdLines = 0;
   int count = 0;
-  int numGames;
+  int numGames = 0;
   char gameNum[100];
   char gameId[100];
   char address[255];

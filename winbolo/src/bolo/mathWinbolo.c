@@ -183,8 +183,6 @@ SPEEDTYPE mathCollisionPostComponentSpeed(int massA, SPEEDTYPE speedA, int massB
  */
 int mathAngleTravelUsingComponents(float speedX, float speedY)
 {
-	float a;
- 
 	/* Tank is not moving horizontally */
 	if (speedX == 0)
 	{
@@ -226,24 +224,23 @@ int mathAngleTravelUsingComponents(float speedX, float speedY)
 		/* Tank is moving NW */
 		if ((speedX < 0) && (speedY < 0))
 		{
-			a = 180 + mathConvertRadianToDegree((float) atan((speedY * -1)/speedX));
+			return (int) (180 + mathConvertRadianToDegree((float) atan((speedY * -1)/speedX)));
 		}
 		/* Tank is moving SW */
 		else if ((speedX < 0) && (speedY > 0))
 		{
-			a = (float) (180 + (float) (mathConvertRadianToDegree((float) atan((speedY * -1)/speedX))));
+			return (int) ((float) (180 + (float) (mathConvertRadianToDegree((float) atan((speedY * -1)/speedX)))));
 		}
 		/* Tank is moving SE */
 		else if ((speedX > 0) && (speedY > 0))
 		{
-			a = mathConvertRadianToDegree((float) atan((speedY * -1)/speedX));
+			return (int) (mathConvertRadianToDegree((float) atan((speedY * -1)/speedX)));
 		}
 		/* Tank is moving NE */
 		else if ((speedX > 0) && (speedY < 0))
 		{
-			a = mathConvertRadianToDegree((float) atan((speedY * -1)/speedX));
+			return (int) (mathConvertRadianToDegree((float) atan((speedY * -1)/speedX)));
 		}
-		return (int) a;
 	}
 
 	/* Should never get to this point.. */
