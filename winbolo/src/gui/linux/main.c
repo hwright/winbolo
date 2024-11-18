@@ -1578,7 +1578,7 @@ void frontEndStatusPillbox(BYTE pillNum, pillAlliance pb) {
 
   tick = timeGetTime();
   drawStatusPillbox(pillNum, pb, showPillLabels);
-  drawCopyPillsStatus(0);
+  drawCopyPillsStatus();
   dwSysFrame += (timeGetTime() - tick);
 }
 
@@ -1599,7 +1599,7 @@ void frontEndStatusTank(BYTE tankNum, tankAlliance ts) {
   
   tick = timeGetTime();
   drawStatusTank(tankNum, ts);
-  drawCopyTanksStatus(req.height);
+  drawCopyTanksStatus();
   dwSysFrame += (timeGetTime() - tick);
 }
 
