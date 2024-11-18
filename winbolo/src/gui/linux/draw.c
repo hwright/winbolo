@@ -67,16 +67,16 @@
 #include "..\draw.h"
 */
 /* SDL Surfaces */
-SDL_Surface *lpScreen = NULL;
-SDL_Surface *lpBackBuffer = NULL;
-SDL_Surface *lpTiles = NULL;
-SDL_Surface *lpPillsStatus = NULL;
-SDL_Surface *lpBasesStatus = NULL;
-SDL_Surface *lpTankStatus = NULL;
-TTF_Font *lpFont = NULL;
-SDL_Color white = {0xFF, 0xFF, 0xFF, 0};
-SDL_Color green = {0, 0xFF, 0, 0};
-SDL_Color black = {0,0,0,0};
+static SDL_Surface *lpScreen = NULL;
+static SDL_Surface *lpBackBuffer = NULL;
+static SDL_Surface *lpTiles = NULL;
+static SDL_Surface *lpPillsStatus = NULL;
+static SDL_Surface *lpBasesStatus = NULL;
+static SDL_Surface *lpTankStatus = NULL;
+static TTF_Font *lpFont = NULL;
+static SDL_Color white = {0xFF, 0xFF, 0xFF, 0};
+static SDL_Color green = {0, 0xFF, 0, 0};
+static SDL_Color black = {0,0,0,0};
 
 /* typedef int DWORD; */
 /* Used for drawing the man status */
@@ -85,17 +85,17 @@ HBRUSH hNarrowBrush = NULL;
 HPEN hManPen = NULL;
 */
 /* Used for storing time */
-DWORD	g_dwFrameTime = 0;
+static DWORD	g_dwFrameTime = 0;
 /* Number of frames dispayed this second */
-DWORD	g_dwFrameCount = 0;
+static DWORD	g_dwFrameCount = 0;
 /* The total frames per second for last second */
-DWORD g_dwFrameTotal = 0;
+static DWORD g_dwFrameTotal = 0;
 
 
 extern GtkWidget* drawingarea1;
 
-int drawPosX[255];
-int drawPosY[255];
+static int drawPosX[255];
+static int drawPosY[255];
 
 void drawSetupArrays(BYTE zoomFactor);
 void drawDownloadScreen(bool justBlack);

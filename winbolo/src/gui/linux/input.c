@@ -30,9 +30,9 @@
 #include "../../bolo/backend.h"
 #include "input.h"
 
-tankButton tb;
+static tankButton tb;
 static BYTE scrollKeyCount = 0; /* Used for screen scrolling */
-keyItems heldKeys;
+static keyItems heldKeys;
 
 /*********************************************************
 *NAME:          inputSetup

@@ -54,40 +54,40 @@
 #include "gamefront.h"
 
 /* Game playing options */
-char fileName[FILENAME_MAX]; /* filename and path of the map to use or command line arguement */
-char password[MAP_STR_SIZE]; /* game password */
-bool hiddenMines;            /* Hidden mines allowed */
-aiType compTanks = aiNone;   /* Whether computer tanks are allowed */
-gameType gametype;           /* The type of game being played */
-long startDelay;             /* The start delay */
-long timeLen;                /* Game time length */
-bool gameFrontRemeber;       /* Remeber player name? */
+static char fileName[FILENAME_MAX]; /* filename and path of the map to use or command line arguement */
+static char password[MAP_STR_SIZE]; /* game password */
+static bool hiddenMines;            /* Hidden mines allowed */
+static aiType compTanks = aiNone;   /* Whether computer tanks are allowed */
+static gameType gametype;           /* The type of game being played */
+static long startDelay;             /* The start delay */
+static long timeLen;                /* Game time length */
+static bool gameFrontRemeber;       /* Remeber player name? */
 
 /* UDP stuff */
-char gameFrontName[PLAYER_NAME_LEN]; /* Player Name */
-char gameFrontUdpAddress[FILENAME_MAX]; /* IP of target machine */
-unsigned short gameFrontMyUdp;
-unsigned short gameFrontTargetUdp;
+static char gameFrontName[PLAYER_NAME_LEN]; /* Player Name */
+static char gameFrontUdpAddress[FILENAME_MAX]; /* IP of target machine */
+static unsigned short gameFrontMyUdp;
+static unsigned short gameFrontTargetUdp;
 
-char gameFrontTrackerAddr[FILENAME_MAX];
-unsigned short gameFrontTrackerPort;
-bool gameFrontTrackerEnabled;
+static char gameFrontTrackerAddr[FILENAME_MAX];
+static unsigned short gameFrontTrackerPort;
+static bool gameFrontTrackerEnabled;
 
 /* Window handle */
 //HWND gameFrontWnd;
 
 
 /* Dialog states */
-openingStates dlgState = openStart;
+static openingStates dlgState = openStart;
 
-bool isServer = FALSE; /* Are we server of a net game */
+static bool isServer = FALSE; /* Are we server of a net game */
 
-bool useAutoslow; /* Other key preferences options */
-bool useAutohide;
+static bool useAutoslow; /* Other key preferences options */
+static bool useAutohide;
 
 
 
-bool wantRejoin; /* Do we want to rejoin */
+static bool wantRejoin; /* Do we want to rejoin */
 
 /* Server process stuff */
 //PROCESS_INFORMATION pi;     /* Process information    */
