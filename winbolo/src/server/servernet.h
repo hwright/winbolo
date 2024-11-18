@@ -931,7 +931,7 @@ void serverNetSendManWorkingMessage(BYTE playerNum, BYTE mapX, BYTE mapY, BYTE n
 *ARGUMENTS:
 *  msg - Message to send 
 *********************************************************/
-void serverNetSendServerMessageAllPlayers(char *msg);
+void serverNetSendServerMessageAllPlayers(const char *msg);
 
 /*********************************************************
 *NAME:          serverNetGetMaxPlayers

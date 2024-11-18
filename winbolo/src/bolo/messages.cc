@@ -118,7 +118,7 @@ void messageDestroy(void) {
 *  top     - The message to print in the top line
 *  bottom  - The message to print in the bottom line
 *********************************************************/
-void clientMessageAdd(messageType msgType, char *top, char *bottom) {
+void clientMessageAdd(messageType msgType, const char *top, const char *bottom) {
   static BYTE lastMessage = globalMessage;
    
   switch (msgType) {
@@ -355,7 +355,7 @@ void clientMessageAdd(messageType msgType, char *top, char *bottom) {
 *  top    - The message to print in the top line
 *  bottom - The message to print in the bottom line
 *********************************************************/
-void messageAddItem(char *top, char *bottom) {
+void messageAddItem(const char *top, const char *bottom) {
   message q;     /* temp Pointer */
   message prev;  /* temp pointer */
   message add;   /* Item to add */

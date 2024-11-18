@@ -1003,7 +1003,7 @@ bool gameFrontGetRemeber() {
 *ARGUMENTS:
 *  getName - Holds the filename
 *********************************************************/
-void gameFrontSetFileName(char *getName) {
+void gameFrontSetFileName(const char *getName) {
   strcpy(fileName, getName);
 }
 

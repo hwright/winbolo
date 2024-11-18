@@ -319,7 +319,7 @@ void soundCleanup(void) {
 *  value       - Direct Sound Buffer to load into
 *  lpzFileName - File name to load if buffer is lost
 *********************************************************/
-void soundPlaySound(Mix_Chunk *value, char *name, int channel) {
+void soundPlaySound(Mix_Chunk *value, const char *name, int channel) {
   static int useChannel = 0;
   if (channel == -1) {
     Mix_PlayChannel(useChannel, value, 0);

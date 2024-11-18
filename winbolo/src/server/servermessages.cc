@@ -57,7 +57,7 @@ void serverMessagesSetLogFile(char *logFile) {
 *  top     - The message to print in the top line
 *  bottom  - The message to print in the bottom line
 *********************************************************/
-void serverMessageAdd(messageType msgType, char *top, char *bottom) {
+void serverMessageAdd(messageType msgType, const char *top, const char *bottom) {
   FILE *fp; /* File to write to */
   if (msgType != assistantMessage && isServerQuiet == false) {
     if (serverMessageUseLogFile == false) {
@@ -72,7 +72,7 @@ void serverMessageAdd(messageType msgType, char *top, char *bottom) {
   }
 }
 
-void serverMessageConsoleMessage(char *msg) {
+void serverMessageConsoleMessage(const char *msg) {
   FILE *fp; /* File to write to */
   if (isServerQuiet == false) {
     if (serverMessageUseLogFile == false) {

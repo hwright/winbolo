@@ -327,7 +327,7 @@ bool screenCheckPillsRange(BYTE xValue, BYTE yValue, BYTE playerNum, double dist
 *ARGUMENTS:
 *  mode - Server mode
 ********************************************************/
-void screenServerConsoleMessage(char *msg) {
+void screenServerConsoleMessage(const char *msg) {
   if (threadsGetContext() == true) {
     serverCoreServerConsoleMessage(msg);
   }
@@ -348,7 +348,7 @@ void screenServerConsoleMessage(char *msg) {
 *  top     - The message to print in the top line
 *  bottom  - The message to print in the bottom line
 *********************************************************/
-void messageAdd(messageType msgType, char *top, char *bottom) {
+void messageAdd(messageType msgType, const char *top, const char *bottom) {
   if (threadsGetContext() == false) {
     clientMessageAdd(msgType, top, bottom);
   } else {

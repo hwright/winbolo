@@ -61,7 +61,7 @@ void serverCoreLgmOperation(BYTE playerNum, BYTE destX, BYTE destY, BYTE operati
 *ARGUMENTS:
 *  mode - Server mode
 ********************************************************/
-void serverCoreServerConsoleMessage(char *msg) {
+void serverCoreServerConsoleMessage(const char *msg) {
   return;
 }
 

@@ -245,7 +245,7 @@ void netClientGetUsStr(char *dest);
 *  addNoReliable - If true adds the non-reliable packet
 *                  marker to the packet
 *********************************************************/
-bool netClientUdpPing(BYTE *buff, int *len, char *dest, unsigned short port, bool wantCrc, bool addNonReliable);
+bool netClientUdpPing(BYTE *buff, int *len, const char *dest, unsigned short port, bool wantCrc, bool addNonReliable);
 
 /*********************************************************
 *NAME:          netClientUdpSendNoWait
@@ -343,7 +343,7 @@ bool netClientSetUdpAsync(bool on);
 *  address - Address of the tracker
 *  port    - Port of the tracker
 *********************************************************/
-bool netClientSetTracker(char *address, unsigned short port);
+bool netClientSetTracker(const char *address, unsigned short port);
 
 /*********************************************************
 *NAME:          netClientSendUdpTracker

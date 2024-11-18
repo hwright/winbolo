@@ -51,7 +51,7 @@ gboolean messageBoxClose(GtkWidget *widget,  GdkEventButton *event, gpointer use
 }
 
 
-GtkWidget* create_MessageBox (char *name, char *label) {
+GtkWidget* create_MessageBox (const char *name, const char *label) {
   GtkWidget *MessageBox;
   GtkWidget *vbox1;
   GtkWidget *label1;
@@ -98,7 +98,7 @@ GtkWidget* create_MessageBox (char *name, char *label) {
   return MessageBox;
 }
 
-void MessageBox(char *label, char *title) {
+void MessageBox(const char *label, const char *title) {
   GtkWidget *mb;
   mb = create_MessageBox(title, label);
   gtk_widget_show(mb);
@@ -106,12 +106,12 @@ void MessageBox(char *label, char *title) {
   gtk_main();
 }
 
-void MessageBox2(char *label, char *title, char *label2, char *title2) {
+void MessageBox2(const char *label, const char *title, const char *label2, const char *title2) {
   MessageBox(label, title);
   MessageBox(label2, title2);
 }
 
-void MessageBox3(char *label, char *title, char *label2, char *title2, char *label3, char *title3) {
+void MessageBox3(const char *label, const char *title, const char *label2, const char *title2, const char *label3, const char *title3) {
   MessageBox(label, title);
   MessageBox(label2, title2);
   MessageBox(label3, title3);

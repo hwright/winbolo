@@ -425,7 +425,7 @@ Do we want to bail out? I don't think so
 *  addNoReliable - If true adds the non-reliable packet
 *                  marker to the packet
 *********************************************************/
-bool netClientUdpPing(BYTE *buff, int *len, char *dest, unsigned short port, bool wantCrc, bool addNonReliable) {
+bool netClientUdpPing(BYTE *buff, int *len, const char *dest, unsigned short port, bool wantCrc, bool addNonReliable) {
   bool returnValue;           /* Value to return */
   struct sockaddr_in addr;    /* Socket to send to */
   struct sockaddr_in from;    /* Socket returned from */
@@ -636,7 +636,7 @@ bool netClientSetUdpAsync(bool on) {
 *  address - Address of the tracker
 *  port    - Port of the tracker
 *********************************************************/
-bool netClientSetTracker(char *address, unsigned short port) {
+bool netClientSetTracker(const char *address, unsigned short port) {
   bool returnValue;    /* Value to return      */
   struct hostent *phe; /* Used for DNS lookups */
   
@@ -680,7 +680,7 @@ void netClientSendUdpTracker(BYTE *buff, int len) {
 //-------------------------------------------------------------
 
 
-int gameFinderGetParamFromLine(char *src, char *dest, char *pattern) {
+int gameFinderGetParamFromLine(char *src, char *dest, const char *pattern) {
   int returnValue; /* Value to return */
   char *ptr;
   int count;

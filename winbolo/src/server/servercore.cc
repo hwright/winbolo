@@ -197,7 +197,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines, int srtDe
 *  gmeLen      - Length of the game (in 50ths) 
 *                (-1 =unlimited)
 *********************************************************/
-bool serverCoreCreateCompressed(BYTE *buff, int buffLen, char *mapn, gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
+bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn, gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   bool returnValue; /* Value to return */
   BYTE count;       /* Looping variable */
 
@@ -1232,7 +1232,7 @@ void serverCoreSetQuietMode(bool mode) {
   serverMessageSetQuietMode(mode);
 }
 
-void serverMessageConsoleMessage(char *msg);
+void serverMessageConsoleMessage(const char *msg);
 
 /*********************************************************
 *NAME:          serverCoreServerConsoleMessage
@@ -1245,7 +1245,7 @@ void serverMessageConsoleMessage(char *msg);
 *ARGUMENTS:
 *  mode - Server mode
 ********************************************************/
-void serverCoreServerConsoleMessage(char *msg) {
+void serverCoreServerConsoleMessage(const char *msg) {
   serverMessageConsoleMessage(msg);
 }
 

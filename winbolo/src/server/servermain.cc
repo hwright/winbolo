@@ -474,7 +474,7 @@ static int findArg(int numArgs, char **argv, const char *argname) {
 }
 
 
-static bool argExist(int numArgs, char **argv, char *argname) {
+static bool argExist(int numArgs, char **argv, const char *argname) {
   bool returnValue; /* Value to return */
   char temp[255];
   int count;

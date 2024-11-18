@@ -1538,7 +1538,7 @@ void serverNetCheckRemovePlayers() {
 *ARGUMENTS:
 *  msg - Message to send 
 *********************************************************/
-void serverNetSendServerMessageAllPlayers(char *msg) {
+void serverNetSendServerMessageAllPlayers(const char *msg) {
   static BYTE info[MAX_UDPPACKET_SIZE] = GENERICHEADER; /* Buffer to send */
   BYTE *ptr; /* Data Ptr */
   int len; /* Line length */
@@ -1546,15 +1546,17 @@ void serverNetSendServerMessageAllPlayers(char *msg) {
   ptr = info;
   ptr += BOLOPACKET_REQUEST_TYPEPOS+1;
 
+  char* msg2 = strdup(msg);
 
   /* Remove a newline if present at the end of the string */
-  len = (int) strlen(msg);
-  if (msg[len-1] == '\n') {
-    msg[len-1] = EMPTY_CHAR;
+  len = (int) strlen(msg2);
+  if (msg2[len-1] == '\n') {
+    msg2[len-1] = EMPTY_CHAR;
   }
-  utilCtoPString(msg, (char *) ptr);
+  utilCtoPString(msg2, (char *) ptr);
   logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *) ptr);
   serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE +(*ptr)+1);
+  free(msg2);
 }
 
 /*********************************************************

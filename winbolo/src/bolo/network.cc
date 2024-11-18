@@ -145,7 +145,7 @@ static DWORD dwSysNet = 0;
 *                  WinBolo.net
 *  wbnPassword   - Our WinBolo.net password
 *********************************************************/
-bool netSetup(netType value, unsigned short myPort, char *targetIp, unsigned short targetPort, char *password, bool usCreate, char *trackerAddr, unsigned short trackerPort, bool useTracker, bool wantRejoin, bool useWinboloNet, char *wbnPassword) {
+bool netSetup(netType value, unsigned short myPort, const char *targetIp, unsigned short targetPort, const char *password, bool usCreate, const char *trackerAddr, unsigned short trackerPort, bool useTracker, bool wantRejoin, bool useWinboloNet, const char *wbnPassword) {
   bool returnValue; /* Value to return */
   //time_t startTime; /* Start Time if we created the game */
 
@@ -721,7 +721,7 @@ void netMakePingRespsonse(PING_PACKET *buff) {
 *  userName   - Account name we wish to use
 *  password   - Account password
 *********************************************************/
-bool netWinBoloNetSetup(char *userName, char *password) {
+bool netWinBoloNetSetup(const char *userName, const char *password) {
   bool returnValue;              /* Value to return */
   bool done;
   bool done2;
@@ -796,7 +796,7 @@ bool netWinBoloNetSetup(char *userName, char *password) {
 *  usCreate     - True if we created the game
 *  gamePassword - The game password (if we started it)
 *********************************************************/
-bool netJoinInit(char *ip, unsigned short port, bool usCreate, char *gamePassword) {
+bool netJoinInit(const char *ip, unsigned short port, bool usCreate, const char *gamePassword) {
   bool returnValue;   /* Value to return */
   BYTE buff[MAX_UDPPACKET_SIZE]; /* Data Buffer */
   char sendBuff[MAX_UDPPACKET_SIZE]; /* Buffer that is sent */
@@ -993,7 +993,7 @@ bool netJoinInit(char *ip, unsigned short port, bool usCreate, char *gamePasswor
 *  usCreate   - Is this client hosting the server
 *  gamePassword - The game password (if we started it)
 *********************************************************/
-bool netJoin(char *ip, unsigned short port, bool wantRejoin, char *userName, char *password, bool useWbn, bool usCreate, char *gamePassword) {
+bool netJoin(const char *ip, unsigned short port, bool wantRejoin, const char *userName, const char *password, bool useWbn, bool usCreate, const char *gamePassword) {
   bool returnValue; /* Value to return */
 
   returnValue = netJoinInit(ip, port, usCreate, gamePassword);
@@ -1022,7 +1022,7 @@ bool netJoin(char *ip, unsigned short port, bool wantRejoin, char *userName, cha
 *  password   - Account password
 *  useWbn     - Do we want to try and use WBN?              
 *********************************************************/
-bool netJoinFinalise(char *targetip, unsigned short port, bool wantRejoin, char *userName, char *password, bool useWbn) {
+bool netJoinFinalise(const char *targetip, unsigned short port, bool wantRejoin, const char *userName, const char *password, bool useWbn) {
   bool returnValue;           /* Value to return              */
   struct in_addr dummy;       /* Dummy IP address             */
   BYTE buff[MAX_UDPPACKET_SIZE]; /* Data buffer                  */

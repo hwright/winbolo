@@ -133,7 +133,7 @@ void messageDestroy(void);
 *  top     - The message to print in the top line
 *  bottom  - The message to print in the bottom line
 *********************************************************/
-void clientMessageAdd(messageType msgType, char *top, char *bottom);
+void clientMessageAdd(messageType msgType, const char *top, const char *bottom);
 
 /*********************************************************
 *NAME:          serverMessageAdd
@@ -150,7 +150,7 @@ void clientMessageAdd(messageType msgType, char *top, char *bottom);
 *  top     - The message to print in the top line
 *  bottom  - The message to print in the bottom line
 *********************************************************/
-void serverMessageAdd(messageType msgType, char *top, char *bottom);
+void serverMessageAdd(messageType msgType, const char *top, const char *bottom);
 
 /*********************************************************
 *NAME:          messageAdd
@@ -167,7 +167,7 @@ void serverMessageAdd(messageType msgType, char *top, char *bottom);
 *  top     - The message to print in the top line
 *  bottom  - The message to print in the bottom line
 *********************************************************/
-void messageAdd(messageType msgType, char *top, char *bottom);
+void messageAdd(messageType msgType, const char *top, const char *bottom);
 
 /*********************************************************
 *NAME:          messageAddItem
@@ -181,7 +181,7 @@ void messageAdd(messageType msgType, char *top, char *bottom);
 *  top    - The message to print in the top line
 *  bottom - The message to print in the bottom line
 *********************************************************/
-void messageAddItem(char *top, char *bottom);
+void messageAddItem(const char *top, const char *bottom);
 
 /*********************************************************
 *NAME:          messageUpdate

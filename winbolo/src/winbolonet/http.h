@@ -174,6 +174,6 @@ int httpSendMessage(BYTE *message, int len, BYTE *response, int maxSize);
 *ARGUMENTS:
 * iptoset - the alternate ip address to use.
 *********************************************************/
-void httpSetAltIpAddress(char *iptoset);
+void httpSetAltIpAddress(const char *iptoset);
 
 #endif /* __HTTP_H */

@@ -65,7 +65,7 @@ bool threadsCreate(bool context) {
     return true;
   }
   threadServerContext = context;
-  screenServerConsoleMessage((char *)"Thread Manager Startup");
+  screenServerConsoleMessage("Thread Manager Startup");
 #ifdef _WIN32
   hMutexHandle = CreateMutex(NULL, false, "WinBoloDS");
 #else 
@@ -94,7 +94,7 @@ bool threadsCreate(bool context) {
 void threadsDestroy(void) {
  
   threadStarted = false;
-  screenServerConsoleMessage((char *) "Thread Manager Shutdown");
+  screenServerConsoleMessage("Thread Manager Shutdown");
   /* TCP Listener */
 #ifdef _WIN32
   CloseHandle(hMutexHandle);

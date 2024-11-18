@@ -1045,7 +1045,7 @@ void clientGetRandStart(BYTE *mx, BYTE *my, TURNTYPE *dir) {
 *  top     - The message to print in the top line
 *  bottom  - The message to print in the bottom line
 *********************************************************/
-void clientMessageAdd(messageType msgType, char *top, char *bottom) {
+void clientMessageAdd(messageType msgType, const char *top, const char *bottom) {
   return;
 }
 

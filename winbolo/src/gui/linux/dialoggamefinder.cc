@@ -183,16 +183,15 @@ static gboolean dialogGameFinderJoinByAddress(GtkWidget *widget,  GdkEventButton
   char address[FILENAME_MAX];       /* Address of the machine to join */
   char playerName[PLAYER_NAME_LEN]; /* Player Name */
   unsigned short port;              /* Port of the machine to join    */
-  gchar *str = "";
 
-  if (strlen(str) > 0 ) {
-    gtk_label_get(GTK_LABEL(idc_gamefindport), &str);
-    port = atoi(str);
-    gtk_label_get(GTK_LABEL(idc_address), &str);
-    strcpy(address, str);
-    gameFrontGetPlayerName(playerName);
-    gameFrontSetUdpOptions(playerName, address, port, 0);
-  }
+  gchar *str;
+  gtk_label_get(GTK_LABEL(idc_gamefindport), &str);
+  port = atoi(str);
+  gtk_label_get(GTK_LABEL(idc_address), &str);
+  strcpy(address, str);
+  gameFrontGetPlayerName(playerName);
+  gameFrontSetUdpOptions(playerName, address, port, 0);
+
   if (useTracker == TRUE) {
     gameFrontSetDlgState(dialogGameFindUs, openInternetManual);
   } else {

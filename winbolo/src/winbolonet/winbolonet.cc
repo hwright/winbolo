@@ -149,7 +149,7 @@ bool winbolonetCreateServer(char *mapName, unsigned short port, BYTE gameType, B
 * serverKey - Session key for the server
 * errorMsg  - Buffer to hold Error message if required
 *********************************************************/
-bool winbolonetCreateClient(char *userName, char *password, BYTE *serverKey, char *errorMsg) {
+bool winbolonetCreateClient(const char *userName, const char *password, BYTE *serverKey, char *errorMsg) {
   BYTE buff[FILENAME_MAX]; /* Send buffer */
   int ret;                 /* Function return */
 
@@ -507,7 +507,7 @@ bool winbolonetRequestServerKey(char *mapName, unsigned short port, BYTE gameTyp
 * serverKey - Session key for the server
 * errorMsg  - Buffer to hold Error message if required
 *********************************************************/
-bool winbolonetRequestClientKey(char *userName, char *password, BYTE *serverKey, char *errorMsg) {
+bool winbolonetRequestClientKey(const char *userName, const char *password, BYTE *serverKey, char *errorMsg) {
   bool returnValue;        /* Value to return */
   BYTE buff[FILENAME_MAX]; /* Sending buffer */
   int buffPos = 0;

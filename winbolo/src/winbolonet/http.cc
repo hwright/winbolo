@@ -546,7 +546,7 @@ bool httpSendLogFile(char *fileName, BYTE *key, bool wantFeedback) {
 *ARGUMENTS:
 * iptoset - the alternate ip address to use.
 *********************************************************/
-void httpSetAltIpAddress(char *iptoset){
+void httpSetAltIpAddress(const char *iptoset){
 	strcpy(altIpAddress,iptoset);
 }
 
