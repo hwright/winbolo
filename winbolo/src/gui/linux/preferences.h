@@ -28,7 +28,12 @@
 #ifndef __PREFERENCES_H
 #define __PREFERENCES_H
 
-#define PREFERENCE_FILE "linbolo.ini"
+#include <string>
+#include <string_view>
+
+namespace bolo {
+
+constexpr std::string_view PREFERENCE_FILE = "linbolo.ini";
 
 /*********************************************************
  *NAME:          GetPrivateProfileString
@@ -45,9 +50,9 @@
  * output   - The output variable to store in
  * filename - Filename and path to read file from
  *********************************************************/
-void GetPrivateProfileString(const char *section, const char *item,
-                             const char *def, char *output, int outlen,
-                             const char *filename);
+std::string GetPrivateProfileString(std::string_view section,
+                                    std::string_view item, std::string_view def,
+                                    std::string_view filename);
 
 /*********************************************************
  *NAME:          WritePrivateProfileString
@@ -79,5 +84,7 @@ void WritePrivateProfileString(const char *section, const char *item,
  * value - Pointer to hold path returned
  *********************************************************/
 void preferencesGetPreferenceFile(char *value);
+
+}  // namespace bolo
 
 #endif /* __PREFERENCES_H */

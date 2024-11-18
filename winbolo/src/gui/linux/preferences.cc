@@ -24,65 +24,48 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <format>
+#include <fstream>
+#include <string>
+
 #include "../../bolo/global.h"
 
-/*********************************************************
- *NAME:          GetPrivateProfileString
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/11/99
- *LAST MODIFIED: 26/11/99
- *PURPOSE:
- * Implements the Win32 GetPrivateProfileString function
- *
- *ARGUMENTS:
- * section  - The section name excluding square [ ]
- * item     - The item name to read
- * def      - The default item to replace with if missing
- * output   - The output variable to store in
- * filename - Filename and path to read file from
- *********************************************************/
-void GetPrivateProfileString(const char *section, const char *item,
-                             const char *def, char *output, int outlen,
-                             const char *filename) {
-  FILE *fp;
-  bool found = false;
-  char line[512];
-  char sec[512];
-  int len;
+namespace bolo {
 
-  found = false;
-  fp = fopen(filename, "r");
-  if (fp) {
-    sprintf(sec, "[%s]\n", section);
-    while (!found && !feof(fp)) {
-      fgets(line, 512, fp);
-      if (strcmp(line, sec) == 0) {
-        sprintf(sec, "%s=", item);
-        len = strlen(sec);
-        while (!found && !feof(fp)) {
-          fgets(line, 512, fp);
-          if (strncmp(sec, line, len) == 0) {
-            found = true;
-            strcpy(output, (line + len));
+// Get the given preference value.
+//
+// ARGUMENTS:
+//  section  - The section name excluding square [ ]
+//  item     - The item name to read
+//  def      - The default item to replace with if missing
+//  filename - Filename and path to read file from
+std::string GetPrivateProfileString(std::string_view section,
+                                    std::string_view item, std::string_view def,
+                                    std::string_view filename) {
+  std::ifstream input((std::string(filename).c_str()));
+  if (input.is_open()) {
+    std::string sec = std::format("[{}]", section);
+    std::string line;
+    while (!input.eof()) {
+      std::getline(input, line, '\n');
+      if (line == sec) {
+        sec = std::format("{}=", item);
+        int len = sec.length();
+        while (!input.eof()) {
+          std::getline(input, line, '\n');
+          if (sec.substr(0, len) == line.substr(0, len)) {
+            return std::string(line, len);
           } else if (line[0] == '[') {
-            strncpy(output, def, outlen);
-            found = true;
+            return std::string(def);
           }
         }
       }
     }
 
-    fclose(fp);
+    input.close();
   }
 
-  if (!found) {
-    strncpy(output, def, outlen);
-  } else {
-    /* Stip newline if required */
-    if (output[strlen(output) - 1] == '\n') {
-      output[strlen(output) - 1] = '\0';
-    }
-  }
+  return std::string(def);
 }
 
 /*********************************************************
@@ -173,7 +156,7 @@ void WritePrivateProfileString(const char *section, const char *item,
   delete[] buff;
 }
 
-void preferencesMakeDir(char *path) {
+static void preferencesMakeDir(const char *path) {
   char mkDirPath[FILENAME_MAX];
   mkdir(path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
   strcpy(mkDirPath, path);
@@ -197,8 +180,10 @@ void preferencesGetPreferenceFile(char *value) {
   struct passwd *pwd;
 
   pwd = getpwuid(getuid());
-  strcpy(value, pwd->pw_dir);
-  strcat(value, "/.linbolo/");
-  preferencesMakeDir(value);
-  strcat(value, PREFERENCE_FILE);
+  std::string filename = std::format("{}/.linbolo/", pwd->pw_dir);
+  preferencesMakeDir(filename.c_str());
+  filename.append(PREFERENCE_FILE);
+  strcpy(value, filename.c_str());
 }
+
+}  // namespace bolo
