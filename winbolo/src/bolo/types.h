@@ -64,12 +64,6 @@ struct mapNetObj {
 
 typedef struct mapObj *map;
 
-struct mapObj {
-	BYTE mapItem[MAP_ARRAY_SIZE][MAP_ARRAY_SIZE]; /* The actual map */
-  mapNet mn;
-  mapNet mninc;
-} mapObj;
-
 
 
 /* Defines */

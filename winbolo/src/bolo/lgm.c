@@ -56,6 +56,7 @@
 #include "../server/servernet.h"
 #include "../winbolonet/winbolonet.h"
 
+static char streamText[2048];
 
 
 /* Prototypes */
