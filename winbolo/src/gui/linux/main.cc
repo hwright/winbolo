@@ -326,7 +326,7 @@ GtkRequisition req;
 gint configure_event (GtkWidget *widget, GdkEventConfigure *event) {
   GdkPixmap *pixmap;
   GdkBitmap *mask;
-  pixmap = gdk_pixmap_create_from_xpm_d (window->window, &mask, &window->style->bg[GTK_STATE_NORMAL], boloicon_xpm);
+  pixmap = gdk_pixmap_create_from_xpm_d (window->window, &mask, &window->style->bg[GTK_STATE_NORMAL], (gchar **) boloicon_xpm);
 gdk_window_set_icon (window->window, NULL, pixmap, mask);
   return TRUE;
 }

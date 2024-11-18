@@ -43,7 +43,7 @@ static gint opening_configure_event (GtkWidget *window, GdkEventConfigure *event
   GdkPixmap *pixmap;
   GdkBitmap *mask;
 
-  pixmap = gdk_pixmap_create_from_xpm_d (window->window, &mask, &window->style->bg[GTK_STATE_NORMAL], boloicon_xpm);
+  pixmap = gdk_pixmap_create_from_xpm_d (window->window, &mask, &window->style->bg[GTK_STATE_NORMAL], (gchar **) boloicon_xpm);
   gdk_window_set_icon (window->window, NULL, pixmap, mask);
   return TRUE;
 }
@@ -124,7 +124,7 @@ GtkWidget* dialogOpeningCreate(void) {
   gtk_widget_show (vbox1);
   gtk_container_add (GTK_CONTAINER (dialogOpening), vbox1);
   
-  pixmap_data = gdk_pixmap_colormap_create_from_xpm_d(NULL, gtk_widget_get_colormap(dialogOpening), &pixmap_mask, NULL, smalllogo_xpm);
+  pixmap_data = gdk_pixmap_colormap_create_from_xpm_d(NULL, gtk_widget_get_colormap(dialogOpening), &pixmap_mask, NULL, (gchar **) smalllogo_xpm);
   pixmap1 = gtk_pixmap_new(pixmap_data, pixmap_mask); 
   gtk_widget_ref (pixmap1);
   gdk_pixmap_unref(pixmap_data);
