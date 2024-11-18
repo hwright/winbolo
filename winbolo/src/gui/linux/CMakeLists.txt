@@ -1,14 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
-
-project(Bolo VERSION 1.90.0)
-
-set(CMAKE_C_STANDARD 11)
-set(C_STANDARD_REQUIRED ON)
-
-find_package(PkgConfig)
-pkg_check_modules(MINIZIP REQUIRED minizip)
-pkg_check_modules(SDL REQUIRED sdl)
-pkg_check_modules(GTK REQUIRED gtk+)
+cmake_minimum_required(VERSION 3.10)
 
 add_subdirectory(../../lzw lzw)
 add_subdirectory(../../server/BigDigits bd)
@@ -94,6 +84,8 @@ add_executable(linbolo
                ../../winbolonet/winbolonetevents.c
                ../../winbolonet/winbolonetthread.c
                ../../winbolonet/winbolonet.c)
+
+target_compile_options(linbolo PRIVATE -Wno-compound-token-split-by-macro)
 
 include_directories(${MINIZIP_INCLUDE_DIRS})
 include_directories(${SDL_INCLUDE_DIRS})

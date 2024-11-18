@@ -613,12 +613,9 @@ void serverNetTCPPacketArrive(BYTE *buff, int len, BYTE playerNum, unsigned long
     serverNetSendAll(buff, len);   
   } else if (len == BOLOPACKET_REQUEST_SIZE && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOREQUEST_STARTPOS) {
     /* Start position request */
-    BYTE *ptr;
     STARTPOSITION_PACKET spp = STARTRESPONSEHEADER;
     
     serverCoreGetStartPosition(playerNum, &(spp.x), &(spp.y),  &(spp.angle), &(spp.numShells), &(spp.numMines));
-    ptr = info;
-    ptr += BOLOPACKET_REQUEST_TYPEPOS +1;
     memcpy(info, &spp, sizeof(STARTPOSITION_PACKET));
     serverNetSendPlayer(playerNum, info, sizeof(STARTPOSITION_PACKET));
   }
@@ -1068,7 +1065,6 @@ void serverNetChangePlayerName(BYTE playerNum, BYTE *buff) {
 }
 
 void serverTransportDoChecks();
-void playerNeedUpdateDone();
 /*********************************************************
 *NAME:          serverNetMakePosPackets
 *AUTHOR:        John Morrison

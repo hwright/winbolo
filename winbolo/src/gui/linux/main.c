@@ -1185,7 +1185,7 @@ void gameFrontSetGameOptions(char *pword, gameType gt, bool hm, aiType ai, long 
 *********************************************************/
 bool gameFrontLoadTutorial() {
   bool returnValue; /* Value to return */
-  BYTE buff[6000] = TUT_MAP;
+  //BYTE buff[6000] = TUT_MAP;
 
   returnValue = FALSE; //screenLoadCompressedMap(buff, 4182, "Inbuilt Tutorial", gameStrictTournament, FALSE, 0, -1, langGetText(STR_DLGGAMESETUP_DEFAULTNAME), FALSE);
   if (returnValue == TRUE) {
@@ -1414,7 +1414,7 @@ bool startSinglePlayer() {
     if (strcmp(fileName, "") != 0) {
       screenLoadMap(fileName, gametype, hiddenMines, startDelay, timeLen, gameFrontName, FALSE);
     } else {
-       BYTE emap[6000] = E_MAP;
+       //BYTE emap[6000] = E_MAP;
        //screenLoadCompressedMap(emap, 5097, "Everard Island", gametype, hiddenMines, startDelay, timeLen, gameFrontName, FALSE);
     }
   }
@@ -1578,7 +1578,7 @@ void frontEndStatusPillbox(BYTE pillNum, pillAlliance pb) {
 
   tick = timeGetTime();
   drawStatusPillbox(pillNum, pb, showPillLabels);
-  drawCopyPillsStatus(0);
+  drawCopyPillsStatus();
   dwSysFrame += (timeGetTime() - tick);
 }
 
@@ -1599,7 +1599,7 @@ void frontEndStatusTank(BYTE tankNum, tankAlliance ts) {
   
   tick = timeGetTime();
   drawStatusTank(tankNum, ts);
-  drawCopyTanksStatus(req.height);
+  drawCopyTanksStatus();
   dwSysFrame += (timeGetTime() - tick);
 }
 

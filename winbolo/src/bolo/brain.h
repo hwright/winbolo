@@ -19,7 +19,7 @@
 #define _BRAINS_H
 
 
-#pragma pack(8)
+#pragma pack(push, 8)
 #include "global.h"
 
 #define local static
@@ -272,5 +272,5 @@ typedef struct
 	
 	} BrainInfo;
 
-#pragma pack(1)
+#pragma pack(pop)
 #endif /* _BRAINS_H */

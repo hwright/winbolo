@@ -2885,13 +2885,13 @@ void tankAddHit(tank *value, int amount) {
     return;
   }
 
-  if (amount> -2 || amount < 3) {
+  //if (amount> -2 || amount < 3) {
     (*value)->tankHitCount += amount;
     if (((*value)->tankHitCount > 10 && amount > 1) || ((*value)->tankHitCount > 9 && amount == 1)) {
       /* Cheater */
 //      printf("Cheat received form of armour!...\n");
       netPlayersSetCheater((netPlayers *) serverNetGetNetPlayers(), (BYTE) serverCoreGetTankPlayer(value));
-    }
+    //}
   } else {
     /* Cheater? */
     /* Do nothing for now */

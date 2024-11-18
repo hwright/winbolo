@@ -95,7 +95,6 @@ static BYTE netYPos; /* Y Position we want for data downloading */
 
 /* Data for network status dialog box */
 static int netRingDelay = 0;           /* Total Ring delay */
-static int netDownStreamDelay = 0;     /* Downstream time delay */
 static int netPacketsPerSecond = 0;    /* Number of packets per second */
 static int netNumErrors = 0;           /* Number of network Errors */
 static int netRetransmissions = 0;     /* Number of network Retransmissions */
@@ -103,7 +102,6 @@ static int netRetransmissions = 0;     /* Number of network Retransmissions */
 /* And Totals of for the last second */
 static int netTotPacketsPerSecond = 0; /* Number of packets per second */
 
-static long netLastTokenTime = 0;
 static long tknTime;                              /* Time since last token */
 
 static bool netUseTracker; /* Do we use the tracker or not */

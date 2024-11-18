@@ -75,7 +75,6 @@ static SDL_Surface *lpBasesStatus = NULL;
 static SDL_Surface *lpTankStatus = NULL;
 static TTF_Font *lpFont = NULL;
 static SDL_Color white = {0xFF, 0xFF, 0xFF, 0};
-static SDL_Color green = {0, 0xFF, 0, 0};
 static SDL_Color black = {0,0,0,0};
 
 /* typedef int DWORD; */
