@@ -31,6 +31,8 @@
 #include <memory.h>
 /* For routine memset */
 
+#include "lzw.h"
+
 /* Useful constants */
 #define FALSE 0
 #define TRUE  1
@@ -63,7 +65,7 @@ static inline void decwrite_byte(char c) {
   compressLen++;
 }
 
-void decwrite_array(unsigned char *c, int numBytes) {
+static void decwrite_array(unsigned char *c, int numBytes) {
   int count = 0;
   while (count < numBytes) {
     compressDest[compressLen] = c[count];

@@ -24,6 +24,8 @@
 #define FALSE 0
 #define TRUE  1
 
+#include "lzw.h"
+
 /* Global variables. */
 static char *compressSrc, *compressDest;
 
@@ -52,7 +54,7 @@ static inline void conwrite_byte(char c) {
   compressLen++;
 }
 
-void conwrite_array(unsigned char *c, int numBytes) {
+static void conwrite_array(unsigned char *c, int numBytes) {
   int count = 0;
   while (count < numBytes) {
     compressDest[compressLen] = c[count];
