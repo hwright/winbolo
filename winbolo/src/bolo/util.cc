@@ -539,10 +539,10 @@ void utilExtractMapName(char *fileName, char *mapName) {
   tok = strtok(dummy, STRTOK_SEPS);
   if (tok) {
     strcpy(mapName, tok);
-    tok = strtok(NULL, STRTOK_SEPS);
-    while (tok != NULL) {
+    tok = strtok(nullptr, STRTOK_SEPS);
+    while (tok != nullptr) {
       strcpy(mapName, tok);
-      tok = strtok(NULL, STRTOK_SEPS);
+      tok = strtok(nullptr, STRTOK_SEPS);
     }
     len = (int) strlen(mapName);
     if (mapName[len-END3] == END3CHRA && (mapName[len-END2] == END2CHRA || mapName[len-END2] == END2CHRB) && (mapName[len-END1] == END1CHRA || mapName[len-END1] == END1CHRB) && (mapName[len-END0] == END0CHRA || mapName[len-END0] == END0CHRB)) {

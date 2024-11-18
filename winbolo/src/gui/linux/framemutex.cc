@@ -37,7 +37,7 @@ typedef SDL_mutex *HANDLE;
 #include "../../bolo/global.h"
 #include "framemutex.h"
 
-static HANDLE hFrameMutexHandle = NULL;
+static HANDLE hFrameMutexHandle = nullptr;
 
 
 /*********************************************************
@@ -67,7 +67,7 @@ bool frameMutexCreate(void) {
   }
 #else
   hFrameMutexHandle = SDL_CreateMutex();
-  if (hFrameMutexHandle == NULL) {
+  if (hFrameMutexHandle == nullptr) {
     returnValue = false;
   }
 #endif
@@ -92,7 +92,7 @@ void frameMutexDestroy(void) {
 #else
   SDL_DestroyMutex(hFrameMutexHandle);
 #endif
-  hFrameMutexHandle = NULL;
+  hFrameMutexHandle = nullptr;
 }
 
 

@@ -56,7 +56,7 @@
 * me - Pointer to the mines object
 *********************************************************/
 void minesExpCreate(minesExp *me) {
-  *me = NULL;
+  *me = nullptr;
 }
 
 /*********************************************************
@@ -95,7 +95,7 @@ void minesExpAddItem(minesExp *me, map *mp, BYTE x, BYTE y) {
     q->y = y;
     q->time = MINES_EXPLOSION_WAIT;
     q->next = *me;
-    q->prev = NULL;
+    q->prev = nullptr;
     if (NonEmpty(*me)) {
       (*me)->prev = q;
     }
@@ -168,10 +168,10 @@ void minesExpUpdate(minesExp *me, map *mp, pillboxes *pb, bases *bs, lgm **lgms,
     }
     
     /* Get the next Item */
-    if (*me != NULL && needUpdate == true) {
+    if (*me != nullptr && needUpdate == true) {
       position = MinesExpTail(position);
     } else {
-      position = NULL;
+      position = nullptr;
     }
   }
 }
@@ -194,17 +194,17 @@ void minesExpDeleteItem(minesExp *me, minesExp *value) {
 
   del = *value;
   (*value) = MinesExpTail(del);
-  if (del->prev != NULL) {
+  if (del->prev != nullptr) {
     del->prev->next = del->next;
   } else {
     /* Must be the first item - Move the master position along one */
     *me = ShellsTail(*me);
     if (NonEmpty(*me)) {
-      (*me)->prev = NULL;
+      (*me)->prev = nullptr;
     }
   }
 
-  if (del->next != NULL) {
+  if (del->next != nullptr) {
     del->next->prev = del->prev;
   }
   delete del;

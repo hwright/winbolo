@@ -76,27 +76,27 @@
 
 /* Module Level Variables */
 
-static screen view = NULL;
-static screenMines mineView = NULL;
-static map mymp = NULL;
-static bases mybs = NULL;
-static pillboxes mypb = NULL;
-static starts myss = NULL;
-static tank mytk = NULL;
-static shells myshs = NULL;
-static lgm mylgman = NULL;
-static players plyrs = NULL;
-static building clientBlds = NULL;
-static explosions clientExpl = NULL;
-static floodFill clientFF = NULL;
-static grass clientGrass = NULL;
-static mines clientMines = NULL;
-static minesExp clientMinesExp = NULL;
-static rubble clientRubble = NULL;
-static swamp clientSwamp = NULL;
-static tkExplosion clientTankExplosions = NULL;
-static netPnbContext clientPNB = NULL;
-static netMntContext clientNMT = NULL;
+static screen view = nullptr;
+static screenMines mineView = nullptr;
+static map mymp = nullptr;
+static bases mybs = nullptr;
+static pillboxes mypb = nullptr;
+static starts myss = nullptr;
+static tank mytk = nullptr;
+static shells myshs = nullptr;
+static lgm mylgman = nullptr;
+static players plyrs = nullptr;
+static building clientBlds = nullptr;
+static explosions clientExpl = nullptr;
+static floodFill clientFF = nullptr;
+static grass clientGrass = nullptr;
+static mines clientMines = nullptr;
+static minesExp clientMinesExp = nullptr;
+static rubble clientRubble = nullptr;
+static swamp clientSwamp = nullptr;
+static tkExplosion clientTankExplosions = nullptr;
+static netPnbContext clientPNB = nullptr;
+static netMntContext clientNMT = nullptr;
 static gameType myGame;
 
 /* The offset from the top and left of the map */
@@ -132,7 +132,7 @@ static bool inStart = false;
 /* Used by Brain */
 static unsigned long brainHoldKeys; /* Keys the brain is holding down */
 static unsigned long brainTapKeys;      /* Keys the brain has tapped - Executed once */
-static BuildInfo *brainBuildInfo = NULL;
+static BuildInfo *brainBuildInfo = nullptr;
 static PlayerBitMap brainsWantAllies;   /* Who you want to be allied to */
 static PlayerBitMap brainsMessageDest;  /* Destination for messages */
 static char brainsMessage[FILENAME_MAX]; /* Message to send */
@@ -162,7 +162,7 @@ static int cursorPosX, cursorPosY;
 *********************************************************/
 void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) { 
 
-  srand((unsigned int) time(NULL));
+  srand((unsigned int) time(nullptr));
   xOffset = 0;
   yOffset = 0;
   mapName[0] = '\0';
@@ -228,7 +228,7 @@ void screenDestroy() {
   logDestroy();
   screenGameRunning = false;
   tankDestroy(&mytk, &mymp, &mypb, &mybs);
-  mytk = NULL; 
+  mytk = nullptr; 
   mapDestroy(&mymp);
   startsDestroy(&myss);
   basesDestroy(&mybs);
@@ -243,33 +243,33 @@ void screenDestroy() {
   floodDestroy(&clientFF);
   lgmDestroy(&mylgman);
   swampDestroy(&clientSwamp);
-  clientSwamp = NULL;
+  clientSwamp = nullptr;
   screenBrainMapDestroy();
   tkExplosionDestroy(&clientTankExplosions);
   minesExpDestroy(&clientMinesExp);
   treeGrowDestroy();
   pillsDestroy(&mypb);
   playersDestroy(&plyrs);
-  if (view != NULL) {
+  if (view != nullptr) {
     free(view);
   }
-  if (mineView != NULL) {
+  if (mineView != nullptr) {
     free(mineView);
   }
-  if (brainBuildInfo != NULL) {
+  if (brainBuildInfo != nullptr) {
     free(brainBuildInfo);
-    brainBuildInfo =NULL;
+    brainBuildInfo =nullptr;
   }
-  view = NULL;
-  mineView = NULL;
-  mymp = NULL;
-  mybs = NULL;
-  mypb = NULL;
-  myss = NULL;
-  mytk = NULL;
-  myshs = NULL;
-  mylgman = NULL;
-  plyrs = NULL;
+  view = nullptr;
+  mineView = nullptr;
+  mymp = nullptr;
+  mybs = nullptr;
+  mypb = nullptr;
+  myss = nullptr;
+  mytk = nullptr;
+  myshs = nullptr;
+  mylgman = nullptr;
+  plyrs = nullptr;
 }
 
 /*********************************************************
@@ -1241,9 +1241,9 @@ void clientCenterTank() {
 *  playerName - The player name controling the tank
 *********************************************************/
 void screenSetupTank(char *playerName) {
-  if (mytk != NULL) {
+  if (mytk != nullptr) {
     tankDestroy(&mytk, &mymp, &mypb, &mybs);
-    mytk = NULL;
+    mytk = nullptr;
   }
   tankCreate(&mytk,&myss);
   playersSetSelf(screenGetPlayers(), (playerNumbers) 0, playerName);
@@ -1588,8 +1588,8 @@ long screenGetGameStartDelay() {
 *  value - String to hold copy of the player name
 *********************************************************/
 void screenGetPlayerName(char *value) {
-  if (*(screenGetPlayers()) == NULL) {
-    playersGetPlayerName(NULL, 0, value);
+  if (*(screenGetPlayers()) == nullptr) {
+    playersGetPlayerName(nullptr, 0, value);
   } else {
     playersGetPlayerName(screenGetPlayers(), playersGetSelf(screenGetPlayers()), value);
   }
@@ -2977,7 +2977,7 @@ void screenMakeBrainInfo(BrainInfo *value, bool first) {
   /* Base nearby */
   closeBase = basesGetClosest(&mybs, value->tankx, value->tanky);
   if (closeBase == BASE_NOT_FOUND) {
-    value->base = NULL;
+    value->base = nullptr;
   } else {
     value->base = new ObjectInfo;
     value->base->object = OBJECT_REFBASE;
@@ -3049,7 +3049,7 @@ void screenMakeBrainInfo(BrainInfo *value, bool first) {
     //ul = value->message->receivers;
     value->message->sender = messageGetNewMessage((char *) value->message->message, &(value->message->receivers)); /* FIXME: Second parameter? */
   } else {
-    value->message = NULL;
+    value->message = nullptr;
   }
 
   /* Controling the tank */
@@ -3103,7 +3103,7 @@ void screenExtractBrainInfo(BrainInfo *value) {
   BYTE pillNum;
 
   delete value->allies;
-  if (value->base != NULL) {
+  if (value->base != nullptr) {
     delete value->base;
   }
    
@@ -3125,7 +3125,7 @@ void screenExtractBrainInfo(BrainInfo *value) {
 
   delete value->pillview;
   delete[] value->viewdata;
-  if (value->message != NULL) {
+  if (value->message != nullptr) {
     delete value->message->receivers;
     delete[] value->message->message;
     delete value->message;
@@ -3790,7 +3790,7 @@ void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my) {
   }
 
   if (wantLog == true) {
-    logAddEvent((logitem)logMessageType, mx, my, 0, 0, 0, NULL);
+    logAddEvent((logitem)logMessageType, mx, my, 0, 0, 0, nullptr);
   }
 
 }

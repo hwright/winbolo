@@ -37,7 +37,7 @@
 bool winboloNetRunning = false;
 
 #define WINBOLONET_BUFFSIZE (1024*8)
-BYTE *winboloNetBuff = NULL;
+BYTE *winboloNetBuff = nullptr;
 BYTE winboloNetServerKey[WINBOLONET_KEY_LEN];
 /* Keys for each player if in use - Always position 0 if we are a client */
 BYTE winboloNetPlayerKey[MAX_TANKS][WINBOLONET_KEY_LEN];
@@ -113,7 +113,7 @@ bool winbolonetCreateServer(char *mapName, unsigned short port, BYTE gameType, B
             winbolonetDestroy();
           } else {
             winbolonetThreadCreate();
-            winboloNetLastSent = time(NULL);
+            winboloNetLastSent = time(nullptr);
             winboloNetSendVersion();
           }
 
@@ -210,7 +210,7 @@ void winbolonetDestroy() {
     }
     httpDestroy();
     delete[] winboloNetBuff;
-    winboloNetBuff = NULL;
+    winboloNetBuff = nullptr;
   }
   winbolonetEventsDestroy();
 
@@ -338,7 +338,7 @@ void winbolonetServerUpdate(BYTE numPlayers, BYTE numFreeBases, BYTE numFreePill
   
   if (winboloNetRunning == true ) {
     size = winbolonetEventsGetSize();
-    if (size > 0 || staticNumFreePills != numFreePills || numFreeBases != staticNumFreeBases || numPlayers != staticNumPlayers || time(NULL) - winboloNetLastSent > WINBOLO_NET_MAX_NOSEND) {
+    if (size > 0 || staticNumFreePills != numFreePills || numFreeBases != staticNumFreeBases || numPlayers != staticNumPlayers || time(nullptr) - winboloNetLastSent > WINBOLO_NET_MAX_NOSEND) {
       pos = 0;
       staticNumFreePills = numFreePills;
       staticNumFreeBases = numFreeBases;
@@ -411,7 +411,7 @@ void winbolonetServerUpdate(BYTE numPlayers, BYTE numFreeBases, BYTE numFreePill
       }
 
       delete[] ptr;
-      winboloNetLastSent = time(NULL);
+      winboloNetLastSent = time(nullptr);
     }
   }
 }

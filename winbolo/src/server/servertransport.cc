@@ -108,7 +108,7 @@ bool serverTransportCreate(unsigned short port, char *addrToUse) {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
     addr.sin_addr.s_addr = INADDR_ANY;
-    if (addrToUse != NULL) {
+    if (addrToUse != nullptr) {
       ad = getaddrbyany(addrToUse);
       if (ad > 0) {
         addr.sin_addr.s_addr = ad;
@@ -221,7 +221,7 @@ void serverTransportSetUs(void) {
 
   gethostname(str, sizeof(str));
   hd = gethostbyname(str);
-  if (hd != NULL) {
+  if (hd != nullptr) {
     ipa = hd->h_addr_list[IP_ARRAY0][IP_ARRAY0];
     ipb = hd->h_addr_list[IP_ARRAY0][IP_ARRAY1];
     ipc = hd->h_addr_list[IP_ARRAY0][IP_ARRAY2];
@@ -307,7 +307,7 @@ bool serverTransportSetTracker(char *address, unsigned short port) {
   if (addrTracker.sin_addr.s_addr == INADDR_NONE) {
     /* Not an IP Address. Do a hostname lookup */
     phe = gethostbyname(address);
-    if (phe == 0) {
+    if (phe == nullptr) {
       returnValue = false;
     } else {
       addrTracker.sin_addr.s_addr = *((u_long*)phe->h_addr_list[0]);

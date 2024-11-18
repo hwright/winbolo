@@ -41,7 +41,7 @@
 #include "http.h"
 #include "winbolonetthread.h"
 
-HANDLE hWbnMutexHandle = NULL;
+HANDLE hWbnMutexHandle = nullptr;
 #ifdef _WIN32
   HANDLE hWbnThread;
   DWORD wbnThreadID;
@@ -69,8 +69,8 @@ bool winbolonetThreadCreate(void) {
   bool returnValue;        /* Value to return */
 
   returnValue = true;
-  wbnProcessing = NULL;
-  wbnWaiting = NULL;
+  wbnProcessing = nullptr;
+  wbnWaiting = nullptr;
   wbnShouldRun = true;
   wbnFinished = false;
   
@@ -81,7 +81,7 @@ bool winbolonetThreadCreate(void) {
 #else
   hWbnMutexHandle = SDL_CreateMutex();
 #endif
-  if (hWbnMutexHandle == NULL) {
+  if (hWbnMutexHandle == nullptr) {
     returnValue = false;
   }
 
@@ -97,10 +97,10 @@ bool winbolonetThreadCreate(void) {
   }
 #else
   if (returnValue == true) {
-    hWbnThread = SDL_CreateThread(winbolonetThreadRun, NULL);
-    if (hWbnThread  == NULL) {
+    hWbnThread = SDL_CreateThread(winbolonetThreadRun, nullptr);
+    if (hWbnThread  == nullptr) {
       SDL_DestroyMutex(hWbnMutexHandle);
-      hWbnMutexHandle = NULL;
+      hWbnMutexHandle = nullptr;
       returnValue = false;
     }
   }
@@ -123,9 +123,9 @@ bool winbolonetThreadCreate(void) {
 void winbolonetThreadDestroy(void) {
   wbnList del;   /* Use to delete our queues */
 
-  if (hWbnMutexHandle != NULL) { /* FIXME: Will be non null if we started it OK. Is there a better way? (threadid?) */
+  if (hWbnMutexHandle != nullptr) { /* FIXME: Will be non null if we started it OK. Is there a better way? (threadid?) */
     /* Wait for all events to be sent... */
-    while (wbnProcessing != NULL || wbnWaiting != NULL) {
+    while (wbnProcessing != nullptr || wbnWaiting != nullptr) {
 #ifdef _WIN32
       Sleep(WBN_SHUTDOWN_SLEEP_TIME);
 #else
@@ -155,7 +155,7 @@ void winbolonetThreadDestroy(void) {
     
     CloseHandle(hWbnThread);
 #else
-    SDL_WaitThread(hWbnThread, NULL);
+    SDL_WaitThread(hWbnThread, nullptr);
 #endif
 
     /* Free our list queues */
@@ -184,7 +184,7 @@ void winbolonetThreadDestroy(void) {
     SDL_DestroyMutex(hWbnMutexHandle);
 #endif
     
-    hWbnMutexHandle = NULL;
+    hWbnMutexHandle = nullptr;
   }
 }
 
@@ -249,26 +249,26 @@ int winbolonetThreadRun(void *) {
 #else
     SDL_mutexP(hWbnMutexHandle);
     wbnProcessing = wbnWaiting;
-    wbnWaiting = NULL;
+    wbnWaiting = nullptr;
     SDL_mutexV(hWbnMutexHandle);
 #endif    
     
     while (NonEmpty(wbnProcessing) && wbnShouldRun == true) {
       /* Get last entry */
-      if (wbnProcessing->next == NULL) {
+      if (wbnProcessing->next == nullptr) {
         /* Only one entry */
         httpSendMessage(wbnProcessing->data, wbnProcessing->len, (BYTE *) dest, 512);
         delete wbnProcessing;
-	wbnProcessing = NULL; 
+	wbnProcessing = nullptr; 
       } else {
         prev = wbnProcessing;
         q = wbnProcessing;
-        while (q->next != NULL) {
+        while (q->next != nullptr) {
           prev = q;
           q = q->next;
         }
         /* Got last entry */
-        prev->next = NULL;
+        prev->next = nullptr;
         httpSendMessage(q->data, q->len, (BYTE *) dest, 512);
         delete q;
       }

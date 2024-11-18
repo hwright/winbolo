@@ -35,8 +35,8 @@
 
 /* Is the cursor inside the main view area */
 static bool cursorInMainView = false;
-static SDL_Cursor *saveCursor = NULL;
-static SDL_Cursor *boloCursor = NULL;
+static SDL_Cursor *saveCursor = nullptr;
+static SDL_Cursor *boloCursor = nullptr;
 
 static Uint8 cd[8] = { 0,0,0,0,0,0,0,0 };
 static Uint8 cm[8] = { 56, 40, 238, 124, 238, 40, 56 };
@@ -61,7 +61,7 @@ bool cursorSetup() {
   saveCursor = SDL_GetCursor();
   boloCursor = SDL_CreateCursor(cd, cm, 7, 7, 3, 3);
   cursorSetCursor(true);
-  if (boloCursor == NULL || saveCursor == NULL) {
+  if (boloCursor == nullptr || saveCursor == nullptr) {
     fprintf(stderr, "Error building cursor\n");
     returnValue = false;
   }
@@ -80,9 +80,9 @@ bool cursorSetup() {
 *  appInst  - Application instance
 *********************************************************/
 void cursorCleanup() {
-  if (boloCursor != NULL) {
+  if (boloCursor != nullptr) {
     SDL_FreeCursor(boloCursor);
-    boloCursor = NULL;
+    boloCursor = nullptr;
   }
 }
 

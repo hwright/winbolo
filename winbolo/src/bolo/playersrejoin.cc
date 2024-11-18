@@ -181,7 +181,7 @@ void playersRejoinRequest(char *playerName, BYTE playerNum, pillboxes *pb, bases
   if (found == true) {
     /* They did exist */
     count = 0;
-    logAddEvent(log_PlayerRejoin, playerNum, 0, 0, 0, 0, NULL);
+    logAddEvent(log_PlayerRejoin, playerNum, 0, 0, 0, 0, nullptr);
     while (count < MAX_TANKS) {
       /* Pillbox */
       testItem = (rejoin.item[num].pills >>count);

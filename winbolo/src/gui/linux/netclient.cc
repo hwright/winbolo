@@ -290,7 +290,7 @@ void netClientSetUs(void) {
 
   gethostname(str, sizeof(str));
   hd = gethostbyname(str);
-  if (hd != NULL) {
+  if (hd != nullptr) {
     ipa = hd->h_addr_list[IP_ARRAY0][IP_ARRAY0];
     ipb = hd->h_addr_list[IP_ARRAY0][IP_ARRAY1];
     ipc = hd->h_addr_list[IP_ARRAY0][IP_ARRAY2];
@@ -321,7 +321,7 @@ void netClientGetAddress(char  *ip, char *dest) {
   
   addr.sin_addr.s_addr = inet_addr(ip);
   hd = gethostbyaddr((const void*)&addr.sin_addr, sizeof(struct in_addr), AF_INET);
-   if (hd == NULL) {
+   if (hd == nullptr) {
     strcpy(dest, ip);
   } else {
     strcpy(dest, hd->h_name);
@@ -442,7 +442,7 @@ bool netClientUdpPing(BYTE *buff, int *len, const char *dest, unsigned short por
   if (addr.sin_addr.s_addr == INADDR_NONE) {
     /* Do hostname lookup */
     phe= gethostbyname(dest);
-    if (phe == 0) {
+    if (phe == nullptr) {
       returnValue = FALSE;
     } else {
       addr.sin_addr.s_addr = *((u_long*)phe->h_addr_list[0]);
@@ -647,7 +647,7 @@ bool netClientSetTracker(const char *address, unsigned short port) {
   if (addrTracker.sin_addr.s_addr == INADDR_NONE) {
     /* Not an IP Address. Do a hostname lookup */
     phe= gethostbyname(address);
-    if (phe == 0) {
+    if (phe == nullptr) {
       returnValue = FALSE;
     } else {
       addrTracker.sin_addr.s_addr = *((u_long*)phe->h_addr_list[0]);
@@ -743,7 +743,7 @@ unsigned short gameFrontGameLocation(char *argItem, char *trackerAddr) {
   char *tmp;
   tmp = strtok(argItem, ":");
   strcpy(trackerAddr, tmp);
-  tmp = strtok(NULL, ":");
+  tmp = strtok(nullptr, ":");
   return atoi(tmp);
 }
 
@@ -992,7 +992,7 @@ bool netClientFindTrackedGames(HWND *hWnd, currentGames *cg, char *trackerAddres
     if (con.sin_addr.s_addr == INADDR_NONE) {
       /* Not an IP Address. Do a hostname lookup */
       phe = gethostbyname(trackerAddress);
-      if (phe == 0) {
+      if (phe == nullptr) {
         returnValue = FALSE;
       sprintf(txt, "Status: %s", langGetText(STR_NETCLIENTERR_TRACKERDNSFAIL));
         gtk_label_set_text(GTK_LABEL(hWnd), txt);

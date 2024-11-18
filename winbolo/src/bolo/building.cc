@@ -41,7 +41,7 @@
 * bld - Pointer to the buildings object
 *********************************************************/
 void buildingCreate(building *bld) {
-  *bld = NULL;
+  *bld = nullptr;
 }
 
 /*********************************************************

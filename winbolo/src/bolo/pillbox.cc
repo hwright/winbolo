@@ -83,7 +83,7 @@ void pillsCreate(pillboxes *value) {
 *  value - Pointer to the pills structure
 *********************************************************/
 void pillsDestroy(pillboxes *value) {
-  if (*value != NULL) {
+  if (*value != nullptr) {
     delete *value;
   }
 }
@@ -118,7 +118,7 @@ void pillsSetNumPills(pillboxes *value, BYTE numPills) {
 *  value    - Pointer to the pillbox structure
 *********************************************************/
 BYTE pillsGetNumPills(pillboxes *value) {
-  if ((*value) != NULL) {
+  if ((*value) != nullptr) {
     return (*value)->numPills;
   }
   return 0;
@@ -155,10 +155,10 @@ void pillsSetPill(pillboxes *value, pillbox *item, BYTE pillNum) {
     (((*value)->item[pillNum]).speed) = item->speed;
     (((*value)->item[pillNum]).inTank) = item->inTank;
     (((*value)->item[pillNum]).justSeen) = item->justSeen;
-    logAddEvent(log_PillSetOwner, pillNum, item->owner, true, 0, 0, NULL);
-    logAddEvent(log_PillSetHealth, utilPutNibble(pillNum, item->armour), 0, 0, 0, 0, NULL);
-    logAddEvent(log_PillSetInTank, utilPutNibble(pillNum, false), 0, 0, 0, 0, NULL);
-    logAddEvent(log_PillSetPlace, pillNum, item->x, item->y, 0, 0, NULL);
+    logAddEvent(log_PillSetOwner, pillNum, item->owner, true, 0, 0, nullptr);
+    logAddEvent(log_PillSetHealth, utilPutNibble(pillNum, item->armour), 0, 0, 0, 0, nullptr);
+    logAddEvent(log_PillSetInTank, utilPutNibble(pillNum, false), 0, 0, 0, 0, nullptr);
+    logAddEvent(log_PillSetPlace, pillNum, item->x, item->y, 0, 0, nullptr);
   }
 }
 
@@ -236,7 +236,7 @@ pillAlliance pillsGetAllianceNum(pillboxes *value, BYTE pillNum) {
 
   returnValue = pillNeutral;
   pillNum--;
-  if ((*value) != NULL) {
+  if ((*value) != nullptr) {
     if ((pillNum) <= ((*value)->numPills)) {
       if ((*value)->item[pillNum].armour == 0 && (*value)->item[pillNum].inTank == false) {
         returnValue = pillDead;
@@ -434,7 +434,7 @@ bool pillsDamagePos(pillboxes *value, BYTE xValue, BYTE yValue, bool wantDamage,
       if (wantDamage == true && (*value)->item[count].armour > 0) {
         (*value)->item[count].armour--;
       }
-      logAddEvent(log_PillSetHealth, utilPutNibble(count, (*value)->item[count].armour), 0, 0, 0, 0, NULL);
+      logAddEvent(log_PillSetHealth, utilPutNibble(count, (*value)->item[count].armour), 0, 0, 0, 0, nullptr);
       if ((*value)->item[count].armour == 0) {
         returnValue = true;
         if (threadsGetContext() == false) {
@@ -823,7 +823,7 @@ void pillsSetPillInTank(pillboxes *value, BYTE pillNum, bool inTank) {
   if (pillNum > 0 && pillNum<= (*value)->numPills) {
     pillNum--;
     (*value)->item[pillNum].inTank = inTank;
-    logAddEvent(log_PillSetInTank, utilPutNibble(pillNum, inTank), 0, 0, 0, 0, NULL);
+    logAddEvent(log_PillSetInTank, utilPutNibble(pillNum, inTank), 0, 0, 0, 0, nullptr);
 
   }
 }
@@ -900,7 +900,7 @@ BYTE pillsSetPillOwner(pillboxes *value, BYTE pillNum, BYTE owner, bool migrate)
       messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE), messageStr);
     }
     (*value)->item[pillNum].owner = owner;
-    logAddEvent(log_PillSetOwner, pillNum, owner, migrate, 0, 0, NULL);
+    logAddEvent(log_PillSetOwner, pillNum, owner, migrate, 0, 0, nullptr);
     pillNum++;
     /* Winbolo.Net stuff */
     /* FIXME: Check if in an alliance?????? */
@@ -948,7 +948,7 @@ void pillsGetDamagePos(pillboxes *value, BYTE xValue, BYTE yValue, BYTE amount) 
           frontEndStatusPillbox((BYTE) (count+1), pillDead);
         }
       } 
-      logAddEvent(log_PillSetHealth, utilPutNibble(count, (*value)->item[count].armour), 0, 0, 0, 0, NULL);
+      logAddEvent(log_PillSetHealth, utilPutNibble(count, (*value)->item[count].armour), 0, 0, 0, 0, nullptr);
 
       count = (*value)->numPills;
     }
@@ -1018,7 +1018,7 @@ void pillsRepairPos(pillboxes *value, BYTE xValue, BYTE yValue, BYTE treeAmount)
       if (threadsGetContext() == false) {
         frontEndStatusPillbox((BYTE) (count+1), (pillsGetAllianceNum(value, (BYTE) (count+1))));
       }
-      logAddEvent(log_PillSetHealth, utilPutNibble(count, (*value)->item[count].armour), 0, 0, 0, 0, NULL);
+      logAddEvent(log_PillSetHealth, utilPutNibble(count, (*value)->item[count].armour), 0, 0, 0, 0, nullptr);
       count = (*value)->numPills;
 
     }
@@ -1409,8 +1409,8 @@ void pillsDropSetNeutralOwner(pillboxes *value, BYTE owner) {
 				(*value)->item[count].inTank = false;
 				/* Send a message that all the pills in the tank are now dead and belong to a 'neutral' player */
 				netPNBAdd(screenGetNetPnb(), NPNB_PILL_DEAD, count, NEUTRAL, (*value)->item[count].x, (*value)->item[count].y, 0);
-        logAddEvent(log_PillSetInTank, utilPutNibble(count, false), 0, 0, 0, 0, NULL);
-        logAddEvent(log_PillSetOwner, count, NEUTRAL, false, 0, 0, NULL);
+        logAddEvent(log_PillSetInTank, utilPutNibble(count, false), 0, 0, 0, 0, nullptr);
+        logAddEvent(log_PillSetOwner, count, NEUTRAL, false, 0, 0, nullptr);
 			}
 		}
 		count++;
@@ -1443,9 +1443,9 @@ void pillsMigrate(pillboxes *value, BYTE oldOwner, BYTE newOwner) {
 			netMNTAdd(screenGetNetMnt(), NMNT_PILLMIGRATE, count, newOwner, (*value)->item[count].x, (*value)->item[count].y);
 			if (((*value)->item[count].inTank) == true && isServer == true) {
 				(*value)->item[count].inTank = false;
-        logAddEvent(log_PillSetOwner, count, newOwner, false, 0, 0, NULL);
-        logAddEvent(log_PillSetInTank, utilPutNibble(count, false), 0, 0, 0, 0, NULL);
-        logAddEvent(log_PillSetPlace, count, (*value)->item[count].x, (*value)->item[count].y, 0, 0, NULL);
+        logAddEvent(log_PillSetOwner, count, newOwner, false, 0, 0, nullptr);
+        logAddEvent(log_PillSetInTank, utilPutNibble(count, false), 0, 0, 0, 0, nullptr);
+        logAddEvent(log_PillSetPlace, count, (*value)->item[count].x, (*value)->item[count].y, 0, 0, nullptr);
 				netPNBAdd(screenGetNetPnb(), NPNB_PILL_DEAD, count, newOwner, (*value)->item[count].x, (*value)->item[count].y, 0);
 			}
 		}
@@ -1538,8 +1538,8 @@ void pillsExplicitDrop(pillboxes *value, BYTE owner) {
       if (((*value)->item[count].inTank) == true) {
         (*value)->item[count].inTank = false;
         netPNBAdd(screenGetNetPnb(), NPNB_PILL_DEAD, count, NEUTRAL, (*value)->item[count].x, (*value)->item[count].y, 0);
-        logAddEvent(log_PillSetInTank, utilPutNibble(count, false), 0, 0, 0, 0, NULL);
-        logAddEvent(log_PillSetPlace, count, (*value)->item[count].x, (*value)->item[count].y, 0, 0, NULL);
+        logAddEvent(log_PillSetInTank, utilPutNibble(count, false), 0, 0, 0, 0, nullptr);
+        logAddEvent(log_PillSetPlace, count, (*value)->item[count].x, (*value)->item[count].y, 0, 0, nullptr);
       }
     }
     count++;

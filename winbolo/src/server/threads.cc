@@ -41,7 +41,7 @@ typedef SDL_mutex *HANDLE;
 #include "servercore.h"
 #include "threads.h"
 
-static HANDLE hMutexHandle = NULL;
+static HANDLE hMutexHandle = nullptr;
 static bool threadServerContext = false;
 static bool threadStarted = false;
 
@@ -71,7 +71,7 @@ bool threadsCreate(bool context) {
 #else 
   hMutexHandle = SDL_CreateMutex();
 #endif
-  if (hMutexHandle == NULL) {
+  if (hMutexHandle == nullptr) {
     returnValue = false;
     fprintf(stderr, "Error Creating Mutex\n");
   }
@@ -101,7 +101,7 @@ void threadsDestroy(void) {
 #else
   SDL_DestroyMutex(hMutexHandle);
 #endif
-  hMutexHandle = NULL;
+  hMutexHandle = nullptr;
    
 }
 

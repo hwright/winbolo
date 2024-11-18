@@ -189,9 +189,9 @@ GtkWidget* dialogWinboloNetCreate() {
   gtk_widget_show (button4);
   gtk_box_pack_start (GTK_BOX (hbox3), button4, FALSE, FALSE, 0);
 
-  gtk_signal_connect(GTK_OBJECT(Winbolo_net_settings), "delete_event", GTK_SIGNAL_FUNC(dialogWinboloNetCloseBox), 0);
-  gtk_signal_connect(GTK_OBJECT(button4), "clicked", GTK_SIGNAL_FUNC(dialogWinboloNetCloseBox), 0);
-  gtk_signal_connect(GTK_OBJECT(button3), "clicked", GTK_SIGNAL_FUNC(dialogWinbolonetOK), 0);
+  gtk_signal_connect(GTK_OBJECT(Winbolo_net_settings), "delete_event", GTK_SIGNAL_FUNC(dialogWinboloNetCloseBox), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button4), "clicked", GTK_SIGNAL_FUNC(dialogWinboloNetCloseBox), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button3), "clicked", GTK_SIGNAL_FUNC(dialogWinbolonetOK), nullptr);
 
   dialogWbnUs = Winbolo_net_settings;
   return Winbolo_net_settings;

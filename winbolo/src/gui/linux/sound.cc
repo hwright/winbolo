@@ -46,31 +46,31 @@ extern gchar *applicationPath;
 
 #define MAX_CHANNELS 8
 
-Mix_Chunk *lpDSPrimary = NULL;
-Mix_Chunk *lpDSBigExplosionFar = NULL;
-Mix_Chunk *lpDSBigExplosionNear = NULL;
-Mix_Chunk *lpDSBubbles = NULL;
-Mix_Chunk *lpDSFarmingTreeFar = NULL;
-Mix_Chunk *lpDSFarmingTreeNear = NULL;
-Mix_Chunk *lpDSHitTankFar = NULL;
-Mix_Chunk *lpDSHitTankNear = NULL;
-Mix_Chunk *lpDSHitTankSelf = NULL;
-Mix_Chunk *lpDSManBuildingFar = NULL;
-Mix_Chunk *lpDSManBuildingNear = NULL;
-Mix_Chunk *lpDSManDyingFar = NULL;
-Mix_Chunk *lpDSManDyingNear = NULL;
-Mix_Chunk *lpDSManLayingMineNear = NULL;
-Mix_Chunk *lpDSMineExplosionFar = NULL;
-Mix_Chunk *lpDSMineExplosionNear = NULL;
-Mix_Chunk *lpDSShootFar = NULL;
-Mix_Chunk *lpDSShootNear = NULL;
-Mix_Chunk *lpDSShootSelf = NULL;
-Mix_Chunk *lpDSShotBuildingFar = NULL;
-Mix_Chunk *lpDSShotBuildingNear = NULL;
-Mix_Chunk *lpDSShotTreeFar = NULL;
-Mix_Chunk *lpDSShotTreeNear = NULL;
-Mix_Chunk *lpDSTankSinkingFar = NULL;
-Mix_Chunk *lpDSTankSinkingNear = NULL;
+Mix_Chunk *lpDSPrimary = nullptr;
+Mix_Chunk *lpDSBigExplosionFar = nullptr;
+Mix_Chunk *lpDSBigExplosionNear = nullptr;
+Mix_Chunk *lpDSBubbles = nullptr;
+Mix_Chunk *lpDSFarmingTreeFar = nullptr;
+Mix_Chunk *lpDSFarmingTreeNear = nullptr;
+Mix_Chunk *lpDSHitTankFar = nullptr;
+Mix_Chunk *lpDSHitTankNear = nullptr;
+Mix_Chunk *lpDSHitTankSelf = nullptr;
+Mix_Chunk *lpDSManBuildingFar = nullptr;
+Mix_Chunk *lpDSManBuildingNear = nullptr;
+Mix_Chunk *lpDSManDyingFar = nullptr;
+Mix_Chunk *lpDSManDyingNear = nullptr;
+Mix_Chunk *lpDSManLayingMineNear = nullptr;
+Mix_Chunk *lpDSMineExplosionFar = nullptr;
+Mix_Chunk *lpDSMineExplosionNear = nullptr;
+Mix_Chunk *lpDSShootFar = nullptr;
+Mix_Chunk *lpDSShootNear = nullptr;
+Mix_Chunk *lpDSShootSelf = nullptr;
+Mix_Chunk *lpDSShotBuildingFar = nullptr;
+Mix_Chunk *lpDSShotBuildingNear = nullptr;
+Mix_Chunk *lpDSShotTreeFar = nullptr;
+Mix_Chunk *lpDSShotTreeNear = nullptr;
+Mix_Chunk *lpDSTankSinkingFar = nullptr;
+Mix_Chunk *lpDSTankSinkingNear = nullptr;
 
 bool isPlayable;
 
@@ -168,7 +168,7 @@ bool soundSetup() {
     lpDSShotTreeNear = soundLoad(fileName, in, buff, 18544);
     lpDSTankSinkingFar = soundLoad(fileName, in, buff, 72252);
     lpDSTankSinkingNear = soundLoad(fileName, in, buff, 72252);
-    if (lpDSBigExplosionFar == NULL || lpDSBigExplosionNear == NULL || lpDSBubbles == NULL || lpDSFarmingTreeFar == NULL || lpDSFarmingTreeNear == NULL || lpDSHitTankFar == NULL || lpDSHitTankNear == NULL || lpDSHitTankSelf == NULL || lpDSManBuildingFar == NULL || lpDSManBuildingNear == NULL || lpDSManDyingFar == NULL || lpDSManDyingNear == NULL || lpDSManLayingMineNear == NULL || lpDSMineExplosionFar == NULL || lpDSMineExplosionNear == NULL || lpDSShootFar == NULL || lpDSShootNear == NULL || lpDSShootSelf == NULL || lpDSShotBuildingFar == NULL || lpDSShotBuildingNear == NULL || lpDSShotTreeFar == NULL || lpDSShotTreeNear == NULL || lpDSTankSinkingFar == NULL || lpDSTankSinkingNear == NULL) {
+    if (lpDSBigExplosionFar == nullptr || lpDSBigExplosionNear == nullptr || lpDSBubbles == nullptr || lpDSFarmingTreeFar == nullptr || lpDSFarmingTreeNear == nullptr || lpDSHitTankFar == nullptr || lpDSHitTankNear == nullptr || lpDSHitTankSelf == nullptr || lpDSManBuildingFar == nullptr || lpDSManBuildingNear == nullptr || lpDSManDyingFar == nullptr || lpDSManDyingNear == nullptr || lpDSManLayingMineNear == nullptr || lpDSMineExplosionFar == nullptr || lpDSMineExplosionNear == nullptr || lpDSShootFar == nullptr || lpDSShootNear == nullptr || lpDSShootSelf == nullptr || lpDSShotBuildingFar == nullptr || lpDSShotBuildingNear == nullptr || lpDSShotTreeFar == nullptr || lpDSShotTreeNear == nullptr || lpDSTankSinkingFar == nullptr || lpDSTankSinkingNear == nullptr) {
       returnValue = FALSE;
       MessageBox(langGetText(STR_SOUNDERR_LOADSOUNDFAILED), DIALOG_BOX_TITLE);
     }
@@ -202,102 +202,102 @@ bool soundSetup() {
 void soundCleanup(void) {
   
   /* Unload the Direct Sound Buffers and Object */
-  if (lpDSBigExplosionFar != NULL) {
+  if (lpDSBigExplosionFar != nullptr) {
     Mix_FreeChunk(lpDSBigExplosionFar);
-    lpDSBigExplosionFar = NULL;
+    lpDSBigExplosionFar = nullptr;
   }
-  if (lpDSBigExplosionNear != NULL) {
+  if (lpDSBigExplosionNear != nullptr) {
     Mix_FreeChunk(lpDSBigExplosionNear);
-    lpDSBigExplosionNear = NULL;
+    lpDSBigExplosionNear = nullptr;
   }
-  if (lpDSBubbles != NULL) {
+  if (lpDSBubbles != nullptr) {
     Mix_FreeChunk(lpDSBubbles);
-    lpDSBubbles = NULL;
+    lpDSBubbles = nullptr;
   }
-  if (lpDSFarmingTreeFar != NULL) {
+  if (lpDSFarmingTreeFar != nullptr) {
     Mix_FreeChunk(lpDSFarmingTreeFar);
-    lpDSFarmingTreeFar = NULL;
+    lpDSFarmingTreeFar = nullptr;
   }
-  if (lpDSFarmingTreeNear != NULL) {
+  if (lpDSFarmingTreeNear != nullptr) {
     Mix_FreeChunk(lpDSFarmingTreeNear);
-    lpDSFarmingTreeNear = NULL;
+    lpDSFarmingTreeNear = nullptr;
   }
-  if (lpDSHitTankFar != NULL) {
+  if (lpDSHitTankFar != nullptr) {
     Mix_FreeChunk(lpDSHitTankFar);
-    lpDSHitTankFar = NULL;
+    lpDSHitTankFar = nullptr;
   }
-  if (lpDSHitTankNear != NULL) {
+  if (lpDSHitTankNear != nullptr) {
     Mix_FreeChunk(lpDSHitTankNear);
-    lpDSHitTankNear = NULL;
+    lpDSHitTankNear = nullptr;
   }
-  if (lpDSHitTankSelf != NULL) {
+  if (lpDSHitTankSelf != nullptr) {
     Mix_FreeChunk(lpDSHitTankSelf);
-    lpDSHitTankSelf = NULL;
+    lpDSHitTankSelf = nullptr;
   }
-  if (lpDSManBuildingFar != NULL) {
+  if (lpDSManBuildingFar != nullptr) {
     Mix_FreeChunk(lpDSManBuildingFar);
-    lpDSManBuildingFar = NULL;
+    lpDSManBuildingFar = nullptr;
   }
-  if (lpDSManBuildingNear != NULL) {
+  if (lpDSManBuildingNear != nullptr) {
     Mix_FreeChunk(lpDSManBuildingNear);
-    lpDSManBuildingNear = NULL;
+    lpDSManBuildingNear = nullptr;
   }
-  if (lpDSManDyingFar != NULL) {
+  if (lpDSManDyingFar != nullptr) {
     Mix_FreeChunk(lpDSManDyingFar);
-    lpDSManDyingFar = NULL;
+    lpDSManDyingFar = nullptr;
   }
-  if (lpDSManDyingNear != NULL) {
+  if (lpDSManDyingNear != nullptr) {
     Mix_FreeChunk(lpDSManDyingNear);
-    lpDSManDyingNear = NULL;
+    lpDSManDyingNear = nullptr;
   }
 
-  if (lpDSManLayingMineNear != NULL) {
+  if (lpDSManLayingMineNear != nullptr) {
     Mix_FreeChunk(lpDSManLayingMineNear);
-    lpDSManLayingMineNear = NULL;
+    lpDSManLayingMineNear = nullptr;
   }
-  if (lpDSMineExplosionFar != NULL) {
+  if (lpDSMineExplosionFar != nullptr) {
     Mix_FreeChunk(lpDSMineExplosionFar);
-    lpDSMineExplosionFar = NULL;
+    lpDSMineExplosionFar = nullptr;
   }
-  if (lpDSMineExplosionNear != NULL) {
+  if (lpDSMineExplosionNear != nullptr) {
     Mix_FreeChunk(lpDSMineExplosionNear);
-    lpDSMineExplosionNear = NULL;
+    lpDSMineExplosionNear = nullptr;
   }
-  if (lpDSShotBuildingFar != NULL) {
+  if (lpDSShotBuildingFar != nullptr) {
     Mix_FreeChunk(lpDSShotBuildingFar);
-    lpDSShotBuildingFar = NULL;
+    lpDSShotBuildingFar = nullptr;
   }
-  if (lpDSShotBuildingNear != NULL) {
+  if (lpDSShotBuildingNear != nullptr) {
     Mix_FreeChunk(lpDSShotBuildingNear);
-    lpDSShotBuildingNear = NULL;
+    lpDSShotBuildingNear = nullptr;
   }
-  if (lpDSShotTreeFar != NULL) {
+  if (lpDSShotTreeFar != nullptr) {
     Mix_FreeChunk(lpDSShotTreeFar);
-    lpDSShotTreeFar = NULL;
+    lpDSShotTreeFar = nullptr;
   }
-  if (lpDSShotTreeNear != NULL) {
+  if (lpDSShotTreeNear != nullptr) {
     Mix_FreeChunk(lpDSShotTreeNear);
-    lpDSShotTreeNear = NULL;
+    lpDSShotTreeNear = nullptr;
   }
-  if (lpDSTankSinkingFar != NULL) {
+  if (lpDSTankSinkingFar != nullptr) {
     Mix_FreeChunk(lpDSTankSinkingFar);
-    lpDSTankSinkingFar = NULL;
+    lpDSTankSinkingFar = nullptr;
   }
-  if (lpDSTankSinkingNear != NULL) {
+  if (lpDSTankSinkingNear != nullptr) {
     Mix_FreeChunk(lpDSTankSinkingNear);
-    lpDSTankSinkingNear = NULL;
+    lpDSTankSinkingNear = nullptr;
   }
-  if (lpDSShootFar != NULL) {
+  if (lpDSShootFar != nullptr) {
     Mix_FreeChunk(lpDSShootFar);
-    lpDSShootFar = NULL;
+    lpDSShootFar = nullptr;
   }  
-  if (lpDSShootNear != NULL) {
+  if (lpDSShootNear != nullptr) {
     Mix_FreeChunk(lpDSShootNear);
-    lpDSShootNear = NULL;
+    lpDSShootNear = nullptr;
   }
-  if (lpDSShootSelf != NULL) {
+  if (lpDSShootSelf != nullptr) {
     Mix_FreeChunk(lpDSShootSelf);
-    lpDSShootSelf = NULL;
+    lpDSShootSelf = nullptr;
   }
 
   if (isPlayable == TRUE) {

@@ -75,7 +75,7 @@ GtkWidget* dialogAboutCreate(void) {
   gtk_widget_show (hbox1);
   gtk_box_pack_start (GTK_BOX (vbox1), hbox1, TRUE, TRUE, 0);
 
-  pixmap_data = gdk_pixmap_colormap_create_from_xpm_d(NULL, gtk_widget_get_colormap(dialogAbout), &pixmap_mask, NULL, (gchar**) boloicon_xpm);
+  pixmap_data = gdk_pixmap_colormap_create_from_xpm_d(nullptr, gtk_widget_get_colormap(dialogAbout), &pixmap_mask, nullptr, (gchar**) boloicon_xpm);
   pixmap1 = gtk_pixmap_new(pixmap_data, pixmap_mask);
   gtk_widget_ref (pixmap1);
   gdk_pixmap_unref(pixmap_data);
@@ -113,8 +113,8 @@ GtkWidget* dialogAboutCreate(void) {
 
   gtk_widget_grab_focus (button1);
   gtk_widget_grab_default (button1);
-  gtk_signal_connect(GTK_OBJECT(dialogAbout), "delete_event", GTK_SIGNAL_FUNC (dialogAboutFunc), NULL);
-  gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(dialogAboutFunc), 0);
+  gtk_signal_connect(GTK_OBJECT(dialogAbout), "delete_event", GTK_SIGNAL_FUNC (dialogAboutFunc), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(dialogAboutFunc), nullptr);
     
   dialogAboutUs = dialogAbout;
   return dialogAbout;

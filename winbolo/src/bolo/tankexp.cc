@@ -55,7 +55,7 @@
 *  tke - Pointer to the tank explosions object
 *********************************************************/
 void tkExplosionCreate(tkExplosion *tke) {
-  *tke = NULL;
+  *tke = nullptr;
 }
 
 /*********************************************************
@@ -109,7 +109,7 @@ void tkExplosionAddItem(tkExplosion *tke, WORLD x, WORLD y, TURNTYPE angle, BYTE
   q->explodeType = explodeType;
   q->creator = playersGetSelf(screenGetPlayers());
   q->packSent = false;
-  q->prev = NULL;
+  q->prev = nullptr;
   if (NonEmpty(*tke)) {
     (*tke)->prev = q;
   }
@@ -302,7 +302,7 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs, lgm 
       tkExplosionDeleteItem(tke, &position);
     }    
     /* Get the next Item */
-    if (*tke != NULL && needUpdate == true) {
+    if (*tke != nullptr && needUpdate == true) {
       position = TkExplosionTail(position);
     }
   }
@@ -326,17 +326,17 @@ void tkExplosionDeleteItem(tkExplosion *tke, tkExplosion *value) {
   
   del = *value;
   (*value) = TkExplosionTail(del);
-  if (del->prev != NULL) {
+  if (del->prev != nullptr) {
     del->prev->next = del->next;
   } else {
     /* Must be the first item - Move the master position along one */
     *tke = TkExplosionTail(*tke);
     if (NonEmpty(*tke)) {
-      (*tke)->prev = NULL;
+      (*tke)->prev = nullptr;
     }
   }
 
-  if (del->next != NULL) {
+  if (del->next != nullptr) {
     del->next->prev = del->prev;
   }
   delete del;
@@ -640,7 +640,7 @@ void tkExplosionNetExtract(tkExplosion *tke, BYTE *buff, BYTE dataLen, BYTE play
   wsz = sizeof(WORLD);
   pos = 0;
   pnt = buff;
-  q = NULL;
+  q = nullptr;
   while (pos < dataLen) {
     /* Get each Data item out */
     memcpy(&wx, pnt, wsz); /* X */
@@ -685,7 +685,7 @@ void tkExplosionNetExtract(tkExplosion *tke, BYTE *buff, BYTE dataLen, BYTE play
       q->creator = creator;
       /* Add it to the structure */
       q->next = *tke;
-      q->prev = NULL;
+      q->prev = nullptr;
       if (NonEmpty(*tke)) {
         (*tke)->prev = q;
       }

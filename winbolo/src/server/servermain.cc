@@ -276,7 +276,7 @@ static void processKeys() {
       FD_ZERO(&fdmask);
       FD_SET(STDIN_FILENO, &fdmask);
 
-      ret =  select(STDIN_FILENO + 1, &fdmask, NULL, NULL, &timer);
+      ret =  select(STDIN_FILENO + 1, &fdmask, nullptr, nullptr, &timer);
       if (ret > 0) {
         fgets(keyBuff, 256, stdin);
 	      strcpy(saveBuff, keyBuff);
@@ -443,7 +443,7 @@ static void processTrackerArg(char *argItem, char *trackerAddr, unsigned short *
   char *tmp;
   tmp = strtok(argItem, ":");
   strcpy(trackerAddr, tmp);
-  tmp = strtok(NULL, ":");
+  tmp = strtok(nullptr, ":");
   *trackerPort = atoi(tmp);
 }
 
@@ -761,7 +761,7 @@ int main(int argc, char **argv) {
       return 0;
     }
   }
-  useAddr = NULL;
+  useAddr = nullptr;
   httpSetAltIpAddress("");
   if (argExist(argc, argv, "addr") == true) {
     useAddr = (char *) argv[findArg(argc, argv, "addr")];
@@ -840,7 +840,7 @@ return 0;
 #ifdef _WIN32  
   timeKillEvent(serverTimerGameID);
 #else
-  SDL_SetTimer(0, NULL);
+  SDL_SetTimer(0, nullptr);
 #endif
   serverNetDestroy();
   threadsDestroy();

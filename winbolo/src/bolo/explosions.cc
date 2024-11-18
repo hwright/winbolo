@@ -44,7 +44,7 @@
 *  expl - Pointer to the explosions object
 *********************************************************/
 void explosionsCreate(explosions *expl) {
-	*expl = NULL;
+	*expl = nullptr;
 }
 
 /*********************************************************
@@ -96,7 +96,7 @@ void explosionsAddItem(explosions *expl, BYTE mx, BYTE my, BYTE px, BYTE py, BYT
   q->py = py;
   q->length = startPos;
   q->next = *expl;
-  q->prev = NULL;
+  q->prev = nullptr;
   if (NonEmpty(*expl)) {
     (*expl)->prev = q;
   }
@@ -140,7 +140,7 @@ void explosionsUpdate(explosions *expl) {
     }
     
     /* Get the next Item */
-    if (*expl != NULL && needUpdate == true) {
+    if (*expl != nullptr && needUpdate == true) {
       position = ExplosionsTail(position);
     }
   }
@@ -163,17 +163,17 @@ void explosionDeleteItem(explosions *expl, explosions *value) {
 
   del = *value;
   (*value) = ExplosionsTail(del);
-  if (del->prev != NULL) {
+  if (del->prev != nullptr) {
     del->prev->next = del->next;
   } else {
     /* Must be the first item - Move the master position along one */
     *expl = ExplosionsTail(*expl);
     if (NonEmpty(*expl)) {
-      (*expl)->prev = NULL;
+      (*expl)->prev = nullptr;
     } 
   }
 
-  if (del->next != NULL) {
+  if (del->next != nullptr) {
     del->next->prev = del->prev;
   }
   delete del;

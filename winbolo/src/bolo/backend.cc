@@ -92,7 +92,7 @@ bool screenMapIsMine(BYTE bmx, BYTE bmy) {
 *
 *********************************************************/
 players *screenGetPlayers() {
-  if (threadsGetContext() == true||clientGetPlayers()==NULL) {
+  if (threadsGetContext() == true||clientGetPlayers()==nullptr) {
     return serverCoreGetPlayers();
   }
   return clientGetPlayers();
@@ -751,7 +751,7 @@ void initWinboloTimer(void){
 	timeBeginPeriod(1);
 #else
 	// inset linux stuff here
-    gettimeofday(&start_time, NULL);
+    gettimeofday(&start_time, nullptr);
 #endif
 }
 
@@ -762,7 +762,7 @@ DWORD winboloTimer(void) {
 	// insert linux stuff here
 	// return SDL_GetTicks();
 	struct timeval t;
-	gettimeofday(&t, NULL);
+	gettimeofday(&t, nullptr);
 	return (DWORD) ((t.tv_sec - start_time.tv_sec) * 1000000 + (t.tv_usec - start_time.tv_usec))/1000;
 #endif
 }

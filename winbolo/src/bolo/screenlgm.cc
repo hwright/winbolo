@@ -46,7 +46,7 @@
 *  value - New item to create
 *********************************************************/
 void screenLgmCreate(screenLgm *value) {
-  (*value) = NULL;
+  (*value) = nullptr;
 }
 
 /*********************************************************
@@ -181,7 +181,7 @@ void screenLgmGetItem(screenLgm *value, BYTE itemNum, BYTE *mx, BYTE *my, BYTE *
     count++;
     q = ScreenLgmsTail(q);
   }
-  if (q != NULL) {
+  if (q != nullptr) {
     *mx = q->mx;
     *my = q->my;
     *px = q->px;

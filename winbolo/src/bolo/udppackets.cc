@@ -77,7 +77,7 @@ udpPackets udpPacketsCreate(void) {
   BYTE count;             /* Looping variable */
 
   returnValue = new udpPacketsObj;
-  if (returnValue != NULL) {
+  if (returnValue != nullptr) {
     returnValue->inUpTo = 0;
     returnValue->inSequenceNumber = 1; /* In sequence number is always +1 */
     returnValue->outSequenceNumber = 0;
@@ -105,9 +105,9 @@ udpPackets udpPacketsCreate(void) {
 * value - UdpPackets item
 *********************************************************/
 void udpPacketsDestroy(udpPackets *value) {
-  if (*value != NULL) {
+  if (*value != nullptr) {
     delete *value;
-    *value = NULL;
+    *value = nullptr;
   }
 }
 

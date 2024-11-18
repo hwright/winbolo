@@ -554,7 +554,7 @@ void serverNetTCPPacketArrive(BYTE *buff, int len, BYTE playerNum, unsigned long
     /* Player leave alliance */
     playersLeaveAlliance(screenGetPlayers(), buff[BOLOPACKET_REQUEST_TYPEPOS+1]);
     winbolonetAddEvent(WINBOLO_NET_EVENT_ALLY_LEAVE, true, buff[BOLOPACKET_REQUEST_TYPEPOS+1], WINBOLO_NET_NO_PLAYER);
-    logAddEvent(log_AllyLeave, buff[BOLOPACKET_REQUEST_TYPEPOS+1], 0, 0, 0, 0, NULL);
+    logAddEvent(log_AllyLeave, buff[BOLOPACKET_REQUEST_TYPEPOS+1], 0, 0, 0, 0, nullptr);
     serverNetSendAll(buff, len);
   } else if (len == BOLOPACKET_REQUEST_SIZE && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOALLOWNEWPLAYERS) {
     /* Client is allowing new players */
@@ -604,12 +604,12 @@ void serverNetTCPPacketArrive(BYTE *buff, int len, BYTE playerNum, unsigned long
   } else if (len == sizeof(ALLIANCE_PACKET) && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOREQUESTALLIANCE_DATA) {
     /* Player Request alliance */
     serverNetSendPlayer(buff[BOLOPACKET_REQUEST_TYPEPOS+2], buff, len);
-    logAddEvent(log_AllyRequest, buff[BOLOPACKET_REQUEST_TYPEPOS+1], buff[BOLOPACKET_REQUEST_TYPEPOS+2], 0, 0, 0, NULL);
+    logAddEvent(log_AllyRequest, buff[BOLOPACKET_REQUEST_TYPEPOS+1], buff[BOLOPACKET_REQUEST_TYPEPOS+2], 0, 0, 0, nullptr);
   } else if (len == sizeof(ALLIANCE_PACKET) && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOACCEPTALLIANCE_DATA) {
     /* Player is accepted into an alliance */
     playersAcceptAlliance(screenGetPlayers(), buff[BOLOPACKET_REQUEST_TYPEPOS+1], buff[BOLOPACKET_REQUEST_TYPEPOS+2]);
     winbolonetAddEvent(WINBOLO_NET_EVENT_ALLY_JOIN, true, buff[BOLOPACKET_REQUEST_TYPEPOS+1], buff[BOLOPACKET_REQUEST_TYPEPOS+2]);
-    logAddEvent(log_AllyAccept, buff[BOLOPACKET_REQUEST_TYPEPOS+1], buff[BOLOPACKET_REQUEST_TYPEPOS+2], 0, 0, 0, NULL);
+    logAddEvent(log_AllyAccept, buff[BOLOPACKET_REQUEST_TYPEPOS+1], buff[BOLOPACKET_REQUEST_TYPEPOS+2], 0, 0, 0, nullptr);
     serverNetSendAll(buff, len);   
   } else if (len == BOLOPACKET_REQUEST_SIZE && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOREQUEST_STARTPOS) {
     /* Start position request */
@@ -825,7 +825,7 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr, unsigned sho
       serverTransportGetUs(&dummyAddr, &dummyPort);
       ip = inet_ntoa(dummyAddr);
     }
-    playersSetPlayer(screenGetPlayers(), pnp.playerNumber, (char *) info, ip, 0, 0, 0, 0, 0, 0, 0, NULL);
+    playersSetPlayer(screenGetPlayers(), pnp.playerNumber, (char *) info, ip, 0, 0, 0, 0, 0, 0, 0, nullptr);
     serverCorePlayerJoin(pnp.playerNumber);
     sprintf(str, (char *) "New Player %s accepted into game.\n", info);
     screenServerConsoleMessage(str);
@@ -833,13 +833,13 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr, unsigned sho
     /* Log it */
     tok = strtok(ipStr, ".");
     ip1 = (BYTE) atoi(tok);
-    tok = strtok(NULL, ".");
+    tok = strtok(nullptr, ".");
     ip2 = (BYTE) atoi(tok);
-    tok = strtok(NULL, ".");
+    tok = strtok(nullptr, ".");
     ip3 = (BYTE) atoi(tok);
-    tok = strtok(NULL, ".");
+    tok = strtok(nullptr, ".");
     ip4 = (BYTE) atoi(tok);
-    tok = strtok(NULL, ".");
+    tok = strtok(nullptr, ".");
     logAddEvent(log_PlayerJoined, pnp.playerNumber, ip1, ip2, ip3, ip4, prp.playerName);
     /* Inform other players */   
     serverNetMakePacketHeader(&(npp.h), BOLOPACKET_PLAYERNEWPLAYER);
@@ -885,7 +885,7 @@ void serverNetSendPlayerLeaveGracefulMessage(BYTE playerNum) {
 //FIXME send to WBN  logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *) ptr);
   serverNetSendAllExceptPlayer(playerNum, buff, BOLOPACKET_REQUEST_SIZE +(*ptr)+1);
   winbolonetAddEvent(WINBOLO_NET_EVENT_QUITTING, true, playerNum, WINBOLO_NET_NO_PLAYER);
-  logAddEvent(log_PlayerLeaving, playerNum, 0, 0, 0, 0, NULL);
+  logAddEvent(log_PlayerLeaving, playerNum, 0, 0, 0, 0, nullptr);
 }
 
 /*********************************************************
@@ -914,7 +914,7 @@ void serverNetPlayerLeave(BYTE playerNum, bool graceful) {
     if (graceful == true) {
       serverNetSendPlayerLeaveGracefulMessage(playerNum);
     }
-    logAddEvent(log_PlayerQuit, playerNum, 0, 0, 0, 0, NULL);
+    logAddEvent(log_PlayerQuit, playerNum, 0, 0, 0, 0, nullptr);
     /* Tell the other players about it */
     serverNetMakePacketHeader(&(plp.h), BOLOPACKET_PLAYERLEAVE);
     plp.playerNumber = playerNum;
@@ -1514,7 +1514,7 @@ void serverNetCheckRemovePlayers() {
   static time_t lastCheck = 0; /* Time between removing players */
   BYTE count;                  /* Looping Variable */
 
-  if (time(NULL) - lastCheck >= SERVER_NET_REMOVE_CHECKTIME) {
+  if (time(nullptr) - lastCheck >= SERVER_NET_REMOVE_CHECKTIME) {
     count = 0;
     while (count < MAX_TANKS) {
       if (netPlayersShouldDisconnectPlayer(&np, count) == true) {
@@ -1523,7 +1523,7 @@ void serverNetCheckRemovePlayers() {
       }
       count++;
     }
-    lastCheck = time(NULL);
+    lastCheck = time(nullptr);
   }
 }
 
@@ -1622,11 +1622,11 @@ void serverNetGetUs(BYTE *buff, unsigned short *port) {
   ip = inet_ntoa(dest);
   current = strtok(ip, ".");
   buff[0] = (BYTE) atoi(current);
-  current = strtok(NULL, ".");
+  current = strtok(nullptr, ".");
   buff[1] = (BYTE) atoi(current);
-  current = strtok(NULL, ".");
+  current = strtok(nullptr, ".");
   buff[2] = (BYTE) atoi(current);
-  current = strtok(NULL, ".");
+  current = strtok(nullptr, ".");
   buff[3] = (BYTE) atoi(current);
 }
 

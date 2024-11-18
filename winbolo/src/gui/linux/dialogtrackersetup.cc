@@ -216,10 +216,10 @@ GtkWidget* dialogTrackerCreate(void) {
     gtk_widget_set_sensitive (entry1, FALSE);
   }
   dialogTrackerUs = dialogTracker;
-  gtk_signal_connect(GTK_OBJECT(dialogTracker), "delete_event", GTK_SIGNAL_FUNC (dialogTrackerCancel), NULL);
-  gtk_signal_connect(GTK_OBJECT(dialogTrackerok), "clicked", GTK_SIGNAL_FUNC(dialogTrackerOK), 0);
-  gtk_signal_connect(GTK_OBJECT(dialogTrackercancel), "clicked", GTK_SIGNAL_FUNC(dialogTrackerCancel), 0);
-  gtk_signal_connect(GTK_OBJECT(dialogTrackerUse), "clicked", GTK_SIGNAL_FUNC(dialogTrackerUseFunc), 0);
+  gtk_signal_connect(GTK_OBJECT(dialogTracker), "delete_event", GTK_SIGNAL_FUNC (dialogTrackerCancel), nullptr);
+  gtk_signal_connect(GTK_OBJECT(dialogTrackerok), "clicked", GTK_SIGNAL_FUNC(dialogTrackerOK), nullptr);
+  gtk_signal_connect(GTK_OBJECT(dialogTrackercancel), "clicked", GTK_SIGNAL_FUNC(dialogTrackerCancel), nullptr);
+  gtk_signal_connect(GTK_OBJECT(dialogTrackerUse), "clicked", GTK_SIGNAL_FUNC(dialogTrackerUseFunc), nullptr);
   
   
   return dialogTracker;

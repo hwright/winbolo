@@ -77,8 +77,8 @@ void mapCreate(map *value) {
       ((*value)->mapItem[count][count2]) = DEEP_SEA;
     }
   }
-  (*value)->mn = NULL;
-  (*value)->mninc = NULL;
+  (*value)->mn = nullptr;
+  (*value)->mninc = nullptr;
 }
 
 /*********************************************************
@@ -95,7 +95,7 @@ void mapCreate(map *value) {
 void mapDestroy(map *value) {
   mapNet q;
   
-  if (*value != NULL) {
+  if (*value != nullptr) {
     q = (*value)->mn;
     while (NonEmpty((*value)->mn)) {
       (*value)->mn = MapNetTail(q);
@@ -109,11 +109,11 @@ void mapDestroy(map *value) {
       delete q;
       q = (*value)->mninc;
     }
-    (*value)->mn = NULL;
-    (*value)->mninc = NULL;
+    (*value)->mn = nullptr;
+    (*value)->mninc = nullptr;
     delete *value;
   }
-  *value = NULL;
+  *value = nullptr;
 }
 
 /*********************************************************
@@ -434,7 +434,7 @@ bool mapRead(char *fileName, map *value, pillboxes *pb, bases *bs, starts *ss) {
   }
   if (returnValue == true && fp) {
     str = fgets(id, (LENGTH_ID+1), fp);
-    if (str == NULL || strcmp(id,MAP_HEADER) != 0) {
+    if (str == nullptr || strcmp(id,MAP_HEADER) != 0) {
       returnValue = false;
     }
   }
@@ -866,7 +866,7 @@ void mapSetPos(map *value, BYTE xValue, BYTE yValue, BYTE terrain, bool needSend
     /* Multiplayer game */
     mapNetAdd(value, xValue, yValue, terrain, needSend);
   }
-  logAddEvent(log_MapChange, xValue, yValue, terrain, 0, 0, NULL);
+  logAddEvent(log_MapChange, xValue, yValue, terrain, 0, 0, nullptr);
 }
 
 /*********************************************************
@@ -960,7 +960,7 @@ bool mapWrite(char *fileName, map *value, pillboxes *pb, bases *bs, starts *ss) 
   numStarts = startsGetNumStarts(ss);
 
   fp = fopen(fileName,"wb");
-  if (fp == NULL) {
+  if (fp == nullptr) {
     returnValue = false;
   }
   /* Write header */
@@ -1347,15 +1347,15 @@ void mapNetAdd(map *value, BYTE mx, BYTE my, BYTE terrain, bool needSend) {
         /* Exists */
         (*value)->mapItem[mx][my] = terrain;
         screenBrainMapSetPos(mx, my, terrain, minesExistPos(screenGetMines(), mx, my));
-        if (q->prev != NULL) {
+        if (q->prev != nullptr) {
           q->prev->next = q->next;
         } else {
           (*value)->mninc = MapNetTail((*value)->mninc);
           if (NonEmpty((*value)->mninc)) {
-            (*value)->mninc->prev = NULL;
+            (*value)->mninc->prev = nullptr;
           }
         }
-        if (q->next != NULL) {
+        if (q->next != nullptr) {
           q->next->prev = q->prev;
         }
         delete q;
@@ -1394,7 +1394,7 @@ void mapNetAdd(map *value, BYTE mx, BYTE my, BYTE terrain, bool needSend) {
       q->length = 0;
       q->needSend = needSend;
       q->next = (*value)->mn;
-      q->prev = NULL;
+      q->prev = nullptr;
       if (NonEmpty((*value)->mn)) {
         (*value)->mn->prev = q;
       }
@@ -1443,15 +1443,15 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
 //          floodAddItem(q->mx, q->my);
 //        }
       needRedraw = true;
-      if (q->prev != NULL) {
+      if (q->prev != nullptr) {
         q->prev->next = q->next;
       } else {
         (*value)->mn = MapNetTail((*value)->mn);
         if (NonEmpty((*value)->mn)) {
-          (*value)->mn->prev = NULL;
+          (*value)->mn->prev = nullptr;
         }
       }
-      if (q->next != NULL) {
+      if (q->next != nullptr) {
         q->next->prev = q->prev;
       }
       del = q;
@@ -1471,15 +1471,15 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
       mapNetCheckWater(value, pb, bs, q->mx, q->my);
       screenBrainMapSetPos(q->mx, q->my, (*value)->mapItem[q->mx][q->my], minesExistPos(screenGetMines(), q->mx, q->my));
       needRedraw = true;
-      if (q->prev != NULL) {
+      if (q->prev != nullptr) {
         q->prev->next = q->next;
       } else {
         (*value)->mninc = MapNetTail((*value)->mninc);
         if (NonEmpty((*value)->mninc)) {
-          (*value)->mninc->prev = NULL;
+          (*value)->mninc->prev = nullptr;
         }
       }
-      if (q->next != NULL) {
+      if (q->next != nullptr) {
         q->next->prev = q->prev;
       }
       del = q;
@@ -1524,15 +1524,15 @@ void mapNetIncomingItem(map *value, BYTE mx, BYTE my, BYTE terrain) {
   while (NonEmpty(q) && done == false) {
     if (q->mx == mx && q->my == my) { /* && q->terrain == terrain */
       /* Its in our structure */
-      if (q->prev != NULL) {
+      if (q->prev != nullptr) {
         q->prev->next = q->next;
       } else {
         (*value)->mn = MapNetTail((*value)->mn);
         if (NonEmpty((*value)->mn)) {
-          (*value)->mn->prev = NULL;
+          (*value)->mn->prev = nullptr;
         }
       }
-      if (q->next != NULL) {
+      if (q->next != nullptr) {
         q->next->prev = q->prev;
       }
       done = true;
@@ -1569,7 +1569,7 @@ void mapNetIncomingItem(map *value, BYTE mx, BYTE my, BYTE terrain) {
       q->terrain = terrain;
       q->length = 0;
       q->next = (*value)->mninc;
-      q->prev = NULL;
+      q->prev = nullptr;
       if (NonEmpty((*value)->mninc)) {
         (*value)->mninc->prev = q;
       }
@@ -1606,15 +1606,15 @@ void mapNetPacket(map *value, BYTE mx, BYTE my, BYTE terrain) {
     if (q->mx == mx && q->my == my && q->terrain == terrain) {
       (*value)->mapItem[mx][my] = terrain;
       screenBrainMapSetPos(mx, my, (*value)->mapItem[mx][my], minesExistPos(screenGetMines(), mx, my));
-      if (q->prev != NULL) {
+      if (q->prev != nullptr) {
         q->prev->next = q->next;
       } else {
         (*value)->mn = MapNetTail((*value)->mn);
         if (NonEmpty((*value)->mn)) {
-          (*value)->mn->prev = NULL;
+          (*value)->mn->prev = nullptr;
         }
       }
-      if (q->next != NULL) {
+      if (q->next != nullptr) {
         q->next->prev = q->prev;
       }
       del = q;

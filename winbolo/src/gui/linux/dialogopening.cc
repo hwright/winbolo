@@ -44,7 +44,7 @@ static gint opening_configure_event (GtkWidget *window, GdkEventConfigure *event
   GdkBitmap *mask;
 
   pixmap = gdk_pixmap_create_from_xpm_d (window->window, &mask, &window->style->bg[GTK_STATE_NORMAL], (gchar **) boloicon_xpm);
-  gdk_window_set_icon (window->window, NULL, pixmap, mask);
+  gdk_window_set_icon (window->window, nullptr, pixmap, mask);
   return TRUE;
 }
 
@@ -100,7 +100,7 @@ GtkWidget* dialogOpeningCreate(void) {
   GtkWidget *vbox1;
   GtkWidget *pixmap1;
   GtkWidget *label1;
-  GSList *vbox1_group = NULL;
+  GSList *vbox1_group = nullptr;
   GtkWidget *idc_openskip;
   GtkWidget *table1;
   GtkWidget *idc_openquit;
@@ -124,7 +124,7 @@ GtkWidget* dialogOpeningCreate(void) {
   gtk_widget_show (vbox1);
   gtk_container_add (GTK_CONTAINER (dialogOpening), vbox1);
   
-  pixmap_data = gdk_pixmap_colormap_create_from_xpm_d(NULL, gtk_widget_get_colormap(dialogOpening), &pixmap_mask, NULL, (gchar **) smalllogo_xpm);
+  pixmap_data = gdk_pixmap_colormap_create_from_xpm_d(nullptr, gtk_widget_get_colormap(dialogOpening), &pixmap_mask, nullptr, (gchar **) smalllogo_xpm);
   pixmap1 = gtk_pixmap_new(pixmap_data, pixmap_mask); 
   gtk_widget_ref (pixmap1);
   gdk_pixmap_unref(pixmap_data);
@@ -232,15 +232,15 @@ GtkWidget* dialogOpeningCreate(void) {
                     (GtkAttachOptions) (GTK_FILL),
                     (GtkAttachOptions) (0), 0, 0);
 
-  gtk_signal_connect(GTK_OBJECT(dialogOpening), "delete_event", GTK_SIGNAL_FUNC (dialogOpeningClose), NULL);
-  gtk_signal_connect(GTK_OBJECT(idc_openquit), "clicked", GTK_SIGNAL_FUNC(dialogOpeningQuit), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_openok), "clicked", GTK_SIGNAL_FUNC(dialogOpeningOK), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_openhelp), "clicked", GTK_SIGNAL_FUNC(dialogOpeningHelp), 0);  
-  gtk_signal_connect(GTK_OBJECT(idc_openlanguages), "clicked", GTK_SIGNAL_FUNC(dialogOpeningWinbolonet), 0);  
-  gtk_signal_connect(GTK_OBJECT(dialogOpening), "destroy", GTK_SIGNAL_FUNC(dialogOpeningCloseBox), 0);  
+  gtk_signal_connect(GTK_OBJECT(dialogOpening), "delete_event", GTK_SIGNAL_FUNC (dialogOpeningClose), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_openquit), "clicked", GTK_SIGNAL_FUNC(dialogOpeningQuit), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_openok), "clicked", GTK_SIGNAL_FUNC(dialogOpeningOK), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_openhelp), "clicked", GTK_SIGNAL_FUNC(dialogOpeningHelp), nullptr);  
+  gtk_signal_connect(GTK_OBJECT(idc_openlanguages), "clicked", GTK_SIGNAL_FUNC(dialogOpeningWinbolonet), nullptr);  
+  gtk_signal_connect(GTK_OBJECT(dialogOpening), "destroy", GTK_SIGNAL_FUNC(dialogOpeningCloseBox), nullptr);  
   us = dialogOpening;
 
-  gtk_signal_connect(GTK_OBJECT(us), "configure_event", GTK_SIGNAL_FUNC(opening_configure_event), 0);
+  gtk_signal_connect(GTK_OBJECT(us), "configure_event", GTK_SIGNAL_FUNC(opening_configure_event), nullptr);
 
   
   return dialogOpening;

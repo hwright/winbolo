@@ -79,17 +79,17 @@ static tank tk[MAX_TANKS];
 static lgm lgman[MAX_TANKS];
 static shells shs;
 static players splrs;
-static building serverBlds = NULL;
-static explosions serverExpl = NULL;
-static floodFill serverFF = NULL;
-static grass serverGrass = NULL;
-static mines serverMines = NULL;
-static minesExp serverMinesExp = NULL;
-static rubble serverRubble = NULL;
-static swamp serverSwamp = NULL;
-static tkExplosion serverTankExp = NULL;
-static netPnbContext serverPNB = NULL; 
-static netMntContext serverNMT = NULL;
+static building serverBlds = nullptr;
+static explosions serverExpl = nullptr;
+static floodFill serverFF = nullptr;
+static grass serverGrass = nullptr;
+static mines serverMines = nullptr;
+static minesExp serverMinesExp = nullptr;
+static rubble serverRubble = nullptr;
+static swamp serverSwamp = nullptr;
+static tkExplosion serverTankExp = nullptr;
+static netPnbContext serverPNB = nullptr; 
+static netMntContext serverNMT = nullptr;
 
 static gameType sGame;
 
@@ -130,7 +130,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines, int srtDe
   bool returnValue; /* Value to return */
   BYTE count;       /* Looping variable */
 
-  srand((unsigned int) time(NULL));
+  srand((unsigned int) time(nullptr));
   messageAdd(globalMessage, (char *) BOLO_VERSION_STRING, (char *) COPYRIGHT_STRING);
   messageAdd(globalMessage, (char *) "", (char *) "Core Simulation Startup");
 
@@ -139,7 +139,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines, int srtDe
   sGmeLength = gmeLen;
 
   for (count=0;count<MAX_TANKS;count++) {
-    tk[count] = NULL;
+    tk[count] = nullptr;
   }
 
   gameTypeSet(&sGame, game);
@@ -209,8 +209,8 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn, gameT
   sGmeLength = gmeLen;
 
   for (count=0;count<MAX_TANKS;count++) {
-    tk[count] = NULL;
-    lgman[count] = NULL;
+    tk[count] = nullptr;
+    lgman[count] = nullptr;
   }
 
   gameTypeSet(&sGame, game);
@@ -297,12 +297,12 @@ void serverCoreLogTick() {
     screenBullets sb = screenBulletsCreate();
     /* Item locations */
     for (count=0;count<MAX_TANKS;count++) {
-      if (tk[count] != NULL) {
+      if (tk[count] != nullptr) {
         mx = tankGetMX(&tk[count]);
         my = tankGetMY(&tk[count]);
-        logAddEvent(log_PlayerLocation, (BYTE) count, mx, my, utilPutNibble(tankGetPX(&tk[count]), tankGetPY(&tk[count])), (BYTE) utilPutNibble(tankGetDir(&tk[count]), tankIsOnBoat(&tk[count])), NULL);
+        logAddEvent(log_PlayerLocation, (BYTE) count, mx, my, utilPutNibble(tankGetPX(&tk[count]), tankGetPY(&tk[count])), (BYTE) utilPutNibble(tankGetDir(&tk[count]), tankIsOnBoat(&tk[count])), nullptr);
         if (lgmIsOut(&lgman[count]) == true) {
-          logAddEvent(log_LgmLocation, utilPutNibble((BYTE) count, lgmGetFrame(&lgman[count])), lgmGetMX(&lgman[count]), lgmGetMY(&lgman[count]), utilPutNibble(lgmGetPX(&lgman[count]), lgmGetPY(&lgman[count])), 0, NULL);
+          logAddEvent(log_LgmLocation, utilPutNibble((BYTE) count, lgmGetFrame(&lgman[count])), lgmGetMX(&lgman[count]), lgmGetMY(&lgman[count]), utilPutNibble(lgmGetPX(&lgman[count]), lgmGetPY(&lgman[count])), 0, nullptr);
         }
       }
     }
@@ -314,7 +314,7 @@ void serverCoreLogTick() {
     entries = screenBulletsGetNumEntries(&sb);
     for (count=1;count<=entries;count++) {
       screenBulletsGetItem(&sb, count, &mx, &my, &temp1, &temp2, &temp3);
-      logAddEvent(log_Shell, mx, my, utilPutNibble(temp1, temp2), temp3, 0, NULL);
+      logAddEvent(log_Shell, mx, my, utilPutNibble(temp1, temp2), temp3, 0, nullptr);
     }
     screenBulletsDestroy(&sb);
   }  
@@ -361,12 +361,12 @@ void serverCoreGameTick() {
   }
 
  
-  pillsUpdate(&pb, &mp, &bs, NULL, &shs);
-  basesUpdate(&bs, NULL);
+  pillsUpdate(&pb, &mp, &bs, nullptr, &shs);
+  basesUpdate(&bs, nullptr);
   
   numTanks = 0;
   for (count=0;count<MAX_TANKS;count++) {
-    if (tk[count] != NULL) {
+    if (tk[count] != nullptr) {
       tankUpdate(&(tk[count]), &mp, &bs, &pb, &shs, &ss, TNONE, false, false);
       lgmUpdate(&lgman[count], &mp, &pb, &bs, &tk[count]);
       ta[numTanks] = tk[count];
@@ -651,7 +651,7 @@ void serverCorePlayerLeave(BYTE playerNum) {
   pills = pillsGetOwnerBitMask(&pb, playerNum);
   basesOwn = basesGetOwnerBitMask(&bs, playerNum);
   playersRejoinAddPlayer(playerName, pills, basesOwn);
-  tk[playerNum] = NULL;
+  tk[playerNum] = nullptr;
   if (playersGetNumAllie(&splrs, playerNum) == 1) {
     /* Has no allies - Set all things owned to neutral */
     pillsDropSetNeutralOwner(&pb, playerNum);
@@ -711,7 +711,7 @@ void serverCoreSetPosData(BYTE *buff) {
   ptr = buff;
   utilGetNibbles(*ptr, &playerNum, &frame);
   ptr++;
-  if (tk[playerNum] != NULL) {
+  if (tk[playerNum] != nullptr) {
     memcpy(&wx, ptr, sizeof(WORLD));
     ptr += sizeof(WORLD);
     memcpy(&wy, ptr, sizeof(WORLD));
@@ -744,7 +744,7 @@ void serverCoreSetPosData(BYTE *buff) {
 
     /* Update Players */
     mx=my=px=py=0;
-    if (tk[playerNum] != NULL) {
+    if (tk[playerNum] != nullptr) {
       if (wx == 0 && wy == 0) {
         tankGetWorld(&tk[playerNum], &testX, &testY);
         if (testX != 0 || testY != 0) {
@@ -835,7 +835,7 @@ void serverCorePreparePosPackets() {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if (playersIsInUse(&splrs, count) == true && tk[count] != NULL) {
+    if (playersIsInUse(&splrs, count) == true && tk[count] != nullptr) {
       playersPosData[count].len = 0;
       pos = 0;
 
@@ -1164,7 +1164,7 @@ BYTE serverCoreMakeTkData(BYTE *buff) {
 *  len  - Length of the buffer
 ********************************************************/
 void serverCoreExtractNMTData(BYTE *buff, BYTE len) {
-  netMNTExtract(&serverNMT, &mp, &pb, &bs, NULL, buff, len, false);
+  netMNTExtract(&serverNMT, &mp, &pb, &bs, nullptr, buff, len, false);
 }
 
 /*********************************************************
@@ -1400,7 +1400,7 @@ bool serverCoreCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
   
   count = 0;
   while (count < MAX_TANKS && returnValue == true) {
-    if (playerNum != count && tk[count] != NULL && count != playerNum) {
+    if (playerNum != count && tk[count] != nullptr && count != playerNum) {
       tankGetWorld(&tk[count], &testWX, &testWY);
       returnValue = !(utilIsItemInRange(ourWX, ourWY, testWX, testWY, (WORLD) distance, &dummy));
     }
@@ -1484,7 +1484,7 @@ void serverCoreSendTeams() {
   count = 0;
   arrayPos = 1;
   while (count < MAX_TANKS) {
-    if (donePlayers[count] == false && tk[count] != NULL) {
+    if (donePlayers[count] == false && tk[count] != nullptr) {
       /* This is a new team */
       numTeams++;
       count2 = 0;
@@ -1496,7 +1496,7 @@ void serverCoreSendTeams() {
       arraySize++;
       donePlayers[count] = true;
       while (count2 < MAX_TANKS) {
-        if (count2 != count && tk[count2] != NULL && playersIsAllie(&splrs, count, count2)) {
+        if (count2 != count && tk[count2] != nullptr && playersIsAllie(&splrs, count, count2)) {
           donePlayers[count2] = true;
           array[arrayPos] = count2;
           arrayPos++;
@@ -1568,7 +1568,7 @@ bool serverCoreCheckGameWin(bool printWinners) {
     serverMessageConsoleMessage("Winners");
     count = 0;
     while (count < MAX_TANKS) {
-      if (tk[count] != NULL) {
+      if (tk[count] != nullptr) {
         if (playersIsAllie(&splrs, first, count) == true) {
           /* Print it */
           playersGetPlayerName(&splrs, count, dest);

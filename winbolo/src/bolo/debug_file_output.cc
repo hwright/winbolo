@@ -23,7 +23,7 @@ void setFileName(char *newFileName) {
 int openDebugFile() {
 	if (writeToDebugFileStream == 1) {
 		debugFileStream = fopen(fileName,"w");
-		if (debugFileStream != NULL) {
+		if (debugFileStream != nullptr) {
 			return 0;
 		} else {
 			return -1;
@@ -35,7 +35,7 @@ int openDebugFile() {
 
 int writeDebugFile(char *text) {
 	if (writeToDebugFileStream == 1) {
-		if (debugFileStream != NULL) {
+		if (debugFileStream != nullptr) {
 			fputs(text, debugFileStream);
 			/* fputs("\n",debugFileStream); */
 			return 0;
@@ -49,7 +49,7 @@ int writeDebugFile(char *text) {
 
 int closeDebugFile() {
 	if (writeToDebugFileStream == 1) {
-		if (debugFileStream != NULL) {
+		if (debugFileStream != nullptr) {
 			fclose(debugFileStream);
 			return 0;
 		} else {

@@ -244,7 +244,7 @@ void soundDistLog(sndEffects value, BYTE mx, BYTE my) {
   }
 
   if (wantLog == true) {
-    logAddEvent((logitem)logMessageType, mx, my, 0, 0, 0, NULL);
+    logAddEvent((logitem)logMessageType, mx, my, 0, 0, 0, nullptr);
   }
 
 }

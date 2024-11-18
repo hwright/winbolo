@@ -434,7 +434,7 @@ void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my) {
   }
 
   if (wantLog == true) {
-    logAddEvent((logitem)logMessageType, mx, my, 0, 0, 0, NULL);
+    logAddEvent((logitem)logMessageType, mx, my, 0, 0, 0, nullptr);
   }
 
 }
@@ -923,7 +923,7 @@ bool clientMapIsMine(BYTE bmx, BYTE bmy){
 *  playerNum - Tank to get for this player number
 *********************************************************/
 tank* clientGetTankFromPlayer(BYTE playerNum) {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -954,7 +954,7 @@ BYTE clientGetTankPlayer(tank *value) {
 *  playerNum - the player numbers lgm to get
 *********************************************************/
 lgm *clientGetLgmFromPlayerNum(BYTE playerNum) {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1078,7 +1078,7 @@ bool clientTankInView(BYTE playerNum, BYTE checkX, BYTE checkY) {
 *
 *********************************************************/
 players *clientGetPlayers() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1138,7 +1138,7 @@ void frontEndRedrawAll(void){
 *
 *********************************************************/
 building *clientGetBuildings() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1153,7 +1153,7 @@ building *clientGetBuildings() {
 *
 *********************************************************/
 explosions *clientGetExplosions() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1168,7 +1168,7 @@ explosions *clientGetExplosions() {
 *
 *********************************************************/
 floodFill *clientGetFloodFill() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1183,7 +1183,7 @@ floodFill *clientGetFloodFill() {
 *
 *********************************************************/
 grass *clientGetGrass() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1198,7 +1198,7 @@ grass *clientGetGrass() {
 *
 *********************************************************/
 mines *clientGetMines() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1213,7 +1213,7 @@ mines *clientGetMines() {
 *
 *********************************************************/
 minesExp *clientGetMinesExp() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1228,7 +1228,7 @@ minesExp *clientGetMinesExp() {
 *
 *********************************************************/
 rubble *clientGetRubble() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1243,7 +1243,7 @@ rubble *clientGetRubble() {
 *
 *********************************************************/
 swamp *clientGetSwamp() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1258,7 +1258,7 @@ swamp *clientGetSwamp() {
 *
 *********************************************************/
 tkExplosion  *clientGetTankExplosions() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1273,7 +1273,7 @@ tkExplosion  *clientGetTankExplosions() {
 *
 *********************************************************/
 netPnbContext *clientGetNetPnb() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1288,7 +1288,7 @@ netPnbContext *clientGetNetPnb() {
 *
 *********************************************************/
 netMntContext *clientGetNetMnt() {
-  return NULL;
+  return nullptr;
 }
 
 /*********************************************************
@@ -1303,5 +1303,5 @@ netMntContext *clientGetNetMnt() {
 *
 *********************************************************/
 gameType *clientGetGameType() {
-  return NULL;
+  return nullptr;
 }

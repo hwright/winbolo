@@ -304,10 +304,10 @@ GtkWidget* dialogGameInfoCreate(void) {
     gtk_label_set_text(GTK_LABEL(lblGameTimeLimit),  langGetText(STR_NO));
   }
 
-  dialogGameInfoUpdate(NULL);
+  dialogGameInfoUpdate(nullptr);
 
-  timerGameInfo = gtk_timeout_add (SECOND, dialogGameInfoUpdate, (gpointer) NULL);
-   gtk_signal_connect(GTK_OBJECT(dialogGameInfo), "delete_event", GTK_SIGNAL_FUNC (dialogGameInfoClose), NULL);
+  timerGameInfo = gtk_timeout_add (SECOND, dialogGameInfoUpdate, (gpointer) nullptr);
+   gtk_signal_connect(GTK_OBJECT(dialogGameInfo), "delete_event", GTK_SIGNAL_FUNC (dialogGameInfoClose), nullptr);
    return dialogGameInfo;
 }
 

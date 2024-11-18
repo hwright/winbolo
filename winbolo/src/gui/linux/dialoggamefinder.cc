@@ -46,7 +46,7 @@
 static GtkWidget *dialogGameFindUs;
 static bool useTracker = TRUE;  /* Do we use the tracker for lookups */
 static char motd[4 *4096];
-static currentGames cg = NULL;
+static currentGames cg = nullptr;
 static GtkWidget *idc_address;
 static GtkWidget *idc_gamefindport;
 static GtkWidget *idc_gamefindversion;
@@ -895,17 +895,17 @@ GtkWidget* dialogGameFinderCreate(bool useTrack, char *title) {
                     (GtkAttachOptions) (0), 0, 0);
   /* Signals */
 //  gtk_signal_connect (GTK_OBJECT(list1), "select", GTK_SIGNAL_FUNC(dialogGameFinderSelect), NULL);
-  gtk_signal_connect(GTK_OBJECT(dialogGameFinder), "show", GTK_SIGNAL_FUNC(dialogGameFinderShow), 0);
-  gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderTracker), 0);
-  gtk_signal_connect(GTK_OBJECT(button8), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderSetName), 0);
-   gtk_signal_connect(GTK_OBJECT(button4), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderRefresh), 0);
-  gtk_signal_connect(GTK_OBJECT(button7), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderCancel), 0);
-  gtk_signal_connect(GTK_OBJECT(button9), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderMOTD), 0);
-  gtk_signal_connect(GTK_OBJECT(dialogGameFinder), "delete_event", GTK_SIGNAL_FUNC(dialogGameFinderCancel), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_gamefindrejoin), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderReJoin), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_gamefindjoin), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderJoin), 0);
-  gtk_signal_connect(GTK_OBJECT(button2), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderJoinByAddress), 0);
-  gtk_signal_connect(GTK_OBJECT(button6), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderNew), 0);
+  gtk_signal_connect(GTK_OBJECT(dialogGameFinder), "show", GTK_SIGNAL_FUNC(dialogGameFinderShow), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderTracker), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button8), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderSetName), nullptr);
+   gtk_signal_connect(GTK_OBJECT(button4), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderRefresh), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button7), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderCancel), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button9), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderMOTD), nullptr);
+  gtk_signal_connect(GTK_OBJECT(dialogGameFinder), "delete_event", GTK_SIGNAL_FUNC(dialogGameFinderCancel), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_gamefindrejoin), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderReJoin), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_gamefindjoin), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderJoin), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button2), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderJoinByAddress), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button6), "clicked", GTK_SIGNAL_FUNC(dialogGameFinderNew), nullptr);
   /* My Stuff */
   cg = currentGamesCreate();
   if (useTracker == TRUE) {

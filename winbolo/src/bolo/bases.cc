@@ -95,7 +95,7 @@ void basesCreate(bases *value) {
 *  value - Pointer to the bases structure
 *********************************************************/
 void basesDestroy(bases *value) {
-  if (*value != NULL) {
+  if (*value != nullptr) {
     delete *value;
   }
 }
@@ -131,7 +131,7 @@ void basesSetNumBases(bases *value, BYTE numBases) {
 *  value  - Pointer to the bases structure
 *********************************************************/
 BYTE basesGetNumBases(bases *value) {
-  if ((*value) != NULL) {
+  if ((*value) != nullptr) {
     return (*value)->numBases;
   }
   return 0;
@@ -158,7 +158,7 @@ void basesSetBase(bases *value, base *item, BYTE baseNum) {
     if (item->owner > (MAX_TANKS-1) && item->owner != NEUTRAL) {
       item->owner = NEUTRAL;
     }
-    logAddEvent(log_BaseSetOwner, baseNum, item->owner, true, 0, 0, NULL);
+    logAddEvent(log_BaseSetOwner, baseNum, item->owner, true, 0, 0, nullptr);
     (((*value)->item[baseNum]).owner) = item->owner;
     (((*value)->item[baseNum]).armour) = item->armour;
     (((*value)->item[baseNum]).shells) = item->shells;
@@ -166,7 +166,7 @@ void basesSetBase(bases *value, base *item, BYTE baseNum) {
     (*value)->item[baseNum].refuelTime = 0;
     (*value)->item[baseNum].baseTime = item->baseTime;
     (*value)->item[baseNum].justStopped = true;
-    logAddEvent(log_BaseSetStock, baseNum, item->shells, item->mines, item->armour, 0, NULL);
+    logAddEvent(log_BaseSetStock, baseNum, item->shells, item->mines, item->armour, 0, nullptr);
   }
 }
 
@@ -464,7 +464,7 @@ void basesUpdateStock(bases *value, BYTE baseNum) {
         (*value)->item[baseNum].mines = BASE_FULL_MINES;
       }
     }
-    logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells, (*value)->item[baseNum].mines, (*value)->item[baseNum].armour, 0, NULL);
+    logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells, (*value)->item[baseNum].mines, (*value)->item[baseNum].armour, 0, nullptr);
   }
   if (addAmount > 0) {
     netMNTAdd(screenGetNetMnt(), NMNT_BASERELOAD, baseNum, addAmount, 0, 0);
@@ -565,7 +565,7 @@ BYTE basesSetBaseOwner(bases *value, BYTE baseNum, BYTE owner, BYTE migrate) {
       }
       (*value)->item[baseNum].owner = owner;
     }
-    logAddEvent(log_BaseSetOwner, baseNum, owner, migrate, 0, 0, NULL);
+    logAddEvent(log_BaseSetOwner, baseNum, owner, migrate, 0, 0, nullptr);
 
     /* WinBolo.net Stuff */
     if (migrate == false && owner != NEUTRAL) {
@@ -637,7 +637,7 @@ BYTE basesSetOwner(bases *value, BYTE xValue, BYTE yValue, BYTE owner, BYTE migr
           messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE), messageStr);
         }
         (*value)->item[count].owner = owner;
-        logAddEvent(log_BaseSetOwner, count, owner, migrate, 0, 0, NULL);
+        logAddEvent(log_BaseSetOwner, count, owner, migrate, 0, 0, nullptr);
         done = true;
         /* WinBolo.net Stuff */
         if (migrate == false && owner != NEUTRAL) {
@@ -737,7 +737,7 @@ void basesRefueling(bases *value, tank *tnk, BYTE baseNum) {
           frontEndUpdateBaseStatusBars(((*value)->item[baseNum].shells), ((*value)->item[baseNum].mines), ((*value)->item[baseNum].armour));
         }
       }
-      logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells, (*value)->item[baseNum].mines, (*value)->item[baseNum].armour, 0, NULL);
+      logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells, (*value)->item[baseNum].mines, (*value)->item[baseNum].armour, 0, nullptr);
     }
   }
 }
@@ -1144,7 +1144,7 @@ void basesNetGiveArmour(bases *value, BYTE baseNum) {
   if (((*value)->item[baseNum].armour - BASE_ARMOUR_GIVE) >= BASE_MIN_ARMOUR) {
     (*value)->item[baseNum].armour -= BASE_ARMOUR_GIVE;
     (*value)->item[baseNum].refuelTime = basesHalfTickCalulator(BASES_HALFTICK_TYPE_ARMOUR);
-    logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells, (*value)->item[baseNum].mines, (*value)->item[baseNum].armour, 0, NULL);
+    logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells, (*value)->item[baseNum].mines, (*value)->item[baseNum].armour, 0, nullptr);
   }
 }
 
@@ -1165,7 +1165,7 @@ void basesNetGiveShells(bases *value, BYTE baseNum) {
   if (((*value)->item[baseNum].shells - BASE_SHELLS_GIVE) >= BASE_MIN_SHELLS) {
     (*value)->item[baseNum].shells -= BASE_SHELLS_GIVE;
     (*value)->item[baseNum].refuelTime = basesHalfTickCalulator(BASES_HALFTICK_TYPE_SHELL);
-    logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells, (*value)->item[baseNum].mines, (*value)->item[baseNum].armour, 0, NULL);
+    logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells, (*value)->item[baseNum].mines, (*value)->item[baseNum].armour, 0, nullptr);
   }
 }
 
@@ -1186,7 +1186,7 @@ void basesNetGiveMines(bases *value, BYTE baseNum) {
   if (((*value)->item[baseNum].mines - BASE_MINES_GIVE) >= BASE_MIN_MINES) {
     (*value)->item[baseNum].mines -= BASE_MINES_GIVE;
     (*value)->item[baseNum].refuelTime = basesHalfTickCalulator(BASES_HALFTICK_TYPE_MINE);
-    logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells, (*value)->item[baseNum].mines, (*value)->item[baseNum].armour, 0, NULL);
+    logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells, (*value)->item[baseNum].mines, (*value)->item[baseNum].armour, 0, nullptr);
   }
 }
 
@@ -1209,7 +1209,7 @@ void basesSetNeutralOwner(bases *value, BYTE owner) {
   while (count < ((*value)->numBases)) {
     if (((*value)->item[count].owner) == owner) {
       (*value)->item[count].owner = NEUTRAL;
-      logAddEvent(log_BaseSetOwner, count, NEUTRAL, false, 0, 0, NULL);
+      logAddEvent(log_BaseSetOwner, count, NEUTRAL, false, 0, 0, nullptr);
       netPNBAdd(screenGetNetPnb(), NPNB_BASE_CAPTURE, count, NEUTRAL, (*value)->item[count].x, (*value)->item[count].y, 0);
     }
     count++;
@@ -1237,7 +1237,7 @@ void basesMigrate(bases *value, BYTE oldOwner, BYTE newOwner) {
   while (count < ((*value)->numBases)) {
     if (((*value)->item[count].owner) == oldOwner) {
       (*value)->item[count].owner = newOwner;
-      logAddEvent(log_BaseSetOwner, newOwner, NEUTRAL, false, 0, 0, NULL);
+      logAddEvent(log_BaseSetOwner, newOwner, NEUTRAL, false, 0, 0, nullptr);
       netMNTAdd(screenGetNetMnt(), NMNT_BASEMIGRATE, count, newOwner, (*value)->item[count].x, (*value)->item[count].y);
     }
     count++;

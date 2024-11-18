@@ -42,7 +42,7 @@ static winbolonetEvents wbe; /* Winbolo.net Event */
 *
 *********************************************************/
 void winbolonetEventsCreate(void) {
-  wbe = NULL;
+  wbe = nullptr;
 }
 
 /*********************************************************
@@ -138,29 +138,29 @@ BYTE winbolonetEventsRemove(BYTE *keyA, BYTE *keyB) {
   winbolonetEvents prev;
   winbolonetEvents prev2;
   inc = wbe;
-  prev = NULL;
-  prev2 = NULL;
+  prev = nullptr;
+  prev2 = nullptr;
   
   returnValue = WINBOLONET_EVENT_NOITEM;
 
-  if (inc != NULL) {
+  if (inc != nullptr) {
     while (NonEmpty(inc)) {
       prev2 = prev;
       prev = inc;
       inc = winbolonetEventsTail(inc);
     }
 
-    if (prev != NULL) {
+    if (prev != nullptr) {
       /* We are not the first item */
       /* Copy and remove it - prev contains the item. prev2 contains the item before this one */
       returnValue = prev->itemType;
       memcpy(keyA, prev->keyA, WINBOLONET_KEY_LEN);
       memcpy(keyB, prev->keyB, WINBOLONET_KEY_LEN);
-      if (prev2 != NULL) {
-        prev2->next = NULL;
+      if (prev2 != nullptr) {
+        prev2->next = nullptr;
       } else {
         /* We are the first item */
-        wbe = NULL;
+        wbe = nullptr;
       }
       delete prev;
     }

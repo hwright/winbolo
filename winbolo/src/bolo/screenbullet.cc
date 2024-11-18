@@ -41,7 +41,7 @@
 *
 *********************************************************/
 screenBullets screenBulletsCreate(void) {
-	return NULL;
+	return nullptr;
 }
 
 /*********************************************************
@@ -149,7 +149,7 @@ void screenBulletsGetItem(screenBullets *value, int itemNum, BYTE *mx, BYTE *my,
     q = ScreenBulletTail(q);
   }
 
-  if (q != NULL) {
+  if (q != nullptr) {
     *mx = q->mx;
     *my = q->my;
     *px = q->px;

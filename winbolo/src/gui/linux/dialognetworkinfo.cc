@@ -244,12 +244,12 @@ dialogNetworkInformationCreate(void)
   gtk_widget_show (lblErrors);
   gtk_box_pack_end (GTK_BOX (hbox18), lblErrors, FALSE, FALSE, 0);
 
-  timerNetworkInfo = gtk_timeout_add(250/* SECOND */, dialogNetInfoUpdate, (gpointer) NULL);
-  gtk_signal_connect(GTK_OBJECT(dialogNetworkInformation), "delete_event", GTK_SIGNAL_FUNC (dialogNetworkInfoClose), NULL);
+  timerNetworkInfo = gtk_timeout_add(250/* SECOND */, dialogNetInfoUpdate, (gpointer) nullptr);
+  gtk_signal_connect(GTK_OBJECT(dialogNetworkInformation), "delete_event", GTK_SIGNAL_FUNC (dialogNetworkInfoClose), nullptr);
   
   netGetOurAddressStr(str);
 gtk_label_set_text(GTK_LABEL(lblGameAddress), str);
-  dialogNetInfoUpdate(NULL);
+  dialogNetInfoUpdate(nullptr);
   dialogNetworkUs = dialogNetworkInformation;
   return dialogNetworkInformation;
 }

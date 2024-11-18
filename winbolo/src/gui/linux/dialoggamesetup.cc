@@ -355,7 +355,7 @@ GtkWidget* dialogGameSetupCreate(void) {
   GtkWidget *label1;
   GtkWidget *hbox1;
   GtkWidget *idc_gamesetupchoosemap;
-  GSList *vbox1_group = NULL;
+  GSList *vbox1_group = nullptr;
   GtkWidget *hbox2;
   GtkWidget *hbox3;
   GtkWidget *hbox4;
@@ -568,15 +568,15 @@ GtkWidget* dialogGameSetupCreate(void) {
   gtk_widget_show (idc_gamesetupcancel);
   gtk_box_pack_start (GTK_BOX (hbox6), idc_gamesetupcancel, TRUE, TRUE, 20);
 
-  gtk_signal_connect(GTK_OBJECT(idc_gamesetupcancel), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupCancel), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_gamesetupok), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupOK), 0);
-  gtk_signal_connect(GTK_OBJECT(dialogGameSetup), "delete_event", GTK_SIGNAL_FUNC(dialogGameSetupCancel), 0);
-  gtk_signal_connect(GTK_OBJECT(dialogGameSetup), "show", GTK_SIGNAL_FUNC(dialogGameSetupShow), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_gamesetupgamepassword), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupPassword), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_gamesetuptimelimit), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupTimeLimit), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_gamesetupstartdelay), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupStartDelay), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_gamesetupcomptanks1), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupCompTanks), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_gamesetupchoosemap), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupChooseMap), 0);
+  gtk_signal_connect(GTK_OBJECT(idc_gamesetupcancel), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupCancel), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_gamesetupok), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupOK), nullptr);
+  gtk_signal_connect(GTK_OBJECT(dialogGameSetup), "delete_event", GTK_SIGNAL_FUNC(dialogGameSetupCancel), nullptr);
+  gtk_signal_connect(GTK_OBJECT(dialogGameSetup), "show", GTK_SIGNAL_FUNC(dialogGameSetupShow), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_gamesetupgamepassword), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupPassword), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_gamesetuptimelimit), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupTimeLimit), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_gamesetupstartdelay), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupStartDelay), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_gamesetupcomptanks1), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupCompTanks), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_gamesetupchoosemap), "clicked", GTK_SIGNAL_FUNC(dialogGameSetupChooseMap), nullptr);
   
   gtk_window_set_position (GTK_WINDOW (dialogGameSetup), GTK_WIN_POS_CENTER);
   dialogGameSetupUs = dialogGameSetup;

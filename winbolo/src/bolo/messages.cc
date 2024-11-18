@@ -66,7 +66,7 @@ static message msg;
 void messageCreate(void) {
   BYTE count; /* Looping variable */
   
-  msg = NULL;
+  msg = nullptr;
   showNewswire = true;
   showAssistant = true;
   showAI = false;
@@ -372,7 +372,7 @@ void messageAddItem(const char *top, const char *bottom) {
   if (IsEmpty(msg)) {
     newQ = true;
     msg = new messageObj;
-    msg->next = NULL;
+    msg->next = nullptr;
   }
 
   prev = q = msg;
@@ -405,7 +405,7 @@ void messageAddItem(const char *top, const char *bottom) {
     } else {
       add->bottomLine = MESSAGE_BLANK;
     }
-    add->next = NULL;
+    add->next = nullptr;
     q->next = add;
     q = MessageTail(q);
     count++;
@@ -590,7 +590,7 @@ bool messageIsNewMessage() {
 *********************************************************/
 BYTE messageGetNewMessage(char *dest, unsigned long **playerBitmap) {
   strcpy(dest, newMessage);
-  playerBitmap = 0; /* Presently unused */
+  playerBitmap = nullptr; /* Presently unused */
   newMessage[0] = '\0';
   return newMessageFrom;
 }

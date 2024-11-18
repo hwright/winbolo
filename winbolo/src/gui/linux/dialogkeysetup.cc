@@ -653,10 +653,10 @@ gtk_entry_set_text(GTK_ENTRY(idc_keydown),gdk_keyval_name(gdk_keyval_to_upper(ke
                       &(keySetupKeys.kiScrollRight));
   gtk_signal_connect (GTK_OBJECT (button2), "clicked",
                       GTK_SIGNAL_FUNC (on_button2_clicked),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (button1), "clicked",
                       GTK_SIGNAL_FUNC (on_button1_clicked),
-                      NULL);
+                      nullptr);
 
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(idc_keyautoslow), screenGetTankAutoSlowdown());
   gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(idc_keyautoshow), screenGetTankAutoHideGunsight());

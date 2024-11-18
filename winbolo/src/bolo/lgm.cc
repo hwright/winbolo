@@ -109,7 +109,7 @@ lgm lgmCreate(BYTE playerNum) {
 *  value - Pointer to the lgm sturcture
 *********************************************************/
 void lgmDestroy(lgm *value) {
-  if (*value != NULL) {
+  if (*value != nullptr) {
     delete *value;
   }
 }
@@ -1416,7 +1416,7 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx, WORL
       }
 
       /* Log it */
-      logAddEvent(log_LostMan, (*lgman)->playerNum, 0, 0, 0, 0, NULL);
+      logAddEvent(log_LostMan, (*lgman)->playerNum, 0, 0, 0, 0, nullptr);
       /* WinBolo.net it */
       winbolonetAddEvent(WINBOLO_NET_EVENT_LGM_LOST, true, (*lgman)->playerNum, WINBOLO_NET_NO_PLAYER);
       if (owner != NEUTRAL) {
@@ -1934,7 +1934,7 @@ void lgmNetManWorking(lgm *lgman, tank *tnk, BYTE mapX, BYTE mapY, BYTE numTrees
 *  playerNum - Player number to set to
 *********************************************************/
 void lgmSetPlayerNum(lgm *lgman, BYTE playerNum) {
-  if ((*lgman) != NULL) {
+  if ((*lgman) != nullptr) {
     (*lgman)->playerNum = playerNum;
   }
 }

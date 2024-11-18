@@ -41,7 +41,7 @@
 *  rbl - Pointer to the rubbble object
 *********************************************************/
 void rubbleCreate(rubble *rbl) {
-  *rbl = NULL;
+  *rbl = nullptr;
 }
 
 /*********************************************************

@@ -45,7 +45,7 @@ static zipFile logFile;               /* File to log to */
 static unsigned short logLastEvent; /* Last event logged. Increments each time there are no events */
 static unsigned short logNumEvents; /* Last event logged. Increments each time there are no events */
 static bool  logIsRunning;          /* Are we saving a log */
-static BYTE *logMem = NULL;
+static BYTE *logMem = nullptr;
 static unsigned short logMemSize;   /* How much memory are we using */
 static BYTE logKey; /* Current log encryption key */
 static BYTE logOldKey; /* Old key needed for writing state */
@@ -65,7 +65,7 @@ static logTanks logCheckTanks;
 *  
 *********************************************************/
 void logCreate() {
-  logFile = NULL;
+  logFile = nullptr;
   logLastEvent = 0;
   logIsRunning = false;
   logNumEvents = 0;
@@ -505,10 +505,10 @@ void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4, un
 void logDestroy() {
   logStop();
   logIsRunning = false;
-  logFile = NULL;  
-  if (logMem != NULL) {
+  logFile = nullptr;  
+  if (logMem != nullptr) {
     delete[] logMem;
-    logMem = NULL;
+    logMem = nullptr;
   }
 }
 
@@ -709,11 +709,11 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
   zi.external_fa = 0;
 
   
-  if (logFile == NULL) {
+  if (logFile == nullptr) {
     returnValue = false;
     ret = Z_OK;
   } else {
-    ret = zipOpenNewFileInZip(logFile, "log.dat", &zi, NULL, 0, NULL, 0, "", Z_DEFLATED, Z_DEFAULT_COMPRESSION);
+    ret = zipOpenNewFileInZip(logFile, "log.dat", &zi, nullptr, 0, nullptr, 0, "", Z_DEFLATED, Z_DEFAULT_COMPRESSION);
   }
 
   if (ret != Z_OK) {
@@ -803,10 +803,10 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
 
   if (returnValue == true) {
     logIsRunning = true;
-  } else if(logFile != NULL) {
+  } else if(logFile != nullptr) {
     zipCloseFileInZip(logFile);
     zipClose(logFile, "");
-    logFile = NULL;
+    logFile = nullptr;
   }
 
   return returnValue;

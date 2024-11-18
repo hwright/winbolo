@@ -321,9 +321,9 @@ GtkWidget* dialogSystemInfoCreate(void) {
   gtk_widget_show (lblFPS);
   gtk_box_pack_end (GTK_BOX (hbox13), lblFPS, FALSE, FALSE, 0);
 
-  sysInfoTimer = gtk_timeout_add (SECOND, dialogSysInfoUpdate, (gpointer) NULL);
-  gtk_signal_connect(GTK_OBJECT(dialogSystemInfo), "delete_event", GTK_SIGNAL_FUNC (dialogSystemInfoClose), NULL);
-  dialogSysInfoUpdate(NULL); 
+  sysInfoTimer = gtk_timeout_add (SECOND, dialogSysInfoUpdate, (gpointer) nullptr);
+  gtk_signal_connect(GTK_OBJECT(dialogSystemInfo), "delete_event", GTK_SIGNAL_FUNC (dialogSystemInfoClose), nullptr);
+  dialogSysInfoUpdate(nullptr); 
   return dialogSystemInfo;
 }
 

@@ -66,7 +66,7 @@ void startsCreate(starts *value) {
 *  value - Pointer to the starts structure
 *********************************************************/
 void startsDestroy(starts *value) {
-  if (*value != NULL) {
+  if (*value != nullptr) {
     delete *value;
   }
 }
@@ -202,14 +202,14 @@ void startsGetStart(starts *value, BYTE *x, BYTE *y, TURNTYPE *dir, BYTE playerN
   BYTE bt;      /* Used to convert the BMAP starts (0 = east) to my starts */
 
   val = 0;
-  if (*value == NULL) {
+  if (*value == nullptr) {
     return;
   }
   if ((*value)->numStarts ==0) {
     return;
   }
-  srand((unsigned int) time(NULL));
-  srand((unsigned int) (rand() * time(NULL)));
+  srand((unsigned int) time(nullptr));
+  srand((unsigned int) (rand() * time(nullptr)));
   found = false;
   count = 0;
   while (count < (*value)->numStarts && found == false) {
@@ -260,8 +260,8 @@ void startsGetRandStart(starts *value, BYTE *x, BYTE *y, TURNTYPE *dir) {
   WORLD testY;
   int dummy1;   /* Dummy variable for function parameters */
   int dummy2;
-  srand((unsigned int) time(NULL));
-  srand((unsigned int) (rand() * time(NULL)));
+  srand((unsigned int) time(nullptr));
+  srand((unsigned int) (rand() * time(nullptr)));
   rnd = rand();
 
   if ((*value)->numStarts > 0) {

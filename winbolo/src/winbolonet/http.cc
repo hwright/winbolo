@@ -118,7 +118,7 @@ bool httpCreate() {
   if (httpAddrServer.sin_addr.s_addr == INADDR_NONE) {
     /* Do hostname lookup */
     phe= gethostbyname(wbnHostString); // wbnHostString
-    if (phe == 0) {
+    if (phe == nullptr) {
       returnValue = false;
       fprintf(stderr, "Unable to locate WinBolo.net host. Winbolo.net disabled.\n");
       #ifdef _WIN32
@@ -269,7 +269,7 @@ int httpSendData(SOCKET sock, BYTE *message, int len) {
 
   buff = new BYTE[len * 3];
   
-  if (buff != NULL) {
+  if (buff != nullptr) {
     encodeLen = httpEncodeData(message, len, buff, (len * 3));
     if (encodeLen != -1) {
       returnValue = (int) send(sock, HTTP_SEND_HEADER, (int) strlen(HTTP_SEND_HEADER), 0);
@@ -453,11 +453,11 @@ bool httpSendLogFile2(char *fileName, BYTE *key, bool wantFeedback, long fileLen
   long length;
 
   fp = fopen(fileName, "rb");
-  if (fp == NULL) {
+  if (fp == nullptr) {
     return false;
   }
 
-  srand((unsigned int) time(NULL));
+  srand((unsigned int) time(nullptr));
   randNum = rand() % 10;
   memset(sKey, 0, 33);
   memcpy(sKey, key, WINBOLONET_KEY_LEN);
@@ -526,7 +526,7 @@ bool httpSendLogFile2(char *fileName, BYTE *key, bool wantFeedback, long fileLen
 bool httpSendLogFile(char *fileName, BYTE *key, bool wantFeedback) {
   long fileLength;
 
-  if (httpStarted == true && fileName != NULL && key != NULL) {
+  if (httpStarted == true && fileName != nullptr && key != nullptr) {
     fileLength = httpGetFileLength(fileName);
     if (fileLength != -1) {
       return httpSendLogFile2(fileName, key, wantFeedback, fileLength);

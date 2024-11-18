@@ -87,7 +87,7 @@ static gboolean dialogMessagesSend(GtkWidget *widget,  GdkEventButton *event, gp
   
   gc = gtk_entry_get_text(GTK_ENTRY(idc_textmessage));
   
-  if (gc != NULL) {
+  if (gc != nullptr) {
     strcpy(message, gc);
     if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_allplayers)) == TRUE) {
       screenSendMessageAllPlayers(message);
@@ -99,7 +99,7 @@ static gboolean dialogMessagesSend(GtkWidget *widget,  GdkEventButton *event, gp
       screenSendMessageAllSelected(message);
     }
   }
-  dialogMessagesTimeoutId = gtk_timeout_add (WAIT_TIME, dialogMessagesEnableButton, 0);
+  dialogMessagesTimeoutId = gtk_timeout_add (WAIT_TIME, dialogMessagesEnableButton, nullptr);
   gtk_editable_select_region(GTK_EDITABLE(idc_textmessage), 0, -1);
   dialogMessagesEnabled = FALSE;
   gtk_widget_set_sensitive (idc_sendbutton, FALSE);
@@ -110,7 +110,7 @@ static gboolean dialogMessagesSend(GtkWidget *widget,  GdkEventButton *event, gp
 static gboolean dialogMessagesKey (GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   if (event->keyval == 65293) {
     if (dialogMessagesEnabled == TRUE) {
-      dialogMessagesSend(NULL, NULL, NULL);
+      dialogMessagesSend(nullptr, nullptr, nullptr);
       return FALSE;
     }
   }
@@ -133,7 +133,7 @@ dialogMessagesCreate(void)
 {
   GtkWidget *dialogMessages;
   GtkWidget *vbox1;
-  GSList *vbox1_group = NULL;
+  GSList *vbox1_group = nullptr;
  GtkWidget *hbox1;
   
   dialogMessagesEnabled = TRUE;
@@ -215,14 +215,14 @@ dialogMessagesCreate(void)
 
   gtk_widget_grab_focus (idc_textmessage);
   /* Connect Signals */
-  gtk_signal_connect(GTK_OBJECT(dialogMessages), "focus_in_event", GTK_SIGNAL_FUNC(dialogMessagesChange), 0);
-  gtk_signal_connect(GTK_OBJECT(dialogMessages), "delete_event", GTK_SIGNAL_FUNC(dialogMessagesClose), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_allplayers), "clicked", GTK_SIGNAL_FUNC(dialogMessagesChange), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_allallies), "clicked", GTK_SIGNAL_FUNC(dialogMessagesChange), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_allnearby), "clicked", GTK_SIGNAL_FUNC(dialogMessagesChange), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_selection), "clicked", GTK_SIGNAL_FUNC(dialogMessagesChange), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_sendbutton), "button_press_event", GTK_SIGNAL_FUNC(dialogMessagesSend), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_textmessage), "key-press-event", GTK_SIGNAL_FUNC(dialogMessagesKey), 0);
+  gtk_signal_connect(GTK_OBJECT(dialogMessages), "focus_in_event", GTK_SIGNAL_FUNC(dialogMessagesChange), nullptr);
+  gtk_signal_connect(GTK_OBJECT(dialogMessages), "delete_event", GTK_SIGNAL_FUNC(dialogMessagesClose), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_allplayers), "clicked", GTK_SIGNAL_FUNC(dialogMessagesChange), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_allallies), "clicked", GTK_SIGNAL_FUNC(dialogMessagesChange), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_allnearby), "clicked", GTK_SIGNAL_FUNC(dialogMessagesChange), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_selection), "clicked", GTK_SIGNAL_FUNC(dialogMessagesChange), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_sendbutton), "button_press_event", GTK_SIGNAL_FUNC(dialogMessagesSend), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_textmessage), "key-press-event", GTK_SIGNAL_FUNC(dialogMessagesKey), nullptr);
   return dialogMessages;
 }
 

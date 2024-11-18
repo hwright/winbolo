@@ -196,11 +196,11 @@ static GtkWidget *windowNetInfo;
 static GtkWidget *windowGameInfo;
 static GtkWidget *windowMessages;
 static GtkWidget *change_player_name1;
-GSList *brainsGroup = NULL;
+GSList *brainsGroup = nullptr;
 GtkWidget *brains1_menu;
 
-static SDL_TimerID timerGameID = 0;
-static SDL_TimerID timerFrameID = 0;
+static SDL_TimerID timerGameID = nullptr;
+static SDL_TimerID timerFrameID = nullptr;
 
 gchar *applicationPath;
 
@@ -256,41 +256,41 @@ gint windowclose(GtkWidget *widget, gpointer gdata) {
     gtk_main_quit();
     exit(0);
   }
-  brainsHandlerManual(NULL);
+  brainsHandlerManual(nullptr);
   isInMenu = FALSE;
   gameFrontCloseServer(); 
-  if (timerGameID != NULL) {
+  if (timerGameID != nullptr) {
    SDL_RemoveTimer(timerGameID);
-   timerGameID = NULL;
+   timerGameID = nullptr;
   }
   frameRateTime = 0;
   usleep(2500);
-  if (timerFrameID != NULL) {
+  if (timerFrameID != nullptr) {
     SDL_RemoveTimer(timerFrameID);
-    timerFrameID = NULL;
+    timerFrameID = nullptr;
   }
 
   gameFrontPutPrefs(&keys);
 
-  if (windowMessages != NULL) {
+  if (windowMessages != nullptr) {
     gtk_widget_destroy(windowMessages);
-    windowMessages = NULL;
+    windowMessages = nullptr;
   }
-  if (windowGameInfo != NULL) {
+  if (windowGameInfo != nullptr) {
     gtk_timeout_remove(timerGameInfo);
     gtk_widget_destroy(windowGameInfo);
-    windowGameInfo = NULL;
+    windowGameInfo = nullptr;
   }
- if (windowSysInfo != NULL) {
+ if (windowSysInfo != nullptr) {
     gtk_timeout_remove(sysInfoTimer);
     gtk_widget_destroy(windowSysInfo);
-    windowSysInfo = NULL;
+    windowSysInfo = nullptr;
   }
 
-  if (windowNetInfo != NULL) {
+  if (windowNetInfo != nullptr) {
     gtk_timeout_remove(timerNetworkInfo);
     gtk_widget_destroy(windowNetInfo);
-    windowNetInfo = NULL;
+    windowNetInfo = nullptr;
   }
   gdk_key_repeat_restore();
   gtk_main_quit();
@@ -325,7 +325,7 @@ gint configure_event (GtkWidget *widget, GdkEventConfigure *event) {
   GdkPixmap *pixmap;
   GdkBitmap *mask;
   pixmap = gdk_pixmap_create_from_xpm_d (window->window, &mask, &window->style->bg[GTK_STATE_NORMAL], (gchar **) boloicon_xpm);
-gdk_window_set_icon (window->window, NULL, pixmap, mask);
+gdk_window_set_icon (window->window, nullptr, pixmap, mask);
   return TRUE;
 }
 GtkWidget *request_alliance1;
@@ -468,7 +468,7 @@ Uint32 windowGameTimer (Uint32 interval, void *param) {
     inBrain = TRUE;
     clientMutexRelease();
     ttick = timeGetTime();
-    brainHandlerRun(NULL);
+    brainHandlerRun(nullptr);
     clientMutexWaitFor();
     inBrain = FALSE;
     clientMutexRelease();
@@ -644,14 +644,14 @@ GtkWidget* windowCreate() {
   gtk_window_set_policy (GTK_WINDOW (ret), FALSE, FALSE, FALSE);
 gtk_widget_set_app_paintable(ret, FALSE);
   gtk_widget_add_events(ret, GDK_BUTTON_PRESS_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_KEY_RELEASE_MASK);
-  gtk_signal_connect(GTK_OBJECT(ret), "button_press_event", GTK_SIGNAL_FUNC(windowMouseClick), 0);
-  gtk_signal_connect(GTK_OBJECT(ret), "motion_notify_event", GTK_SIGNAL_FUNC(windowMouseMove), 0);
-  gtk_signal_connect(GTK_OBJECT(ret), "delete_event", GTK_SIGNAL_FUNC (windowclose), NULL);
-  gtk_signal_connect(GTK_OBJECT(ret), "configure_event", GTK_SIGNAL_FUNC(configure_event), 0);
-  gtk_signal_connect(GTK_OBJECT(ret), "key_press_event", GTK_SIGNAL_FUNC(press_event), 0);
-  gtk_signal_connect(GTK_OBJECT(ret), "key_release_event", GTK_SIGNAL_FUNC(release_event), 0);
-  gtk_signal_connect(GTK_OBJECT(ret), "focus_out_event", GTK_SIGNAL_FUNC(windowLoseFocus), 0);
-  gtk_timeout_add(500, windowMessageCheck, NULL); 
+  gtk_signal_connect(GTK_OBJECT(ret), "button_press_event", GTK_SIGNAL_FUNC(windowMouseClick), nullptr);
+  gtk_signal_connect(GTK_OBJECT(ret), "motion_notify_event", GTK_SIGNAL_FUNC(windowMouseMove), nullptr);
+  gtk_signal_connect(GTK_OBJECT(ret), "delete_event", GTK_SIGNAL_FUNC (windowclose), nullptr);
+  gtk_signal_connect(GTK_OBJECT(ret), "configure_event", GTK_SIGNAL_FUNC(configure_event), nullptr);
+  gtk_signal_connect(GTK_OBJECT(ret), "key_press_event", GTK_SIGNAL_FUNC(press_event), nullptr);
+  gtk_signal_connect(GTK_OBJECT(ret), "key_release_event", GTK_SIGNAL_FUNC(release_event), nullptr);
+  gtk_signal_connect(GTK_OBJECT(ret), "focus_out_event", GTK_SIGNAL_FUNC(windowLoseFocus), nullptr);
+  gtk_timeout_add(500, windowMessageCheck, nullptr); 
 
       menus(ret);
    gtk_widget_size_request(menu_bar, &req);
@@ -722,7 +722,7 @@ bool isServer = FALSE; /* Are we server of a net game */
 
 
 bool wantRejoin; /* Do we want to rejoin */
-FILE *fpServer = NULL;
+FILE *fpServer = nullptr;
 
 
 /*********************************************************
@@ -881,7 +881,7 @@ void gameFrontCloseServer() {
     fflush(fpServer);
     pclose(fpServer);
   }
-  fpServer =NULL;
+  fpServer =nullptr;
 }
 
 /*********************************************************
@@ -929,9 +929,9 @@ void gameFrontSetAIType(aiType ait) {
   compTanks = ait;
   screenSetAiType(compTanks);
   if (compTanks == aiNone) {
-    brainsHandlerSet(NULL, FALSE);
+    brainsHandlerSet(nullptr, FALSE);
   } else {
-    brainsHandlerSet(NULL, TRUE);
+    brainsHandlerSet(nullptr, TRUE);
   } 
 }
 
@@ -1068,9 +1068,9 @@ void gameFrontGetTrackerOptions(char *address, unsigned short *port, bool *enabl
 void startTimers() {
   oldFrameTick = SDL_GetTicks();
   oldTick = SDL_GetTicks();
-  timerGameID = SDL_AddTimer(GAME_TICK_LENGTH, (SDL_NewTimerCallback) windowGameTimer, (void *) NULL);
+  timerGameID = SDL_AddTimer(GAME_TICK_LENGTH, (SDL_NewTimerCallback) windowGameTimer, (void *) nullptr);
 
-  timerFrameID = SDL_AddTimer(frameRateTime, (SDL_NewTimerCallback) windowFrameRateTimer, (void *) NULL);
+  timerFrameID = SDL_AddTimer(frameRateTime, (SDL_NewTimerCallback) windowFrameRateTimer, (void *) nullptr);
   isQuiting = TRUE; 
 } 
 
@@ -1158,9 +1158,9 @@ void gameFrontSetGameOptions(char *pword, gameType gt, bool hm, aiType ai, long 
     hiddenMines = hm;
     compTanks = ai;
     if (compTanks == aiNone) {
-      brainsHandlerSet(NULL, FALSE);
+      brainsHandlerSet(nullptr, FALSE);
     } else {
-      brainsHandlerSet(NULL, TRUE);
+      brainsHandlerSet(nullptr, TRUE);
     } 
     startDelay = sd;
     timeLen = tlimit;
@@ -1251,8 +1251,8 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
       oldFrameTick = SDL_GetTicks();
       oldTick = SDL_GetTicks();
       sendBackendMenuOptions();
-      timerGameID = SDL_AddTimer(GAME_TICK_LENGTH, (SDL_NewTimerCallback) windowGameTimer, (void *) NULL);
-      timerFrameID = SDL_AddTimer(frameRateTime, (SDL_NewTimerCallback) windowFrameRateTimer, (void *) NULL);
+      timerGameID = SDL_AddTimer(GAME_TICK_LENGTH, (SDL_NewTimerCallback) windowGameTimer, (void *) nullptr);
+      timerFrameID = SDL_AddTimer(frameRateTime, (SDL_NewTimerCallback) windowFrameRateTimer, (void *) nullptr);
       isQuiting = TRUE; 
       gtk_widget_show(window);
       gtk_widget_destroy(oldWindow);
@@ -1279,7 +1279,7 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
     gtk_widget_show(window);
     gtk_widget_hide(oldWindow);
   } else if (newState == openWelcome) {
-    if (oldWindow != NULL) {
+    if (oldWindow != nullptr) {
       gtk_widget_hide(oldWindow);
     }
     newWindow = dialogOpeningCreate();
@@ -1294,7 +1294,7 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
 }
 
 void catch_alarm (int sig) {
-  windowclose(window, NULL);
+  windowclose(window, nullptr);
 }
 
 
@@ -1319,7 +1319,7 @@ int main(int argc, char **argv) {
   mkdir(mkDirPath, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
   g_free(mkDirPath);
  
-  g_thread_init(NULL);
+  g_thread_init(nullptr);
   gtk_init(&argc, &argv);
 
 
@@ -1340,7 +1340,7 @@ int main(int argc, char **argv) {
     //sprintf(SDL_windowhack, "SDL_WINDOWID=%ld", GDK_WINDOW_XWINDOW(window->window));
     sprintf(SDL_windowhack, "SDL_WINDOWID=%ld", GDK_WINDOW_XWINDOW(drawingarea1->window));
     putenv(SDL_windowhack); 
-    brainsHandlerLoadBrains(NULL);  
+    brainsHandlerLoadBrains(nullptr);  
 
     /* Initialize SDL */
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_AUDIO) < 0 ) {
@@ -2664,7 +2664,7 @@ on_new1_activate                       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   isQuiting = FALSE;
-  windowclose(window, NULL);
+  windowclose(window, nullptr);
 }
 
 
@@ -2698,14 +2698,14 @@ on_save_map1_activate                  (GtkMenuItem     *menuitem,
 }
 
 void windowGameInfoClose() {
-  windowGameInfo = NULL;
+  windowGameInfo = nullptr;
 }
 
 void
 on_game_information1_activate          (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (windowGameInfo == NULL) {
+  if (windowGameInfo == nullptr) {
     windowGameInfo = dialogGameInfoCreate();
     gtk_widget_realize(windowGameInfo);
     gtk_widget_show(windowGameInfo);
@@ -2716,14 +2716,14 @@ on_game_information1_activate          (GtkMenuItem     *menuitem,
 
 
 void windowSystemInfoClose() {
-  windowSysInfo = NULL;
+  windowSysInfo = nullptr;
 }
 
 void
 on_system_information1_activate        (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (windowSysInfo == NULL) {
+  if (windowSysInfo == nullptr) {
     windowSysInfo = dialogSystemInfoCreate();
     gtk_widget_realize(windowSysInfo);
     gtk_widget_show(windowSysInfo);
@@ -2733,14 +2733,14 @@ on_system_information1_activate        (GtkMenuItem     *menuitem,
 }
 
 void windowNetworkInfoClose() {
-  windowNetInfo = NULL;
+  windowNetInfo = nullptr;
 }
 
 void
 on_network_information1_activate       (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (windowNetInfo == NULL) {
+  if (windowNetInfo == nullptr) {
     windowNetInfo = dialogNetworkInformationCreate();
     gtk_window_set_policy (GTK_WINDOW (windowNetInfo), FALSE, FALSE, FALSE);
     gtk_widget_realize(windowNetInfo);
@@ -2756,7 +2756,7 @@ on_exit1_activate                      (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
   isQuiting = TRUE;
-  windowclose(window, NULL);
+  windowclose(window, nullptr);
 }
 
 
@@ -3077,14 +3077,14 @@ on_leave_alliance1_activate            (GtkMenuItem     *menuitem,
 }
 
 void windowMessagesClose() {
-  windowMessages = NULL;
+  windowMessages = nullptr;
 }
 
 void
 on_send_message1_activate              (GtkMenuItem     *menuitem,
                                         gpointer         user_data)
 {
-  if (windowMessages == NULL) {
+  if (windowMessages == nullptr) {
     windowMessages = dialogMessagesCreate();
     gtk_widget_realize(windowMessages);
     gtk_widget_show(windowMessages);
@@ -3292,7 +3292,7 @@ on_manual1_activate                    (GtkMenuItem     *menuitem,
 {
   if (isInMenu == FALSE) {
     isInMenu = TRUE;
-    brainsHandlerManual(NULL);
+    brainsHandlerManual(nullptr);
     isInMenu = FALSE;
   } 
 }
@@ -3363,7 +3363,7 @@ GtkWidget *background_sound1;
   GtkWidget *frame_rate1;
   GtkWidget *frame_rate1_menu;
   //GtkAccelGroup *frame_rate1_menu_accels;
-  GSList *_2_group = NULL;
+  GSList *_2_group = nullptr;
   GtkWidget *_4;
   GtkWidget *_8;
   GtkWidget *_10;
@@ -3374,20 +3374,20 @@ GtkWidget *background_sound1;
   GtkWidget *window_size1;
   GtkWidget *window_size1_menu;
   //GtkAccelGroup *window_size1_menu_accels;
-  GSList *_3_group = NULL;
+  GSList *_3_group = nullptr;
   GtkWidget *normal1;
   GtkWidget *double1;
   GtkWidget *quad1;
   GtkWidget *message_sender_names1;
   GtkWidget *message_sender_names1_menu;
   //GtkAccelGroup *message_sender_names1_menu_accels;
-  GSList *_0_group = NULL;
+  GSList *_0_group = nullptr;
   GtkWidget *short1;
   GtkWidget *long1;
   GtkWidget *tank_labels1;
   GtkWidget *tank_labels1_menu;
   //GtkAccelGroup *tank_labels1_menu_accels;
-  GSList *_1_group = NULL;
+  GSList *_1_group = nullptr;
   GtkWidget *none1;
   GtkWidget *short2;
   GtkWidget *long2;
@@ -4239,202 +4239,202 @@ GtkWidget *background_sound1;
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(network_debug_messages1), showNetworkDebugMessages);
   gtk_signal_connect (GTK_OBJECT (new1), "activate",
                       GTK_SIGNAL_FUNC (on_new1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (save_map1), "activate",
                       GTK_SIGNAL_FUNC (on_save_map1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (game_information1), "activate",
                       GTK_SIGNAL_FUNC (on_game_information1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (system_information1), "activate",
                       GTK_SIGNAL_FUNC (on_system_information1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (network_information1), "activate",
                       GTK_SIGNAL_FUNC (on_network_information1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (exit1), "activate",
                       GTK_SIGNAL_FUNC (on_exit1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (_4), "activate",
                       GTK_SIGNAL_FUNC (on_4_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (_8), "activate",
                       GTK_SIGNAL_FUNC (on_8_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (_10), "activate",
                       GTK_SIGNAL_FUNC (on_10_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (_11), "activate",
                       GTK_SIGNAL_FUNC (on_11_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (_12), "activate",
                       GTK_SIGNAL_FUNC (on_12_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (_13), "activate",
                       GTK_SIGNAL_FUNC (on_13_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (_14), "activate",
                       GTK_SIGNAL_FUNC (on_14_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (window_size1), "activate",
                       GTK_SIGNAL_FUNC (on_window_size1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (normal1), "activate",
                       GTK_SIGNAL_FUNC (on_normal1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (double1), "activate",
                       GTK_SIGNAL_FUNC (on_double1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (quad1), "activate",
                       GTK_SIGNAL_FUNC (on_quad1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (automatic_scrolling1), "activate",
                       GTK_SIGNAL_FUNC (on_automatic_scrolling1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (show_gunsight1), "activate",
                       GTK_SIGNAL_FUNC (on_show_gunsight1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (message_sender_names1), "activate",
                       GTK_SIGNAL_FUNC (on_message_sender_names1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (short1), "activate",
                       GTK_SIGNAL_FUNC (on_short1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (long1), "activate",
                       GTK_SIGNAL_FUNC (on_long1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (none1), "activate",
                       GTK_SIGNAL_FUNC (on_none1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (short2), "activate",
                       GTK_SIGNAL_FUNC (on_short2_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (long2), "activate",
                       GTK_SIGNAL_FUNC (on_long2_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (don_t_label_own_tank1), "activate",
                       GTK_SIGNAL_FUNC (on_don_t_label_own_tank1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (pillbox_labels1), "activate",
                       GTK_SIGNAL_FUNC (on_pillbox_labels1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (refuelling_base_labels1), "activate",
                       GTK_SIGNAL_FUNC (on_refuelling_base_labels1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (hide_main_view1), "activate",
                       GTK_SIGNAL_FUNC (on_hide_main_view1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (allow_new_players1), "activate",
                       GTK_SIGNAL_FUNC (on_allow_new_players1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (allow_alliance_request1), "activate",
                       GTK_SIGNAL_FUNC (on_allowiance_request1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (set_keys1), "activate",
                       GTK_SIGNAL_FUNC (on_set_keys1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (change_player_name1), "activate",
                       GTK_SIGNAL_FUNC (on_change_player_name1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (sound_effects1), "activate",
                       GTK_SIGNAL_FUNC (on_sound_effects1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (background_sound1), "activate",
                       GTK_SIGNAL_FUNC (on_background_sound1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (newswire_messages1), "activate",
                       GTK_SIGNAL_FUNC (on_newswire_messages1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (assistant_messages1), "activate",
                       GTK_SIGNAL_FUNC (on_assistant_messages1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (ai_brain_messages1), "activate",
                       GTK_SIGNAL_FUNC (on_ai_brain_messages1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (network_status_messages1), "activate",
                       GTK_SIGNAL_FUNC (on_network_status_messages1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (network_debug_messages1), "activate",
                       GTK_SIGNAL_FUNC (on_network_debug_messages1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (request_alliance1), "activate",
                       GTK_SIGNAL_FUNC (on_request_alliance1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (leave_alliance1), "activate",
                       GTK_SIGNAL_FUNC (on_leave_alliance1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (send_message1), "activate",
                       GTK_SIGNAL_FUNC (on_send_message1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (select_all1), "activate",
                       GTK_SIGNAL_FUNC (on_select_all1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (select_none1), "activate",
                       GTK_SIGNAL_FUNC (on_select_none1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (select_allies1), "activate",
                       GTK_SIGNAL_FUNC (on_select_allies1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (select_nearby_tanks1), "activate",
                       GTK_SIGNAL_FUNC (on_select_nearby_tanks1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player1), "activate",
                       GTK_SIGNAL_FUNC (on_player1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player2), "activate",
                       GTK_SIGNAL_FUNC (on_player_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player3), "activate",
                       GTK_SIGNAL_FUNC (on_player3_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player4), "activate",
                       GTK_SIGNAL_FUNC (on_player4_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player5), "activate",
                       GTK_SIGNAL_FUNC (on_player5_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player6), "activate",
                       GTK_SIGNAL_FUNC (on_player6_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player7), "activate",
                       GTK_SIGNAL_FUNC (on_player7_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player8), "activate",
                       GTK_SIGNAL_FUNC (on_player8_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player9), "activate",
                       GTK_SIGNAL_FUNC (on_player9_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player10), "activate",
                       GTK_SIGNAL_FUNC (on_player10_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player11), "activate",
                       GTK_SIGNAL_FUNC (on_player11_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player12), "activate",
                       GTK_SIGNAL_FUNC (on_player12_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player13), "activate",
                       GTK_SIGNAL_FUNC (on_player13_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player14), "activate",
                       GTK_SIGNAL_FUNC (on_player14_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player15), "activate",
                       GTK_SIGNAL_FUNC (on_player15_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (idc_player16), "activate",
                       GTK_SIGNAL_FUNC (on_player16_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (manual1), "activate",
                       GTK_SIGNAL_FUNC (on_manual1_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (help2), "activate",
                       GTK_SIGNAL_FUNC (on_help2_activate),
-                      NULL);
+                      nullptr);
   gtk_signal_connect (GTK_OBJECT (about1), "activate",
                       GTK_SIGNAL_FUNC (on_about1_activate),
-                      NULL);
+                      nullptr);
 
   gtk_window_add_accel_group (GTK_WINDOW (window), accel_group);
   gtk_widget_set_sensitive(idc_player1, FALSE);
@@ -4462,7 +4462,7 @@ GtkWidget *background_sound1;
   gtk_object_set_data_full (GTK_OBJECT (window), "drawingarea1", drawingarea1, (GtkDestroyNotify) gtk_widget_unref);
   gtk_widget_show(drawingarea1);
   gtk_box_pack_start (GTK_BOX (vbox1), drawingarea1, TRUE, TRUE, 0);
-  gtk_signal_connect(GTK_OBJECT(drawingarea1), "expose_event", GTK_SIGNAL_FUNC(windowGetFocus), 0);
+  gtk_signal_connect(GTK_OBJECT(drawingarea1), "expose_event", GTK_SIGNAL_FUNC(windowGetFocus), nullptr);
 
   /* Done */
 

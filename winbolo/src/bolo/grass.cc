@@ -41,7 +41,7 @@
 * grs - Pointer to the grass object
 *********************************************************/
 void grassCreate(grass *grs) {
-  *grs = NULL;
+  *grs = nullptr;
 }
 
 /*********************************************************

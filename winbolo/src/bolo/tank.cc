@@ -104,7 +104,7 @@ void tankCreate(tank *value, starts *sts) {
   (*value)->speed = 0;
   (*value)->waterCount = 0;
   (*value)->deathWait = 0;
-  (*value)->carryPills= NULL;
+  (*value)->carryPills= nullptr;
   (*value)->obstructed = false;
   (*value)->newTank = true;
   (*value)->autoSlowdown = false;
@@ -154,17 +154,17 @@ void tankDestroy(tank *value, map *mp, pillboxes *pb, bases *bs) {
   tankCarryPb q;
 
   tankShuttingDown = true;
-  if ((*value) != NULL && threadsGetContext() == true) {
+  if ((*value) != nullptr && threadsGetContext() == true) {
     tankDropPills(value, mp, pb, bs);
   }
   tankShuttingDown = false;
-  while ((*value) != NULL && !IsEmpty((*value)->carryPills)) {
+  while ((*value) != nullptr && !IsEmpty((*value)->carryPills)) {
     q = (*value)->carryPills;
     (*value)->carryPills = TankPillsTail(q);
     delete q;
   }
   
-  if ((*value) != NULL) {
+  if ((*value) != nullptr) {
     delete *value;
   }
 }
@@ -609,7 +609,7 @@ BYTE tankGetPY(tank *value) {
 *  treesAmount  - Pointer to hold amount of trees
 *********************************************************/
 void tankGetStats(tank *value, BYTE *shellsAmount, BYTE *minesAmount, BYTE *armourAmount, BYTE *treesAmount) {
-	if(*value!=NULL){
+	if(*value!=nullptr){
 	  *shellsAmount = (*value)->shells;
 	  *minesAmount = (*value)->mines;
 	  *armourAmount = (*value)->armour;
@@ -778,7 +778,7 @@ void tankGunsightDecrease(tank *value) {
 *  shown  - if true then gunsight shown
 *********************************************************/
 void tankSetGunsight(tank *value, bool shown) {
- if ((*value) != NULL) { 
+ if ((*value) != nullptr) { 
    (*value)->showSight = shown;
    tankRegisterChangeByte(value, CRC_SHOWSIGHT_OFFSET, shown);
    if (shown == false) {
@@ -886,7 +886,7 @@ tankHit tankIsTankHit(tank *value, map *mp, pillboxes *pb, bases *bs, WORLD x, W
 	returnValue = TH_MISSED;
 
 	/* If no tank was passed, it missed. */
-	if (*value == NULL) {
+	if (*value == nullptr) {
 		return TH_MISSED;
 	}
 
@@ -1086,7 +1086,7 @@ void tankDeath(tank *value, starts *sts) {
 
   /* Single player game or client */
   if (netGetType() == netSingle || threadsGetContext() == false) { 
-    logAddEvent(log_PlayerLocation, screenGetTankPlayer(value), 0, 0, 0, 0, NULL); 
+    logAddEvent(log_PlayerLocation, screenGetTankPlayer(value), 0, 0, 0, 0, nullptr); 
     lgmTankDied(screenGetLgmFromPlayerNum(screenGetTankPlayer(value)));
 	/* Playing on a client */
     if (threadsGetContext() == false) {
@@ -1162,7 +1162,7 @@ void tankDeath(tank *value, starts *sts) {
 *  deaths - Pointer to hold the number of deaths
 *********************************************************/
 void tankGetKillsDeaths(tank *value, int *kills, int *deaths) {
-	if(*value != NULL){
+	if(*value != nullptr){
 		*kills = (*value)->numKills;
 		*deaths = (*value)->numDeaths;
 	}
@@ -2093,12 +2093,12 @@ void tankGetCarriedPillNum(tank *value, BYTE pillNum) {
   tankCarryPb prev;
   bool done;
   done = false;
-  prev = NULL;
+  prev = nullptr;
   q = (*value)->carryPills;
   while (!IsEmpty(q) && done == false) {
     if (q->pillNum == pillNum) {
       done = true;
-      if (prev == NULL) {
+      if (prev == nullptr) {
         (*value)->carryPills = q->next;
       } else {
         prev->next = q->next;
@@ -2153,15 +2153,15 @@ void tankStopCarryingPill(tank *value, BYTE pillNum) {
 
 	done = false;
 	pillNum++;
-	if (*value != NULL) {
+	if (*value != nullptr) {
 		if (!IsEmpty((*value)->carryPills)) {
-			prev = NULL;
+			prev = nullptr;
 			q = (*value)->carryPills;
 			while (NonEmpty(q) && done == false) {
 				if (q->pillNum == pillNum) {
 					/* We are carrying it */
 					done = true;
-					if (prev == NULL) {
+					if (prev == nullptr) {
 						(*value)->carryPills = q->next;
 					} else {
 						prev->next = q->next;
@@ -2681,7 +2681,7 @@ bool tankGetAutoSlowdown(tank *value) {
 *  useSlowdown - true if auto slowdown is used
 *********************************************************/
 void tankSetAutoSlowdown(tank *value, bool useSlowdown) {
-  if ((*value) != NULL) {
+  if ((*value) != nullptr) {
     (*value)->autoSlowdown = useSlowdown;
     tankRegisterChangeByte(value, CRC_AUTOSLOWDOWN_OFFSET, useSlowdown);
   }
@@ -2717,7 +2717,7 @@ bool tankGetAutoHideGunsight(tank *value) {
 *  useAutohide - true if auto slowdown is used
 *********************************************************/
 void tankSetAutoHideGunsight(tank *value, bool useAutohide) {
-  if ((*value) != NULL) {
+  if ((*value) != nullptr) {
     (*value)->autoHideGunsight = useAutohide;
     tankRegisterChangeByte(value, CRC_AUTOHIDE_OFFSET, useAutohide);
   }
@@ -3036,7 +3036,7 @@ void tankSetOnBoat(tank *value, bool onBoat) {
 *********************************************************/
 
 void tankSetLastTankDeath(tank *value, int deathType) {
-  if ((*value) != NULL) {
+  if ((*value) != nullptr) {
     (*value)->lastTankDeath = deathType;
   }
 }

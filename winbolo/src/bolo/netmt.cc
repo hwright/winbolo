@@ -70,7 +70,7 @@ netPlayers *serverNetGetNetPlayers();
 *********************************************************/
 void netMNTCreate(netMntContext *nmtc) {
   *nmtc = new netMntContextObj;
-  (*nmtc)->nmt = NULL;
+  (*nmtc)->nmt = nullptr;
   (*nmtc)->netMntUpto = 0;
 }
 
@@ -88,7 +88,7 @@ void netMNTCreate(netMntContext *nmtc) {
 void netNMTDestroy(netMntContext *nmtc) {
   netMnt q;
 
-  if (*nmtc != NULL) {
+  if (*nmtc != nullptr) {
     q = (*nmtc)->nmt;
     while (NonEmpty((*nmtc)->nmt)) {
       q = (*nmtc)->nmt;
@@ -96,7 +96,7 @@ void netNMTDestroy(netMntContext *nmtc) {
       delete q;
     }
     delete *nmtc;
-    *nmtc = NULL;
+    *nmtc = nullptr;
   }
 }
 
@@ -222,9 +222,9 @@ bool netMNTExtractServer(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
     /* WinBolo.net Stuff */
     if (opt1 != NEUTRAL) {
       winbolonetAddEvent(WINBOLO_NET_EVENT_TANK_KILL, true, opt1, owner);
-      logAddEvent(log_KillPlayer, owner, opt1, 0, 0, 0, NULL);
+      logAddEvent(log_KillPlayer, owner, opt1, 0, 0, 0, nullptr);
     } else {
-      logAddEvent(log_PlayerDied, owner, 0, 0, 0, 0, NULL);
+      logAddEvent(log_PlayerDied, owner, 0, 0, 0, 0, nullptr);
     }
     tk = screenGetTankFromPlayer(owner);
     tankDropPills(tk, mp, pb, bs);
@@ -244,7 +244,7 @@ bool netMNTExtractServer(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
     } else {
       returnValue = false;
     }
-    logAddEvent(log_SoundMineLay, opt1, opt2, 0, 0, 0, NULL);
+    logAddEvent(log_SoundMineLay, opt1, opt2, 0, 0, 0, nullptr);
     break;
   case NMNT_MINEEXPLOSION:
     minesExpAddItem(screenGetMinesExp(), mp, opt1, opt2);
@@ -278,7 +278,7 @@ bool netMNTExtractServer(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
   case NMNT_TANKHIT:
     /* Process a tank hit */
     tk = serverCoreGetTankFromPlayer(owner);
-    if (tk != NULL) {
+    if (tk != nullptr) {
       if (opt1 == 0xFF && opt2 == 0xFF) {
         /* Cheaters */
 
@@ -290,7 +290,7 @@ bool netMNTExtractServer(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
         tankAddHit(tk, abs(127 - opt1));
       }
       if (opt1 == 1) {
-        logAddEvent(log_SoundHitTank, tankGetMX(tk), tankGetMY(tk), 0, 0, 0, NULL); 
+        logAddEvent(log_SoundHitTank, tankGetMX(tk), tankGetMY(tk), 0, 0, 0, nullptr); 
       }
     }
     break;

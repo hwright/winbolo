@@ -111,8 +111,8 @@ GtkWidget* dialogAllianceCreate (void) {
   gtk_widget_show (button2);
   gtk_box_pack_start (GTK_BOX (hbox1), button2, TRUE, TRUE, 0);
 
-  gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(dialogAllianceAccept), 0);
-  gtk_signal_connect(GTK_OBJECT(button2), "clicked", GTK_SIGNAL_FUNC(dialogAllianceReject), 0);
+  gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(dialogAllianceAccept), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button2), "clicked", GTK_SIGNAL_FUNC(dialogAllianceReject), nullptr);
 
   dialogAllianceUs = dialogAlliance;
   return dialogAlliance;

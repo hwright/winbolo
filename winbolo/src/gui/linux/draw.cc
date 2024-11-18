@@ -68,13 +68,13 @@
 #include "..\draw.h"
 */
 /* SDL Surfaces */
-static SDL_Surface *lpScreen = NULL;
-static SDL_Surface *lpBackBuffer = NULL;
-static SDL_Surface *lpTiles = NULL;
-static SDL_Surface *lpPillsStatus = NULL;
-static SDL_Surface *lpBasesStatus = NULL;
-static SDL_Surface *lpTankStatus = NULL;
-static TTF_Font *lpFont = NULL;
+static SDL_Surface *lpScreen = nullptr;
+static SDL_Surface *lpBackBuffer = nullptr;
+static SDL_Surface *lpTiles = nullptr;
+static SDL_Surface *lpPillsStatus = nullptr;
+static SDL_Surface *lpBasesStatus = nullptr;
+static SDL_Surface *lpTankStatus = nullptr;
+static TTF_Font *lpFont = nullptr;
 static SDL_Color white = {0xFF, 0xFF, 0xFF, 0};
 static SDL_Color black = {0,0,0,0};
 
@@ -145,7 +145,7 @@ bool drawSetup(GtkWidget *appWnd) {
   zoomFactor = 1; //FIXME: windowGetZoomFactor();
   //lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y , 0, 0);
   lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
-  if (lpScreen == NULL) {
+  if (lpScreen == nullptr) {
     returnValue = FALSE;
     MessageBox("Can't build main surface", DIALOG_BOX_TITLE);
   }
@@ -154,13 +154,13 @@ bool drawSetup(GtkWidget *appWnd) {
   /* Create the back buffer surface */
   if (returnValue == TRUE) {
     lpTemp = SDL_CreateRGBSurface(SDL_HWSURFACE, zoomFactor * MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X, zoomFactor * MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
-    if (lpTemp == NULL) {
+    if (lpTemp == nullptr) {
       returnValue = FALSE;
       MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
     } else {
       lpBackBuffer = SDL_DisplayFormat(lpTemp);
       SDL_FreeSurface(lpTemp);
-      if (lpBackBuffer == NULL) {
+      if (lpBackBuffer == nullptr) {
         returnValue = FALSE;
 	MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
       }
@@ -175,7 +175,7 @@ bool drawSetup(GtkWidget *appWnd) {
     fclose(fp);
     lpTiles = SDL_LoadBMP(fileName);
     unlink(fileName);
-    if (lpTiles == NULL) {
+    if (lpTiles == nullptr) {
       returnValue = FALSE;
       MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
     } else {
@@ -187,7 +187,7 @@ bool drawSetup(GtkWidget *appWnd) {
       } else {
   //      lpTiles = SDL_DisplayFormat(lpTemp);
 //	SDL_FreeSurface(lpTemp);
-	if (lpTiles == NULL) {
+	if (lpTiles == nullptr) {
           returnValue = FALSE;
 	  MessageBox("Can't build a tile file", DIALOG_BOX_TITLE);
 	}
@@ -203,14 +203,14 @@ bool drawSetup(GtkWidget *appWnd) {
   /* Create the Base status window */
   if (returnValue == TRUE) {
     lpTemp = SDL_CreateRGBSurface(0, zoomFactor * STATUS_BASES_WIDTH, zoomFactor * STATUS_BASES_HEIGHT, 16, 0, 0, 0, 0);
-     if (lpTemp == NULL) {
+     if (lpTemp == nullptr) {
        returnValue = FALSE;
        MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
      } else {
        /* Fill the surface black */
        lpBasesStatus = SDL_DisplayFormat(lpTemp);
        SDL_FreeSurface(lpTemp);
-       if (lpBasesStatus == NULL) {
+       if (lpBasesStatus == nullptr) {
          returnValue = FALSE;
          MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
        } else {
@@ -231,7 +231,7 @@ bool drawSetup(GtkWidget *appWnd) {
   /* Makes the pills status */
   if (returnValue == TRUE) {
     lpTemp = SDL_CreateRGBSurface(0, zoomFactor * STATUS_PILLS_WIDTH, zoomFactor * STATUS_PILLS_HEIGHT, 16, 0, 0, 0, 0);
-     if (lpTemp == NULL) {
+     if (lpTemp == nullptr) {
        returnValue = FALSE;
        MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
      } else {
@@ -260,13 +260,13 @@ bool drawSetup(GtkWidget *appWnd) {
    /* Makes the tanks status */
   if (returnValue == TRUE) {
     lpTemp = SDL_CreateRGBSurface(0, zoomFactor * STATUS_TANKS_WIDTH, zoomFactor * STATUS_TANKS_HEIGHT, 16, 0, 0, 0, 0);
-     if (lpTemp == NULL) {
+     if (lpTemp == nullptr) {
        returnValue = FALSE;
        MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
      } else {
        lpTankStatus = SDL_DisplayFormat(lpTemp);
        SDL_FreeSurface(lpTemp);
-       if (lpTankStatus == NULL) {
+       if (lpTankStatus == nullptr) {
          returnValue = FALSE;
          MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
        } else {
@@ -291,7 +291,7 @@ bool drawSetup(GtkWidget *appWnd) {
       returnValue = FALSE;
     } else {
       lpFont = TTF_OpenFont("cour.ttf", 12);
-      if (lpFont == NULL) {
+      if (lpFont == nullptr) {
         MessageBox("Couldn't open font file.\n Please place a courier font\ncalled \"cour.ttf\" in your\nLinBolo directory.", DIALOG_BOX_TITLE);
 	returnValue = FALSE;
       }
@@ -320,33 +320,33 @@ bool drawSetup(GtkWidget *appWnd) {
 *
 *********************************************************/
 void drawCleanup(void) {
-  if (lpTiles != NULL) {
+  if (lpTiles != nullptr) {
     SDL_FreeSurface(lpTiles);
-    lpTiles = NULL;
+    lpTiles = nullptr;
   }
-  if (lpBackBuffer != NULL) {
+  if (lpBackBuffer != nullptr) {
     SDL_FreeSurface(lpBackBuffer);
-    lpBackBuffer = NULL;
+    lpBackBuffer = nullptr;
   }
-  if (lpBasesStatus != NULL) {
+  if (lpBasesStatus != nullptr) {
     SDL_FreeSurface(lpBasesStatus);
-    lpBasesStatus = NULL;
+    lpBasesStatus = nullptr;
   }
-  if (lpPillsStatus != NULL) {
+  if (lpPillsStatus != nullptr) {
     SDL_FreeSurface(lpPillsStatus);
-    lpPillsStatus = NULL;
+    lpPillsStatus = nullptr;
   }
-  if (lpTankStatus != NULL) {
+  if (lpTankStatus != nullptr) {
     SDL_FreeSurface(lpTankStatus);
-    lpTankStatus = NULL;
+    lpTankStatus = nullptr;
   }
-  if (lpFont != NULL) {
+  if (lpFont != nullptr) {
     TTF_CloseFont(lpFont);
     TTF_Quit();
   }
-  if (lpScreen != NULL) {
+  if (lpScreen != nullptr) {
     SDL_FreeSurface(lpScreen);
-    lpScreen = NULL;
+    lpScreen = nullptr;
   }
 
 }
@@ -732,7 +732,7 @@ textRect.bottom = zf * ((MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y) - y);
       /* Make it transparent */
       SDL_SetColorKey(lpTextSurface, SDL_SRCCOLORKEY, SDL_MapRGB(lpTextSurface->format, 0, 0, 0));
       /* Output it */
-      SDL_BlitSurface(lpTextSurface, NULL, lpBackBuffer, &dest);
+      SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &dest);
       SDL_UpdateRects(lpBackBuffer, 1, &dest);
       SDL_FreeSurface(lpTextSurface);
     }
@@ -1272,7 +1272,7 @@ void drawNetFailed() {
   dest.w = lpTextSurface->w;
   dest.h = lpTextSurface->h;
   /* Output it */
-  SDL_BlitSurface(lpTextSurface, NULL, lpBackBuffer, &dest);
+  SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &dest);
   SDL_FreeSurface(lpTextSurface);
 }
 
@@ -1301,7 +1301,7 @@ void drawPillInView() {
   dest.w = lpTextSurface->w;
   dest.h = lpTextSurface->h;
   /* Output it */
-  SDL_BlitSurface(lpTextSurface, NULL, lpBackBuffer, &dest);
+  SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &dest);
   SDL_FreeSurface(lpTextSurface);
 }
 
@@ -1326,7 +1326,7 @@ void drawStartDelay(long srtDelay) {
   SDL_Rect in;
 
   zoomFactor = 1; //FIXME
-  SDL_FillRect(lpBackBuffer, NULL, SDL_MapRGB(lpBackBuffer->format, 0, 0, 0)); 
+  SDL_FillRect(lpBackBuffer, nullptr, SDL_MapRGB(lpBackBuffer->format, 0, 0, 0)); 
   /* Prepare the string */
   srtDelay /= GAME_NUMGAMETICKS_SEC; /* Convert ticks back to seconds */
   sprintf(strNum, "%ld", srtDelay);
@@ -1338,7 +1338,7 @@ void drawStartDelay(long srtDelay) {
     src.y = zoomFactor * TILE_SIZE_Y + 5; 
     src.w = lpTextSurface->w;
     src.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, NULL, lpBackBuffer, &src);
+    SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &src);
     SDL_UpdateRect(lpBackBuffer, 0, 0, 0, 0);
     in.x = (zoomFactor * TILE_SIZE_X);
     in.y = (zoomFactor * TILE_SIZE_Y);
@@ -1454,7 +1454,7 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
       textOutput.y =  (zoomFactor * y * TILE_SIZE_Y);
       textOutput.w = lpTextSurface->w;
       textOutput.h = lpTextSurface->h;
-      SDL_BlitSurface(lpTextSurface, NULL, lpBackBuffer, &textOutput);
+      SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &textOutput);
       SDL_FreeSurface(lpTextSurface);
     }
 
@@ -1466,7 +1466,7 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks, scre
       textOutput.y =  (zoomFactor * y * TILE_SIZE_Y);
       textOutput.w = lpTextSurface->w;
       textOutput.h = lpTextSurface->h;
-      SDL_BlitSurface(lpTextSurface, NULL, lpBackBuffer, &textOutput);
+      SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &textOutput);
       SDL_FreeSurface(lpTextSurface);
     }
 
@@ -1594,12 +1594,12 @@ bool drawBackground(int width, int height) {
   fclose(fp);
   bg = SDL_LoadBMP(fileName);
   unlink(fileName);
-  if (bg != NULL) {
+  if (bg != nullptr) {
     destRect.x = 0;
     destRect.y = 0;
     destRect.w = bg->w;
     destRect.h = bg->h;
-    if (SDL_BlitSurface(bg, NULL, lpScreen, &destRect) == 0) {
+    if (SDL_BlitSurface(bg, nullptr, lpScreen, &destRect) == 0) {
       returnValue = TRUE;
       SDL_UpdateRect(lpScreen, 0,0,0,0);
     }  
@@ -1633,7 +1633,7 @@ void drawSetBasesStatusClear(void) {
   dest.y = zoomFactor * STATUS_BASES_MIDDLE_ICON_Y;
   dest.w = zoomFactor * TILE_SIZE_X;
   dest.h = zoomFactor * TILE_SIZE_Y;
-  SDL_FillRect(lpBasesStatus, NULL, SDL_MapRGB(lpBasesStatus->format, 0, 0, 0));
+  SDL_FillRect(lpBasesStatus, nullptr, SDL_MapRGB(lpBasesStatus->format, 0, 0, 0));
   SDL_BlitSurface(lpTiles, &src, lpBasesStatus, &dest);
   SDL_UpdateRect(lpBasesStatus, 0, 0, 0, 0);
 }
@@ -1662,7 +1662,7 @@ void drawSetPillsStatusClear(void) {
   dest.x = zoomFactor * STATUS_PILLS_MIDDLE_ICON_X;
   dest.w = zoomFactor * TILE_SIZE_X;
   dest.h = zoomFactor * TILE_SIZE_Y;
-  SDL_FillRect(lpPillsStatus, NULL, SDL_MapRGB(lpPillsStatus->format, 0, 0, 0));
+  SDL_FillRect(lpPillsStatus, nullptr, SDL_MapRGB(lpPillsStatus->format, 0, 0, 0));
   SDL_BlitSurface(lpTiles, &src, lpPillsStatus, &dest);
   SDL_UpdateRect(lpPillsStatus, 0, 0, 0, 0);
 }
@@ -1691,7 +1691,7 @@ void drawSetTanksStatusClear(void) {
   dest.x = zoomFactor * STATUS_TANKS_MIDDLE_ICON_X;
   dest.w = zoomFactor * TILE_SIZE_X;
   dest.h = zoomFactor * TILE_SIZE_Y;
-  SDL_FillRect(lpTankStatus, NULL, SDL_MapRGB(lpTankStatus->format, 0, 0, 0));
+  SDL_FillRect(lpTankStatus, nullptr, SDL_MapRGB(lpTankStatus->format, 0, 0, 0));
   SDL_BlitSurface(lpTiles, &src, lpTankStatus, &dest);
   SDL_UpdateRect(lpTankStatus, 0, 0, 0, 0);
 }
@@ -1718,7 +1718,7 @@ void drawCopyBasesStatus() {
   dest.y = zf * STATUS_BASES_TOP;
   dest.w = zf * STATUS_BASES_WIDTH;
   dest.h = zf * STATUS_BASES_HEIGHT;
-  SDL_BlitSurface(lpBasesStatus, NULL, lpScreen, &dest);
+  SDL_BlitSurface(lpBasesStatus, nullptr, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
 }
 
@@ -1744,7 +1744,7 @@ void drawCopyPillsStatus() {
   dest.y = zf * STATUS_PILLS_TOP;
   dest.w = zf * STATUS_PILLS_WIDTH;
   dest.h = zf * STATUS_PILLS_HEIGHT;
-  SDL_BlitSurface(lpPillsStatus, NULL, lpScreen, &dest);
+  SDL_BlitSurface(lpPillsStatus, nullptr, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
 }
 
@@ -1770,7 +1770,7 @@ void drawCopyTanksStatus() {
   dest.y = zf * STATUS_TANKS_TOP;
   dest.w = zf * STATUS_TANKS_WIDTH;
   dest.h = zf * STATUS_TANKS_HEIGHT;
-  SDL_BlitSurface(lpTankStatus, NULL, lpScreen, &dest);
+  SDL_BlitSurface(lpTankStatus, nullptr, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
 }  
 
@@ -2614,7 +2614,7 @@ void drawMessages(int xValue, int yValue, char *top, char *bottom) {
     dest.y = yValue + zf * MESSAGE_TOP;
     dest.w = lpTextSurface->w;
     dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, NULL, lpScreen, &dest);
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
     SDL_UpdateRects(lpScreen, 1, &dest);
     SDL_FreeSurface(lpTextSurface);
   }
@@ -2624,7 +2624,7 @@ void drawMessages(int xValue, int yValue, char *top, char *bottom) {
     dest.y = yValue + zf * MESSAGE_TOP + (zf * MESSAGE_TEXT_HEIGHT);
     dest.w = lpTextSurface->w;
     dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, NULL, lpScreen, &dest);
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
     SDL_UpdateRects(lpScreen, 1, &dest);
     SDL_FreeSurface(lpTextSurface);
   } 
@@ -2649,7 +2649,7 @@ void drawDownloadScreen(bool justBlack) {
   
   zoomFactor = 1; //FIXME windowGetZoomFactor();
   /* Fill the area black */
-  SDL_FillRect(lpBackBuffer, NULL, SDL_MapRGB(lpBackBuffer->format, 0, 0, 0)); 
+  SDL_FillRect(lpBackBuffer, nullptr, SDL_MapRGB(lpBackBuffer->format, 0, 0, 0)); 
   /* Fill the downloaded area white */
   if (justBlack == FALSE) {
     output.x = 0;
@@ -2705,7 +2705,7 @@ void drawKillsDeaths(int xValue, int yValue, int kills, int deaths) {
     dest.y = yValue + zf * STATUS_KILLS_TOP + zf;
     dest.w = lpTextSurface->w;
     dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, NULL, lpScreen, &dest);
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
     SDL_UpdateRects(lpScreen, 1, &dest);
     SDL_FreeSurface(lpTextSurface);
   }
@@ -2716,7 +2716,7 @@ void drawKillsDeaths(int xValue, int yValue, int kills, int deaths) {
     dest.y = yValue + zf * STATUS_DEATHS_TOP + zf;
     dest.w = lpTextSurface->w;
     dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, NULL, lpScreen, &dest);
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
     SDL_UpdateRects(lpScreen, 1, &dest);
     SDL_FreeSurface(lpTextSurface);
   } 

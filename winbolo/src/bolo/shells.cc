@@ -71,7 +71,7 @@ static bool c;
 *
 *********************************************************/
 shells shellsCreate(void) {
-	return NULL;
+	return nullptr;
 }
 
 
@@ -146,7 +146,7 @@ void shellsAddItem(shells *value, WORLD x, WORLD y, TURNTYPE angle, TURNTYPE len
   q->packSent = false;
   q->shellDead = false;
   q->next = *value;
-  q->prev = NULL;
+  q->prev = nullptr;
   if (NonEmpty(*value)) {
     (*value)->prev = q;
   }
@@ -292,7 +292,7 @@ void shellsUpdate(shells *value, map *mp, pillboxes *pb, bases *bs, tank *tk, BY
 		}
 
 		/* Get the next Item */
-		if (*value != NULL && needUpdate == true) {
+		if (*value != nullptr && needUpdate == true) {
 			position = ShellsTail(position);
 		}
 	}
@@ -316,17 +316,17 @@ void shellsDeleteItem(shells *master, shells *value) {
 
   del = *value;
   (*value) = ShellsTail(del);
-  if (del->prev != NULL) {
+  if (del->prev != nullptr) {
     del->prev->next = del->next;
   } else {
     /* Must be the first item - Move the master position along one */
     (*master) = ShellsTail(*master);
     if (NonEmpty(*master)) {
-      (*master)->prev = NULL;
+      (*master)->prev = nullptr;
     }
   }
 
-  if (del->next != NULL) {
+  if (del->next != nullptr) {
     del->next->prev = del->prev;
   }
   delete del;
@@ -848,7 +848,7 @@ void shellsNetExtract(shells *value, pillboxes *pb, BYTE *buff, BYTE dataLen, bo
   self = playersGetSelf(screenGetPlayers());
   pos = 0;
   pnt = buff;
-  q = NULL;
+  q = nullptr;
 
   while (pos < dataLen) {
     shouldAdd = false;
@@ -941,7 +941,7 @@ void shellsNetExtract(shells *value, pillboxes *pb, BYTE *buff, BYTE dataLen, bo
       q->creator = creator;
       /* Add it to the structure */
       q->next = *value;
-      q->prev = NULL;
+      q->prev = nullptr;
       if (NonEmpty(*value)) {
         (*value)->prev = q;
       }
@@ -950,7 +950,7 @@ void shellsNetExtract(shells *value, pillboxes *pb, BYTE *buff, BYTE dataLen, bo
   }
   
   /* Play the last sound event if exist */
-  if (q != NULL) {
+  if (q != nullptr) {
     conv = q->x;
     conv >>= TANK_SHIFT_MAPSIZE;
     mx = (BYTE) conv;

@@ -79,7 +79,7 @@ void netPlayersDestroy(netPlayers *value) {
 
   for (count=0;count<MAX_TANKS;count++) {
     udpPacketsDestroy(&(*value).udpp[count]);
-    (*value).udpp[count] = NULL;
+    (*value).udpp[count] = nullptr;
   }
   
 }
@@ -156,10 +156,10 @@ void netPlayersSetPlayer(netPlayers *value, BYTE playerNum, struct sockaddr_in *
     (*value).addr[playerNum].sin_family = AF_INET;
     (*value).inUse[playerNum] = true;
     (*value).inGame[playerNum] = false;
-    if ((*value).udpp[playerNum] != NULL) {
+    if ((*value).udpp[playerNum] != nullptr) {
       udpPacketsDestroy(&(*value).udpp[playerNum]);
     }
-    (*value).lastHeard[playerNum] = time(NULL);
+    (*value).lastHeard[playerNum] = time(nullptr);
     (*value).udpp[playerNum] = udpPacketsCreate();
     (*value).cheatCount[playerNum] = 0;
   }
@@ -196,7 +196,7 @@ BYTE netPlayersGetPlayerNumber(netPlayers *value, unsigned long addr, unsigned s
       if ((*value).addr[count].sin_addr.s_addr == addr && (*value).addr[count].sin_port == port) {
 #endif
         returnValue = count;
-        (*value).lastHeard[count] = time(NULL);
+        (*value).lastHeard[count] = time(nullptr);
         if ((*value).cheatCount[count] > 1) {
           (*value).cheatCount[count] = (*value).cheatCount[count] - 1;
         }
@@ -335,7 +335,7 @@ BYTE netPlayersRemovePlayerNum(netPlayers *value, BYTE playerNum) {
   (*value).passed[playerNum] = false;
   (*value).passedrsa[playerNum] = false;
   udpPacketsDestroy(&((*value).udpp[playerNum]));
-  (*value).udpp[playerNum] = NULL;
+  (*value).udpp[playerNum] = nullptr;
   return playerNum;
 }
 
@@ -444,7 +444,7 @@ bool netPlayersShouldDisconnectPlayer(netPlayers *value, BYTE playerNum) {
   bool returnValue = false; /* Value to return */
 
   if ((*value).inUse[playerNum] == true) {
-    if (time(NULL) - (*value).lastHeard[playerNum] >= NET_PLAYERS_INACTIVEREMOVE_TIME) {
+    if (time(nullptr) - (*value).lastHeard[playerNum] >= NET_PLAYERS_INACTIVEREMOVE_TIME) {
       returnValue = true;
     }
   }

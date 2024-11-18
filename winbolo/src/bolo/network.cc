@@ -213,7 +213,7 @@ bool netSetup(netType value, unsigned short myPort, const char *targetIp, unsign
     if (networkGameType == netUdp) {
       returnValue = netClientSetUdpAsync(TRUE);
       netJoinDataRequests();
-      netLastHeard = time(NULL);
+      netLastHeard = time(nullptr);
     }
   }
 
@@ -238,7 +238,7 @@ void netDestroy(void) {
   WPARAM wParam = MAKEWPARAM(IDCANCEL,IDCANCEL); /* Create a WPARAM variable that will tell the window to close */
   LPARAM lParam = MAKELPARAM(0,0); /* Create a WPARAM variable that will tell the window to close */
 #endif
-  if (dlgAllianceWnd != NULL) {
+  if (dlgAllianceWnd != nullptr) {
 #ifdef _WIN32
 	/* Should return nonzero if successful.  Was not working so let's just close it instead. */
     /* windowDestroyed = DestroyWindow(dlgAllianceWnd); */
@@ -247,7 +247,7 @@ void netDestroy(void) {
     gtk_widget_destroy(dlgAllianceWnd);
 #endif
 	if(windowDestroyed == TRUE){
-      dlgAllianceWnd = NULL;
+      dlgAllianceWnd = nullptr;
 	}
   }
   if (networkGameType == netUdp) {
@@ -314,7 +314,7 @@ void netUdpPacketArrive(BYTE *buff, int len, unsigned short port) {
     int pos;
 	  bool okFix = TRUE;
 
-    netLastHeard = time(NULL);
+    netLastHeard = time(nullptr);
     pp = (PING_PACKET *) buff;
     if (pp->from == playersGetSelf(screenGetPlayers())) {
       if ((long) (winboloTimer() - tknTime) >= 0) {
@@ -437,7 +437,7 @@ void netUdpPacketArrive(BYTE *buff, int len, unsigned short port) {
       } 
     }
   } else {
-    netLastHeard = time(NULL);
+    netLastHeard = time(nullptr);
     crcA = buff[len-2];
     crcB = buff[len-1];
     if (CRCCheck(buff, len - BOLO_PACKET_CRC_SIZE, crcA, crcB) == TRUE) {
@@ -570,7 +570,7 @@ void netTcpPacketArrive(BYTE *buff, int len) {
   } else if (len == (int) sizeof(ALLIANCE_PACKET) && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOLEAVEALLIANCE_DATA) {
     /* Player leave alliance */
     playersLeaveAlliance(screenGetPlayers(), buff[BOLOPACKET_REQUEST_TYPEPOS+1]);
-    logAddEvent(log_AllyLeave, buff[BOLOPACKET_REQUEST_TYPEPOS+1], 0, 0, 0, 0, NULL);
+    logAddEvent(log_AllyLeave, buff[BOLOPACKET_REQUEST_TYPEPOS+1], 0, 0, 0, 0, nullptr);
   } else if (len == (int) sizeof(ALLIANCE_PACKET) && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOREQUESTALLIANCE_DATA) {
     /* Player Request alliance */
     char pName[FILENAME_MAX];
@@ -589,11 +589,11 @@ void netTcpPacketArrive(BYTE *buff, int len) {
       sprintf(str, "%s has ignored your alliance request", pName);
       netMessageSendPlayer(playersGetSelf(screenGetPlayers()), buff[BOLOPACKET_REQUEST_TYPEPOS+1], str);
     }
-    logAddEvent(log_AllyRequest, buff[BOLOPACKET_REQUEST_TYPEPOS+1], buff[BOLOPACKET_REQUEST_TYPEPOS+2], 0, 0, 0, NULL);
+    logAddEvent(log_AllyRequest, buff[BOLOPACKET_REQUEST_TYPEPOS+1], buff[BOLOPACKET_REQUEST_TYPEPOS+2], 0, 0, 0, nullptr);
   } else if (len == (int) sizeof(ALLIANCE_PACKET) && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOACCEPTALLIANCE_DATA) {
     /* Player is accepted into an alliance */
     playersAcceptAlliance(screenGetPlayers(), buff[BOLOPACKET_REQUEST_TYPEPOS+1], buff[BOLOPACKET_REQUEST_TYPEPOS+2]);
-    logAddEvent(log_AllyAccept, buff[BOLOPACKET_REQUEST_TYPEPOS+1], buff[BOLOPACKET_REQUEST_TYPEPOS+2], 0, 0, 0, NULL);
+    logAddEvent(log_AllyAccept, buff[BOLOPACKET_REQUEST_TYPEPOS+1], buff[BOLOPACKET_REQUEST_TYPEPOS+2], 0, 0, 0, nullptr);
   } else if (len == (int) (sizeof(STARTPOSITION_PACKET)) && buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLORESPONSE_STARTPOS) {
     STARTPOSITION_PACKET *spp = (STARTPOSITION_PACKET *) buff;
     screenSetTankStartPosition(spp->x, spp->y, spp->angle,spp->numShells, spp->numMines);
@@ -1220,7 +1220,7 @@ void netPlayerJoined(BYTE *buff) {
   utilPtoCString(npp.playerName, name);
   ip = inet_ntoa(npp.addr);
   dnsLookupsAddRequest(ip, netProcessedDnsLookup);
-  playersSetPlayer(screenGetPlayers(), npp.playerNumber, name, ip, 0, 0, 0, 0, 0, FALSE, 0, NULL);
+  playersSetPlayer(screenGetPlayers(), npp.playerNumber, name, ip, 0, 0, 0, 0, 0, FALSE, 0, nullptr);
   /* Do something with the address and port */
 }
 
@@ -1696,7 +1696,7 @@ void netMakeDataPosPacket(void) {
   
   if (networkGameType == netUdp) {
     netClientUdpCheck();
-    if (time(NULL) - netLastHeard >= NET_MAX_TIMEOUT) {
+    if (time(nullptr) - netLastHeard >= NET_MAX_TIMEOUT) {
       netLostConnection();
       return;
     }

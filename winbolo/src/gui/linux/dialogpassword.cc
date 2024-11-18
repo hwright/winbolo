@@ -53,7 +53,7 @@ static gboolean dialogPasswordClose(GtkWidget *widget,  GdkEventButton *event, g
 
 static gboolean dialogPasswordKey(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   if (event->keyval == 65293) {
-    dialogPasswordClose(dialogPasswordUs, NULL, NULL);
+    dialogPasswordClose(dialogPasswordUs, nullptr, nullptr);
   }
   return FALSE;
 }
@@ -115,9 +115,9 @@ GtkWidget* dialogPasswordCreate(void) {
   gtk_widget_grab_focus (idc_passwordtxt);
   gtk_widget_grab_default (button1);
 
-  gtk_signal_connect(GTK_OBJECT(dailogPassword), "delete_event", GTK_SIGNAL_FUNC (dialogPasswordClose), NULL);
-  gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(dialogPasswordClose), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_passwordtxt), "key-press-event", GTK_SIGNAL_FUNC(dialogPasswordKey), 0);
+  gtk_signal_connect(GTK_OBJECT(dailogPassword), "delete_event", GTK_SIGNAL_FUNC (dialogPasswordClose), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(dialogPasswordClose), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_passwordtxt), "key-press-event", GTK_SIGNAL_FUNC(dialogPasswordKey), nullptr);
 
   dialogPasswordUs = dailogPassword;
   return dailogPassword;

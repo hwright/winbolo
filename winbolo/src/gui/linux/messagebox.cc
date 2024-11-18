@@ -92,8 +92,8 @@ GtkWidget* create_MessageBox (const char *name, const char *label) {
   gtk_widget_grab_focus (idc_messageboxok);
   gtk_widget_grab_default (idc_messageboxok);
  
-  gtk_signal_connect(GTK_OBJECT(idc_messageboxok), "clicked", GTK_SIGNAL_FUNC(messageBoxOK), 0);
-  gtk_signal_connect(GTK_OBJECT(MessageBox), "delete_event", GTK_SIGNAL_FUNC(messageBoxClose), 0);
+  gtk_signal_connect(GTK_OBJECT(idc_messageboxok), "clicked", GTK_SIGNAL_FUNC(messageBoxOK), nullptr);
+  gtk_signal_connect(GTK_OBJECT(MessageBox), "delete_event", GTK_SIGNAL_FUNC(messageBoxClose), nullptr);
   mbUs = MessageBox;
   return MessageBox;
 }

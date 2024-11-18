@@ -93,15 +93,15 @@ void playersCreate(players *plrs) {
 void playersDestroy(players *plrs) {
   BYTE count; /* Looping variable */
 
-  if ((*plrs) != NULL) {
+  if ((*plrs) != nullptr) {
     for (count = 0;count<MAX_TANKS;count++) {
       (*plrs)->item[count].inUse = false;
       allienceDestroy(&((*plrs)->item[count].allie));
     }
-    if (*plrs != NULL) {
+    if (*plrs != nullptr) {
       delete *plrs;
     }
-    (*plrs) = NULL;
+    (*plrs) = nullptr;
   }
 }
 
@@ -464,7 +464,7 @@ void playersGameTickUpdate(players *plrs) {
 * dest       - Destination string
 *********************************************************/
 void playersGetPlayerName(players *plrs, BYTE playerNum, char *dest) {
-  if (plrs != NULL) {
+  if (plrs != nullptr) {
     if ((*plrs)->item[playerNum].inUse == true) {
       strcpy(dest, (*plrs)->item[playerNum].playerName);
     } else {
@@ -490,7 +490,7 @@ void playersGetPlayerName(players *plrs, BYTE playerNum, char *dest) {
 * dest       - Destination string
 *********************************************************/
 void playersGetPlayerLocation(players *plrs, BYTE playerNum, char *dest) {
-  if (plrs != NULL) {
+  if (plrs != nullptr) {
     if ((*plrs)->item[playerNum].inUse == true) {
       strcpy(dest, (*plrs)->item[playerNum].location);
     } else {
@@ -865,8 +865,8 @@ BYTE playersGetNumPlayers(players *plrs) {
 
   returnValue = 0;
   // This is some code to attempt to debug a linbolods crash with plrs = 0x0
-  if (*plrs != 0x0){
-	  if (*plrs != NULL) {
+  if (*plrs != nullptr){
+	  if (*plrs != nullptr) {
 		for (count=0;count<MAX_TANKS;count++) {
 		  if ((*plrs)->item[count].inUse == true) {
 			returnValue++;
@@ -2097,7 +2097,7 @@ bool playersPrepareLogSnapshotForPlayer(players *value, BYTE playerNum, BYTE *bu
   *len = 2;
   tnk = serverCoreGetTankFromPlayer(playerNum);
   lgm = serverCoreGetLgmFromPlayerNum(playerNum);
-  if (returnValue == true && tnk != NULL && lgm != NULL) {
+  if (returnValue == true && tnk != nullptr && lgm != nullptr) {
     /* Set MX/MY/PX/PY/frame/onBoat/lgmMX/lgmMY/lgmPX/lgmPX/frame/Name/Location */
     buff[2] = tankGetMX(tnk);
     buff[3] = tankGetMY(tnk);

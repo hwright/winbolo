@@ -41,7 +41,7 @@
 
 
 
-static HANDLE hDnsMutexHandle = NULL;
+static HANDLE hDnsMutexHandle = nullptr;
 static SDL_Thread *hDnsThread;
 static dnsList dnsProcessing;
 static dnsList dnsWaiting;
@@ -63,22 +63,22 @@ bool dnsLookupsCreate(void) {
   bool returnValue;        /* Value to return */
 
   returnValue = true;
-  dnsProcessing = NULL;
-  dnsWaiting = NULL;
+  dnsProcessing = nullptr;
+  dnsWaiting = nullptr;
   dnsShouldRun = true;
   dnsFinished = false;
   
   hDnsMutexHandle = SDL_CreateMutex();
-  if (hDnsMutexHandle == NULL) {
+  if (hDnsMutexHandle == nullptr) {
     returnValue = false;
   }
 
   /* create thread and run */
   if (returnValue == true) {
-    hDnsThread = SDL_CreateThread(dnsLookupsRun, NULL);
-    if (hDnsThread  == NULL) {
+    hDnsThread = SDL_CreateThread(dnsLookupsRun, nullptr);
+    if (hDnsThread  == nullptr) {
       SDL_DestroyMutex(hDnsMutexHandle);
-      hDnsMutexHandle = NULL;
+      hDnsMutexHandle = nullptr;
       returnValue = false;
     }
 
@@ -100,14 +100,14 @@ bool dnsLookupsCreate(void) {
 void dnsLookupsDestroy(void) {
   dnsList del; /* Use to delete our queues */
 
-  if (hDnsMutexHandle != NULL) { /* FIXME: Will be non null if we started it OK. Is there a better way? (threadid?) */
+  if (hDnsMutexHandle != nullptr) { /* FIXME: Will be non null if we started it OK. Is there a better way? (threadid?) */
     /* Wait for current to finish */
     dnsShouldRun = false;
     while (dnsFinished == false) {
       /* Wait a bit for the last call to finish */
       sleep(DNS_SHUTDOWN_SLEEP_TIME_LINUX);
     }
-    SDL_WaitThread(hDnsThread, NULL);
+    SDL_WaitThread(hDnsThread, nullptr);
 
     /* Free our list queues */
     SDL_mutexP(hDnsMutexHandle);
@@ -125,7 +125,7 @@ void dnsLookupsDestroy(void) {
 
     /* Remove the locking mutex */
     SDL_DestroyMutex(hDnsMutexHandle);
-    hDnsMutexHandle = NULL;
+    hDnsMutexHandle = nullptr;
   }
 }
 
@@ -176,7 +176,7 @@ int dnsLookupsRun(void*) {
   while (dnsShouldRun == true) {
     SDL_mutexP(hDnsMutexHandle);
     dnsProcessing = dnsWaiting;
-    dnsWaiting = NULL;
+    dnsWaiting = nullptr;
     SDL_mutexV(hDnsMutexHandle);
     
     while (NonEmpty(dnsProcessing) && dnsShouldRun == true) {

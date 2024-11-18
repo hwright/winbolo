@@ -57,7 +57,7 @@ void tankAddHit(tank *value, int amount);
 *********************************************************/
 void netPNBCreate(netPnbContext *pnbc) {
   *pnbc = new netPnbContextObj;
-  (*pnbc)->pnb = NULL;
+  (*pnbc)->pnb = nullptr;
   (*pnbc)->netPnbUpto = 0;
 }
 
@@ -75,14 +75,14 @@ void netPNBCreate(netPnbContext *pnbc) {
 void netPNBDestroy(netPnbContext *pnbc) {
   netPnb q;
 
-  if (*pnbc != NULL) {
+  if (*pnbc != nullptr) {
     while (NonEmpty((*pnbc)->pnb)) {
       q = (*pnbc)->pnb;
       (*pnbc)->pnb = NetPNBTail(q);
       delete q;
     }
     delete *pnbc;
-    *pnbc = NULL;
+    *pnbc = nullptr;
   }
 }
 
@@ -314,7 +314,7 @@ bool netPNBExtractItemServer(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 			break;
 		case NPNB_SAVEMAP:
 			netPNBMessage(owner, langGetText(MESSAGE_SAVED_MAP));
-    logAddEvent(log_SaveMap, owner, 0, 0, 0, 0, NULL);
+    logAddEvent(log_SaveMap, owner, 0, 0, 0, 0, nullptr);
 			break;
 	}
 
@@ -517,7 +517,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 			break;
 		case NPNB_SAVEMAP:
 			netPNBMessage(owner, langGetText(MESSAGE_SAVED_MAP));
-    logAddEvent(log_SaveMap, owner, 0, 0, 0, 0, NULL);
+    logAddEvent(log_SaveMap, owner, 0, 0, 0, 0, nullptr);
 			break;
 	}
 	return needCalc;

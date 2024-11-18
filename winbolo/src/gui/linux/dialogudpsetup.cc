@@ -64,7 +64,7 @@ static bool dialogUdpSetupDone(bool isJoin) {
 
   returnValue = TRUE;
   str = gtk_entry_get_text(GTK_ENTRY(idc_updsetuptxtplayername));
-  if (str == NULL) {
+  if (str == nullptr) {
     returnValue = FALSE;
   } else {
     strncpy(pn, str, PLAYER_NAME_LEN);
@@ -79,7 +79,7 @@ static bool dialogUdpSetupDone(bool isJoin) {
     returnValue = FALSE;
   }
   str = gtk_entry_get_text(GTK_ENTRY(idc_udpmachinename));
-  if (str == NULL && isJoin == TRUE) {
+  if (str == nullptr && isJoin == TRUE) {
     returnValue = FALSE;
   } else {
     strcpy(add, str);
@@ -453,13 +453,13 @@ GtkWidget* dialogUdpSetupCreate(void) {
   gtk_label_set_justify (GTK_LABEL (label8), GTK_JUSTIFY_LEFT);
   gtk_misc_set_alignment (GTK_MISC (label8), 0, 0);
 
-  gtk_signal_connect(GTK_OBJECT(idc_updsetupcmdcancel), "clicked", GTK_SIGNAL_FUNC(dialogUdpSetupCancel), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_updsetupcmdjoin), "clicked", GTK_SIGNAL_FUNC(dialogUdpSetupJoin), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_updsetupcmdrejoin), "clicked", GTK_SIGNAL_FUNC(dialogUdpSetupReJoin), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_updsetuptracker), "clicked", GTK_SIGNAL_FUNC(dialogUdpSetupTracker), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_updsetupcmdnew), "clicked", GTK_SIGNAL_FUNC(dialogUdpSetupNew), 0);
-  gtk_signal_connect(GTK_OBJECT(dialogUdpSetup), "delete_event", GTK_SIGNAL_FUNC(dialogUdpSetupCancel), 0);
-  gtk_signal_connect(GTK_OBJECT(dialogUdpSetup), "show", GTK_SIGNAL_FUNC(dialogUdpSetupShow), 0);
+  gtk_signal_connect(GTK_OBJECT(idc_updsetupcmdcancel), "clicked", GTK_SIGNAL_FUNC(dialogUdpSetupCancel), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_updsetupcmdjoin), "clicked", GTK_SIGNAL_FUNC(dialogUdpSetupJoin), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_updsetupcmdrejoin), "clicked", GTK_SIGNAL_FUNC(dialogUdpSetupReJoin), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_updsetuptracker), "clicked", GTK_SIGNAL_FUNC(dialogUdpSetupTracker), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_updsetupcmdnew), "clicked", GTK_SIGNAL_FUNC(dialogUdpSetupNew), nullptr);
+  gtk_signal_connect(GTK_OBJECT(dialogUdpSetup), "delete_event", GTK_SIGNAL_FUNC(dialogUdpSetupCancel), nullptr);
+  gtk_signal_connect(GTK_OBJECT(dialogUdpSetup), "show", GTK_SIGNAL_FUNC(dialogUdpSetupShow), nullptr);
 
   us = dialogUdpSetup;
 

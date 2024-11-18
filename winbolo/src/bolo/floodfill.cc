@@ -47,7 +47,7 @@
 *  ff - Pointer to the floodFill item
 *********************************************************/
 void floodCreate(floodFill *ff) {
-  *ff = NULL;
+  *ff = nullptr;
 }
 
 /*********************************************************
@@ -115,7 +115,7 @@ void floodAddItem(floodFill *ff, BYTE x, BYTE y) {
     q->x = x;
     q->y = y;
     q->time = FLOOD_FILL_WAIT;
-    q->next = NULL;
+    q->next = nullptr;
     prev->next = q;
   }
 }
@@ -157,10 +157,10 @@ void floodUpdate(floodFill *ff, map *mp, pillboxes *pb, bases *bs) {
     }
     
     /* Get the next Item */
-    if (*ff != NULL && needUpdate == true) {
+    if (*ff != nullptr && needUpdate == true) {
       position = FloodFillTail(position);
     } else {
-      position = NULL;
+      position = nullptr;
     }
   }
 }

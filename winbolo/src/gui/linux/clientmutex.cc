@@ -37,7 +37,7 @@ typedef SDL_mutex *HANDLE;
 #include "../../bolo/global.h"
 #include "../clientmutex.h"
 
-static HANDLE hClientMutexHandle = NULL;
+static HANDLE hClientMutexHandle = nullptr;
 
 
 /*********************************************************
@@ -67,7 +67,7 @@ bool clientMutexCreate(void) {
   }
 #else
   hClientMutexHandle = SDL_CreateMutex();
-  if (hClientMutexHandle == NULL) {
+  if (hClientMutexHandle == nullptr) {
     returnValue = false;
   }
 #endif
@@ -92,7 +92,7 @@ void clientMutexDestroy(void) {
 #else
   SDL_DestroyMutex(hClientMutexHandle);
 #endif
-  hClientMutexHandle = NULL;
+  hClientMutexHandle = nullptr;
 }
 
 

@@ -94,7 +94,7 @@ static gboolean dialogSetNameOK(GtkWidget *widget, GdkEventKey *event, gpointer 
     
 static gboolean dialogSetNameKey(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   if (event->keyval == 65293) {
-    dialogSetNameOK(dialogSetNameUs, NULL, NULL);
+    dialogSetNameOK(dialogSetNameUs, nullptr, nullptr);
   }
   return FALSE;
 }
@@ -162,9 +162,9 @@ GtkWidget* dialogSetNameCreate(bool inGame) {
   gtk_widget_show (button1);
   gtk_box_pack_start (GTK_BOX (hbox1), button1, TRUE, TRUE, 0);
 
-  gtk_signal_connect(GTK_OBJECT(dialogSetName), "delete_event", GTK_SIGNAL_FUNC (dialogSetNameClose), NULL);
-  gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(dialogSetNameOK), 0);
-  gtk_signal_connect(GTK_OBJECT(idc_setnametxt), "key-press-event", GTK_SIGNAL_FUNC(dialogSetNameKey), 0);
+  gtk_signal_connect(GTK_OBJECT(dialogSetName), "delete_event", GTK_SIGNAL_FUNC (dialogSetNameClose), nullptr);
+  gtk_signal_connect(GTK_OBJECT(button1), "clicked", GTK_SIGNAL_FUNC(dialogSetNameOK), nullptr);
+  gtk_signal_connect(GTK_OBJECT(idc_setnametxt), "key-press-event", GTK_SIGNAL_FUNC(dialogSetNameKey), nullptr);
 
   /* Get the name */
   playerName[0] = '\0';
