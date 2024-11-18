@@ -2141,9 +2141,8 @@ void frontEndShowGunsight(bool isShown) {
 bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   std::string buff;        /* Read Buffer               */
   char def[FILENAME_MAX];  /* The default value      */
-  char prefs[FILENAME_MAX];
 
-  bolo::preferencesGetPreferenceFile(prefs);
+  std::string prefs = bolo::preferencesGetPreferenceFile();
 
   /* Player Name */
   strcpy(def, langGetText(STR_DLGGAMESETUP_DEFAULTNAME));
@@ -2328,9 +2327,8 @@ void gameFrontPutPrefs(keyItems *keys) {
   char playerName[PLAYER_NAME_LEN];  /* Current player Name       */
   char playerName2[PLAYER_NAME_LEN]; /* Current player Name       */
   char buff[FILENAME_MAX];           /* Read Buffer               */
-  char prefs[FILENAME_MAX];
 
-  bolo::preferencesGetPreferenceFile(prefs);
+  std::string prefs = bolo::preferencesGetPreferenceFile();
   /* Player Name */
   if ((netGetType() == netSingle || gameFrontRemeber == TRUE) &&
       dlgState != openSetup) {
@@ -2341,144 +2339,162 @@ void gameFrontPutPrefs(keyItems *keys) {
       strcpy(playerName2, playerName);
     }
     bolo::WritePrivateProfileString("SETTINGS", "Player Name", playerName2,
-                                    prefs);
+                                    prefs.c_str());
   } else {
     bolo::WritePrivateProfileString("SETTINGS", "Player Name", gameFrontName,
-                                    prefs);
+                                    prefs.c_str());
   }
 
   /* Target Address */
   bolo::WritePrivateProfileString("SETTINGS", "Target Address",
-                                  gameFrontUdpAddress, prefs);
+                                  gameFrontUdpAddress, prefs.c_str());
 
   /* Target UDP Port */
   itoa(gameFrontTargetUdp, buff, 10);
-  bolo::WritePrivateProfileString("SETTINGS", "Target UDP Port", buff, prefs);
+  bolo::WritePrivateProfileString("SETTINGS", "Target UDP Port", buff,
+                                  prefs.c_str());
   /* My UDP Port */
   itoa(gameFrontMyUdp, buff, 10);
-  bolo::WritePrivateProfileString("SETTINGS", "UDP Port", buff, prefs);
+  bolo::WritePrivateProfileString("SETTINGS", "UDP Port", buff, prefs.c_str());
   /* Languages */
   langGetFileName(buff);
-  bolo::WritePrivateProfileString("SETTINGS", "Language", buff, prefs);
+  bolo::WritePrivateProfileString("SETTINGS", "Language", buff, prefs.c_str());
 
   /* Keys */
   itoa(keys->kiForward, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Forward", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Forward", buff, prefs.c_str());
   itoa(keys->kiBackward, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Backwards", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Backwards", buff, prefs.c_str());
   itoa(keys->kiLeft, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Left", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Left", buff, prefs.c_str());
   itoa(keys->kiRight, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Right", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Right", buff, prefs.c_str());
   itoa(keys->kiShoot, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Shoot", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Shoot", buff, prefs.c_str());
   itoa(keys->kiLayMine, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Lay Mine", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Lay Mine", buff, prefs.c_str());
   itoa(keys->kiGunIncrease, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Increase Range", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Increase Range", buff,
+                                  prefs.c_str());
   itoa(keys->kiGunDecrease, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Decrease Range", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Decrease Range", buff,
+                                  prefs.c_str());
   itoa(keys->kiTankView, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Tank View", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Tank View", buff, prefs.c_str());
   itoa(keys->kiPillView, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Pill View", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Pill View", buff, prefs.c_str());
   itoa(keys->kiScrollUp, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Scroll Up", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Scroll Up", buff, prefs.c_str());
   itoa(keys->kiScrollDown, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Scroll Down", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Scroll Down", buff, prefs.c_str());
   itoa(keys->kiScrollLeft, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Scroll Left", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Scroll Left", buff, prefs.c_str());
   itoa(keys->kiScrollRight, buff, 10);
-  bolo::WritePrivateProfileString("KEYS", "Scroll Right", buff, prefs);
+  bolo::WritePrivateProfileString("KEYS", "Scroll Right", buff, prefs.c_str());
   /* Remember */
   bolo::WritePrivateProfileString("SETTINGS", "Remember Player Name",
-                                  TRUEFALSE_TO_STR(gameFrontRemeber), prefs);
+                                  TRUEFALSE_TO_STR(gameFrontRemeber),
+                                  prefs.c_str());
 
   /* Options */
   bolo::WritePrivateProfileString("GAME OPTIONS", "Hidden Mines",
-                                  TRUEFALSE_TO_STR(hiddenMines), prefs);
+                                  TRUEFALSE_TO_STR(hiddenMines), prefs.c_str());
   itoa(compTanks, buff, 10);
   bolo::WritePrivateProfileString("GAME OPTIONS", "Allow Computer Tanks", buff,
-                                  prefs);
+                                  prefs.c_str());
   compTanks = (aiType)atoi(buff);
   itoa(gametype, buff, 10);
-  bolo::WritePrivateProfileString("GAME OPTIONS", "Game Type", buff, prefs);
+  bolo::WritePrivateProfileString("GAME OPTIONS", "Game Type", buff,
+                                  prefs.c_str());
   ltoa(startDelay, buff, 10);
-  bolo::WritePrivateProfileString("GAME OPTIONS", "Start Delay", buff, prefs);
+  bolo::WritePrivateProfileString("GAME OPTIONS", "Start Delay", buff,
+                                  prefs.c_str());
   ltoa(timeLen, buff, 10);
-  bolo::WritePrivateProfileString("GAME OPTIONS", "Time Length", buff, prefs);
+  bolo::WritePrivateProfileString("GAME OPTIONS", "Time Length", buff,
+                                  prefs.c_str());
   bolo::WritePrivateProfileString("GAME OPTIONS", "Auto Slowdown",
-                                  TRUEFALSE_TO_STR(useAutoslow), prefs);
+                                  TRUEFALSE_TO_STR(useAutoslow), prefs.c_str());
   bolo::WritePrivateProfileString("GAME OPTIONS", "Auto Show-Hide Gunsight",
-                                  TRUEFALSE_TO_STR(useAutohide), prefs);
+                                  TRUEFALSE_TO_STR(useAutohide), prefs.c_str());
 
   /* Tracker */
   bolo::WritePrivateProfileString("TRACKER", "Address", gameFrontTrackerAddr,
-                                  prefs);
+                                  prefs.c_str());
   itoa(gameFrontTrackerPort, buff, 10);
-  bolo::WritePrivateProfileString("TRACKER", "Port", buff, prefs);
-  bolo::WritePrivateProfileString(
-      "TRACKER", "Enabled", TRUEFALSE_TO_STR(gameFrontTrackerEnabled), prefs);
+  bolo::WritePrivateProfileString("TRACKER", "Port", buff, prefs.c_str());
+  bolo::WritePrivateProfileString("TRACKER", "Enabled",
+                                  TRUEFALSE_TO_STR(gameFrontTrackerEnabled),
+                                  prefs.c_str());
 
   /* Menu Items */
   itoa(frameRate, buff, 10);
-  bolo::WritePrivateProfileString("MENU", "Frame Rate", buff, prefs);
-  bolo::WritePrivateProfileString("MENU", "Show Gunsight",
-                                  TRUEFALSE_TO_STR(showGunsight), prefs);
-  bolo::WritePrivateProfileString("MENU", "Sound Effects",
-                                  TRUEFALSE_TO_STR(soundEffects), prefs);
+  bolo::WritePrivateProfileString("MENU", "Frame Rate", buff, prefs.c_str());
+  bolo::WritePrivateProfileString(
+      "MENU", "Show Gunsight", TRUEFALSE_TO_STR(showGunsight), prefs.c_str());
+  bolo::WritePrivateProfileString(
+      "MENU", "Sound Effects", TRUEFALSE_TO_STR(soundEffects), prefs.c_str());
 
   bolo::WritePrivateProfileString("MENU", "Allow Background Sound",
-                                  TRUEFALSE_TO_STR(backgroundSound), prefs);
+                                  TRUEFALSE_TO_STR(backgroundSound),
+                                  prefs.c_str());
   bolo::WritePrivateProfileString("MENU", "ISA Sound Card",
-                                  TRUEFALSE_TO_STR(isISASoundCard), prefs);
-  bolo::WritePrivateProfileString("MENU", "Show Gunsight",
-                                  TRUEFALSE_TO_STR(showGunsight), prefs);
+                                  TRUEFALSE_TO_STR(isISASoundCard),
+                                  prefs.c_str());
+  bolo::WritePrivateProfileString(
+      "MENU", "Show Gunsight", TRUEFALSE_TO_STR(showGunsight), prefs.c_str());
   bolo::WritePrivateProfileString("MENU", "Show Newswire Messages",
                                   TRUEFALSE_TO_STR(showNewswireMessages),
-                                  prefs);
+                                  prefs.c_str());
   bolo::WritePrivateProfileString("MENU", "Show Assistant Messages",
                                   TRUEFALSE_TO_STR(showAssistantMessages),
-                                  prefs);
+                                  prefs.c_str());
   bolo::WritePrivateProfileString("MENU", "Show AI Messages",
-                                  TRUEFALSE_TO_STR(showAIMessages), prefs);
+                                  TRUEFALSE_TO_STR(showAIMessages),
+                                  prefs.c_str());
   bolo::WritePrivateProfileString("MENU", "Show Network Status Messages",
                                   TRUEFALSE_TO_STR(showNetworkStatusMessages),
-                                  prefs);
+                                  prefs.c_str());
   bolo::WritePrivateProfileString("MENU", "Show Network Debug Messages",
                                   TRUEFALSE_TO_STR(showNetworkDebugMessages),
-                                  prefs);
+                                  prefs.c_str());
   bolo::WritePrivateProfileString("MENU", "Autoscroll Enabled",
                                   TRUEFALSE_TO_STR(autoScrollingEnabled),
-                                  prefs);
+                                  prefs.c_str());
   bolo::WritePrivateProfileString("MENU", "Show Pill Labels",
-                                  TRUEFALSE_TO_STR(showPillLabels), prefs);
+                                  TRUEFALSE_TO_STR(showPillLabels),
+                                  prefs.c_str());
   bolo::WritePrivateProfileString("MENU", "Show Base Labels",
-                                  TRUEFALSE_TO_STR(showBaseLabels), prefs);
+                                  TRUEFALSE_TO_STR(showBaseLabels),
+                                  prefs.c_str());
   bolo::WritePrivateProfileString("MENU", "Label Own Tank",
-                                  TRUEFALSE_TO_STR(labelSelf), prefs);
+                                  TRUEFALSE_TO_STR(labelSelf), prefs.c_str());
   itoa(zoomFactor, buff, 10);
-  bolo::WritePrivateProfileString("MENU", "Window Size", buff, prefs);
+  bolo::WritePrivateProfileString("MENU", "Window Size", buff, prefs.c_str());
   itoa(labelMsg, buff, 10);
-  bolo::WritePrivateProfileString("MENU", "Message Label Size", buff, prefs);
+  bolo::WritePrivateProfileString("MENU", "Message Label Size", buff,
+                                  prefs.c_str());
   itoa(labelTank, buff, 10);
-  bolo::WritePrivateProfileString("MENU", "Tank Label Size", buff, prefs);
+  bolo::WritePrivateProfileString("MENU", "Tank Label Size", buff,
+                                  prefs.c_str());
 
   /* Winbolo.net */
   if (gameFrontWbnSavePass == TRUE) {
     bolo::WritePrivateProfileString("WINBOLO.NET", "Password", gameFrontWbnPass,
-                                    prefs);
+                                    prefs.c_str());
   } else {
-    bolo::WritePrivateProfileString("WINBOLO.NET", "Password", "", prefs);
+    bolo::WritePrivateProfileString("WINBOLO.NET", "Password", "",
+                                    prefs.c_str());
   }
   bolo::WritePrivateProfileString("WINBOLO.NET", "Active",
-                                  TRUEFALSE_TO_STR(gameFrontWbnUse), prefs);
+                                  TRUEFALSE_TO_STR(gameFrontWbnUse),
+                                  prefs.c_str());
   bolo::WritePrivateProfileString("WINBOLO.NET", "Save Password",
                                   TRUEFALSE_TO_STR(gameFrontWbnSavePass),
-                                  prefs);
-  std::string buff2 = bolo::GetPrivateProfileString("WINBOLO.NET", "Host",
-                                                    "wbn.winbolo.net", prefs);
-  bolo::WritePrivateProfileString("WINBOLO.NET", "Host", buff2.c_str(), prefs);
+                                  prefs.c_str());
+  std::string buff2 = bolo::GetPrivateProfileString(
+      "WINBOLO.NET", "Host", "wbn.winbolo.net", prefs.c_str());
+  bolo::WritePrivateProfileString("WINBOLO.NET", "Host", buff2.c_str(),
+                                  prefs.c_str());
 }
 
 BYTE upTo = 0;

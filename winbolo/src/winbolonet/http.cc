@@ -91,8 +91,7 @@ static unsigned long getaddrbyany(char *sp_name) {
  *
  *********************************************************/
 bool httpCreate() {
-  bool returnValue = true;  /* Value to return */
-  char prefs[FILENAME_MAX]; /* Preference file */
+  bool returnValue = true; /* Value to return */
   struct hostent *phe;      /* Used for DNS lookups */
 
 #ifdef _WIN32
@@ -105,7 +104,7 @@ bool httpCreate() {
   }
   strcpy(prefs, PREFERENCE_FILE);
 #else
-  bolo::preferencesGetPreferenceFile(prefs);
+  std::string prefs = bolo::preferencesGetPreferenceFile();
 #endif
 
   wbnHostString[0] = EMPTY_CHAR;
@@ -115,7 +114,7 @@ bool httpCreate() {
   strncpy(wbnHostString, buff.c_str(), FILENAME_MAX);
   bolo::WritePrivateProfileString(
       "WINBOLO.NET", "Host", wbnHostString,
-      prefs); /* Write it back if we are a server (we wont
+      prefs.c_str()); /* Write it back if we are a server (we wont
                  have a client config file yet) */
   httpAddrServer.sin_family = AF_INET;
   httpAddrServer.sin_port = htons(80);  // HTTP_SERVER_PORT

@@ -176,14 +176,13 @@ static void preferencesMakeDir(const char *path) {
  *ARGUMENTS:
  * value - Pointer to hold path returned
  *********************************************************/
-void preferencesGetPreferenceFile(char *value) {
+std::string preferencesGetPreferenceFile() {
   struct passwd *pwd;
 
   pwd = getpwuid(getuid());
   std::string filename = std::format("{}/.linbolo/", pwd->pw_dir);
   preferencesMakeDir(filename.c_str());
-  filename.append(PREFERENCE_FILE);
-  strcpy(value, filename.c_str());
+  return std::format("{}{}", filename, PREFERENCE_FILE);
 }
 
 }  // namespace bolo

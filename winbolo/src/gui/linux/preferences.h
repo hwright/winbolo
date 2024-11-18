@@ -83,7 +83,7 @@ void WritePrivateProfileString(const char *section, const char *item,
  *ARGUMENTS:
  * value - Pointer to hold path returned
  *********************************************************/
-void preferencesGetPreferenceFile(char *value);
+std::string preferencesGetPreferenceFile();
 
 }  // namespace bolo
 
