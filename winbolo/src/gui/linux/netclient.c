@@ -66,6 +66,7 @@ typedef GtkWidget HWND;
 #include "../linresource.h"
 #include "../lang.h"
 #include "../netclient.h"
+#include "../../lzw/lzw.h"
 
 
 
@@ -81,9 +82,6 @@ struct sockaddr_in addrTracker;    /* Tracker machine */
 /* Thread stuff */
 
 #define BUFFER_PREFIX_SIZE 2
-
-int lzwdecoding(char *src, char *dest, int len);
-int lzwencoding(char *src, char *dest, int len);
 
 
 /*********************************************************

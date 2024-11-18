@@ -44,6 +44,7 @@
 #include "log.h"
 #include "screenbrainmap.h"
 #include "screen.h"
+#include "../lzw/lzw.h"
 
 struct mapObj {
 	BYTE mapItem[MAP_ARRAY_SIZE][MAP_ARRAY_SIZE]; /* The actual map */
@@ -53,9 +54,6 @@ struct mapObj {
 
 #undef MAP_MAX_SERVER_WAIT
 #define MAP_MAX_SERVER_WAIT 200
-
-int lzwdecoding(char *src, char *dest, int len);
-int lzwencoding(char *src, char *dest, int len);
 
 /*********************************************************
 *NAME:          mapCreate
