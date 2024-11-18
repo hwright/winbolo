@@ -2,9 +2,9 @@
 
 #include "debug_file_output.h"
 
-FILE *debugFileStream;
-char fileName[2048];
-int writeToDebugFileStream;
+static FILE *debugFileStream;
+static char fileName[2048];
+static int writeToDebugFileStream;
 
 void getFileName(char *file) {
 	if (writeToDebugFileStream == 1) {

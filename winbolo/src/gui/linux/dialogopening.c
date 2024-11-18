@@ -32,14 +32,14 @@
 #include "boloicon.xpm"
 
 
-GtkWidget *idc_opentutorial;
-GtkWidget *idc_opensingle;
-GtkWidget *idc_opentcp;
-GtkWidget *idc_openlocal;
-GtkWidget *idc_openinternet;
-GtkWidget *us;
+static GtkWidget *idc_opentutorial;
+static GtkWidget *idc_opensingle;
+static GtkWidget *idc_opentcp;
+static GtkWidget *idc_openlocal;
+static GtkWidget *idc_openinternet;
+static GtkWidget *us;
 
-GtkRequisition req;
+static GtkRequisition req;
 gint opening_configure_event (GtkWidget *window, GdkEventConfigure *event) {
   GdkPixmap *pixmap;
   GdkBitmap *mask;

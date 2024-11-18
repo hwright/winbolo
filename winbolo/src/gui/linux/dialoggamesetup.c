@@ -39,24 +39,24 @@
 /* There are 60 seconds in a minute */
 #define NUM_SECONDS 60 
 
-GtkWidget *idc_gamesetupstartdelay;
-GtkWidget *idc_gamesetuptxtstartdelay;
-GtkWidget *idc_gamesetupradio1;
-GtkWidget *idc_gamesetupradio2;
-GtkWidget *idc_gamesetupradio3;
-GtkWidget *idc_gamesetuphiddenmines;
-GtkWidget *idc_gamesetupcomptanks1;
-GtkWidget *idc_gamesetupcomptanks2;
-GtkWidget *idc_gamesetupselectedmap;
-GtkWidget *idc_gamesetupgamepassword;
-GtkWidget *idc_gamesetuptextpassword;
-GtkWidget *idc_gamesetuptimelimit;
-GtkWidget *idc_gamesetuptxtlimit;
-GtkWidget     *filew;
-GtkWidget *dialogGameSetupUs;
+static GtkWidget *idc_gamesetupstartdelay;
+static GtkWidget *idc_gamesetuptxtstartdelay;
+static GtkWidget *idc_gamesetupradio1;
+static GtkWidget *idc_gamesetupradio2;
+static GtkWidget *idc_gamesetupradio3;
+static GtkWidget *idc_gamesetuphiddenmines;
+static GtkWidget *idc_gamesetupcomptanks1;
+static GtkWidget *idc_gamesetupcomptanks2;
+static GtkWidget *idc_gamesetupselectedmap;
+static GtkWidget *idc_gamesetupgamepassword;
+static GtkWidget *idc_gamesetuptextpassword;
+static GtkWidget *idc_gamesetuptimelimit;
+static GtkWidget *idc_gamesetuptxtlimit;
+static GtkWidget     *filew;
+static GtkWidget *dialogGameSetupUs;
 
-bool closing = FALSE;
-char fileName[FILENAME_MAX]; /* The filename and path that should be opened */
+static bool closing = FALSE;
+static char fileName[FILENAME_MAX]; /* The filename and path that should be opened */
 
 void file_cancel_sel (GtkWidget *w, GtkFileSelection *fs) {
   gtk_widget_destroy (filew);

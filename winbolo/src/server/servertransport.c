@@ -55,12 +55,12 @@ typedef int SOCKET;
 #include "servercore.h"
 
 
-SOCKET sockUdp = INVALID_SOCKET; /* Our UDP socket */
+static SOCKET sockUdp = INVALID_SOCKET; /* Our UDP socket */
 
-struct sockaddr_in addrUs;      /* Our own machine */
-unsigned short myPort;          /* Our UDP Port number */
-struct sockaddr_in addrLast;    /* Where the last packet came from */
-struct sockaddr_in addrTracker; /* Tracker machine */
+static struct sockaddr_in addrUs;      /* Our own machine */
+static unsigned short myPort;          /* Our UDP Port number */
+static struct sockaddr_in addrLast;    /* Where the last packet came from */
+static struct sockaddr_in addrTracker; /* Tracker machine */
 
 
 static unsigned long getaddrbyany(char *sp_name)  {               
