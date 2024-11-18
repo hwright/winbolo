@@ -269,6 +269,11 @@ typedef enum {
 } playerNumbers;
 
 #endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* Prototypes */
 
 /*********************************************************
@@ -1423,6 +1428,9 @@ typedef enum {
 buildSelect getBuildCurrentSelect();
 void setBuildCurrentSelect(buildSelect);
 
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* _BACKEND_H */
 

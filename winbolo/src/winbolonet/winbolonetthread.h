@@ -108,7 +108,7 @@ void winbolonetThreadAddRequest(BYTE *data, int len);
 *ARGUMENTS:
 *
 *********************************************************/
-int winbolonetThreadRun();
+int winbolonetThreadRun(void*);
 
 #endif /* __WINBOLONET_THREAD_H */
 

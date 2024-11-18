@@ -49,7 +49,7 @@ typedef struct dnsListObj *dnsList;
 struct dnsListObj {
   dnsList next;  /* Next item */ 
   char ip[512];  /* IP Size */
-  void *func;    /* Address to call */
+  void (*func)(char*, char*);    /* Address to call */
 };
 
 
@@ -92,7 +92,7 @@ void dnsLookupsDestroy(void);
 *  func - The function to call back when the results have
 *         have be determined
 *********************************************************/
-void dnsLookupsAddRequest(char *ip, void *func);
+void dnsLookupsAddRequest(char *ip, void (*func)(char*, char*));
 
 /*********************************************************
 *NAME:          dnsLookupsRun
@@ -105,6 +105,6 @@ void dnsLookupsAddRequest(char *ip, void *func);
 *ARGUMENTS:
 *
 *********************************************************/
-int dnsLookupsRun();
+int dnsLookupsRun(void*);
 
 #endif /* _DNSLOOKUPS_H */
