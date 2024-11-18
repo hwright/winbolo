@@ -14,18 +14,16 @@
  * GNU General Public License for more details.
  */
 
-
-
 /*********************************************************
-*Name:          gametype
-*Filename:      gametype.h
-*Author:        John Morrison
-*Creation Date: 29/01/99
-*Last Modified: 17/12/03
-*Purpose:
-*  Responsable for tracking amounts of armour, health etc.
-*  that should be given to a tank and gametype
-*********************************************************/
+ *Name:          gametype
+ *Filename:      gametype.h
+ *Author:        John Morrison
+ *Creation Date: 29/01/99
+ *Last Modified: 17/12/03
+ *Purpose:
+ *  Responsable for tracking amounts of armour, health etc.
+ *  that should be given to a tank and gametype
+ *********************************************************/
 
 #ifndef GAMETYPE_H
 #define GAMETYPE_H
@@ -46,59 +44,56 @@
 #ifndef _GAMETYPE_ENUM
 #define _GAMETYPE_ENUM
 
-typedef enum {
-  gameOpen = 1,
-  gameTournament,
-  gameStrictTournament
-} gameType;
+typedef enum { gameOpen = 1, gameTournament, gameStrictTournament } gameType;
 
 #endif
 
 /* Prototypes */
 
 /*********************************************************
-*NAME:          gameTypeSet
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/01/99
-*LAST MODIFIED: 17/12/03
-*PURPOSE:
-* Sets the game type. Should be set before any other
-* calls are made to the module
-*
-*ARGUMENTS:
-* value - Value to set the game type to
-*********************************************************/
+ *NAME:          gameTypeSet
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/01/99
+ *LAST MODIFIED: 17/12/03
+ *PURPOSE:
+ * Sets the game type. Should be set before any other
+ * calls are made to the module
+ *
+ *ARGUMENTS:
+ * value - Value to set the game type to
+ *********************************************************/
 void gameTypeSet(gameType *gmtType, gameType value);
 
 /*********************************************************
-*NAME:          gameTypeGet
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/01/99
-*LAST MODIFIED: 17/12/03
-*PURPOSE:
-* Returns the game type.
-*
-*ARGUMENTS:
-*  gmeType      - Pointer to the game type
-*********************************************************/
+ *NAME:          gameTypeGet
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/01/99
+ *LAST MODIFIED: 17/12/03
+ *PURPOSE:
+ * Returns the game type.
+ *
+ *ARGUMENTS:
+ *  gmeType      - Pointer to the game type
+ *********************************************************/
 gameType gameTypeGet(gameType *gmeType);
 
 /*********************************************************
-*NAME:          gameTypeGetItems
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/01/99
-*LAST MODIFIED: 17/12/03
-*PURPOSE:
-* Called when a tank needs to restart. Fills the 
-* parameters with how much stuff it should hold.
-*
-*ARGUMENTS:
-*  gmeType      - Pointer to the game type
-*  shellsAmount - Pointer to hold the number of shells
-*  mines  - Pointer to hold the number of mines
-*  armour - Pointer to hold the amount of armour
-*  trees  - Pointer to hold the number of trees
-*********************************************************/
-void gameTypeGetItems(gameType *gmeType, BYTE *shellsAmount, BYTE *mines, BYTE *armour, BYTE *trees);
+ *NAME:          gameTypeGetItems
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/01/99
+ *LAST MODIFIED: 17/12/03
+ *PURPOSE:
+ * Called when a tank needs to restart. Fills the
+ * parameters with how much stuff it should hold.
+ *
+ *ARGUMENTS:
+ *  gmeType      - Pointer to the game type
+ *  shellsAmount - Pointer to hold the number of shells
+ *  mines  - Pointer to hold the number of mines
+ *  armour - Pointer to hold the amount of armour
+ *  trees  - Pointer to hold the number of trees
+ *********************************************************/
+void gameTypeGetItems(gameType *gmeType, BYTE *shellsAmount, BYTE *mines,
+                      BYTE *armour, BYTE *trees);
 
 #endif /* GAMETYPE_H */

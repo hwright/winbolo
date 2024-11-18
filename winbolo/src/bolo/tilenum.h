@@ -14,16 +14,15 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          tilenum
-*Filename:      tilenum.h 
-*Author:        John Morrison
-*Creation Date: 28/10/98
-*Last Modified: 30/01/02
-*Purpose:
-*  Defines tile peices with a unique number
-*********************************************************/
+ *Name:          tilenum
+ *Filename:      tilenum.h
+ *Author:        John Morrison
+ *Creation Date: 28/10/98
+ *Last Modified: 30/01/02
+ *Purpose:
+ *  Defines tile peices with a unique number
+ *********************************************************/
 
 #ifndef TILE_NUM_H
 #define TILE_NUM_H
@@ -43,7 +42,7 @@
 #define ROAD_CORNER8 26
 #define ROAD_SOLID 27 /* Solid road */
 #define ROAD_CROSS 28
-#define ROAD_T1 29    /* T Junctions */
+#define ROAD_T1 29 /* T Junctions */
 #define ROAD_T2 30
 #define ROAD_T3 31
 #define ROAD_T4 32
@@ -55,14 +54,14 @@
 #define ROAD_WATER6 38
 #define ROAD_WATER7 39
 #define ROAD_WATER8 40
-#define ROAD_WATER9 41 /* Horizontal water peice */
+#define ROAD_WATER9 41  /* Horizontal water peice */
 #define ROAD_WATER10 42 /* Vertical water peice */
 #define ROAD_WATER11 43 /* Lone water peice */
 
 #define ROAD_SIDE1 44 /* Single Side peices */
 #define ROAD_SIDE2 45
 #define ROAD_SIDE3 46
-#define ROAD_SIDE4 47 
+#define ROAD_SIDE4 47
 
 #define BASE_GOOD 49
 #define BASE_NEUTRAL 122
@@ -75,7 +74,7 @@
 #define BUILD_HORZEND2 54
 #define BUILD_VERTEND1 55
 #define BUILD_VERTEND2 56
-#define BUILD_SOLID 57 /* Builing peices on all side */
+#define BUILD_SOLID 57   /* Builing peices on all side */
 #define BUILD_CORNER1 58 /* 4 corners */
 #define BUILD_CORNER2 59
 #define BUILD_CORNER3 60
@@ -116,14 +115,14 @@
 #define BUILD_MOST3 95
 #define BUILD_MOST4 96
 /* River Peices */
-#define RIVER_END1 97  /* The four end U peices */
+#define RIVER_END1 97 /* The four end U peices */
 #define RIVER_END2 98
 #define RIVER_END3 99
 #define RIVER_END4 100
-#define RIVER_SOLID 101 /* Solid River Peice */
+#define RIVER_SOLID 101    /* Solid River Peice */
 #define RIVER_SURROUND 102 /* River surrounded on all sides by buildings */
-#define RIVER_SIDE1 103 /* River Side Peices eg - | | */
-#define RIVER_SIDE2 104 
+#define RIVER_SIDE1 103    /* River Side Peices eg - | | */
+#define RIVER_SIDE2 104
 #define RIVER_ONESIDE1 105 /* One side land others water */
 #define RIVER_ONESIDE2 106
 #define RIVER_ONESIDE3 107
@@ -133,7 +132,7 @@
 #define RIVER_CORN3 111
 #define RIVER_CORN4 112
 /* Deep Sea Peices */
-#define DEEP_SEA_SOLID 113 
+#define DEEP_SEA_SOLID 113
 #define DEEP_SEA_CORN1 114 /* Corner peices L Shaped */
 #define DEEP_SEA_CORN2 115
 #define DEEP_SEA_CORN3 116
@@ -242,8 +241,10 @@
 #define TANK_EVILBOAT_15 95
 
 #define TANK_BOAT_ADD 16
-#define TANK_GOOD_ADD 32 /* Add 32 to get to the begining of the allie tank tiles */
-#define TANK_EVIL_ADD 64 /* Add 64 to get to the begining of the allie tank tiles */
+#define TANK_GOOD_ADD \
+  32 /* Add 32 to get to the begining of the allie tank tiles */
+#define TANK_EVIL_ADD \
+  64 /* Add 64 to get to the begining of the allie tank tiles */
 #define TANK_TRANSPARENT 255
 
 /* shells and explosions */
@@ -306,7 +307,6 @@
 #define PILL_GOOD_1 161
 #define PILL_GOOD_0 162
 
-
 /* Forests */
 #define FOREST_SINGLE 164
 #define FOREST_BR 165
@@ -339,7 +339,6 @@
 #define BOAT_6 144
 #define BOAT_7 145
 #define BOAT_8 146
-
 
 /* LGM */
 #define LGM0 0

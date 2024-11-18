@@ -14,8 +14,7 @@
  * GNU General Public License for more details.
  */
 
-
-#ifndef GLOBAL_H  /* Double inclusion protection */
+#ifndef GLOBAL_H /* Double inclusion protection */
 #define GLOBAL_H
 
 /* Standard Includes */
@@ -24,14 +23,13 @@
 #include <string.h>
 
 /* Byte type def */
-typedef unsigned char  BYTE;
+typedef unsigned char BYTE;
 typedef BYTE MAP_X, MAP_Y;
 typedef float TURNTYPE;
 typedef float SPEEDTYPE;
 #ifdef _WIN32
 typedef unsigned char u_char;
 #endif
-
 
 /* The world co-ordinate for tank - It is a 16 bit number*/
 /* Top 8 bits (or byte) represent position on the map */
@@ -42,13 +40,10 @@ typedef unsigned short WORLD;
 /* WORD data type */
 typedef unsigned short WORD;
 
-
-
 typedef unsigned long PlayerBitMap;
 
 /* Strings of 36 charectors */
 #define MAP_STR_SIZE 36
-
 
 /* The type compatible with all other pointers types;
  * used where the corresponding type is indeterminate
@@ -56,7 +51,7 @@ typedef unsigned long PlayerBitMap;
 typedef void *Generic;
 
 /* Fixed Strings, STRINGSIZE and SHORTSTRINGSIZE set buffer length.*/
-#ifndef FILENAME_MAX  /* Usually somwhere in stdio.h */
+#ifndef FILENAME_MAX /* Usually somwhere in stdio.h */
 #define FILENAME_MAX 256
 #endif
 
@@ -66,13 +61,12 @@ typedef char *StringRef;
 typedef char StringBuf[STRINGSIZE];
 typedef char ShortStringBuf[SHORTSTRINGSIZE];
 
-
 /* An Null Charector */
 #define EMPTY_CHAR '\0'
 
 /* The terrain types */
 
-#define DEEP_SEA 0xFF 
+#define DEEP_SEA 0xFF
 #define BUILDING 0
 #define RIVER 1
 #define SWAMP 2
@@ -91,7 +85,7 @@ typedef char ShortStringBuf[SHORTSTRINGSIZE];
 #define MINE_GRASS 15
 
 /* Mines start at the 10th element */
-#define MINE_START 10 
+#define MINE_START 10
 #define MINE_END 15
 #define MINE_SUBTRACT 8
 
@@ -198,7 +192,7 @@ typedef char ShortStringBuf[SHORTSTRINGSIZE];
 
 /* Player Name string lengths */
 #define PLAYER_NAME_LEN 33
-#define PLAYER_NAME_LAST 32 
+#define PLAYER_NAME_LAST 32
 
 /* These are for the static view when a tank dies.  The static
  * appears at different times depending on how the tank died. */
@@ -210,7 +204,8 @@ typedef char ShortStringBuf[SHORTSTRINGSIZE];
 /* How did the player's tank die? */
 #define LAST_DEATH_BY_DEEPSEA 1
 #define LAST_DEATH_BY_SHELL 2
-#define LAST_DEATH_BY_MINES 0		/* changed this from 3 to 0 on feb 10, 2009 -- jhood */
+#define LAST_DEATH_BY_MINES \
+  0 /* changed this from 3 to 0 on feb 10, 2009 -- jhood */
 
 /* Change the static bitmap displayed every 10 ticks */
 #define STATIC_CHANGE_TICKS 10
@@ -231,5 +226,4 @@ typedef char ShortStringBuf[SHORTSTRINGSIZE];
 
 #include "../server/threads.h"
 
-#endif /* GLOBAL_H */ 
-
+#endif /* GLOBAL_H */

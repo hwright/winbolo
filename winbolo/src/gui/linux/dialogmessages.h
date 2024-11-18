@@ -14,7 +14,6 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef _DIALOGMESSAGES_H
 #define _DIALOGMESSAGES_H
 #include <gtk/gtk.h>

@@ -14,56 +14,58 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Log
-*Filename:      log.c
-*Author:        John Morrison
-*CREATION DATE: 05/05/01
-*LAST MODIFIED: 25/07/04
-*Purpose:
-*  Responsable for creating WinBolo log files
-*********************************************************/
+ *Name:          Log
+ *Filename:      log.c
+ *Author:        John Morrison
+ *CREATION DATE: 05/05/01
+ *LAST MODIFIED: 25/07/04
+ *Purpose:
+ *  Responsable for creating WinBolo log files
+ *********************************************************/
 
 #include <stdio.h>
 #include <string.h>
-//#include <winsock.h>
-#include "global.h"
-#include "util.h"
-#include "bolo_map.h"
-#include "starts.h"
-#include "pillbox.h"
-#include "bases.h"
-#include "log.h"
-#include "netpacks.h"
+// #include <winsock.h>
 #include <minizip/zip.h>
+
 #include "../server/servercore.h"
 #include "../server/servernet.h"
 #include "../winbolonet/winbolonet.h"
+#include "bases.h"
+#include "bolo_map.h"
+#include "global.h"
+#include "log.h"
+#include "netpacks.h"
+#include "pillbox.h"
+#include "starts.h"
+#include "util.h"
 
-static zipFile logFile;               /* File to log to */
-static unsigned short logLastEvent; /* Last event logged. Increments each time there are no events */
-static unsigned short logNumEvents; /* Last event logged. Increments each time there are no events */
-static bool  logIsRunning;          /* Are we saving a log */
+static zipFile logFile;             /* File to log to */
+static unsigned short logLastEvent; /* Last event logged. Increments each time
+                                       there are no events */
+static unsigned short logNumEvents; /* Last event logged. Increments each time
+                                       there are no events */
+static bool logIsRunning;           /* Are we saving a log */
 static BYTE *logMem = nullptr;
-static unsigned short logMemSize;   /* How much memory are we using */
-static BYTE logKey; /* Current log encryption key */
-static BYTE logOldKey; /* Old key needed for writing state */
-static bool logLastEmpty; /* Was the last log empty? */
+static unsigned short logMemSize; /* How much memory are we using */
+static BYTE logKey;               /* Current log encryption key */
+static BYTE logOldKey;            /* Old key needed for writing state */
+static bool logLastEmpty;         /* Was the last log empty? */
 
 static logTanks logCheckTanks;
 
 /*********************************************************
-*NAME:          logCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 5/5/01
-*LAST MODIFIED: 5/5/01
-*PURPOSE:
-* Creates the log subsystem
-*
-*ARGUMENTS:
-*  
-*********************************************************/
+ *NAME:          logCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 5/5/01
+ *LAST MODIFIED: 5/5/01
+ *PURPOSE:
+ * Creates the log subsystem
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void logCreate() {
   logFile = nullptr;
   logLastEvent = 0;
@@ -76,16 +78,16 @@ void logCreate() {
 }
 
 /*********************************************************
-*NAME:          logWriteEmpty
-*AUTHOR:        John Morrison
-*CREATION DATE: 05/05/01
-*LAST MODIFIED: 25/07/04
-*PURPOSE:
-* Writes the nothing happened for X ticks to the log file
-*
-*ARGUMENTS:
-*  
-*********************************************************/
+ *NAME:          logWriteEmpty
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 05/05/01
+ *LAST MODIFIED: 25/07/04
+ *PURPOSE:
+ * Writes the nothing happened for X ticks to the log file
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void logWriteEmpty() {
   BYTE data[3];
   unsigned short us;
@@ -93,13 +95,13 @@ void logWriteEmpty() {
     if (logLastEvent > 0) {
       if (logLastEvent < LOG_SIZE_LONG_DIFF) {
         data[0] = LOG_NOEVENTS ^ logOldKey;
-        data[1] = (BYTE) logLastEvent ^ logOldKey;
+        data[1] = (BYTE)logLastEvent ^ logOldKey;
         zipWriteInFileInZip(logFile, data, 2);
       } else {
         us = htons(logLastEvent);
         data[0] = LOG_NOEVENTS_LONG ^ logOldKey;
-        data[1] = (BYTE) (us >> 8) ^ logOldKey;
-        data[2] = (BYTE) (us & 0xFF) ^ logOldKey;
+        data[1] = (BYTE)(us >> 8) ^ logOldKey;
+        data[2] = (BYTE)(us & 0xFF) ^ logOldKey;
         zipWriteInFileInZip(logFile, data, 3);
       }
     }
@@ -109,16 +111,16 @@ void logWriteEmpty() {
 }
 
 /*********************************************************
-*NAME:          logWriteTick
-*AUTHOR:        John Morrison
-*CREATION DATE: 05/05/01
-*LAST MODIFIED: 25/07/04
-*PURPOSE:
-* Called every tick. Logs stuff if required
-*
-*ARGUMENTS:
-*  
-*********************************************************/
+ *NAME:          logWriteTick
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 05/05/01
+ *LAST MODIFIED: 25/07/04
+ *PURPOSE:
+ * Called every tick. Logs stuff if required
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void logWriteTick() {
   BYTE savedKey = logOldKey;
 
@@ -139,30 +141,30 @@ void logWriteTick() {
 }
 
 /*********************************************************
-*NAME:          logWriteEvents
-*AUTHOR:        John Morrison
-*CREATION DATE: 05/05/01
-*LAST MODIFIED: 25/07/04
-*PURPOSE:
-* Writes any memory written events to the log file
-*
-*ARGUMENTS:
-*  key - Key to use to write events header
-*********************************************************/
+ *NAME:          logWriteEvents
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 05/05/01
+ *LAST MODIFIED: 25/07/04
+ *PURPOSE:
+ * Writes any memory written events to the log file
+ *
+ *ARGUMENTS:
+ *  key - Key to use to write events header
+ *********************************************************/
 void logWriteEvents(BYTE key) {
   BYTE data[3];
   unsigned short us;
-  
+
   if (logNumEvents > 0) {
     if (logNumEvents < LOG_SIZE_LONG_DIFF) {
       data[0] = LOG_EVENT ^ key;
-      data[1] = (BYTE) logNumEvents ^ key;
+      data[1] = (BYTE)logNumEvents ^ key;
       zipWriteInFileInZip(logFile, data, 2);
     } else {
       us = htons(logNumEvents);
       data[0] = LOG_EVENT_LONG ^ key;
-      data[1] = (BYTE) (us >> 8) ^ key;
-      data[2] = (BYTE) (us & 0xFF) ^ key;
+      data[1] = (BYTE)(us >> 8) ^ key;
+      data[2] = (BYTE)(us & 0xFF) ^ key;
       zipWriteInFileInZip(logFile, data, 3);
     }
     zipWriteInFileInZip(logFile, logMem, logMemSize);
@@ -172,19 +174,20 @@ void logWriteEvents(BYTE key) {
 }
 
 /*********************************************************
-*NAME:          logStop
-*AUTHOR:        John Morrison
-*CREATION DATE: 5/5/01
-*LAST MODIFIED: 5/5/01
-*PURPOSE:
-* Stops logging if we are
-*
-*ARGUMENTS:
-*  
-*********************************************************/
+ *NAME:          logStop
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 5/5/01
+ *LAST MODIFIED: 5/5/01
+ *PURPOSE:
+ * Stops logging if we are
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void logStop() {
   BYTE data[2];
-  BYTE savedKey = logOldKey; /* Save the key as the old key will be overridden in WriteEmpty */
+  BYTE savedKey = logOldKey; /* Save the key as the old key will be overridden
+                                in WriteEmpty */
 
   if (logIsRunning) {
     logWriteEmpty();
@@ -198,291 +201,294 @@ void logStop() {
 }
 
 /*********************************************************
-*NAME:          logIsRecording
-*AUTHOR:        John Morrison
-*CREATION DATE: 5/5/01
-*LAST MODIFIED: 5/5/01
-*PURPOSE:
-* Returns if we are reocrding or not
-*
-*ARGUMENTS:
-*  
-*********************************************************/
-bool logIsRecording() {
-  return logIsRunning;
-}
-
+ *NAME:          logIsRecording
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 5/5/01
+ *LAST MODIFIED: 5/5/01
+ *PURPOSE:
+ * Returns if we are reocrding or not
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+bool logIsRecording() { return logIsRunning; }
 
 /*********************************************************
-*NAME:          logAddToMemory
-*AUTHOR:        John Morrison
-*CREATION DATE: 5/5/01
-*LAST MODIFIED: 5/5/01
-*PURPOSE:
-*
-*
-*ARGUMENTS:
-*	memPos -
-*	data   -
-*	dataLen -
-*********************************************************/
+ *NAME:          logAddToMemory
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 5/5/01
+ *LAST MODIFIED: 5/5/01
+ *PURPOSE:
+ *
+ *
+ *ARGUMENTS:
+ *	memPos -
+ *	data   -
+ *	dataLen -
+ *********************************************************/
 void logAddToMemory(BYTE *memPos, BYTE *data, BYTE dataLen) {
   BYTE count = 0;
 
   while (count < dataLen) {
-    *(memPos+count) = *(data+count) ^ logKey;
+    *(memPos + count) = *(data + count) ^ logKey;
     count++;
   }
 }
 
 /*********************************************************
-*NAME:          logAddEvent
-*AUTHOR:        John Morrison
-*CREATION DATE: 5/5/01
-*LAST MODIFIED: 5/5/01
-*PURPOSE:
-* Adds a event to be logged
-*
-*ARGUMENTS:
-*  itemNum - Item number to add
-*  opt1    - Option argument 1
-*  opt2    - Option argument 2
-*  opt3    - Option argument 3
-*  opt4    - Option argument 4
-*  short1  - Short optional argument
-*  words   - Char* optional argument
-*********************************************************/
-void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4, unsigned short short1, char *words) {
+ *NAME:          logAddEvent
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 5/5/01
+ *LAST MODIFIED: 5/5/01
+ *PURPOSE:
+ * Adds a event to be logged
+ *
+ *ARGUMENTS:
+ *  itemNum - Item number to add
+ *  opt1    - Option argument 1
+ *  opt2    - Option argument 2
+ *  opt3    - Option argument 3
+ *  opt4    - Option argument 4
+ *  short1  - Short optional argument
+ *  words   - Char* optional argument
+ *********************************************************/
+void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4,
+                 unsigned short short1, char *words) {
   bool changeKey = true; /* Whether to change the encryption key or not */
 
   if (logIsRunning) {
     switch (itemNum) {
-    case log_BaseSetOwner:
-      *(logMem+logMemSize) = log_BaseSetOwner ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt3 ^ logKey;
-      logMemSize++;
-      break;
-    case log_BaseSetStock:
-      *(logMem+logMemSize) = log_BaseSetStock ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt3 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt4 ^ logKey;
-      logMemSize++;
-      break;
-    case log_PlayerJoined:
-      *(logMem+logMemSize) = log_PlayerJoined ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt3 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt4 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = (BYTE) short1 ^ logKey;
-      logMemSize++;
-      logAddToMemory((logMem+logMemSize), (BYTE *) words, (BYTE) (words[0]+1));
-//      memcpy((logMem+logMemSize), words, words[0]+1);
-      logMemSize += (BYTE) (words[0]+1);
-      break;
-    case log_PlayerQuit:
-      *(logMem+logMemSize) = log_PlayerQuit ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      break;
-    case log_LostMan:
-      *(logMem+logMemSize) = log_LostMan ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      break;
-    case log_MapChange:
-      *(logMem+logMemSize) =  log_MapChange ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt3 ^ logKey;
-      logMemSize++;
-      break;
-    case log_ChangeName:
-      *(logMem+logMemSize) =  log_ChangeName ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      logAddToMemory((logMem+logMemSize), (BYTE *) words, (BYTE) (words[0]+1));
-//      memcpy((logMem+logMemSize), words, words[0]+1);
-      logMemSize += (BYTE) (words[0]+1);
-      break;
-    case log_AllyRequest:
-      *(logMem+logMemSize) =  log_AllyRequest ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      break;
-    case log_AllyAccept:
-      *(logMem+logMemSize) =  log_AllyAccept ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      break;
-    case log_AllyLeave:
-      *(logMem+logMemSize) =  log_AllyLeave ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      break;
-    case log_PillSetOwner:
-      *(logMem+logMemSize) =  log_PillSetOwner ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt3 ^ logKey;
-      logMemSize++;
-      break;
-    case log_PillSetPlace:
-      *(logMem+logMemSize) =  log_PillSetPlace ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt3 ^ logKey;
-      logMemSize++;
-      break;
-    case log_PillSetHealth:
-    case log_PillSetInTank:
-      *(logMem+logMemSize) =  itemNum ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      break;
-    case log_SoundBuild:
-    case log_SoundFarm:
-    case log_SoundShoot:
-    case log_SoundHitWall:
-    case log_SoundHitTank:
-    case log_SoundHitTree:
-    case log_SoundMineLay:
-    case log_SoundMineExplode:
-    case log_SoundExplosion:
-    case log_SoundBigExplosion:
-    case log_SoundManDie:
-      *(logMem+logMemSize) = itemNum ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      break;
-    case log_PlayerLocation:
-      if (logCheckTankSame(opt1, opt2, opt3, opt4, (BYTE) short1)) {
+      case log_BaseSetOwner:
+        *(logMem + logMemSize) = log_BaseSetOwner ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt3 ^ logKey;
+        logMemSize++;
+        break;
+      case log_BaseSetStock:
+        *(logMem + logMemSize) = log_BaseSetStock ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt3 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt4 ^ logKey;
+        logMemSize++;
+        break;
+      case log_PlayerJoined:
+        *(logMem + logMemSize) = log_PlayerJoined ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt3 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt4 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = (BYTE)short1 ^ logKey;
+        logMemSize++;
+        logAddToMemory((logMem + logMemSize), (BYTE *)words,
+                       (BYTE)(words[0] + 1));
+        //      memcpy((logMem+logMemSize), words, words[0]+1);
+        logMemSize += (BYTE)(words[0] + 1);
+        break;
+      case log_PlayerQuit:
+        *(logMem + logMemSize) = log_PlayerQuit ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        break;
+      case log_LostMan:
+        *(logMem + logMemSize) = log_LostMan ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        break;
+      case log_MapChange:
+        *(logMem + logMemSize) = log_MapChange ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt3 ^ logKey;
+        logMemSize++;
+        break;
+      case log_ChangeName:
+        *(logMem + logMemSize) = log_ChangeName ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        logAddToMemory((logMem + logMemSize), (BYTE *)words,
+                       (BYTE)(words[0] + 1));
+        //      memcpy((logMem+logMemSize), words, words[0]+1);
+        logMemSize += (BYTE)(words[0] + 1);
+        break;
+      case log_AllyRequest:
+        *(logMem + logMemSize) = log_AllyRequest ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        break;
+      case log_AllyAccept:
+        *(logMem + logMemSize) = log_AllyAccept ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        break;
+      case log_AllyLeave:
+        *(logMem + logMemSize) = log_AllyLeave ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        break;
+      case log_PillSetOwner:
+        *(logMem + logMemSize) = log_PillSetOwner ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt3 ^ logKey;
+        logMemSize++;
+        break;
+      case log_PillSetPlace:
+        *(logMem + logMemSize) = log_PillSetPlace ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt3 ^ logKey;
+        logMemSize++;
+        break;
+      case log_PillSetHealth:
+      case log_PillSetInTank:
+        *(logMem + logMemSize) = itemNum ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        break;
+      case log_SoundBuild:
+      case log_SoundFarm:
+      case log_SoundShoot:
+      case log_SoundHitWall:
+      case log_SoundHitTank:
+      case log_SoundHitTree:
+      case log_SoundMineLay:
+      case log_SoundMineExplode:
+      case log_SoundExplosion:
+      case log_SoundBigExplosion:
+      case log_SoundManDie:
+        *(logMem + logMemSize) = itemNum ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        break;
+      case log_PlayerLocation:
+        if (logCheckTankSame(opt1, opt2, opt3, opt4, (BYTE)short1)) {
+          changeKey = false;
+          logNumEvents--;
+        } else {
+          *(logMem + logMemSize) = itemNum ^ logKey;
+          logMemSize++;
+          *(logMem + logMemSize) = opt1 ^ logKey;
+          logMemSize++;
+          *(logMem + logMemSize) = opt2 ^ logKey;
+          logMemSize++;
+          *(logMem + logMemSize) = opt3 ^ logKey;
+          logMemSize++;
+          *(logMem + logMemSize) = opt4 ^ logKey;
+          logMemSize++;
+          *(logMem + logMemSize) = (BYTE)short1 ^ logKey;
+          logMemSize++;
+        }
+        break;
+      case log_Shell:
+      case log_LgmLocation:
+        *(logMem + logMemSize) = itemNum ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt3 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt4 ^ logKey;
+        logMemSize++;
+        break;
+      case log_KillPlayer:
+        *(logMem + logMemSize) = itemNum ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        break;
+      case log_MessagePlayers:
+        *(logMem + logMemSize) = log_MessagePlayers ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt2 ^ logKey;
+        logMemSize++;
+        logAddToMemory((logMem + logMemSize), (BYTE *)words,
+                       (BYTE)(words[0] + 1));
+        logMemSize += (BYTE)(words[0] + 1);
+        break;
+      case log_MessageAll:
+        *(logMem + logMemSize) = log_MessageAll ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        // FIXTHIS
+        logAddToMemory((logMem + logMemSize), (BYTE *)words,
+                       (BYTE)(words[0] + 1));
+        // memcpy((logMem+logMemSize), words, words[0]+1);
+        logMemSize += (BYTE)(words[0] + 1);
+        break;
+      case log_MessageServer:
+        *(logMem + logMemSize) = log_MessageServer ^ logKey;
+        logMemSize++;
+        logAddToMemory((logMem + logMemSize), (BYTE *)words,
+                       (BYTE)(words[0] + 1));
+        // memcpy((logMem+logMemSize), words, words[0]+1);
+        logMemSize += (BYTE)(words[0] + 1);
+        break;
+      case log_PlayerRejoin:
+        *(logMem + logMemSize) = log_PlayerRejoin ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        break;
+      case log_PlayerLeaving:
+        *(logMem + logMemSize) = log_PlayerLeaving ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        break;
+      case log_PlayerDied:
+        *(logMem + logMemSize) = log_PlayerDied ^ logKey;
+        logMemSize++;
+        *(logMem + logMemSize) = opt1 ^ logKey;
+        logMemSize++;
+        break;
+      default:
         changeKey = false;
         logNumEvents--;
-      } else {
-        *(logMem+logMemSize) = itemNum ^ logKey;
-        logMemSize++;
-        *(logMem+logMemSize) = opt1 ^ logKey;
-        logMemSize++;
-        *(logMem+logMemSize) = opt2 ^ logKey;
-        logMemSize++;
-        *(logMem+logMemSize) = opt3 ^ logKey;
-        logMemSize++;
-        *(logMem+logMemSize) = opt4 ^ logKey;
-        logMemSize++;
-        *(logMem+logMemSize) = (BYTE) short1 ^ logKey;
-        logMemSize++;
-      }
-      break;
-    case log_Shell:
-    case log_LgmLocation:
-      *(logMem+logMemSize) = itemNum ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt3 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt4 ^ logKey;
-      logMemSize++;
-      break;
-    case log_KillPlayer:
-      *(logMem+logMemSize) = itemNum ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      break;
-    case log_MessagePlayers:
-      *(logMem+logMemSize) = log_MessagePlayers^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt2 ^ logKey;
-      logMemSize++;
-      logAddToMemory((logMem+logMemSize), (BYTE *) words, (BYTE) (words[0]+1));
-      logMemSize += (BYTE) (words[0]+1);
-      break;
-    case log_MessageAll:
-      *(logMem+logMemSize) = log_MessageAll ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      //FIXTHIS
-      logAddToMemory((logMem+logMemSize), (BYTE *) words, (BYTE) (words[0]+1));
-      //memcpy((logMem+logMemSize), words, words[0]+1);
-      logMemSize += (BYTE) (words[0]+1);
-      break;
-    case log_MessageServer:
-      *(logMem+logMemSize) = log_MessageServer ^ logKey;
-      logMemSize++;
-      logAddToMemory((logMem+logMemSize), (BYTE *) words, (BYTE) (words[0]+1));
-      //memcpy((logMem+logMemSize), words, words[0]+1);
-      logMemSize += (BYTE) (words[0]+1);
-      break;
-    case log_PlayerRejoin:
-      *(logMem+logMemSize) = log_PlayerRejoin ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      break;
-    case log_PlayerLeaving:
-      *(logMem+logMemSize) = log_PlayerLeaving ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      break;
-    case log_PlayerDied:
-      *(logMem+logMemSize) = log_PlayerDied ^ logKey;
-      logMemSize++;
-      *(logMem+logMemSize) = opt1 ^ logKey;
-      logMemSize++;
-      break;
-    default:
-      changeKey = false;
-      logNumEvents--;
-      break;
+        break;
     }
     logNumEvents++;
     if (changeKey) {
@@ -492,20 +498,20 @@ void logAddEvent(logitem itemNum, BYTE opt1, BYTE opt2, BYTE opt3, BYTE opt4, un
 }
 
 /*********************************************************
-*NAME:          logDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 5/5/01
-*LAST MODIFIED: 5/5/01
-*PURPOSE:
-* Shuts down the log subsystem
-*
-*ARGUMENTS:
-*  
-*********************************************************/
+ *NAME:          logDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 5/5/01
+ *LAST MODIFIED: 5/5/01
+ *PURPOSE:
+ * Shuts down the log subsystem
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void logDestroy() {
   logStop();
   logIsRunning = false;
-  logFile = nullptr;  
+  logFile = nullptr;
   if (logMem != nullptr) {
     delete[] logMem;
     logMem = nullptr;
@@ -523,52 +529,51 @@ int writeData(BYTE *data, int len, BYTE key) {
 }
 
 /*********************************************************
-*NAME:          logWriteSnapshot
-*AUTHOR:        John Morrison
-*CREATION DATE: 25/07/04
-*LAST MODIFIED: 25/07/04
-*PURPOSE:
-* mp   - Map file
-* pb   - Pillboxes
-* bs   - Bases
-* ss   - Starts
-* plrs - Players
-* check - Whether to check if running or not
-*********************************************************/
-bool logWriteSnapshot(map *mp, pillboxes *pb, bases *bs, starts *ss, players *plrs, bool check) {
+ *NAME:          logWriteSnapshot
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 25/07/04
+ *LAST MODIFIED: 25/07/04
+ *PURPOSE:
+ * mp   - Map file
+ * pb   - Pillboxes
+ * bs   - Bases
+ * ss   - Starts
+ * plrs - Players
+ * check - Whether to check if running or not
+ *********************************************************/
+bool logWriteSnapshot(map *mp, pillboxes *pb, bases *bs, starts *ss,
+                      players *plrs, bool check) {
   bool returnValue = true; /* Value to return */
-  BYTE dataLen; 
-  BYTE savedDataLen;       /* Non XOR'd datalength */
+  BYTE dataLen;
+  BYTE savedDataLen; /* Non XOR'd datalength */
   BYTE data[512];
   int ret;
   BYTE count = 0;
-  bmapRun run;             /* Used to write the runs */
-  BYTE xPos;                /* Current position on the map */
+  bmapRun run; /* Used to write the runs */
+  BYTE xPos;   /* Current position on the map */
   BYTE yPos;
-  int len;                 /* Length of the run to write */
+  int len; /* Length of the run to write */
   long length;
 
   if (!logIsRunning && check) {
     return true;
   }
 
-  
-//  printf("snapshotting %d - ", logOldKey);
+  //  printf("snapshotting %d - ", logOldKey);
 
   if (logNumEvents > 0) {
     logWriteEvents(logOldKey);
   } else {
     logWriteEmpty();
     if (logLastEmpty) {
-  //    printf("Not snapshotting because nothing happened!\n");
+      //    printf("Not snapshotting because nothing happened!\n");
       return true;
     }
     logLastEmpty = true;
     // Nothing happened return?
   }
 
-  //printf(" Good\n");
-
+  // printf(" Good\n");
 
   data[0] = LOG_EVENT_SNAPSHOT;
   ret = writeData(data, 1, logOldKey);
@@ -579,14 +584,14 @@ bool logWriteSnapshot(map *mp, pillboxes *pb, bases *bs, starts *ss, players *pl
   /* Write start delay and time left */
   if (returnValue) {
     length = htonl(serverCoreGetGameStartDelay());
-    ret = writeData((BYTE *) &length, sizeof(long), logOldKey);   
+    ret = writeData((BYTE *)&length, sizeof(long), logOldKey);
     if (ret != Z_OK) {
       returnValue = false;
     }
   }
   if (returnValue) {
     length = htonl(serverCoreGetGameTimeLeft());
-    ret = writeData((BYTE *) &length, sizeof(long), logOldKey);   
+    ret = writeData((BYTE *)&length, sizeof(long), logOldKey);
     if (ret != Z_OK) {
       returnValue = false;
     }
@@ -596,7 +601,7 @@ bool logWriteSnapshot(map *mp, pillboxes *pb, bases *bs, starts *ss, players *pl
   if (returnValue) {
     dataLen = pillsGetPillNetData(pb, data);
     savedDataLen = dataLen;
-    ret = writeData(&dataLen, 1, logOldKey);   
+    ret = writeData(&dataLen, 1, logOldKey);
     ret = writeData(data, savedDataLen, logOldKey);
     if (ret != Z_OK) {
       returnValue = false;
@@ -631,7 +636,7 @@ bool logWriteSnapshot(map *mp, pillboxes *pb, bases *bs, starts *ss, players *pl
       /* Process runs */
       len = mapPrepareRun(mp, &run, &xPos, &yPos);
       /* Write the run out */
-      ret = writeData((BYTE *) &run, len, logOldKey);
+      ret = writeData((BYTE *)&run, len, logOldKey);
       if (ret != Z_OK) {
         returnValue = false;
       }
@@ -642,7 +647,7 @@ bool logWriteSnapshot(map *mp, pillboxes *pb, bases *bs, starts *ss, players *pl
   while (count < MAX_TANKS && returnValue) {
     playersPrepareLogSnapshotForPlayer(plrs, count, data, &dataLen);
     savedDataLen = dataLen;
-    ret = writeData((BYTE *) &dataLen, 1, logOldKey);
+    ret = writeData((BYTE *)&dataLen, 1, logOldKey);
     ret = writeData(data, savedDataLen, logOldKey);
 
     if (ret != Z_OK) {
@@ -656,28 +661,29 @@ bool logWriteSnapshot(map *mp, pillboxes *pb, bases *bs, starts *ss, players *pl
 }
 
 /*********************************************************
-*NAME:          logStart
-*AUTHOR:        John Morrison
-*CREATION DATE: 05/05/01
-*LAST MODIFIED: 25/07/04
-*PURPOSE:
-* Starts logging. Return success
-*
-*ARGUMENTS:
-* fileName    - FileName and path of the file to open
-* mp          - Map file
-* pb          - Pillboxes
-* bs          - Bases
-* ss          - Starts
-* plrs        - Players
-* ai          - Games AI type
-* maxPlayers  - Maximum number of players allowed in the
-*                game
-* usePassword - Is the game password protected
-*********************************************************/
-bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, players *plrs, BYTE ai, BYTE maxPlayers, bool usePassword) {
+ *NAME:          logStart
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 05/05/01
+ *LAST MODIFIED: 25/07/04
+ *PURPOSE:
+ * Starts logging. Return success
+ *
+ *ARGUMENTS:
+ * fileName    - FileName and path of the file to open
+ * mp          - Map file
+ * pb          - Pillboxes
+ * bs          - Bases
+ * ss          - Starts
+ * plrs        - Players
+ * ai          - Games AI type
+ * maxPlayers  - Maximum number of players allowed in the
+ *                game
+ * usePassword - Is the game password protected
+ *********************************************************/
+bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss,
+              players *plrs, BYTE ai, BYTE maxPlayers, bool usePassword) {
   bool returnValue; /* Value to return */
-  int ret;            /* Function return value */
+  int ret;          /* Function return value */
   zip_fileinfo zi;
   BYTE data[512];
   long start;
@@ -697,36 +703,35 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
     count++;
   }
 
-
   logMemSize = 0;
   logNumEvents = 0;
   logFile = zipOpen(fileName, 0);
-  
+
   zi.tmz_date.tm_sec = zi.tmz_date.tm_min = zi.tmz_date.tm_hour =
-  zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
+      zi.tmz_date.tm_mday = zi.tmz_date.tm_mon = zi.tmz_date.tm_year = 0;
   zi.dosDate = 0;
   zi.internal_fa = 0;
   zi.external_fa = 0;
 
-  
   if (logFile == nullptr) {
     returnValue = false;
     ret = Z_OK;
   } else {
-    ret = zipOpenNewFileInZip(logFile, "log.dat", &zi, nullptr, 0, nullptr, 0, "", Z_DEFLATED, Z_DEFAULT_COMPRESSION);
+    ret = zipOpenNewFileInZip(logFile, "log.dat", &zi, nullptr, 0, nullptr, 0,
+                              "", Z_DEFLATED, Z_DEFAULT_COMPRESSION);
   }
 
   if (ret != Z_OK) {
     returnValue = false;
   } else {
-    strcpy((char *) data, LOG_HEADER);
-    ret = zipWriteInFileInZip(logFile, data, (unsigned int) strlen((char *) data));
+    strcpy((char *)data, LOG_HEADER);
+    ret =
+        zipWriteInFileInZip(logFile, data, (unsigned int)strlen((char *)data));
     if (ret != Z_OK) {
       returnValue = false;
     }
   }
 
-  
   /* Write log version */
   if (returnValue) {
     data[0] = LOG_VERSION;
@@ -738,9 +743,9 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
 
   /* Write Map Name */
   if (returnValue) {
-    serverCoreGetMapName((char *) data+1);
-    data[0] = (BYTE) strlen((char *) data+1);
-    ret = zipWriteInFileInZip(logFile, data, data[0]+1);
+    serverCoreGetMapName((char *)data + 1);
+    data[0] = (BYTE)strlen((char *)data + 1);
+    ret = zipWriteInFileInZip(logFile, data, data[0] + 1);
     if (ret != Z_OK) {
       returnValue = false;
     }
@@ -795,7 +800,7 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
     }
   }
 
-  logKey = logOldKey = (BYTE) (serverCoreGetTimeGameCreated() & 0xFF);
+  logKey = logOldKey = (BYTE)(serverCoreGetTimeGameCreated() & 0xFF);
   /* Write Snapshot */
   if (returnValue) {
     returnValue = logWriteSnapshot(mp, pb, bs, ss, plrs, false);
@@ -803,7 +808,7 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
 
   if (returnValue) {
     logIsRunning = true;
-  } else if(logFile != nullptr) {
+  } else if (logFile != nullptr) {
     zipCloseFileInZip(logFile);
     zipClose(logFile, "");
     logFile = nullptr;
@@ -813,30 +818,32 @@ bool logStart(char *fileName, map *mp, bases *bs, pillboxes *pb, starts *ss, pla
 }
 
 /*********************************************************
-*NAME:          logCheckTankSame
-*AUTHOR:        John Morrison
-*CREATION DATE: 24/01/05
-*LAST MODIFIED: 24/01/05
-*PURPOSE:
-* Checks if the tanks position is the same from last
-* update.
-*
-*ARGUMENTS:
-* playerNum - Player number to check
-* mx        - Tank MX
-* my        - Tank MY
-* pxy       - Tank PXY
-* opt       - Misc tank data
-*********************************************************/
+ *NAME:          logCheckTankSame
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 24/01/05
+ *LAST MODIFIED: 24/01/05
+ *PURPOSE:
+ * Checks if the tanks position is the same from last
+ * update.
+ *
+ *ARGUMENTS:
+ * playerNum - Player number to check
+ * mx        - Tank MX
+ * my        - Tank MY
+ * pxy       - Tank PXY
+ * opt       - Misc tank data
+ *********************************************************/
 bool logCheckTankSame(BYTE playerNum, BYTE mx, BYTE my, BYTE pxy, BYTE opt) {
-
   if (my == 0) {
-    my =0;
+    my = 0;
   }
 
   if (playerNum >= MAX_TANKS) {
     return false;
-  } else  if (logCheckTanks.item[playerNum].mx != mx || logCheckTanks.item[playerNum].my != my || logCheckTanks.item[playerNum].pxy != pxy || logCheckTanks.item[playerNum].opt != opt) {
+  } else if (logCheckTanks.item[playerNum].mx != mx ||
+             logCheckTanks.item[playerNum].my != my ||
+             logCheckTanks.item[playerNum].pxy != pxy ||
+             logCheckTanks.item[playerNum].opt != opt) {
     logCheckTanks.item[playerNum].mx = mx;
     logCheckTanks.item[playerNum].my = my;
     logCheckTanks.item[playerNum].pxy = pxy;

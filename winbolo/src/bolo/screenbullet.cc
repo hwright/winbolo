@@ -14,47 +14,45 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Shells
-*Filename:      shells.c
-*Author:        John Morrison
-*Creation Date: 25/12/98
-*Last Modified: 25/12/98
-*Purpose:
-*  Responsable for Shells tracking/collision detect etc.
-*********************************************************/
+ *Name:          Shells
+ *Filename:      shells.c
+ *Author:        John Morrison
+ *Creation Date: 25/12/98
+ *Last Modified: 25/12/98
+ *Purpose:
+ *  Responsable for Shells tracking/collision detect etc.
+ *********************************************************/
+
+#include "screenbullet.h"
 
 #include "global.h"
 #include "util.h"
-#include "screenbullet.h"
 
 /*********************************************************
-*NAME:          screenBulletsCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/12/98
-*LAST MODIFIED: 26/12/98
-*PURPOSE:
-*  Sets up the screen bullets data structure
-*
-*ARGUMENTS:
-*
-*********************************************************/
-screenBullets screenBulletsCreate(void) {
-	return nullptr;
-}
+ *NAME:          screenBulletsCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/12/98
+ *LAST MODIFIED: 26/12/98
+ *PURPOSE:
+ *  Sets up the screen bullets data structure
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+screenBullets screenBulletsCreate(void) { return nullptr; }
 
 /*********************************************************
-*NAME:          screenBulletsDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/12/98
-*LAST MODIFIED: 26/12/98
-*PURPOSE:
-*  Destroys and frees memory for the data structure
-*
-*ARGUMENTS:
-*  value - Pointer to the screenBullets data structure
-*********************************************************/
+ *NAME:          screenBulletsDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/12/98
+ *LAST MODIFIED: 26/12/98
+ *PURPOSE:
+ *  Destroys and frees memory for the data structure
+ *
+ *ARGUMENTS:
+ *  value - Pointer to the screenBullets data structure
+ *********************************************************/
 void screenBulletsDestroy(screenBullets *value) {
   screenBullets q;
 
@@ -66,24 +64,25 @@ void screenBulletsDestroy(screenBullets *value) {
 }
 
 /*********************************************************
-*NAME:          screenBulletsAddItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/12/98
-*LAST MODIFIED: 26/12/98
-*PURPOSE:
-*  Adds an item to the screenBullets data structure.
-*
-*ARGUMENTS:
-*  value - Pointer to the screenBullets data structure
-*  mx    - X co-ord of the map position
-*  my    - Y co-ord of the map position
-*  px    - X pixel offset
-*  py    - Y pixel offset
-*  frame - Frame identifer of the bullet
-*********************************************************/
-void screenBulletsAddItem(screenBullets *value, BYTE mx, BYTE my, BYTE px, BYTE py, BYTE frame) {
+ *NAME:          screenBulletsAddItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/12/98
+ *LAST MODIFIED: 26/12/98
+ *PURPOSE:
+ *  Adds an item to the screenBullets data structure.
+ *
+ *ARGUMENTS:
+ *  value - Pointer to the screenBullets data structure
+ *  mx    - X co-ord of the map position
+ *  my    - Y co-ord of the map position
+ *  px    - X pixel offset
+ *  py    - Y pixel offset
+ *  frame - Frame identifer of the bullet
+ *********************************************************/
+void screenBulletsAddItem(screenBullets *value, BYTE mx, BYTE my, BYTE px,
+                          BYTE py, BYTE frame) {
   screenBullets q;
-  
+
   q = new screenBulletsObj;
   q->mx = mx;
   q->my = my;
@@ -95,16 +94,16 @@ void screenBulletsAddItem(screenBullets *value, BYTE mx, BYTE my, BYTE px, BYTE 
 }
 
 /*********************************************************
-*NAME:          screenBulletsGetNumEntries
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/12/98
-*LAST MODIFIED: 26/12/98
-*PURPOSE:
-*  Returns the number of elements in the data structure
-*
-*ARGUMENTS:
-*  value - Pointer to the screenBullets data structure
-*********************************************************/
+ *NAME:          screenBulletsGetNumEntries
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/12/98
+ *LAST MODIFIED: 26/12/98
+ *PURPOSE:
+ *  Returns the number of elements in the data structure
+ *
+ *ARGUMENTS:
+ *  value - Pointer to the screenBullets data structure
+ *********************************************************/
 int screenBulletsGetNumEntries(screenBullets *value) {
   int returnValue; /* Value to return */
   screenBullets q;
@@ -121,23 +120,24 @@ int screenBulletsGetNumEntries(screenBullets *value) {
 }
 
 /*********************************************************
-*NAME:          screenBulletsGetItem
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/12/98
-*LAST MODIFIED: 26/12/98
-*PURPOSE:
-*  Gets data for a specific item
-*
-*ARGUMENTS:
-*  value   - Pointer to the screenBullets data structure
-*  itemNum - The item number to get
-*  mx    - X co-ord of the map position
-*  my    - Y co-ord of the map position
-*  px    - X pixel offset
-*  py    - Y pixel offset
-*  frame - Frame identifer of the bullet
-*********************************************************/
-void screenBulletsGetItem(screenBullets *value, int itemNum, BYTE *mx, BYTE *my, BYTE *px, BYTE *py, BYTE *frame) {
+ *NAME:          screenBulletsGetItem
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/12/98
+ *LAST MODIFIED: 26/12/98
+ *PURPOSE:
+ *  Gets data for a specific item
+ *
+ *ARGUMENTS:
+ *  value   - Pointer to the screenBullets data structure
+ *  itemNum - The item number to get
+ *  mx    - X co-ord of the map position
+ *  my    - Y co-ord of the map position
+ *  px    - X pixel offset
+ *  py    - Y pixel offset
+ *  frame - Frame identifer of the bullet
+ *********************************************************/
+void screenBulletsGetItem(screenBullets *value, int itemNum, BYTE *mx, BYTE *my,
+                          BYTE *px, BYTE *py, BYTE *frame) {
   int count; /* Looping variable */
   screenBullets q;
 
@@ -156,6 +156,6 @@ void screenBulletsGetItem(screenBullets *value, int itemNum, BYTE *mx, BYTE *my,
     *py = q->py;
     *frame = q->frame;
   } else {
-    //FIXME: This shouldn't happen though
+    // FIXME: This shouldn't happen though
   }
 }

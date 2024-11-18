@@ -14,30 +14,29 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Dialog - Game Info
-*Filename:      dialoggameinfo.c
-*Author:        John Morrison
-*Creation Date: 26/1/99
-*Last Modified: 28/4/00
-*Purpose:
-*  Looks after the game info dialog box.
-*********************************************************/
+ *Name:          Dialog - Game Info
+ *Filename:      dialoggameinfo.c
+ *Author:        John Morrison
+ *Creation Date: 26/1/99
+ *Last Modified: 28/4/00
+ *Purpose:
+ *  Looks after the game info dialog box.
+ *********************************************************/
 
 #ifndef _DIALOG_GAME_INFO_H
 #define _DIALOG_GAME_INFO_H
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <unistd.h>
-#include <string.h>
-
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
-#include "../lang.h"
-#include "../../bolo/global.h"
+#include <string.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include "../../bolo/backend.h"
+#include "../../bolo/global.h"
+#include "../lang.h"
 #include "../linresource.h"
 
 /* There are 60 seconds in a minute */
@@ -46,23 +45,21 @@
 /* There are 1000 miliseconds in a second */
 #define SECOND 1000.0
 
-
 /*********************************************************
-*NAME:          dialogGameInfoUpdate
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/1/99
-*LAST MODIFIED: 26/1/99
-*PURPOSE:
-* Called each time the dialog is supposed to be updated.
-*
-*ARGUMENTS:
-*  hWnd - The dialog window handle
-*********************************************************/
-gint dialogGameInfoUpdate(gpointer data); 
+ *NAME:          dialogGameInfoUpdate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/1/99
+ *LAST MODIFIED: 26/1/99
+ *PURPOSE:
+ * Called each time the dialog is supposed to be updated.
+ *
+ *ARGUMENTS:
+ *  hWnd - The dialog window handle
+ *********************************************************/
+gint dialogGameInfoUpdate(gpointer data);
 
-gint dialogGameInfoClose(GtkWidget *widget, gpointer gdata); 
+gint dialogGameInfoClose(GtkWidget* widget, gpointer gdata);
 
 GtkWidget* dialogGameInfoCreate(void);
 
 #endif
-

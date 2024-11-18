@@ -14,19 +14,18 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Tiles
-*Filename:      tiles.h
-*Author:        John Morrison
-*Creation Date: 28/10/98
-*Last Modified:  10/1/00
-*Purpose:
-*  Defines where things are on the tile file
-*********************************************************/
+ *Name:          Tiles
+ *Filename:      tiles.h
+ *Author:        John Morrison
+ *Creation Date: 28/10/98
+ *Last Modified:  10/1/00
+ *Purpose:
+ *  Defines where things are on the tile file
+ *********************************************************/
 
-#ifndef TILES_H 
-#define TILES_H 
+#ifndef TILES_H
+#define TILES_H
 
 /* The name of the map tileset file (Now points to a resource) */
 #define TILE_FILE IDB_TILES
@@ -36,7 +35,6 @@
 #define TILE_SIZE_X 16
 #define TILE_SIZE_Y 16
 
-
 /* Locations in the tile file of each tile */
 
 #define ROAD_HORZ_X 0
@@ -44,7 +42,7 @@
 #define ROAD_VERT_X TILE_SIZE_X
 #define ROAD_VERT_Y 0
 /* The road corners */
-#define ROAD_CORNER1_X  (2 * TILE_SIZE_X)
+#define ROAD_CORNER1_X (2 * TILE_SIZE_X)
 #define ROAD_CORNER1_Y 0
 #define ROAD_CORNER2_X (3 * TILE_SIZE_X)
 #define ROAD_CORNER2_Y 0
@@ -52,7 +50,6 @@
 #define ROAD_CORNER3_Y 0
 #define ROAD_CORNER4_X (5 * TILE_SIZE_X)
 #define ROAD_CORNER4_Y 0
-
 
 /* The 4 solid road corners */
 
@@ -77,77 +74,74 @@
 /* T Junctions */
 #define ROAD_T1_X (12 * TILE_SIZE_X)
 #define ROAD_T1_Y 0
-#define ROAD_T2_X (13 * TILE_SIZE_X)    
+#define ROAD_T2_X (13 * TILE_SIZE_X)
 #define ROAD_T2_Y 0
-#define ROAD_T3_X (14 * TILE_SIZE_X)   
+#define ROAD_T3_X (14 * TILE_SIZE_X)
 #define ROAD_T3_Y 0
-#define ROAD_T4_X (15 * TILE_SIZE_X)    
+#define ROAD_T4_X (15 * TILE_SIZE_X)
 #define ROAD_T4_Y 0
-
 
 /* 1 side over other normal */
 #define ROAD_WATER1_X (16 * TILE_SIZE_X)
 #define ROAD_WATER1_Y 0
 #define ROAD_WATER2_X (17 * TILE_SIZE_X)
 #define ROAD_WATER2_Y 0
-#define ROAD_WATER3_X (18 * TILE_SIZE_X) 
+#define ROAD_WATER3_X (18 * TILE_SIZE_X)
 #define ROAD_WATER3_Y 0
 #define ROAD_WATER4_X (19 * TILE_SIZE_X)
 #define ROAD_WATER4_Y 0
 
 /* Corners on water */
 
-#define ROAD_WATER5_X (20 * TILE_SIZE_X) 
+#define ROAD_WATER5_X (20 * TILE_SIZE_X)
 #define ROAD_WATER5_Y 0
-#define ROAD_WATER6_X (21 * TILE_SIZE_X) 
+#define ROAD_WATER6_X (21 * TILE_SIZE_X)
 #define ROAD_WATER6_Y 0
-#define ROAD_WATER7_X (22 * TILE_SIZE_X )
+#define ROAD_WATER7_X (22 * TILE_SIZE_X)
 #define ROAD_WATER7_Y 0
-#define ROAD_WATER8_X (23 * TILE_SIZE_X )
+#define ROAD_WATER8_X (23 * TILE_SIZE_X)
 #define ROAD_WATER8_Y 0
 
 /* Horizontal water peice */
-#define ROAD_WATER9_X (24 * TILE_SIZE_X )
+#define ROAD_WATER9_X (24 * TILE_SIZE_X)
 #define ROAD_WATER9_Y 0
 
 /* Vertical water peice */
-#define ROAD_WATER10_X (25 * TILE_SIZE_X )
+#define ROAD_WATER10_X (25 * TILE_SIZE_X)
 #define ROAD_WATER10_Y 0
 
 /* Lone water peice */
-#define ROAD_WATER11_X (26 * TILE_SIZE_X )
+#define ROAD_WATER11_X (26 * TILE_SIZE_X)
 #define ROAD_WATER11_Y 0
 
 /* Road single side peices */
-#define ROAD_SIDE1_X (27 * TILE_SIZE_X )
+#define ROAD_SIDE1_X (27 * TILE_SIZE_X)
 #define ROAD_SIDE1_Y 0
-#define ROAD_SIDE2_X (28 * TILE_SIZE_X )
+#define ROAD_SIDE2_X (28 * TILE_SIZE_X)
 #define ROAD_SIDE2_Y 0
-#define ROAD_SIDE3_X (29 * TILE_SIZE_X )
+#define ROAD_SIDE3_X (29 * TILE_SIZE_X)
 #define ROAD_SIDE3_Y 0
-#define ROAD_SIDE4_X (30 * TILE_SIZE_X )
+#define ROAD_SIDE4_X (30 * TILE_SIZE_X)
 #define ROAD_SIDE4_Y 0
-
-
 
 /* Deep Sea */
 #define DEEP_SEA_SOLID_X 0
 #define DEEP_SEA_SOLID_Y TILE_SIZE_Y
-#define DEEP_SEA_CORN1_X (10 * TILE_SIZE_X)  /* L Shaped Corner peices */
+#define DEEP_SEA_CORN1_X (10 * TILE_SIZE_X) /* L Shaped Corner peices */
 #define DEEP_SEA_CORN1_Y (3 * TILE_SIZE_Y)
-#define DEEP_SEA_CORN2_X (11 * TILE_SIZE_X) 
+#define DEEP_SEA_CORN2_X (11 * TILE_SIZE_X)
 #define DEEP_SEA_CORN2_Y (3 * TILE_SIZE_Y)
-#define DEEP_SEA_CORN3_X (12 * TILE_SIZE_X) 
+#define DEEP_SEA_CORN3_X (12 * TILE_SIZE_X)
 #define DEEP_SEA_CORN3_Y (3 * TILE_SIZE_Y)
-#define DEEP_SEA_CORN4_X (13 * TILE_SIZE_X) 
+#define DEEP_SEA_CORN4_X (13 * TILE_SIZE_X)
 #define DEEP_SEA_CORN4_Y (3 * TILE_SIZE_Y)
-#define DEEP_SEA_SIDE1_X (14 * TILE_SIZE_X)  /* Sides */
+#define DEEP_SEA_SIDE1_X (14 * TILE_SIZE_X) /* Sides */
 #define DEEP_SEA_SIDE1_Y (3 * TILE_SIZE_Y)
-#define DEEP_SEA_SIDE2_X (15 * TILE_SIZE_X) 
+#define DEEP_SEA_SIDE2_X (15 * TILE_SIZE_X)
 #define DEEP_SEA_SIDE2_Y (3 * TILE_SIZE_Y)
-#define DEEP_SEA_SIDE3_X (16 * TILE_SIZE_X) 
+#define DEEP_SEA_SIDE3_X (16 * TILE_SIZE_X)
 #define DEEP_SEA_SIDE3_Y (3 * TILE_SIZE_Y)
-#define DEEP_SEA_SIDE4_X (17 * TILE_SIZE_X) 
+#define DEEP_SEA_SIDE4_X (17 * TILE_SIZE_X)
 #define DEEP_SEA_SIDE4_Y (3 * TILE_SIZE_Y)
 
 /* Boat Peices */
@@ -209,14 +203,13 @@
 #define FOREST_BELOW_X (112 + (8 * TILE_SIZE_X))
 #define FOREST_BELOW_Y 144
 
-
 /* Rubble */
 #define RUBBLE_X (4 * TILE_SIZE_X)
 #define RUBBLE_Y TILE_SIZE_Y
 
 /* Crater */
 #define CRATER_X (5 * TILE_SIZE_X)
-#define CRATER_Y  TILE_SIZE_Y
+#define CRATER_Y TILE_SIZE_Y
 #define CRATER_SINGLE_X (112 + TILE_SIZE_X)
 #define CRATER_SINGLE_Y 144
 
@@ -241,7 +234,7 @@
 #define BUILD_SINGLE_X (6 * TILE_SIZE_X) /* Single Peice */
 #define BUILD_SINGLE_Y TILE_SIZE_Y
 #define BUILD_HORZ_X (11 * TILE_SIZE_X) /* Horizontal and Vertical Peices */
-#define BUILD_HORZ_Y TILE_SIZE_Y 
+#define BUILD_HORZ_Y TILE_SIZE_Y
 #define BUILD_VERT_X (12 * TILE_SIZE_X)
 #define BUILD_VERT_Y TILE_SIZE_Y
 #define BUILD_HORZEND1_X (13 * TILE_SIZE_X) /* End Peices */
@@ -326,25 +319,25 @@
 #define BUILD_TWIST2_Y (2 * TILE_SIZE_Y)
 #define BUILD_MOST1_X (22 * TILE_SIZE_X) /* Most covered Also last 4 peices */
 #define BUILD_MOST1_Y (2 * TILE_SIZE_X)
-#define BUILD_MOST2_X (23 * TILE_SIZE_X )
-#define BUILD_MOST2_Y (2 * TILE_SIZE_X )
-#define BUILD_MOST3_X (24 * TILE_SIZE_X )
-#define BUILD_MOST3_Y (2 * TILE_SIZE_X )
-#define BUILD_MOST4_X (25 * TILE_SIZE_X )
-#define BUILD_MOST4_Y (2 * TILE_SIZE_X )
+#define BUILD_MOST2_X (23 * TILE_SIZE_X)
+#define BUILD_MOST2_Y (2 * TILE_SIZE_X)
+#define BUILD_MOST3_X (24 * TILE_SIZE_X)
+#define BUILD_MOST3_Y (2 * TILE_SIZE_X)
+#define BUILD_MOST4_X (25 * TILE_SIZE_X)
+#define BUILD_MOST4_Y (2 * TILE_SIZE_X)
 
 /* River Peices */
 #define RIVER_END1_X (26 * TILE_SIZE_X) /* The 4 end U peices */
 #define RIVER_END1_Y (2 * TILE_SIZE_Y)
-#define RIVER_END2_X (27 * TILE_SIZE_X) 
+#define RIVER_END2_X (27 * TILE_SIZE_X)
 #define RIVER_END2_Y (2 * TILE_SIZE_Y)
-#define RIVER_END3_X (28 * TILE_SIZE_X) 
+#define RIVER_END3_X (28 * TILE_SIZE_X)
 #define RIVER_END3_Y (2 * TILE_SIZE_Y)
-#define RIVER_END4_X (29 * TILE_SIZE_X) 
+#define RIVER_END4_X (29 * TILE_SIZE_X)
 #define RIVER_END4_Y (2 * TILE_SIZE_Y)
-#define RIVER_SURROUND_X (30 * TILE_SIZE_X)  /* Surrounded on all sides */
+#define RIVER_SURROUND_X (30 * TILE_SIZE_X) /* Surrounded on all sides */
 #define RIVER_SURROUND_Y (2 * TILE_SIZE_Y)
-#define RIVER_SIDE1_X 0   /* SIde peices eg - | |   */
+#define RIVER_SIDE1_X 0 /* SIde peices eg - | |   */
 #define RIVER_SIDE1_Y (3 * TILE_SIZE_Y)
 #define RIVER_SIDE2_X TILE_SIZE_X
 #define RIVER_SIDE2_Y (3 * TILE_SIZE_Y)
@@ -568,7 +561,6 @@
 #define TANK_EVILBOAT_15_X (5 * TILE_SIZE_X)
 #define TANK_EVILBOAT_15_Y (9 * TILE_SIZE_Y)
 
-
 /* Swamp */
 #define SWAMP_X (7 * TILE_SIZE_X)
 #define SWAMP_Y TILE_SIZE_Y
@@ -656,21 +648,21 @@
 #define GUNSIGHT_Y (4 * TILE_SIZE_Y)
 
 /* Explosion animation */
-#define EXPLOSION1_X (29 * TILE_SIZE_X )
+#define EXPLOSION1_X (29 * TILE_SIZE_X)
 #define EXPLOSION1_Y (3 * TILE_SIZE_Y)
-#define EXPLOSION2_X (30 * TILE_SIZE_X) 
+#define EXPLOSION2_X (30 * TILE_SIZE_X)
 #define EXPLOSION2_Y (3 * TILE_SIZE_Y)
-#define EXPLOSION3_X (29 * TILE_SIZE_X) 
+#define EXPLOSION3_X (29 * TILE_SIZE_X)
 #define EXPLOSION3_Y (4 * TILE_SIZE_Y)
-#define EXPLOSION4_X (30 * TILE_SIZE_X) 
+#define EXPLOSION4_X (30 * TILE_SIZE_X)
 #define EXPLOSION4_Y (4 * TILE_SIZE_Y)
-#define EXPLOSION5_X (29 * TILE_SIZE_X) 
+#define EXPLOSION5_X (29 * TILE_SIZE_X)
 #define EXPLOSION5_Y (5 * TILE_SIZE_Y)
-#define EXPLOSION6_X (30 * TILE_SIZE_X) 
+#define EXPLOSION6_X (30 * TILE_SIZE_X)
 #define EXPLOSION6_Y (5 * TILE_SIZE_Y)
-#define EXPLOSION7_X (18 * TILE_SIZE_X) 
+#define EXPLOSION7_X (18 * TILE_SIZE_X)
 #define EXPLOSION7_Y (4 * TILE_SIZE_Y)
-#define EXPLOSION8_X (19 * TILE_SIZE_X) 
+#define EXPLOSION8_X (19 * TILE_SIZE_X)
 #define EXPLOSION8_Y (4 * TILE_SIZE_Y)
 
 /* Shells positions in the tile file */
@@ -739,7 +731,6 @@
 #define SHELL_15_WIDTH 4
 #define SHELL_15_HEIGHT 3
 
-
 /* Indents around the selected building item */
 #define INDENT_ON_X 320
 #define INDENT_ON_Y 48
@@ -756,7 +747,6 @@
 #define MOUSE_SQUARE_X (18 * (TILE_SIZE_X))
 #define MOUSE_SQUARE_Y (6 * (TILE_SIZE_Y))
 
-
 /* Status Tiles */
 #define STATUS_ITEM_DEAD_X 440
 #define STATUS_ITEM_DEAD_Y 60
@@ -770,7 +760,7 @@
 #define STATUS_BASE_EVIL_Y 60
 #define STATUS_PILLBOX_NEUTRAL_X 428
 #define STATUS_PILLBOX_NEUTRAL_Y 66
-#define STATUS_PILLBOX_GOOD_X STATUS_BASE_GOOD_X 
+#define STATUS_PILLBOX_GOOD_X STATUS_BASE_GOOD_X
 #define STATUS_PILLBOX_GOOD_Y STATUS_BASE_GOOD_Y
 #define STATUS_PILLBOX_EVIL_X 428
 #define STATUS_PILLBOX_EVIL_Y 78
@@ -789,14 +779,12 @@
 /* Tank Status */
 #define STATUS_TANK_NONE_X (10 * TILE_SIZE_X)
 #define STATUS_TANK_NONE_Y 0
-#define STATUS_TANK_SELF_X (STATUS_BASE_GOOD_X )
+#define STATUS_TANK_SELF_X (STATUS_BASE_GOOD_X)
 #define STATUS_TANK_SELF_Y (STATUS_BASE_GOOD_Y)
-#define STATUS_TANK_GOOD_X 452 
+#define STATUS_TANK_GOOD_X 452
 #define STATUS_TANK_GOOD_Y 48
-#define STATUS_TANK_EVIL_X 452 
+#define STATUS_TANK_EVIL_X 452
 #define STATUS_TANK_EVIL_Y 60
-
-
 
 #define LGM0_X 431
 #define LGM0_Y 90
@@ -810,8 +798,8 @@
 #define LGM_HELICOPTER_Y (7 * TILE_SIZE_Y)
 
 /* Building offsets for redrawing to fix Vista problem */
-#define DRAW_BUILDSELECT_WIDTH (66-21)
-#define DRAW_BUILDSELECT_HEIGHT (58-17)
+#define DRAW_BUILDSELECT_WIDTH (66 - 21)
+#define DRAW_BUILDSELECT_HEIGHT (58 - 17)
 #define DRAW_BUILDSELECT_X 21
 #define DRAW_BUILDSELECT_TREES_Y 17
 #define DRAW_BUILDSELECT_ROAD_Y 67

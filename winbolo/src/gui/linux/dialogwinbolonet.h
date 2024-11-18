@@ -14,12 +14,9 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef __DIALOG_WINBOLONET_H
 #define __DIALOG_WINBOLONET_H
 
-GtkWidget* dialogWinboloNetCreate(); 
-
+GtkWidget* dialogWinboloNetCreate();
 
 #endif /* __DIALOG_WINBOLONET_H */
-

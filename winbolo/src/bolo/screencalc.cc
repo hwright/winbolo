@@ -14,41 +14,41 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Screen
-*Filename:      screen.c
-*Author:        John Morrison
-*Creation Date: 28/10/98
-*Last Modified: 30/01/02
-*Purpose:
-*  Provides Interfaces with the front end
-*********************************************************/
+ *Name:          Screen
+ *Filename:      screen.c
+ *Author:        John Morrison
+ *Creation Date: 28/10/98
+ *Last Modified: 30/01/02
+ *Purpose:
+ *  Provides Interfaces with the front end
+ *********************************************************/
 
 /* Includes */
-#include "global.h"
 #include "screencalc.h"
 
-/*********************************************************
-*NAME:          screenCalcRoad
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/10/98
-*LAST MODIFIED: 29/10/98
-*PURPOSE:
-*  Returns the road type of a square
-*
-*ARGUMENTS:
-*  aboveLeft  - The square above left 
-*  above      - The square above 
-*  aboveRight - The square above right
-*  left       - The square left
-*  right      - The square right
-*  belowLeft  - The square below left
-*  belowRight - The square below right
-*********************************************************/
-BYTE screenCalcRoad(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
-  BYTE returnValue; /* Value to return */
+#include "global.h"
 
+/*********************************************************
+ *NAME:          screenCalcRoad
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/10/98
+ *LAST MODIFIED: 29/10/98
+ *PURPOSE:
+ *  Returns the road type of a square
+ *
+ *ARGUMENTS:
+ *  aboveLeft  - The square above left
+ *  above      - The square above
+ *  aboveRight - The square above right
+ *  left       - The square left
+ *  right      - The square right
+ *  belowLeft  - The square below left
+ *  belowRight - The square below right
+ *********************************************************/
+BYTE screenCalcRoad(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left,
+                    BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
+  BYTE returnValue; /* Value to return */
 
   /* Turn Boats and deep sea into rivers */
   if (above == DEEP_SEA || above == BOAT) {
@@ -76,23 +76,33 @@ BYTE screenCalcRoad(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE
     belowRight = RIVER;
   }
 
-  if (aboveLeft != ROAD && above == ROAD && aboveRight != ROAD && left == ROAD && right == ROAD && belowLeft != ROAD && below == ROAD && belowRight != ROAD) {
+  if (aboveLeft != ROAD && above == ROAD && aboveRight != ROAD &&
+      left == ROAD && right == ROAD && belowLeft != ROAD && below == ROAD &&
+      belowRight != ROAD) {
     returnValue = ROAD_CROSS;
   } else if (above == ROAD && left == ROAD && right == ROAD && below == ROAD) {
     returnValue = ROAD_SOLID;
-  } else if (left == RIVER && right == RIVER && above == RIVER && below == RIVER) {
+  } else if (left == RIVER && right == RIVER && above == RIVER &&
+             below == RIVER) {
     returnValue = ROAD_WATER11;
-  } else if (right == ROAD && below == ROAD && left == RIVER && above == RIVER) {
+  } else if (right == ROAD && below == ROAD && left == RIVER &&
+             above == RIVER) {
     returnValue = ROAD_WATER5;
-  } else if (left == ROAD && below == ROAD && right == RIVER && above == RIVER) {
+  } else if (left == ROAD && below == ROAD && right == RIVER &&
+             above == RIVER) {
     returnValue = ROAD_WATER6;
-  } else if (above == ROAD && left == ROAD && below == RIVER && right == RIVER) { 
+  } else if (above == ROAD && left == ROAD && below == RIVER &&
+             right == RIVER) {
     returnValue = ROAD_WATER7;
-  } else if (right == ROAD && above == ROAD  && left == RIVER && below == RIVER) {
+  } else if (right == ROAD && above == ROAD && left == RIVER &&
+             below == RIVER) {
     returnValue = ROAD_WATER8;
-  } else if(above == RIVER && below == RIVER) { //(left == ROAD || right == ROAD) && above == RIVER && below == RIVER
+  } else if (above == RIVER &&
+             below == RIVER) {  //(left == ROAD || right == ROAD) && above ==
+                                //RIVER && below == RIVER
     returnValue = ROAD_WATER9;
-  } else if(left == RIVER && right == RIVER) { //(above == ROAD || below == ROAD) && 
+  } else if (left == RIVER &&
+             right == RIVER) {  //(above == ROAD || below == ROAD) &&
     returnValue = ROAD_WATER10;
   } else if (above == RIVER && below == ROAD) {
     returnValue = ROAD_WATER1;
@@ -103,15 +113,19 @@ BYTE screenCalcRoad(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE
   } else if (left == RIVER && right == ROAD) {
     returnValue = ROAD_WATER4;
 
-  } else if (right == ROAD && below == ROAD && above == ROAD && (aboveRight == ROAD || belowRight == ROAD)) {
+  } else if (right == ROAD && below == ROAD && above == ROAD &&
+             (aboveRight == ROAD || belowRight == ROAD)) {
     returnValue = ROAD_SIDE1;
-  } else if (left == ROAD && right == ROAD && below == ROAD && (belowLeft == ROAD || belowRight == ROAD)) {
+  } else if (left == ROAD && right == ROAD && below == ROAD &&
+             (belowLeft == ROAD || belowRight == ROAD)) {
     returnValue = ROAD_SIDE2;
-  } else if (left == ROAD && above == ROAD && below == ROAD && (belowLeft == ROAD || aboveLeft == ROAD)) {
+  } else if (left == ROAD && above == ROAD && below == ROAD &&
+             (belowLeft == ROAD || aboveLeft == ROAD)) {
     returnValue = ROAD_SIDE3;
-  } else if (left == ROAD && right == ROAD && above == ROAD && (aboveRight == ROAD || aboveLeft == ROAD)) {
+  } else if (left == ROAD && right == ROAD && above == ROAD &&
+             (aboveRight == ROAD || aboveLeft == ROAD)) {
     returnValue = ROAD_SIDE4;
-  
+
   } else if (left == ROAD && right == ROAD && below == ROAD) {
     returnValue = ROAD_T1;
   } else if (left == ROAD && above == ROAD && below == ROAD) {
@@ -119,7 +133,7 @@ BYTE screenCalcRoad(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE
   } else if (left == ROAD && right == ROAD && above == ROAD) {
     returnValue = ROAD_T3;
   } else if (right == ROAD && above == ROAD && below == ROAD) {
-    returnValue = ROAD_T4;  
+    returnValue = ROAD_T4;
   } else if (below == ROAD && right == ROAD && belowRight == ROAD) {
     returnValue = ROAD_CORNER5;
   } else if (below == ROAD && left == ROAD && belowLeft == ROAD) {
@@ -148,23 +162,24 @@ BYTE screenCalcRoad(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE
 }
 
 /*********************************************************
-*NAME:          screenCalcBoat
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/10/98
-*LAST MODIFIED: 29/10/98
-*PURPOSE:
-*  Returns the boat type of a square
-*
-*ARGUMENTS:
-*  aboveLeft  - The square above left 
-*  above      - The square above 
-*  aboveRight - The square above right
-*  left       - The square left
-*  right      - The square right
-*  belowLeft  - The square below left
-*  belowRight - The square below right
-*********************************************************/
-BYTE screenCalcBoat(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
+ *NAME:          screenCalcBoat
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/10/98
+ *LAST MODIFIED: 29/10/98
+ *PURPOSE:
+ *  Returns the boat type of a square
+ *
+ *ARGUMENTS:
+ *  aboveLeft  - The square above left
+ *  above      - The square above
+ *  aboveRight - The square above right
+ *  left       - The square left
+ *  right      - The square right
+ *  belowLeft  - The square below left
+ *  belowRight - The square below right
+ *********************************************************/
+BYTE screenCalcBoat(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left,
+                    BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
   BYTE returnValue; /* Value to return */
 
   /* Turn Boats and deep sea into rivers */
@@ -214,23 +229,25 @@ BYTE screenCalcBoat(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE
 }
 
 /*********************************************************
-*NAME:          screenCalcBuilding
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/10/98
-*LAST MODIFIED: 31/12/98
-*PURPOSE:
-*  Returns the building type
-*
-*ARGUMENTS:
-*  aboveLeft  - The square above left 
-*  above      - The square above 
-*  aboveRight - The square above right
-*  left       - The square left
-*  right      - The square right
-*  belowLeft  - The square below left
-*  belowRight - The square below right
-*********************************************************/
-BYTE screenCalcBuilding(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
+ *NAME:          screenCalcBuilding
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/10/98
+ *LAST MODIFIED: 31/12/98
+ *PURPOSE:
+ *  Returns the building type
+ *
+ *ARGUMENTS:
+ *  aboveLeft  - The square above left
+ *  above      - The square above
+ *  aboveRight - The square above right
+ *  left       - The square left
+ *  right      - The square right
+ *  belowLeft  - The square below left
+ *  belowRight - The square below right
+ *********************************************************/
+BYTE screenCalcBuilding(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left,
+                        BYTE right, BYTE belowLeft, BYTE below,
+                        BYTE belowRight) {
   BYTE returnValue; /* Value to return */
 
   /* Turn HalfBuilding into building */
@@ -259,70 +276,122 @@ BYTE screenCalcBuilding(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, 
     belowRight = BUILDING;
   }
 
-
-  if (aboveLeft == BUILDING && above == BUILDING && aboveRight == BUILDING && left == BUILDING && right == BUILDING && belowLeft == BUILDING && below == BUILDING && belowRight == BUILDING) {
+  if (aboveLeft == BUILDING && above == BUILDING && aboveRight == BUILDING &&
+      left == BUILDING && right == BUILDING && belowLeft == BUILDING &&
+      below == BUILDING && belowRight == BUILDING) {
     returnValue = BUILD_SOLID;
-  } else if (right == BUILDING && above == BUILDING && below == BUILDING && left == BUILDING && aboveRight != BUILDING && aboveLeft != BUILDING && belowRight != BUILDING && belowLeft != BUILDING) {
+  } else if (right == BUILDING && above == BUILDING && below == BUILDING &&
+             left == BUILDING && aboveRight != BUILDING &&
+             aboveLeft != BUILDING && belowRight != BUILDING &&
+             belowLeft != BUILDING) {
     returnValue = BUILD_CROSS;
-  } else if (right == BUILDING && above == BUILDING && below == BUILDING && left == BUILDING && aboveRight != BUILDING && aboveLeft != BUILDING && belowRight != BUILDING && belowLeft == BUILDING) {
+  } else if (right == BUILDING && above == BUILDING && below == BUILDING &&
+             left == BUILDING && aboveRight != BUILDING &&
+             aboveLeft != BUILDING && belowRight != BUILDING &&
+             belowLeft == BUILDING) {
     returnValue = BUILD_MOST1;
-  } else if (right == BUILDING && above == BUILDING && below == BUILDING && left == BUILDING && aboveRight != BUILDING && aboveLeft == BUILDING && belowRight != BUILDING && belowLeft != BUILDING) {
+  } else if (right == BUILDING && above == BUILDING && below == BUILDING &&
+             left == BUILDING && aboveRight != BUILDING &&
+             aboveLeft == BUILDING && belowRight != BUILDING &&
+             belowLeft != BUILDING) {
     returnValue = BUILD_MOST2;
-  } else if (right == BUILDING && above == BUILDING && below == BUILDING && left == BUILDING && aboveRight != BUILDING && aboveLeft != BUILDING && belowRight == BUILDING && belowLeft != BUILDING) {
+  } else if (right == BUILDING && above == BUILDING && below == BUILDING &&
+             left == BUILDING && aboveRight != BUILDING &&
+             aboveLeft != BUILDING && belowRight == BUILDING &&
+             belowLeft != BUILDING) {
     returnValue = BUILD_MOST3;
-  } else if (right == BUILDING && above == BUILDING && below == BUILDING && left == BUILDING && aboveRight == BUILDING && aboveLeft != BUILDING && belowRight != BUILDING && belowLeft != BUILDING) {
+  } else if (right == BUILDING && above == BUILDING && below == BUILDING &&
+             left == BUILDING && aboveRight == BUILDING &&
+             aboveLeft != BUILDING && belowRight != BUILDING &&
+             belowLeft != BUILDING) {
     returnValue = BUILD_MOST4;
 
-  } else if (aboveLeft == BUILDING && above == BUILDING && left == BUILDING && right == BUILDING && belowLeft == BUILDING && below == BUILDING && belowRight == BUILDING) {
+  } else if (aboveLeft == BUILDING && above == BUILDING && left == BUILDING &&
+             right == BUILDING && belowLeft == BUILDING && below == BUILDING &&
+             belowRight == BUILDING) {
     returnValue = BUILD_SIDECORN13;
-  } else if (above == BUILDING && aboveRight == BUILDING && left == BUILDING && right == BUILDING && belowLeft == BUILDING && below == BUILDING && belowRight == BUILDING) {
+  } else if (above == BUILDING && aboveRight == BUILDING && left == BUILDING &&
+             right == BUILDING && belowLeft == BUILDING && below == BUILDING &&
+             belowRight == BUILDING) {
     returnValue = BUILD_SIDECORN14;
-  } else if (aboveLeft == BUILDING && above == BUILDING && aboveRight == BUILDING && left == BUILDING && right == BUILDING && belowLeft == BUILDING && below == BUILDING) {
+  } else if (aboveLeft == BUILDING && above == BUILDING &&
+             aboveRight == BUILDING && left == BUILDING && right == BUILDING &&
+             belowLeft == BUILDING && below == BUILDING) {
     returnValue = BUILD_SIDECORN15;
-  } else if (aboveLeft == BUILDING && above == BUILDING && aboveRight == BUILDING && left == BUILDING && right == BUILDING && below == BUILDING && belowRight == BUILDING) {
+  } else if (aboveLeft == BUILDING && above == BUILDING &&
+             aboveRight == BUILDING && left == BUILDING && right == BUILDING &&
+             below == BUILDING && belowRight == BUILDING) {
     returnValue = BUILD_SIDECORN16;
 
-  } else if (left == BUILDING && right == BUILDING && above == BUILDING && below == BUILDING && aboveRight == BUILDING && belowLeft == BUILDING && aboveLeft != BUILDING && belowRight != BUILDING) {
+  } else if (left == BUILDING && right == BUILDING && above == BUILDING &&
+             below == BUILDING && aboveRight == BUILDING &&
+             belowLeft == BUILDING && aboveLeft != BUILDING &&
+             belowRight != BUILDING) {
     returnValue = BUILD_TWIST1;
-  } else if (left == BUILDING && right == BUILDING && above == BUILDING && below == BUILDING && belowRight == BUILDING && aboveLeft == BUILDING && aboveRight != BUILDING && belowLeft != BUILDING) {
+  } else if (left == BUILDING && right == BUILDING && above == BUILDING &&
+             below == BUILDING && belowRight == BUILDING &&
+             aboveLeft == BUILDING && aboveRight != BUILDING &&
+             belowLeft != BUILDING) {
     returnValue = BUILD_TWIST2;
 
-  } else if (above == BUILDING && left == BUILDING && right == BUILDING && below == BUILDING && belowRight == BUILDING && aboveRight == BUILDING) {
+  } else if (above == BUILDING && left == BUILDING && right == BUILDING &&
+             below == BUILDING && belowRight == BUILDING &&
+             aboveRight == BUILDING) {
     returnValue = BUILD_SIDECORN5;
-  } else if (above == BUILDING && left == BUILDING && right == BUILDING && below == BUILDING && belowLeft == BUILDING && aboveLeft == BUILDING) {
+  } else if (above == BUILDING && left == BUILDING && right == BUILDING &&
+             below == BUILDING && belowLeft == BUILDING &&
+             aboveLeft == BUILDING) {
     returnValue = BUILD_SIDECORN6;
-  } else if (above == BUILDING && left == BUILDING && right == BUILDING && below == BUILDING && belowLeft == BUILDING && belowRight == BUILDING) {
+  } else if (above == BUILDING && left == BUILDING && right == BUILDING &&
+             below == BUILDING && belowLeft == BUILDING &&
+             belowRight == BUILDING) {
     returnValue = BUILD_SIDECORN7;
-  } else if (above == BUILDING && left == BUILDING && right == BUILDING && below == BUILDING && aboveLeft == BUILDING && aboveRight == BUILDING) {
+  } else if (above == BUILDING && left == BUILDING && right == BUILDING &&
+             below == BUILDING && aboveLeft == BUILDING &&
+             aboveRight == BUILDING) {
     returnValue = BUILD_SIDECORN8;
-  } else if (above == BUILDING && below == BUILDING && left == BUILDING && right != BUILDING && belowLeft == BUILDING && aboveLeft != BUILDING) {
+  } else if (above == BUILDING && below == BUILDING && left == BUILDING &&
+             right != BUILDING && belowLeft == BUILDING &&
+             aboveLeft != BUILDING) {
     returnValue = BUILD_SIDECORN9;
-  } else if (above == BUILDING && below == BUILDING && right == BUILDING && belowRight == BUILDING && left != BUILDING && aboveRight != BUILDING) {
+  } else if (above == BUILDING && below == BUILDING && right == BUILDING &&
+             belowRight == BUILDING && left != BUILDING &&
+             aboveRight != BUILDING) {
     returnValue = BUILD_SIDECORN10;
-  } else if (above == BUILDING && below == BUILDING && right == BUILDING && aboveRight == BUILDING &&
-    belowRight != BUILDING) {
+  } else if (above == BUILDING && below == BUILDING && right == BUILDING &&
+             aboveRight == BUILDING && belowRight != BUILDING) {
     returnValue = BUILD_SIDECORN11;
-  } else if (above == BUILDING && below == BUILDING && left == BUILDING && aboveLeft == BUILDING && belowLeft != BUILDING) {
+  } else if (above == BUILDING && below == BUILDING && left == BUILDING &&
+             aboveLeft == BUILDING && belowLeft != BUILDING) {
     returnValue = BUILD_SIDECORN12;
 
-  } else if (right == BUILDING && above == BUILDING && left == BUILDING && below != BUILDING && aboveLeft != BUILDING && aboveRight != BUILDING) {
+  } else if (right == BUILDING && above == BUILDING && left == BUILDING &&
+             below != BUILDING && aboveLeft != BUILDING &&
+             aboveRight != BUILDING) {
     returnValue = BUILD_T1;
-  } else if (right == BUILDING && below == BUILDING && left == BUILDING && belowLeft != BUILDING && belowRight != BUILDING) {
+  } else if (right == BUILDING && below == BUILDING && left == BUILDING &&
+             belowLeft != BUILDING && belowRight != BUILDING) {
     returnValue = BUILD_T2;
-  } else if (right == BUILDING && above == BUILDING && below == BUILDING && aboveRight != BUILDING && belowRight != BUILDING) {
+  } else if (right == BUILDING && above == BUILDING && below == BUILDING &&
+             aboveRight != BUILDING && belowRight != BUILDING) {
     returnValue = BUILD_T3;
-  } else if (below == BUILDING && above == BUILDING && left == BUILDING && aboveLeft != BUILDING && belowLeft != BUILDING) {
-    returnValue = BUILD_T4;  
+  } else if (below == BUILDING && above == BUILDING && left == BUILDING &&
+             aboveLeft != BUILDING && belowLeft != BUILDING) {
+    returnValue = BUILD_T4;
 
-  } else if (left == BUILDING && right == BUILDING && above == BUILDING && aboveRight == BUILDING && aboveLeft != BUILDING) {
+  } else if (left == BUILDING && right == BUILDING && above == BUILDING &&
+             aboveRight == BUILDING && aboveLeft != BUILDING) {
     returnValue = BUILD_SIDECORN1;
-  } else if (left == BUILDING && right == BUILDING && above == BUILDING && aboveLeft == BUILDING && aboveRight != BUILDING) {
+  } else if (left == BUILDING && right == BUILDING && above == BUILDING &&
+             aboveLeft == BUILDING && aboveRight != BUILDING) {
     returnValue = BUILD_SIDECORN2;
-  } else if (left == BUILDING && right == BUILDING && below == BUILDING && belowLeft == BUILDING && belowRight != BUILDING) {
+  } else if (left == BUILDING && right == BUILDING && below == BUILDING &&
+             belowLeft == BUILDING && belowRight != BUILDING) {
     returnValue = BUILD_SIDECORN3;
-  } else if (left == BUILDING && right == BUILDING && below == BUILDING && above != BUILDING && belowRight == BUILDING && belowLeft != BUILDING) {
+  } else if (left == BUILDING && right == BUILDING && below == BUILDING &&
+             above != BUILDING && belowRight == BUILDING &&
+             belowLeft != BUILDING) {
     returnValue = BUILD_SIDECORN4;
-
 
   } else if (right == BUILDING && above == BUILDING && below == BUILDING) {
     returnValue = BUILD_SIDE1;
@@ -335,11 +404,11 @@ BYTE screenCalcBuilding(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, 
 
   } else if (right == BUILDING && below == BUILDING && belowRight == BUILDING) {
     returnValue = BUILD_CORNER1;
-  } else if (left ==BUILDING && below == BUILDING && belowLeft == BUILDING) {
+  } else if (left == BUILDING && below == BUILDING && belowLeft == BUILDING) {
     returnValue = BUILD_CORNER2;
-  } else if (right ==BUILDING && above == BUILDING && aboveRight == BUILDING) {
+  } else if (right == BUILDING && above == BUILDING && aboveRight == BUILDING) {
     returnValue = BUILD_CORNER3;
-  } else if (left ==BUILDING && above == BUILDING && aboveLeft == BUILDING) {
+  } else if (left == BUILDING && above == BUILDING && aboveLeft == BUILDING) {
     returnValue = BUILD_CORNER4;
 
   } else if (right == BUILDING && below == BUILDING) {
@@ -370,23 +439,24 @@ BYTE screenCalcBuilding(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, 
 }
 
 /*********************************************************
-*NAME:          screenCalcRiver
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/10/98
-*LAST MODIFIED: 29/10/98
-*PURPOSE:
-*  Returns the River type
-*
-*ARGUMENTS:
-*  aboveLeft  - The square above left 
-*  above      - The square above 
-*  aboveRight - The square above right
-*  left       - The square left
-*  right      - The square right
-*  belowLeft  - The square below left
-*  belowRight - The square below right
-*********************************************************/
-BYTE screenCalcRiver(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
+ *NAME:          screenCalcRiver
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/10/98
+ *LAST MODIFIED: 29/10/98
+ *PURPOSE:
+ *  Returns the River type
+ *
+ *ARGUMENTS:
+ *  aboveLeft  - The square above left
+ *  above      - The square above
+ *  aboveRight - The square above right
+ *  left       - The square left
+ *  right      - The square right
+ *  belowLeft  - The square below left
+ *  belowRight - The square below right
+ *********************************************************/
+BYTE screenCalcRiver(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left,
+                     BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
   BYTE returnValue; /* Value to return */
 
   /* Turn Deep Sea and Boats into River */
@@ -416,29 +486,44 @@ BYTE screenCalcRiver(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYT
     belowRight = RIVER;
   }
 
-  
-  if ((above != RIVER && above != ROAD) && (below != RIVER && below != ROAD) && (right != RIVER && right != ROAD) && (left != RIVER && left != ROAD)) {
+  if ((above != RIVER && above != ROAD) && (below != RIVER && below != ROAD) &&
+      (right != RIVER && right != ROAD) && (left != RIVER && left != ROAD)) {
     returnValue = RIVER_SURROUND;
-  } else if ((above != RIVER && above != ROAD) && (below != RIVER && below != ROAD) && right == RIVER && (left != RIVER && left != ROAD)) {  
+  } else if ((above != RIVER && above != ROAD) &&
+             (below != RIVER && below != ROAD) && right == RIVER &&
+             (left != RIVER && left != ROAD)) {
     returnValue = RIVER_END1;
-  } else if ((above != RIVER && above != ROAD) && (below != RIVER && below != ROAD) && (right != RIVER && right != ROAD) && left == RIVER) {
+  } else if ((above != RIVER && above != ROAD) &&
+             (below != RIVER && below != ROAD) &&
+             (right != RIVER && right != ROAD) && left == RIVER) {
     returnValue = RIVER_END2;
-  } else if ((above != RIVER && above != ROAD) && below == RIVER && (right != RIVER && right != ROAD) && (left != RIVER && left != ROAD)) {
+  } else if ((above != RIVER && above != ROAD) && below == RIVER &&
+             (right != RIVER && right != ROAD) &&
+             (left != RIVER && left != ROAD)) {
     returnValue = RIVER_END3;
-  } else if (above == RIVER && (below != RIVER && below != ROAD) &&  (right != RIVER && right != ROAD) && (left != RIVER && left != ROAD)) {
+  } else if (above == RIVER && (below != RIVER && below != ROAD) &&
+             (right != RIVER && right != ROAD) &&
+             (left != RIVER && left != ROAD)) {
     returnValue = RIVER_END4;
 
-  } else if ((above != RIVER && above != ROAD) && (left != RIVER && left != ROAD)) {
+  } else if ((above != RIVER && above != ROAD) &&
+             (left != RIVER && left != ROAD)) {
     returnValue = RIVER_CORN1;
-  } else if ((above != RIVER && above != ROAD) && (right != RIVER && right != ROAD)) {
+  } else if ((above != RIVER && above != ROAD) &&
+             (right != RIVER && right != ROAD)) {
     returnValue = RIVER_CORN2;
-  } else if ((below != RIVER && below != ROAD) && (left != RIVER && left != ROAD)) {
+  } else if ((below != RIVER && below != ROAD) &&
+             (left != RIVER && left != ROAD)) {
     returnValue = RIVER_CORN3;
-  } else if ((below != RIVER && below != ROAD) && (right != RIVER && right != ROAD)) {
+  } else if ((below != RIVER && below != ROAD) &&
+             (right != RIVER && right != ROAD)) {
     returnValue = RIVER_CORN4;
-  } else if ((below != RIVER && below != ROAD) && (above != RIVER && above != ROAD) && (below != RIVER && below != ROAD)) {
+  } else if ((below != RIVER && below != ROAD) &&
+             (above != RIVER && above != ROAD) &&
+             (below != RIVER && below != ROAD)) {
     returnValue = RIVER_SIDE1;
-  } else if ((left != RIVER && left  != ROAD) &&  (right != RIVER && right != ROAD)) {
+  } else if ((left != RIVER && left != ROAD) &&
+             (right != RIVER && right != ROAD)) {
     returnValue = RIVER_SIDE2;
   } else if ((left != RIVER && left != ROAD)) {
     returnValue = RIVER_ONESIDE1;
@@ -449,31 +534,32 @@ BYTE screenCalcRiver(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYT
   } else if ((above != RIVER && above != ROAD)) {
     returnValue = RIVER_ONESIDE4;
 
-
   } else {
     returnValue = RIVER_SOLID;
-  } 
+  }
   return returnValue;
 }
 
 /*********************************************************
-*NAME:          screenCalcDeepSea
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/10/98
-*LAST MODIFIED:  4/11/98
-*PURPOSE:
-*  Returns the Deep Sea type
-*
-*ARGUMENTS:
-*  aboveLeft  - The square above left 
-*  above      - The square above 
-*  aboveRight - The square above right
-*  left       - The square left
-*  right      - The square right
-*  belowLeft  - The square below left
-*  belowRight - The square below right
-*********************************************************/
-BYTE screenCalcDeepSea(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
+ *NAME:          screenCalcDeepSea
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/10/98
+ *LAST MODIFIED:  4/11/98
+ *PURPOSE:
+ *  Returns the Deep Sea type
+ *
+ *ARGUMENTS:
+ *  aboveLeft  - The square above left
+ *  above      - The square above
+ *  aboveRight - The square above right
+ *  left       - The square left
+ *  right      - The square right
+ *  belowLeft  - The square below left
+ *  belowRight - The square below right
+ *********************************************************/
+BYTE screenCalcDeepSea(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left,
+                       BYTE right, BYTE belowLeft, BYTE below,
+                       BYTE belowRight) {
   BYTE returnValue; /* Value to return */
 
   /* Turn Boats into River */
@@ -503,14 +589,17 @@ BYTE screenCalcDeepSea(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, B
     belowRight = RIVER;
   }
 
-
-  if (aboveLeft != DEEP_SEA && above != DEEP_SEA && left != DEEP_SEA && right == DEEP_SEA && below == DEEP_SEA) {
+  if (aboveLeft != DEEP_SEA && above != DEEP_SEA && left != DEEP_SEA &&
+      right == DEEP_SEA && below == DEEP_SEA) {
     returnValue = DEEP_SEA_CORN1;
-  } else if (aboveRight != DEEP_SEA && above != DEEP_SEA && right != DEEP_SEA && left == DEEP_SEA && below == DEEP_SEA) {
+  } else if (aboveRight != DEEP_SEA && above != DEEP_SEA && right != DEEP_SEA &&
+             left == DEEP_SEA && below == DEEP_SEA) {
     returnValue = DEEP_SEA_CORN2;
-  } else if (belowRight != DEEP_SEA && below != DEEP_SEA && right != DEEP_SEA && left == DEEP_SEA && above == DEEP_SEA) {
+  } else if (belowRight != DEEP_SEA && below != DEEP_SEA && right != DEEP_SEA &&
+             left == DEEP_SEA && above == DEEP_SEA) {
     returnValue = DEEP_SEA_CORN4;
-  } else if (belowLeft != DEEP_SEA && below != DEEP_SEA && left != DEEP_SEA && right == DEEP_SEA && above == DEEP_SEA) {
+  } else if (belowLeft != DEEP_SEA && below != DEEP_SEA && left != DEEP_SEA &&
+             right == DEEP_SEA && above == DEEP_SEA) {
     returnValue = DEEP_SEA_CORN3;
   } else if (left == RIVER && right == DEEP_SEA) {
     returnValue = DEEP_SEA_SIDE1;
@@ -527,89 +616,107 @@ BYTE screenCalcDeepSea(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, B
 }
 
 /*********************************************************
-*NAME:          screenCalcForest
-*AUTHOR:        John Morrison
-*CREATION DATE: 26/3/98
-*LAST MODIFIED: 26/3/98
-*PURPOSE:
-*  Returns the forest type of a square
-*
-*ARGUMENTS:
-*  aboveLeft  - The square above left 
-*  above      - The square above 
-*  aboveRight - The square above right
-*  left       - The square left
-*  right      - The square right
-*  belowLeft  - The square below left
-*  belowRight - The square below right
-*********************************************************/
-BYTE screenCalcForest(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
-/* NOTE: belowLeft, belowRight, aboveLeft, aboveRight UNUSED */
+ *NAME:          screenCalcForest
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 26/3/98
+ *LAST MODIFIED: 26/3/98
+ *PURPOSE:
+ *  Returns the forest type of a square
+ *
+ *ARGUMENTS:
+ *  aboveLeft  - The square above left
+ *  above      - The square above
+ *  aboveRight - The square above right
+ *  left       - The square left
+ *  right      - The square right
+ *  belowLeft  - The square below left
+ *  belowRight - The square below right
+ *********************************************************/
+BYTE screenCalcForest(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left,
+                      BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
+  /* NOTE: belowLeft, belowRight, aboveLeft, aboveRight UNUSED */
   BYTE returnValue; /* Value to return */
 
   returnValue = FOREST;
   if (above != FOREST && left != FOREST && right == FOREST && below == FOREST) {
     returnValue = FOREST_BR;
-  } else if (above != FOREST && left == FOREST && right != FOREST && below == FOREST) {
+  } else if (above != FOREST && left == FOREST && right != FOREST &&
+             below == FOREST) {
     returnValue = FOREST_BL;
-  } else if (above == FOREST && left == FOREST && right != FOREST && below != FOREST) {
+  } else if (above == FOREST && left == FOREST && right != FOREST &&
+             below != FOREST) {
     returnValue = FOREST_AL;
-  } else if (above == FOREST && left != FOREST && right == FOREST && below != FOREST) {
+  } else if (above == FOREST && left != FOREST && right == FOREST &&
+             below != FOREST) {
     returnValue = FOREST_AR;
-  } else if (above == FOREST && left != FOREST && right != FOREST && below != FOREST) {
+  } else if (above == FOREST && left != FOREST && right != FOREST &&
+             below != FOREST) {
     returnValue = FOREST_ABOVE;
-  } else if (above != FOREST && left != FOREST && right != FOREST && below == FOREST) {
+  } else if (above != FOREST && left != FOREST && right != FOREST &&
+             below == FOREST) {
     returnValue = FOREST_BELOW;
-  } else if (above != FOREST && left == FOREST && right != FOREST && below != FOREST) {
+  } else if (above != FOREST && left == FOREST && right != FOREST &&
+             below != FOREST) {
     returnValue = FOREST_LEFT;
-  } else if (above != FOREST && left != FOREST && right == FOREST && below != FOREST) {
+  } else if (above != FOREST && left != FOREST && right == FOREST &&
+             below != FOREST) {
     returnValue = FOREST_RIGHT;
-  } else if (above != FOREST && below != FOREST && left != FOREST && right != FOREST) {
+  } else if (above != FOREST && below != FOREST && left != FOREST &&
+             right != FOREST) {
     returnValue = FOREST_SINGLE;
   }
   return returnValue;
 }
 
 /*********************************************************
-*NAME:          screenCalcCrater
-*AUTHOR:        John Morrison
-*CREATION DATE: 30/01/02
-*LAST MODIFIED: 30/01/02
-*PURPOSE:
-*  Returns the forest type of a square
-*
-*ARGUMENTS:
-*  aboveLeft  - The square above left 
-*  above      - The square above 
-*  aboveRight - The square above right
-*  left       - The square left
-*  right      - The square right
-*  belowLeft  - The square below left
-*  belowRight - The square below right
-*********************************************************/
-BYTE screenCalcCrater(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left, BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
-/* NOTE: belowLeft, belowRight, aboveLeft, aboveRight UNUSED */
+ *NAME:          screenCalcCrater
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 30/01/02
+ *LAST MODIFIED: 30/01/02
+ *PURPOSE:
+ *  Returns the forest type of a square
+ *
+ *ARGUMENTS:
+ *  aboveLeft  - The square above left
+ *  above      - The square above
+ *  aboveRight - The square above right
+ *  left       - The square left
+ *  right      - The square right
+ *  belowLeft  - The square below left
+ *  belowRight - The square below right
+ *********************************************************/
+BYTE screenCalcCrater(BYTE aboveLeft, BYTE above, BYTE aboveRight, BYTE left,
+                      BYTE right, BYTE belowLeft, BYTE below, BYTE belowRight) {
+  /* NOTE: belowLeft, belowRight, aboveLeft, aboveRight UNUSED */
   BYTE returnValue; /* Value to return */
 
   returnValue = CRATER;
   return returnValue;
   if (above != CRATER && left != CRATER && right == CRATER && below == CRATER) {
     returnValue = CRATER_BR;
-  } else if (above != CRATER && left == CRATER && right != CRATER && below == CRATER) {
+  } else if (above != CRATER && left == CRATER && right != CRATER &&
+             below == CRATER) {
     returnValue = CRATER_BL;
-  } else if (above == CRATER && left == CRATER && right != CRATER && below != CRATER) {
+  } else if (above == CRATER && left == CRATER && right != CRATER &&
+             below != CRATER) {
     returnValue = CRATER_AL;
-  } else if (above == CRATER && left != CRATER && right == CRATER && below != CRATER) {
+  } else if (above == CRATER && left != CRATER && right == CRATER &&
+             below != CRATER) {
     returnValue = CRATER_AR;
-  } else if (above == CRATER && left != CRATER && right != CRATER && below != CRATER) {
+  } else if (above == CRATER && left != CRATER && right != CRATER &&
+             below != CRATER) {
     returnValue = CRATER_ABOVE;
-  } else if (above != CRATER && left != CRATER && right != CRATER && below == CRATER) {
+  } else if (above != CRATER && left != CRATER && right != CRATER &&
+             below == CRATER) {
     returnValue = CRATER_BELOW;
-  } else if (above != CRATER && left == CRATER && right != CRATER && below != CRATER) {
+  } else if (above != CRATER && left == CRATER && right != CRATER &&
+             below != CRATER) {
     returnValue = CRATER_LEFT;
-  } else if (above != CRATER && left != CRATER && right == CRATER && below != CRATER) {
+  } else if (above != CRATER && left != CRATER && right == CRATER &&
+             below != CRATER) {
     returnValue = CRATER_RIGHT;
-  } else if (above != CRATER && below != CRATER && left != CRATER && right != CRATER) {
+  } else if (above != CRATER && below != CRATER && left != CRATER &&
+             right != CRATER) {
     returnValue = CRATER_SINGLE;
   }
   return returnValue;

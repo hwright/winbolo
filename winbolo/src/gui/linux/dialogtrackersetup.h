@@ -14,12 +14,10 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef _DIALOGTRACKER_H
 #define _DIALOGTRACKER_H
 
 #include <gtk/gtk.h>
 
-GtkWidget* dialogTrackerCreate(void); 
+GtkWidget* dialogTrackerCreate(void);
 #endif
-

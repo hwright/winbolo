@@ -14,47 +14,47 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Input
-*Filename:      input.c
-*Author:        John Morrison
-*Creation Date: 16/12/98
-*Last Modified:   1/5/00
-*Purpose:
-*  Keyboard and mouse routines (ie Direct Input routines)
-*********************************************************/
+ *Name:          Input
+ *Filename:      input.c
+ *Author:        John Morrison
+ *Creation Date: 16/12/98
+ *Last Modified:   1/5/00
+ *Purpose:
+ *  Keyboard and mouse routines (ie Direct Input routines)
+ *********************************************************/
 
-#include "SDL.h"
-#include "../../bolo/global.h"
-#include "../../bolo/backend.h"
 #include "input.h"
+
+#include "../../bolo/backend.h"
+#include "../../bolo/global.h"
+#include "SDL.h"
 
 static tankButton tb;
 static BYTE scrollKeyCount = 0; /* Used for screen scrolling */
 static keyItems heldKeys;
 
 /*********************************************************
-*NAME:          inputSetup
-*AUTHOR:        John Morrison
-*CREATION DATE: 16/12/98
-*LAST MODIFIED: 29/4/00
-*PURPOSE:
-*  Sets up input systems, direct draw structures etc.
-*  Returns whether the operation was successful or not
-*
-*ARGUMENTS:
-* appInst - Handle to the application
-* appWnd  - Main Window Handle
-*********************************************************/
+ *NAME:          inputSetup
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 16/12/98
+ *LAST MODIFIED: 29/4/00
+ *PURPOSE:
+ *  Sets up input systems, direct draw structures etc.
+ *  Returns whether the operation was successful or not
+ *
+ *ARGUMENTS:
+ * appInst - Handle to the application
+ * appWnd  - Main Window Handle
+ *********************************************************/
 bool inputSetup() {
   scrollKeyCount = 0;
   /* These are DIK_??? defines */
-  heldKeys.kiForward = false;    /* Tank accelerate */
-  heldKeys.kiBackward = false;   /* Tank decelerate */
-  heldKeys.kiLeft = false;       /* Tank left */
-  heldKeys.kiRight = false;      /* Tank right */
-  heldKeys.kiShoot = false;      /* Tank shooting */
+  heldKeys.kiForward = false;     /* Tank accelerate */
+  heldKeys.kiBackward = false;    /* Tank decelerate */
+  heldKeys.kiLeft = false;        /* Tank left */
+  heldKeys.kiRight = false;       /* Tank right */
+  heldKeys.kiShoot = false;       /* Tank shooting */
   heldKeys.kiLayMine = false;     /* Tank lay mine */
   heldKeys.kiGunIncrease = false; /* Increase gunsight length */
   heldKeys.kiGunDecrease = false; /* Decrease gunsight length */
@@ -68,35 +68,33 @@ bool inputSetup() {
 }
 
 /*********************************************************
-*NAME:          inputCleanup
-*AUTHOR:        John Morrison
-*CREATION DATE: 13/12/98
-*LAST MODIFIED: 13/12/98
-*PURPOSE:
-*  Destroys and cleans up input systems, direct draw 
-*  structures etc.
-*
-*ARGUMENTS:
-*
-*********************************************************/
-void inputCleanup(void) {
-  return;
-}
+ *NAME:          inputCleanup
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 13/12/98
+ *LAST MODIFIED: 13/12/98
+ *PURPOSE:
+ *  Destroys and cleans up input systems, direct draw
+ *  structures etc.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+void inputCleanup(void) { return; }
 
 /*********************************************************
-*NAME:          inputGetKeys
-*AUTHOR:        John Morrison
-*CREATION DATE: 17/12/98
-*LAST MODIFIED:   1/5/00
-*PURPOSE:
-*  Gets the current Buttons that are being pressed.
-*  Returns tank buttons being pressed.
-*
-*ARGUMENTS:
-*     hWnd - The main window
-*  setKeys - Structure that holds the key settings
-*  isMenu  - True if we are in a menu
-*********************************************************/
+ *NAME:          inputGetKeys
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 17/12/98
+ *LAST MODIFIED:   1/5/00
+ *PURPOSE:
+ *  Gets the current Buttons that are being pressed.
+ *  Returns tank buttons being pressed.
+ *
+ *ARGUMENTS:
+ *     hWnd - The main window
+ *  setKeys - Structure that holds the key settings
+ *  isMenu  - True if we are in a menu
+ *********************************************************/
 tankButton inputGetKeys(bool isMenu) {
   static BYTE gunsightKeyCount = 0; /* Used for gunsight movement */
 
@@ -106,15 +104,19 @@ tankButton inputGetKeys(bool isMenu) {
    SDL_PumpEvents();
     SDL_PumpEvents();
  } */
- tb = TNONE;
+  tb = TNONE;
   /* Now set up the tank buttons */
-  if (static_cast<bool>(heldKeys.kiForward) &&  static_cast<bool>(heldKeys.kiRight)) {
+  if (static_cast<bool>(heldKeys.kiForward) &&
+      static_cast<bool>(heldKeys.kiRight)) {
     tb = TRIGHTACCEL;
-  } else if (static_cast<bool>(heldKeys.kiForward) && static_cast<bool>(heldKeys.kiLeft)) {
+  } else if (static_cast<bool>(heldKeys.kiForward) &&
+             static_cast<bool>(heldKeys.kiLeft)) {
     tb = TLEFTACCEL;
-  } else if (static_cast<bool>(heldKeys.kiBackward) && static_cast<bool>(heldKeys.kiLeft)) {
+  } else if (static_cast<bool>(heldKeys.kiBackward) &&
+             static_cast<bool>(heldKeys.kiLeft)) {
     tb = TLEFTDECEL;
-  } else if (static_cast<bool>(heldKeys.kiBackward) && static_cast<bool>(heldKeys.kiRight)) {
+  } else if (static_cast<bool>(heldKeys.kiBackward) &&
+             static_cast<bool>(heldKeys.kiRight)) {
     tb = TRIGHTDECEL;
   } else if (static_cast<bool>(heldKeys.kiForward)) {
     tb = TACCEL;
@@ -129,7 +131,7 @@ tankButton inputGetKeys(bool isMenu) {
   }
   /* Get whether the tank is lay a mine */
   if (static_cast<bool>(heldKeys.kiLayMine)) {
-      screenTankLayMine();
+    screenTankLayMine();
   }
   scrollKeyCount++;
   if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && !isMenu) {
@@ -165,18 +167,18 @@ tankButton inputGetKeys(bool isMenu) {
 }
 
 /*********************************************************
-*NAME:          inputScroll
-*AUTHOR:        John Morrison
-*CREATION DATE: 1/5/00
-*LAST MODIFIED: 1/5/00
-*PURPOSE:
-*  Checks and does scrolling of the window
-*
-*ARGUMENTS:
-*     hWnd - The main window
-*  setKeys - Structure that holds the key settings
-*  isMenu  - True if we are in a menu
-*********************************************************/
+ *NAME:          inputScroll
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 1/5/00
+ *LAST MODIFIED: 1/5/00
+ *PURPOSE:
+ *  Checks and does scrolling of the window
+ *
+ *ARGUMENTS:
+ *     hWnd - The main window
+ *  setKeys - Structure that holds the key settings
+ *  isMenu  - True if we are in a menu
+ *********************************************************/
 void inputScroll(bool isMenu) {
   scrollKeyCount++;
   if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && !isMenu) {
@@ -192,32 +194,32 @@ void inputScroll(bool isMenu) {
       screenUpdate(left);
     }
     if (static_cast<bool>(heldKeys.kiScrollRight)) {
-       screenUpdate(right);
+      screenUpdate(right);
     }
   }
 }
 
 /*********************************************************
-*NAME:          inputIsFireKeyPressed
-*AUTHOR:        John Morrison
-*CREATION DATE: 25/12/98
-*LAST MODIFIED: 14/11/99
-*PURPOSE:
-*  Returns whether the fire key is pressed
-*  Old Comment dates before hWnd was added:
-*      *CREATION DATE: 25/12/98
-*      *LAST MODIFIED: 31/12/98
-*
-*ARGUMENTS:
-*     hWnd - The main window
-*  setKeys - Structure that holds the key settings
-*   isMenu - true if we are in a menu
-*********************************************************/
+ *NAME:          inputIsFireKeyPressed
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 25/12/98
+ *LAST MODIFIED: 14/11/99
+ *PURPOSE:
+ *  Returns whether the fire key is pressed
+ *  Old Comment dates before hWnd was added:
+ *      *CREATION DATE: 25/12/98
+ *      *LAST MODIFIED: 31/12/98
+ *
+ *ARGUMENTS:
+ *     hWnd - The main window
+ *  setKeys - Structure that holds the key settings
+ *   isMenu - true if we are in a menu
+ *********************************************************/
 bool inputIsFireKeyPressed(bool isMenu) {
-  bool returnValue;       /* Value to return */
+  bool returnValue; /* Value to return */
 
   returnValue = false;
- 
+
   /* Get the fire button state here if it is OK to proceed */
   if (static_cast<bool>(heldKeys.kiShoot)) {
     returnValue = true;
@@ -251,17 +253,15 @@ void inputButtonInput(keyItems *setKeys, int key, bool newState) {
     heldKeys.kiGunDecrease = newState; /* Decrease gunsight length */
   }
   if ((setKeys->kiScrollUp) == key) {
-    heldKeys.kiScrollUp = newState;    /* Scroll up */
+    heldKeys.kiScrollUp = newState; /* Scroll up */
   }
   if ((setKeys->kiScrollDown) == key) {
-    heldKeys.kiScrollDown = newState;  /* Scroll down */
+    heldKeys.kiScrollDown = newState; /* Scroll down */
   }
   if ((setKeys->kiScrollLeft) == key) {
-    heldKeys.kiScrollLeft = newState;  /* Scroll left */
+    heldKeys.kiScrollLeft = newState; /* Scroll left */
   }
   if ((setKeys->kiScrollRight) == key) {
     heldKeys.kiScrollRight = newState; /* Scroll right */
   }
 }
-
-

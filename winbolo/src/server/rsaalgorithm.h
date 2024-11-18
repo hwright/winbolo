@@ -20,28 +20,29 @@
 #define RSA_DATA_SIZE 257
 
 /*********************************************************
-*Name:          rsa algorithm
-*Filename:      rsaalorithm.h
-*Author:        Minhiriath
-*Creation Date: 26/12/2008
-*Last Modified: 26/12/2008
-*Purpose:
-*  rsa algorithm function definitions.
-*********************************************************/
+ *Name:          rsa algorithm
+ *Filename:      rsaalorithm.h
+ *Author:        Minhiriath
+ *Creation Date: 26/12/2008
+ *Last Modified: 26/12/2008
+ *Purpose:
+ *  rsa algorithm function definitions.
+ *********************************************************/
 
 #if _MSC_VER >= 1100
-	/* Detect memory leaks in MSVC++ */ 
-	#define _CRTDBG_MAP_ALLOC
-	#include <stdlib.h>
-	#include <crtdbg.h>
+/* Detect memory leaks in MSVC++ */
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 #else
-	#include <stdlib.h>
+#include <stdlib.h>
 #endif
 
+#include <assert.h>
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include <assert.h>
+
 #include "BigDigits/bigd.h"
 #include "BigDigits/bigdRand.h"
 
@@ -49,8 +50,8 @@
 static void pr_msg(const char *msg, BIGD b)
 /* Display a message followed by a BIGD value */
 {
-	printf("%s", msg);
-	bdPrint(b, BD_PRINT_NL);
+  printf("%s", msg);
+  bdPrint(b, BD_PRINT_NL);
 }
 #endif
 #endif /* RSAALGORITHM_H */

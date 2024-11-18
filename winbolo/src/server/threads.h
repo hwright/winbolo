@@ -14,16 +14,15 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Threads
-*Filename:      threads.h
-*Author:        John Morrison
-*Creation Date: 12/08/99
-*Last Modified: 21/09/03
-*Purpose:
-*  WinBolo Server Thread manager
-*********************************************************/
+ *Name:          Threads
+ *Filename:      threads.h
+ *Author:        John Morrison
+ *Creation Date: 12/08/99
+ *Last Modified: 21/09/03
+ *Purpose:
+ *  WinBolo Server Thread manager
+ *********************************************************/
 
 #ifndef _THREADS_H
 #define _THREADS_H
@@ -33,31 +32,31 @@
 #include "../bolo/global.h"
 
 /*********************************************************
-*NAME:          threadsCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 12/08/99
-*LAST MODIFIED: 21/09/03
-*PURPOSE:
-*  Creates the thread manager for the server and sets up
-*  TCP connection request and UDP listen thread. Returns
-*  success
-*
-*ARGUMENTS:
-*  context - TRUE if to start in server context
-*********************************************************/
+ *NAME:          threadsCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 12/08/99
+ *LAST MODIFIED: 21/09/03
+ *PURPOSE:
+ *  Creates the thread manager for the server and sets up
+ *  TCP connection request and UDP listen thread. Returns
+ *  success
+ *
+ *ARGUMENTS:
+ *  context - TRUE if to start in server context
+ *********************************************************/
 bool threadsCreate(bool context);
 
 /*********************************************************
-*NAME:          threadsDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 12/8/99
-*LAST MODIFIED: 24/8/99
-*PURPOSE:
-*  Terminate and shuts down the threads.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          threadsDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 12/8/99
+ *LAST MODIFIED: 24/8/99
+ *PURPOSE:
+ *  Terminate and shuts down the threads.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void threadsDestroy(void);
 
 /*********************************************************
@@ -74,45 +73,44 @@ void threadsDestroy(void);
 void threadsWaitForMutex(void);
 
 /*********************************************************
-*NAME:          threadsRelease
-*AUTHOR:        John Morrison
-*CREATION DATE: 12/8/99
-*LAST MODIFIED: 24/8/99
-*PURPOSE:
-*  Releases the mutex when we are done with it.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          threadsRelease
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 12/8/99
+ *LAST MODIFIED: 24/8/99
+ *PURPOSE:
+ *  Releases the mutex when we are done with it.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void threadsReleaseMutex(void);
 
 /*********************************************************
-*NAME:          threadsGetContext
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/07/03
-*LAST MODIFIED: 27/07/03
-*PURPOSE:
-*  Returns the current thread context. TRUE if we are in
-*  a server context, false if we are in a client
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          threadsGetContext
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/07/03
+ *LAST MODIFIED: 27/07/03
+ *PURPOSE:
+ *  Returns the current thread context. TRUE if we are in
+ *  a server context, false if we are in a client
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 bool threadsGetContext();
 
 /*********************************************************
-*NAME:          threadsSetContext
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/07/03
-*LAST MODIFIED: 27/07/03
-*PURPOSE:
-*  Sets the current thread context. TRUE if we are in
-*  a server context, false if we are in a client
-*
-*ARGUMENTS:
-*  serverContext - Context to set to
-*********************************************************/
+ *NAME:          threadsSetContext
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/07/03
+ *LAST MODIFIED: 27/07/03
+ *PURPOSE:
+ *  Sets the current thread context. TRUE if we are in
+ *  a server context, false if we are in a client
+ *
+ *ARGUMENTS:
+ *  serverContext - Context to set to
+ *********************************************************/
 void threadsSetContext(bool serverContext);
 
 #endif /* _THREADS_H */
-

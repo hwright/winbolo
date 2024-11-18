@@ -14,14 +14,12 @@
  * GNU General Public License for more details.
  */
 
-
-/* This file is heavily based upon sample code provided by Microsoft as part of the DirectX SDK */
-
+/* This file is heavily based upon sample code provided by Microsoft as part of
+ * the DirectX SDK */
 
 #ifdef __cplusplus
 extern "C" {
 #endif
-
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -51,7 +49,6 @@ extern "C" {
 //
 ///////////////////////////////////////////////////////////////////////////////
 IDirectSoundBuffer *DSLoadSoundBufferFile(IDirectSound *pDS, LPCTSTR lpName);
-
 
 //
 // Function added by John Morrison back in early 99 some time.
@@ -85,7 +82,8 @@ IDirectSoundBuffer *DSLoadSoundBufferFile(IDirectSound *pDS, LPCTSTR lpName);
 //          /* ... */
 //
 ///////////////////////////////////////////////////////////////////////////////
-IDirectSoundBuffer *DSLoadSoundBufferResource(IDirectSound *pDS, HMODULE hModule, LPCTSTR lpName);
+IDirectSoundBuffer *DSLoadSoundBufferResource(IDirectSound *pDS,
+                                              HMODULE hModule, LPCTSTR lpName);
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -119,8 +117,8 @@ IDirectSoundBuffer *DSLoadSoundBufferResource(IDirectSound *pDS, HMODULE hModule
 //      }
 //
 ///////////////////////////////////////////////////////////////////////////////
-BOOL DSReloadSoundBuffer(IDirectSoundBuffer *pDSB, HMODULE hModule, LPCTSTR lpName);
-
+BOOL DSReloadSoundBuffer(IDirectSoundBuffer *pDSB, HMODULE hModule,
+                         LPCTSTR lpName);
 
 //
 // Same thing just a file name instead
@@ -154,7 +152,8 @@ BOOL DSReLoadSoundBufferFile(IDirectSoundBuffer *pDSB, LPCTSTR lpFileName);
 //
 ///////////////////////////////////////////////////////////////////////////////
 BOOL DSGetWaveResource(HMODULE hModule, LPCTSTR lpName,
-    WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData, DWORD *pdwWaveSize);
+                       WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData,
+                       DWORD *pdwWaveSize);
 
 ///////////////////////////////////////////////////////////////////////////////
 //
@@ -162,8 +161,10 @@ BOOL DSGetWaveResource(HMODULE hModule, LPCTSTR lpName,
 //
 ///////////////////////////////////////////////////////////////////////////////
 
-BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData, DWORD dwWaveSize);
-BOOL DSParseWaveResource(void *pvRes, WAVEFORMATEX **ppWaveHeader, BYTE **ppbWaveData, DWORD *pdwWaveSize);
+BOOL DSFillSoundBuffer(IDirectSoundBuffer *pDSB, BYTE *pbWaveData,
+                       DWORD dwWaveSize);
+BOOL DSParseWaveResource(void *pvRes, WAVEFORMATEX **ppWaveHeader,
+                         BYTE **ppbWaveData, DWORD *pdwWaveSize);
 
 #ifdef __cplusplus
 }

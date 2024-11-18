@@ -14,43 +14,42 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          clientMutex
-*Filename:      clientMutex.c
-*Author:        John Morrison
-*Creation Date: 27/5/00
-*Last Modified: 27/5/00
-*Purpose:
-*  WinBolo Server Thread manager
-*********************************************************/
+ *Name:          clientMutex
+ *Filename:      clientMutex.c
+ *Author:        John Morrison
+ *Creation Date: 27/5/00
+ *Last Modified: 27/5/00
+ *Purpose:
+ *  WinBolo Server Thread manager
+ *********************************************************/
 
 #ifdef _WIN32
-#include <windows.h>
 #include <winbase.h>
+#include <windows.h>
 #else
 #include "SDL.h"
 typedef SDL_mutex *HANDLE;
 #endif
 #include <string.h>
 #include <time.h>
+
 #include "../../bolo/global.h"
 #include "../clientmutex.h"
 
 static HANDLE hClientMutexHandle = nullptr;
 
-
 /*********************************************************
-*NAME:          clientMutexCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Creates the client Mutex. Returns success
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          clientMutexCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Creates the client Mutex. Returns success
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 bool clientMutexCreate(void) {
   bool returnValue; /* Value to return */
 
@@ -61,7 +60,7 @@ bool clientMutexCreate(void) {
   if (hClientMutexHandle == NULL) {
     DWORD d = GetLastError();
     if (d == ERROR_ALREADY_EXISTS) {
-      d= 1;
+      d = 1;
     }
     returnValue = false;
   }
@@ -76,16 +75,16 @@ bool clientMutexCreate(void) {
 }
 
 /*********************************************************
-*NAME:          clientMutexCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Destroys the client Mutex.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          clientMutexCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Destroys the client Mutex.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void clientMutexDestroy(void) {
 #ifdef _WIN32
   CloseHandle(hClientMutexHandle);
@@ -95,18 +94,17 @@ void clientMutexDestroy(void) {
   hClientMutexHandle = nullptr;
 }
 
-
 /*********************************************************
-*NAME:          clientMutexWaitFor
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Destroys the client Mutex.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          clientMutexWaitFor
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Destroys the client Mutex.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void clientMutexWaitFor(void) {
 #ifdef _WIN32
   WaitForSingleObject(hClientMutexHandle, INFINITE);
@@ -116,17 +114,17 @@ void clientMutexWaitFor(void) {
 }
 
 /*********************************************************
-*NAME:          clientMutexRelease
-*AUTHOR:        John Morrison
-*CREATION DATE: 27/5/00
-*LAST MODIFIED: 27/5/00
-*PURPOSE:
-*  Frees the lock on the client Mutex so other waiting
-*  subsystems can aquire it.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          clientMutexRelease
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 27/5/00
+ *LAST MODIFIED: 27/5/00
+ *PURPOSE:
+ *  Frees the lock on the client Mutex so other waiting
+ *  subsystems can aquire it.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void clientMutexRelease(void) {
 #ifdef _WIN32
   ReleaseMutex(hClientMutexHandle);

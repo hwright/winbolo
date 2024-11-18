@@ -14,16 +14,15 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Dialog - Network Info
-*Filename:      dialognetworkinfo.h
-*Author:        John Morrison
-*Creation Date: 3/3/99
-*Last Modified: 1/9/99
-*Purpose:
-*  Looks after the network info dialog box.
-*********************************************************/
+ *Name:          Dialog - Network Info
+ *Filename:      dialognetworkinfo.h
+ *Author:        John Morrison
+ *Creation Date: 3/3/99
+ *Last Modified: 1/9/99
+ *Purpose:
+ *  Looks after the network info dialog box.
+ *********************************************************/
 
 #ifndef DIALOG_NETWORK_INFO_H
 #define DIALOG_NETWORK_INFO_H
@@ -31,45 +30,46 @@
 #include <windows.h>
 
 /*********************************************************
-*NAME:          dialogNetInfoCallback
-*AUTHOR:        John Morrison
-*CREATION DATE: 3/3/99
-*LAST MODIFIED: 3/3/99
-*PURPOSE:
-*  The Network Info call back function
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*  msg    - The message
-*  wParam - Message parameters
-*  lParam - More Message parameters
-*********************************************************/
-BOOL CALLBACK dialogNetInfoCallback( HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam );
+ *NAME:          dialogNetInfoCallback
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 3/3/99
+ *LAST MODIFIED: 3/3/99
+ *PURPOSE:
+ *  The Network Info call back function
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *  msg    - The message
+ *  wParam - Message parameters
+ *  lParam - More Message parameters
+ *********************************************************/
+BOOL CALLBACK dialogNetInfoCallback(HWND hWnd, unsigned uMsg, WPARAM wParam,
+                                    LPARAM lParam);
 
 /*********************************************************
-*NAME:          dialogNetInfoSetup
-*AUTHOR:        John Morrison
-*CREATION DATE: 3/3/99
-*LAST MODIFIED: 3/3/99
-*PURPOSE:
-* Sets up the dialog box
-*
-*ARGUMENTS:
-*  hWnd - The dialog window handle
-*********************************************************/
+ *NAME:          dialogNetInfoSetup
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 3/3/99
+ *LAST MODIFIED: 3/3/99
+ *PURPOSE:
+ * Sets up the dialog box
+ *
+ *ARGUMENTS:
+ *  hWnd - The dialog window handle
+ *********************************************************/
 void dialogNetInfoSetup(HWND hWnd);
 
 /*********************************************************
-*NAME:          dialogNetInfoUpdate
-*AUTHOR:        John Morrison
-*CREATION DATE: 3/3/99
-*LAST MODIFIED: 1/9/99
-*PURPOSE:
-* Updates the network info dialog box
-*
-*ARGUMENTS:
-*  hWnd - The dialog window handle
-*********************************************************/
+ *NAME:          dialogNetInfoUpdate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 3/3/99
+ *LAST MODIFIED: 1/9/99
+ *PURPOSE:
+ * Updates the network info dialog box
+ *
+ *ARGUMENTS:
+ *  hWnd - The dialog window handle
+ *********************************************************/
 void dialogNetInfoUpdate(HWND hWnd);
 
 #endif /* DIALOG_NETWORK_INFO_H */

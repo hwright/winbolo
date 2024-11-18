@@ -14,13 +14,10 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef _DIALOGUDP_H
 #define _DIALOGUDP_H
 
 #include <gtk/gtk.h>
-GtkWidget* dialogUdpSetupCreate(void); 
+GtkWidget* dialogUdpSetupCreate(void);
 
 #endif
-
-

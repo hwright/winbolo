@@ -14,22 +14,21 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          WinUtil
-*Filename:      winutil.h
-*Author:        John Morrison
-*Creation Date:  2/2/99
-*Last Modified: 13/6/00
-*Purpose:
-*  Contains useful window functions
-*********************************************************/
+ *Name:          WinUtil
+ *Filename:      winutil.h
+ *Author:        John Morrison
+ *Creation Date:  2/2/99
+ *Last Modified: 13/6/00
+ *Purpose:
+ *  Contains useful window functions
+ *********************************************************/
 
 #ifndef WIN_UTIL_H
 #define WIN_UTIL_H
 
-
 #include <windows.h>
+
 #include "..\bolo\global.h"
 
 /* String identifiers for each key */
@@ -143,7 +142,7 @@
 #define DKS_VK_F6 117
 #define DKS_VK_F7 118
 #define DKS_VK_F8 119
-#define DKS_VK_F9  120
+#define DKS_VK_F9 120
 #define DKS_VK_F10 121
 #define DKS_VK_F11 122
 #define DKS_VK_F12 123
@@ -231,104 +230,104 @@
 #define DKS_VK_CTRL 17
 
 /*********************************************************
-*NAME:          winUtilCenterWindow
-*AUTHOR:        John Morrison
-*CREATION DATE: 2/2/99
-*LAST MODIFIED: 2/2/99
-*PURPOSE:
-*  Centers the given window on the screen
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window to center
-*********************************************************/
+ *NAME:          winUtilCenterWindow
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 2/2/99
+ *LAST MODIFIED: 2/2/99
+ *PURPOSE:
+ *  Centers the given window on the screen
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window to center
+ *********************************************************/
 BOOL winUtilCenterWindow(HWND hWnd);
 
 /*********************************************************
-*NAME:          winUtilVirtKeyToString
-*AUTHOR:        John Morrison
-*CREATION DATE: 31/1/99
-*LAST MODIFIED: 31/1/99
-*PURPOSE:
-* Takes a windows virtual key and places a string 
-* identifier into str of it.
-*
-*ARGUMENTS:
-*  value - Virtual key.
-*  str   - String value of it.
-*********************************************************/
+ *NAME:          winUtilVirtKeyToString
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 31/1/99
+ *LAST MODIFIED: 31/1/99
+ *PURPOSE:
+ * Takes a windows virtual key and places a string
+ * identifier into str of it.
+ *
+ *ARGUMENTS:
+ *  value - Virtual key.
+ *  str   - String value of it.
+ *********************************************************/
 void winUtilVirtKeyToString(int value, char *str);
 
 /*********************************************************
-*NAME:          winUtilDIKeyToString
-*AUTHOR:        John Morrison
-*CREATION DATE: 31/1/99
-*LAST MODIFIED: 31/1/99
-*PURPOSE:
-* Takes a Direct Input and key and places a string 
-* identifier into str of it.
-*
-*ARGUMENTS:
-*  value - DI Identifier.
-*  str   - String value of it.
-*********************************************************/
+ *NAME:          winUtilDIKeyToString
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 31/1/99
+ *LAST MODIFIED: 31/1/99
+ *PURPOSE:
+ * Takes a Direct Input and key and places a string
+ * identifier into str of it.
+ *
+ *ARGUMENTS:
+ *  value - DI Identifier.
+ *  str   - String value of it.
+ *********************************************************/
 void winUtilDIKeyToString(int value, char *str);
 
 /*********************************************************
-*NAME:          winUtilVirtKeyToDI
-*AUTHOR:        John Morrison
-*CREATION DATE: 31/1/99
-*LAST MODIFIED: 31/1/99
-*PURPOSE:
-* Returns the Direct Input equivilent of the windows 
-* virtual key pressed.
-*
-*ARGUMENTS:
-*  value - virtual key.
-*********************************************************/
+ *NAME:          winUtilVirtKeyToDI
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 31/1/99
+ *LAST MODIFIED: 31/1/99
+ *PURPOSE:
+ * Returns the Direct Input equivilent of the windows
+ * virtual key pressed.
+ *
+ *ARGUMENTS:
+ *  value - virtual key.
+ *********************************************************/
 int winUtilVirtKeyToDI(int value);
 
 /*********************************************************
-*NAME:          winUtilWBSubDirExist
-*AUTHOR:        John Morrison
-*CREATION DATE: 29/4/00
-*LAST MODIFIED: 29/4/00
-*PURPOSE:
-*  Checks to see if a subdirectory exists off the WinBolo
-*  Directory. Returns existance. Also modifies subDirName
-*  to complete path of directory
-*
-*ARGUMENTS:
-*  subDirName - The directory name to search for. Upon
-*               successful find it also modifies this to
-*               the complete path of the directory
-*********************************************************/
+ *NAME:          winUtilWBSubDirExist
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 29/4/00
+ *LAST MODIFIED: 29/4/00
+ *PURPOSE:
+ *  Checks to see if a subdirectory exists off the WinBolo
+ *  Directory. Returns existance. Also modifies subDirName
+ *  to complete path of directory
+ *
+ *ARGUMENTS:
+ *  subDirName - The directory name to search for. Upon
+ *               successful find it also modifies this to
+ *               the complete path of the directory
+ *********************************************************/
 bool winUtilWBSubDirExist(char *subDirName);
 
 /*********************************************************
-*NAME:          winUtilOpenHelpFile
-*AUTHOR:        John Morrison
-*CREATION DATE: 13/6/00
-*LAST MODIFIED: 13/6/00
-*PURPOSE:
-*  Opens the WinBolo help file.
-*
-*ARGUMENTS:
-* hInst - Application Instance
-* hWnd  - Parent Window handle (for error messages)
-*********************************************************/
+ *NAME:          winUtilOpenHelpFile
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 13/6/00
+ *LAST MODIFIED: 13/6/00
+ *PURPOSE:
+ *  Opens the WinBolo help file.
+ *
+ *ARGUMENTS:
+ * hInst - Application Instance
+ * hWnd  - Parent Window handle (for error messages)
+ *********************************************************/
 void winUtilOpenHelpFile(HINSTANCE appInst, HWND hWnd);
 
 /*********************************************************
-*NAME:          utilDetectVista
-*AUTHOR:        Minhiriath
-*CREATION DATE: 31/01/09
-*LAST MODIFIED: 31/01/09
-*PURPOSE:
-* Detects weither the operating system is vista or later.
-*
-*ARGUMENTS:
-*  none
-*********************************************************/
+ *NAME:          utilDetectVista
+ *AUTHOR:        Minhiriath
+ *CREATION DATE: 31/01/09
+ *LAST MODIFIED: 31/01/09
+ *PURPOSE:
+ * Detects weither the operating system is vista or later.
+ *
+ *ARGUMENTS:
+ *  none
+ *********************************************************/
 bool winUtilDetectVista(void);
 
 #endif /* WIN_UTIL_H */

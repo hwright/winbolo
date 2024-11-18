@@ -14,42 +14,43 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          PlayersRejoin
-*Filename:      playersrejoin.c
-*Author:        John Morrison
-*Creation Date: 22/6/00
-*Last Modified: 22/6/00
-*Purpose:
-*  Looks after players rejoin and ownerships.
-*********************************************************/
+ *Name:          PlayersRejoin
+ *Filename:      playersrejoin.c
+ *Author:        John Morrison
+ *Creation Date: 22/6/00
+ *Last Modified: 22/6/00
+ *Purpose:
+ *  Looks after players rejoin and ownerships.
+ *********************************************************/
+
+#include "playersrejoin.h"
 
 #include <string.h>
-#include "global.h"
-#include "pillbox.h"
-#include "bases.h"
-#include "netmt.h"
-#include "playersrejoin.h"
+
 #include "backend.h"
+#include "bases.h"
+#include "global.h"
 #include "log.h"
+#include "netmt.h"
+#include "pillbox.h"
 
 static playersRejoin rejoin;
 
 /*********************************************************
-*NAME:          playersRejoinCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 22/6/00
-*LAST MODIFIED: 22/6/00
-*PURPOSE:
-* Sets up the players rejoin structure.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          playersRejoinCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/6/00
+ *LAST MODIFIED: 22/6/00
+ *PURPOSE:
+ * Sets up the players rejoin structure.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void playersRejoinCreate() {
   BYTE count; /* Looping variable */
- 
+
   count = 0;
   while (count < MAX_TANKS) {
     rejoin.item[count].inUse = false;
@@ -58,19 +59,19 @@ void playersRejoinCreate() {
 }
 
 /*********************************************************
-*NAME:          playersRejoinDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 22/6/00
-*LAST MODIFIED: 22/6/00
-*PURPOSE:
-* Destroys the players rejoin structure
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          playersRejoinDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/6/00
+ *LAST MODIFIED: 22/6/00
+ *PURPOSE:
+ * Destroys the players rejoin structure
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void playersRejoinDestroy() {
   BYTE count; /* Looping variable */
- 
+
   count = 0;
   while (count < MAX_TANKS) {
     rejoin.item[count].inUse = false;
@@ -79,19 +80,19 @@ void playersRejoinDestroy() {
 }
 
 /*********************************************************
-*NAME:          playersRejoinUpdate
-*AUTHOR:        John Morrison
-*CREATION DATE: 22/6/00
-*LAST MODIFIED: 22/6/00
-*PURPOSE:
-* Updates the players rejoin structure. Timeouts etc.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          playersRejoinUpdate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/6/00
+ *LAST MODIFIED: 22/6/00
+ *PURPOSE:
+ * Updates the players rejoin structure. Timeouts etc.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void playersRejoinUpdate() {
   BYTE count; /* Looping variable */
- 
+
   count = 0;
   while (count < MAX_TANKS) {
     if (rejoin.item[count].inUse) {
@@ -105,22 +106,23 @@ void playersRejoinUpdate() {
 }
 
 /*********************************************************
-*NAME:          playersAddPlayer
-*AUTHOR:        John Morrison
-*CREATION DATE: 22/6/00
-*LAST MODIFIED: 22/6/00
-*PURPOSE:
-* Adds a player to the rejoin structure
-*
-*ARGUMENTS:
-*
-*********************************************************/
-void playersRejoinAddPlayer(char *playerName, PlayerBitMap pills, PlayerBitMap bases) {
-  BYTE count;    /* Looping variable */
-  BYTE best;     /* Best position to add */
-  int timeBest;  /* Best time to beat - If we can't find a free spot */
-  bool done;     /* Finished looping */
- 
+ *NAME:          playersAddPlayer
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/6/00
+ *LAST MODIFIED: 22/6/00
+ *PURPOSE:
+ * Adds a player to the rejoin structure
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+void playersRejoinAddPlayer(char *playerName, PlayerBitMap pills,
+                            PlayerBitMap bases) {
+  BYTE count;   /* Looping variable */
+  BYTE best;    /* Best position to add */
+  int timeBest; /* Best time to beat - If we can't find a free spot */
+  bool done;    /* Finished looping */
+
   count = 0;
   done = false;
   best = 0;
@@ -137,7 +139,7 @@ void playersRejoinAddPlayer(char *playerName, PlayerBitMap pills, PlayerBitMap b
   }
 
   /* Add it to best slot */
-  rejoin.item[best].inUse  = true;
+  rejoin.item[best].inUse = true;
   strcpy(rejoin.item[best].playerName, playerName);
   rejoin.item[best].pills = pills;
   rejoin.item[best].bases = bases;
@@ -145,28 +147,29 @@ void playersRejoinAddPlayer(char *playerName, PlayerBitMap pills, PlayerBitMap b
 }
 
 /*********************************************************
-*NAME:          playersRejoinRequest
-*AUTHOR:        John Morrison
-*CREATION DATE: 22/6/00
-*LAST MODIFIED: 22/6/00
-*PURPOSE:
-* A player wish to rejoin. See if they exists and assign
-* items to his ownership if they aren't owned by someone
-* else.
-*
-*ARGUMENTS:
-*  playerName - The player name requesting the rejoin
-*  playerNum  - The rejoining players player number
-*  pb         - Pointer to the pillboxes structure
-*  bs         - Pointer to the bases structure
-*********************************************************/
-void playersRejoinRequest(char *playerName, BYTE playerNum, pillboxes *pb, bases *bs) {
-  BYTE count;    /* Looping variable */
-  BYTE num;      /* Number player is at */
-  bool found;    /* Found Player */
+ *NAME:          playersRejoinRequest
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/6/00
+ *LAST MODIFIED: 22/6/00
+ *PURPOSE:
+ * A player wish to rejoin. See if they exists and assign
+ * items to his ownership if they aren't owned by someone
+ * else.
+ *
+ *ARGUMENTS:
+ *  playerName - The player name requesting the rejoin
+ *  playerNum  - The rejoining players player number
+ *  pb         - Pointer to the pillboxes structure
+ *  bs         - Pointer to the bases structure
+ *********************************************************/
+void playersRejoinRequest(char *playerName, BYTE playerNum, pillboxes *pb,
+                          bases *bs) {
+  BYTE count;             /* Looping variable */
+  BYTE num;               /* Number player is at */
+  bool found;             /* Found Player */
   unsigned long testItem; /* Pill base item we are testing */
   base ba;
- 
+
   count = 0;
   found = false;
   while (count < MAX_TANKS && !found) {
@@ -184,27 +187,28 @@ void playersRejoinRequest(char *playerName, BYTE playerNum, pillboxes *pb, bases
     logAddEvent(log_PlayerRejoin, playerNum, 0, 0, 0, 0, nullptr);
     while (count < MAX_TANKS) {
       /* Pillbox */
-      testItem = (rejoin.item[num].pills >>count);
+      testItem = (rejoin.item[num].pills >> count);
       testItem &= 1;
       if (testItem) {
-        if (pillsGetPillOwner(pb, (BYTE) (count+1)) == NEUTRAL) {
-          pillsSetPillOwner(pb, (BYTE) (count+1), playerNum, true);
-          netMNTAdd(screenGetNetMnt(), NMNT_PILLMIGRATE, count, playerNum, 0, 0);
+        if (pillsGetPillOwner(pb, (BYTE)(count + 1)) == NEUTRAL) {
+          pillsSetPillOwner(pb, (BYTE)(count + 1), playerNum, true);
+          netMNTAdd(screenGetNetMnt(), NMNT_PILLMIGRATE, count, playerNum, 0,
+                    0);
         }
       }
       /* Base */
-      testItem = (rejoin.item[num].bases >>count);
+      testItem = (rejoin.item[num].bases >> count);
       testItem &= 1;
       if (testItem) {
-        if (basesGetBaseOwner(bs, (BYTE) (count+1)) == NEUTRAL) {
-          basesGetBase(bs, &ba, (BYTE) (count+1));
-          basesSetBaseOwner(bs, (BYTE) (count+1), playerNum, true);
-          netMNTAdd(screenGetNetMnt(), NMNT_BASEMIGRATE, count, playerNum, ba.x, ba.y);
-        }        
+        if (basesGetBaseOwner(bs, (BYTE)(count + 1)) == NEUTRAL) {
+          basesGetBase(bs, &ba, (BYTE)(count + 1));
+          basesSetBaseOwner(bs, (BYTE)(count + 1), playerNum, true);
+          netMNTAdd(screenGetNetMnt(), NMNT_BASEMIGRATE, count, playerNum, ba.x,
+                    ba.y);
+        }
       }
       count++;
     }
     rejoin.item[num].inUse = false;
   }
 }
-

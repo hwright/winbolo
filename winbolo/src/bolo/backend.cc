@@ -14,19 +14,20 @@
  * GNU General Public License for more details.
  */
 
-
-#include <stdio.h>
-#include "global.h"
-#include "types.h"
-#include "lgm.h"
-#include "screen.h"
-#include "../server/servercore.h"
-#include "client.h"
-#include "messages.h"
 #include "backend.h"
 
+#include <stdio.h>
+
+#include "../server/servercore.h"
+#include "client.h"
+#include "global.h"
+#include "lgm.h"
+#include "messages.h"
+#include "screen.h"
+#include "types.h"
+
 #ifdef _WIN32
-	
+
 #else
 #include <sys/time.h>
 #include <sys/types.h>
@@ -43,16 +44,16 @@ void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my);
 static buildSelect BsCurrent = BsTrees;
 
 /*********************************************************
-*NAME:          screenGetNumNeutralBases
-*AUTHOR:        John Morrison
-*CREATION DATE: 21/2/99
-*LAST MODIFIED: 21/2/99
-*PURPOSE:
-* Returns the number of neutral bases
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetNumNeutralBases
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 21/2/99
+ *LAST MODIFIED: 21/2/99
+ *PURPOSE:
+ * Returns the number of neutral bases
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 BYTE screenGetNumNeutralBases(void) {
   if (!threadsGetContext()) {
     return clientGetNumNeutralBases();
@@ -61,17 +62,17 @@ BYTE screenGetNumNeutralBases(void) {
 }
 
 /*********************************************************
-*NAME:          screenMapIsMine
-*AUTHOR:        John Morrison
-*CREATION DATE: 31/8/99
-*LAST MODIFIED: 31/8/99
-*PURPOSE:
-* Returns whether a mines exists at a map square
-*
-*ARGUMENTS:
-*  bmx - Map X position
-*  bmy - Map X position
-*********************************************************/
+ *NAME:          screenMapIsMine
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 31/8/99
+ *LAST MODIFIED: 31/8/99
+ *PURPOSE:
+ * Returns whether a mines exists at a map square
+ *
+ *ARGUMENTS:
+ *  bmx - Map X position
+ *  bmy - Map X position
+ *********************************************************/
 bool screenMapIsMine(BYTE bmx, BYTE bmy) {
   if (!threadsGetContext()) {
     return clientMapIsMine(bmx, bmy);
@@ -79,37 +80,35 @@ bool screenMapIsMine(BYTE bmx, BYTE bmy) {
   return serverCoreMapIsMine(bmx, bmy);
 }
 
-
 /*********************************************************
-*NAME:          screenGetPlayers
-*AUTHOR:        John Morrison
-*CREATION DATE: 19/01/99
-*LAST MODIFIED: 05/05/01
-*PURPOSE:
-* Returns the players object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetPlayers
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 19/01/99
+ *LAST MODIFIED: 05/05/01
+ *PURPOSE:
+ * Returns the players object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 players *screenGetPlayers() {
-  if (threadsGetContext()||clientGetPlayers()==nullptr) {
+  if (threadsGetContext() || clientGetPlayers() == nullptr) {
     return serverCoreGetPlayers();
   }
   return clientGetPlayers();
 }
 
-
 /*********************************************************
-*NAME:          screenBasesMigrate
-*AUTHOR:        Minhiriath
-*CREATION DATE: 19/01/99
-*LAST MODIFIED: 05/05/01
-*PURPOSE:
-* runs the correct bases migrate functions
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenBasesMigrate
+ *AUTHOR:        Minhiriath
+ *CREATION DATE: 19/01/99
+ *LAST MODIFIED: 05/05/01
+ *PURPOSE:
+ * runs the correct bases migrate functions
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void screenBasesMigrate(BYTE playerNumOldOwner, BYTE playerNumNewOwner) {
   if (threadsGetContext()) {
     serverCoreBasesMigrate(playerNumOldOwner, playerNumNewOwner);
@@ -118,18 +117,18 @@ void screenBasesMigrate(BYTE playerNumOldOwner, BYTE playerNumNewOwner) {
 }
 
 /*********************************************************
-*NAME:          screenPillsMigratePlanted
-*AUTHOR:        Minhiriath
-*CREATION DATE: 15/03/2009
-*LAST MODIFIED: 15/03/2009
-*PURPOSE:
-*  Migrates planted pills
-*
-*ARGUMENTS:
-* playerNumOldOwner - old owner
-* playerNumNewOwner - new owner
-*********************************************************/
-void screenPillsMigratePlanted(BYTE playerNumOldOwner, BYTE playerNumNewOwner){
+ *NAME:          screenPillsMigratePlanted
+ *AUTHOR:        Minhiriath
+ *CREATION DATE: 15/03/2009
+ *LAST MODIFIED: 15/03/2009
+ *PURPOSE:
+ *  Migrates planted pills
+ *
+ *ARGUMENTS:
+ * playerNumOldOwner - old owner
+ * playerNumNewOwner - new owner
+ *********************************************************/
+void screenPillsMigratePlanted(BYTE playerNumOldOwner, BYTE playerNumNewOwner) {
   if (threadsGetContext()) {
     serverCorePillsMigratePlanted(playerNumOldOwner, playerNumNewOwner);
   }
@@ -137,18 +136,18 @@ void screenPillsMigratePlanted(BYTE playerNumOldOwner, BYTE playerNumNewOwner){
 }
 
 /*********************************************************
-*NAME:          screenGetTankFromPlayer
-*AUTHOR:        John Morrison
-*CREATION DATE: 21/10/00
-*LAST MODIFIED: 21/10/00
-*PURPOSE:
-* Returns the tank for a specific player num. In a client
-* it always return our own tank
-*
-*ARGUMENTS:
-*  playerNum - Tank to get for this player number
-*********************************************************/
-tank* screenGetTankFromPlayer(BYTE playerNum) {
+ *NAME:          screenGetTankFromPlayer
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 21/10/00
+ *LAST MODIFIED: 21/10/00
+ *PURPOSE:
+ * Returns the tank for a specific player num. In a client
+ * it always return our own tank
+ *
+ *ARGUMENTS:
+ *  playerNum - Tank to get for this player number
+ *********************************************************/
+tank *screenGetTankFromPlayer(BYTE playerNum) {
   if (!threadsGetContext()) {
     return clientGetTankFromPlayer(playerNum);
   }
@@ -156,16 +155,16 @@ tank* screenGetTankFromPlayer(BYTE playerNum) {
 }
 
 /*********************************************************
-*NAME:          screenGetTankPlayer
-*AUTHOR:        John Morrison
-*CREATION DATE: 31/10/99
-*LAST MODIFIED: 31/10/99
-*PURPOSE:
-* Returns this tanks player number
-*
-*ARGUMENTS:
-*  value - Pointer to the tank
-*********************************************************/
+ *NAME:          screenGetTankPlayer
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 31/10/99
+ *LAST MODIFIED: 31/10/99
+ *PURPOSE:
+ * Returns this tanks player number
+ *
+ *ARGUMENTS:
+ *  value - Pointer to the tank
+ *********************************************************/
 BYTE screenGetTankPlayer(tank *value) {
   if (!threadsGetContext()) {
     return clientGetTankPlayer(value);
@@ -173,18 +172,17 @@ BYTE screenGetTankPlayer(tank *value) {
   return serverCoreGetTankPlayer(value);
 }
 
-
 /*********************************************************
-*NAME:          screenNumBases
-*AUTHOR:        John Morrison
-*CREATION DATE: 21/12/98
-*LAST MODIFIED: 21/12/98
-*PURPOSE:
-*  Returns the number of bases
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenNumBases
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 21/12/98
+ *LAST MODIFIED: 21/12/98
+ *PURPOSE:
+ *  Returns the number of bases
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 BYTE screenNumBases(void) {
   if (!threadsGetContext()) {
     return clientNumBases();
@@ -193,16 +191,16 @@ BYTE screenNumBases(void) {
 }
 
 /*********************************************************
-*NAME:          screenNumPills
-*AUTHOR:        John Morrison
-*CREATION DATE: 21/12/98
-*LAST MODIFIED: 21/12/98
-*PURPOSE:
-*  Returns the number of pillboxes
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenNumPills
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 21/12/98
+ *LAST MODIFIED: 21/12/98
+ *PURPOSE:
+ *  Returns the number of pillboxes
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 BYTE screenNumPills(void) {
   if (!threadsGetContext()) {
     return clientNumPills();
@@ -211,17 +209,17 @@ BYTE screenNumPills(void) {
 }
 
 /*********************************************************
-*NAME:          screenGetLgmFromPlayerNum
-*AUTHOR:        John Morrison
-*CREATION DATE: 23/9/00
-*LAST MODIFIED: 23/9/00
-*PURPOSE:
-* Returns the lgm structure for a particular player number.
-* Always your own for a client.
-*
-*ARGUMENTS:
-*  playerNum - the player numbers lgm to get
-*********************************************************/
+ *NAME:          screenGetLgmFromPlayerNum
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 23/9/00
+ *LAST MODIFIED: 23/9/00
+ *PURPOSE:
+ * Returns the lgm structure for a particular player number.
+ * Always your own for a client.
+ *
+ *ARGUMENTS:
+ *  playerNum - the player numbers lgm to get
+ *********************************************************/
 lgm *screenGetLgmFromPlayerNum(BYTE playerNum) {
   if (!threadsGetContext()) {
     return clientGetLgmFromPlayerNum(playerNum);
@@ -230,19 +228,19 @@ lgm *screenGetLgmFromPlayerNum(BYTE playerNum) {
 }
 
 /*********************************************************
-*NAME:          screenGetTankWorld
-*AUTHOR:        John Morrison
-*CREATION DATE: 28/12/00
-*LAST MODIFIED: 28/12/00
-*PURPOSE:
-* Gets the tank world co-ordinates from a lgman object
-* returns own tank co-ordinates in a client game
-*
-*ARGUMENTS:
-*  lgmans - Pointer to the lgm structure
-*  x      - Pointer to hold World X Co-ordinates
-*  y      - Pointer to hold World Y Co-ordinates
-*********************************************************/
+ *NAME:          screenGetTankWorld
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 28/12/00
+ *LAST MODIFIED: 28/12/00
+ *PURPOSE:
+ * Gets the tank world co-ordinates from a lgman object
+ * returns own tank co-ordinates in a client game
+ *
+ *ARGUMENTS:
+ *  lgmans - Pointer to the lgm structure
+ *  x      - Pointer to hold World X Co-ordinates
+ *  y      - Pointer to hold World Y Co-ordinates
+ *********************************************************/
 void screenGetTankWorldFromLgm(lgm *lgmans, WORLD *x, WORLD *y) {
   if (!threadsGetContext()) {
     clientGetTankWorldFromLgm(lgmans, x, y);
@@ -252,18 +250,18 @@ void screenGetTankWorldFromLgm(lgm *lgmans, WORLD *x, WORLD *y) {
 }
 
 /*********************************************************
-*NAME:          screenGetRandStart
-*AUTHOR:        John Morrison
-*CREATION DATE: 18/1/99
-*LAST MODIFIED: 18/1/99
-*PURPOSE:
-* Places a random start position into the parmeters passed
-*
-*ARGUMENTS:
-*  mx - Pointer to hold Map X Co-ordinates
-*  my - Pointer to hold Map Y Co-ordinates
-*  dir - Direction facing
-*********************************************************/
+ *NAME:          screenGetRandStart
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 18/1/99
+ *LAST MODIFIED: 18/1/99
+ *PURPOSE:
+ * Places a random start position into the parmeters passed
+ *
+ *ARGUMENTS:
+ *  mx - Pointer to hold Map X Co-ordinates
+ *  my - Pointer to hold Map Y Co-ordinates
+ *  dir - Direction facing
+ *********************************************************/
 void screenGetRandStart(BYTE *mx, BYTE *my, TURNTYPE *dir) {
   if (!threadsGetContext()) {
     clientGetRandStart(mx, my, dir);
@@ -273,20 +271,20 @@ void screenGetRandStart(BYTE *mx, BYTE *my, TURNTYPE *dir) {
 }
 
 /*********************************************************
-*NAME:          screenCheckTankRange
-*AUTHOR:        John Morrison
-*CREATION DATE: 9/04/01
-*LAST MODIFIED: 11/04/01
-*PURPOSE:
-* Checks to see if there is enemy tank within range
-* supplied. Returns true if we are in the clear
-*
-*ARGUMENTS:
-*  xValue    - X Value
-*  yValue    - Y Value
-*  playerNum - Player number to check against
-*  distance  - Distance to be less then to return false
-*********************************************************/
+ *NAME:          screenCheckTankRange
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 9/04/01
+ *LAST MODIFIED: 11/04/01
+ *PURPOSE:
+ * Checks to see if there is enemy tank within range
+ * supplied. Returns true if we are in the clear
+ *
+ *ARGUMENTS:
+ *  xValue    - X Value
+ *  yValue    - Y Value
+ *  playerNum - Player number to check against
+ *  distance  - Distance to be less then to return false
+ *********************************************************/
 bool screenCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
   if (!threadsGetContext()) {
     return clientCheckTankRange(x, y, playerNum, distance);
@@ -295,21 +293,22 @@ bool screenCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
 }
 
 /*********************************************************
-*NAME:          screenCheckPillsRange
-*AUTHOR:        John Morrison
-*CREATION DATE: 9/04/01
-*LAST MODIFIED: 9/04/01
-*PURPOSE:
-* Checks to see if there is enemy pill within range
-* supplied. Returns true if we are in the clear
-*
-*ARGUMENTS:
-*  xValue    - X Value
-*  yValue    - Y Value
-*  playerNum - Player number to check against
-*  distance  - Distance to be less then to return true
-*********************************************************/
-bool screenCheckPillsRange(BYTE xValue, BYTE yValue, BYTE playerNum, double distance) {
+ *NAME:          screenCheckPillsRange
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 9/04/01
+ *LAST MODIFIED: 9/04/01
+ *PURPOSE:
+ * Checks to see if there is enemy pill within range
+ * supplied. Returns true if we are in the clear
+ *
+ *ARGUMENTS:
+ *  xValue    - X Value
+ *  yValue    - Y Value
+ *  playerNum - Player number to check against
+ *  distance  - Distance to be less then to return true
+ *********************************************************/
+bool screenCheckPillsRange(BYTE xValue, BYTE yValue, BYTE playerNum,
+                           double distance) {
   if (!threadsGetContext()) {
     return clientCheckPillsRange(xValue, yValue, playerNum, distance);
   }
@@ -317,16 +316,16 @@ bool screenCheckPillsRange(BYTE xValue, BYTE yValue, BYTE playerNum, double dist
 }
 
 /*********************************************************
-*NAME:          serverCoreServerConsoleMessage
-*AUTHOR:        John Morrison
-*CREATION DATE: 8/7/00
-*LAST MODIFIED: 8/7/00
-*PURPOSE:
-* Displays a server message on the console
-*
-*ARGUMENTS:
-*  mode - Server mode
-********************************************************/
+ *NAME:          serverCoreServerConsoleMessage
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 8/7/00
+ *LAST MODIFIED: 8/7/00
+ *PURPOSE:
+ * Displays a server message on the console
+ *
+ *ARGUMENTS:
+ *  mode - Server mode
+ ********************************************************/
 void screenServerConsoleMessage(const char *msg) {
   if (threadsGetContext()) {
     serverCoreServerConsoleMessage(msg);
@@ -334,20 +333,20 @@ void screenServerConsoleMessage(const char *msg) {
 }
 
 /*********************************************************
-*NAME:          clientMessageAdd
-*AUTHOR:        John Morrison
-*CREATION DATE:  3/1/99
-*LAST MODIFIED:  4/7/00
-*PURPOSE:
-*  Functions call this to display a message. They must
-*  pass the message type so that it can be determined
-*  whether the header should be printed etc.
-*
-*ARGUMENTS:
-*  msgType - The type of the message
-*  top     - The message to print in the top line
-*  bottom  - The message to print in the bottom line
-*********************************************************/
+ *NAME:          clientMessageAdd
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  3/1/99
+ *LAST MODIFIED:  4/7/00
+ *PURPOSE:
+ *  Functions call this to display a message. They must
+ *  pass the message type so that it can be determined
+ *  whether the header should be printed etc.
+ *
+ *ARGUMENTS:
+ *  msgType - The type of the message
+ *  top     - The message to print in the top line
+ *  bottom  - The message to print in the bottom line
+ *********************************************************/
 void messageAdd(messageType msgType, const char *top, const char *bottom) {
   if (!threadsGetContext()) {
     clientMessageAdd(msgType, top, bottom);
@@ -357,19 +356,19 @@ void messageAdd(messageType msgType, const char *top, const char *bottom) {
 }
 
 /*********************************************************
-*NAME:          screenTankInView
-*AUTHOR:        John Morrison
-*CREATION DATE: 31/8/99
-*LAST MODIFIED:  8/9/00
-*PURPOSE:
-* Returns if the item at checkX, checkY is in viewing
-* range of playre playerNum and any of its pillboxes
-*
-*ARGUMENTS:
-* playerNum - PlayerNum to check
-* checkX    - X Position to check
-* checkY    - Y Position to check
-*********************************************************/
+ *NAME:          screenTankInView
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 31/8/99
+ *LAST MODIFIED:  8/9/00
+ *PURPOSE:
+ * Returns if the item at checkX, checkY is in viewing
+ * range of playre playerNum and any of its pillboxes
+ *
+ *ARGUMENTS:
+ * playerNum - PlayerNum to check
+ * checkX    - X Position to check
+ * checkY    - Y Position to check
+ *********************************************************/
 bool screenTankInView(BYTE playerNum, BYTE checkX, BYTE checkY) {
   if (!threadsGetContext()) {
     return clientTankInView(playerNum, checkX, checkY);
@@ -379,58 +378,57 @@ bool screenTankInView(BYTE playerNum, BYTE checkX, BYTE checkY) {
 }
 
 /*********************************************************
-*NAME:          screenCenterTank
-*AUTHOR:        John Morrison
-*CREATION DATE: 3/1/99
-*LAST MODIFIED: 3/1/99
-*PURPOSE:
-*  Centers the screen around the tank.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenCenterTank
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 3/1/99
+ *LAST MODIFIED: 3/1/99
+ *PURPOSE:
+ *  Centers the screen around the tank.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void screenCenterTank() {
   if (!threadsGetContext()) {
     clientCenterTank();
   } else {
     serverCoreCenterTank();
-  } 
+  }
 }
 
 /*********************************************************
-*NAME:          soundDist
-*AUTHOR:        John Morrison
-*CREATION DATE: 19/01/99
-*LAST MODIFIED: 05/05/01
-*PURPOSE:
-*  Calculates whether a soft sound of a loud sound should 
-*  be played and passes paremeters to frontend
-*
-*ARGUMENTS:
-*  value - Sound effect to be played
-*  mx    - Map X co-ordinatate for the sound origin
-*  my    - Map Y co-ordinatate for the sound origin
-*********************************************************/
+ *NAME:          soundDist
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 19/01/99
+ *LAST MODIFIED: 05/05/01
+ *PURPOSE:
+ *  Calculates whether a soft sound of a loud sound should
+ *  be played and passes paremeters to frontend
+ *
+ *ARGUMENTS:
+ *  value - Sound effect to be played
+ *  mx    - Map X co-ordinatate for the sound origin
+ *  my    - Map Y co-ordinatate for the sound origin
+ *********************************************************/
 void soundDist(sndEffects value, BYTE mx, BYTE my) {
   if (!threadsGetContext()) {
     clientSoundDist(value, mx, my);
   } else {
     serverCoreSoundDist(value, mx, my);
   }
-  
 }
 
 /*********************************************************
-*NAME:          screenGetBuildings
-*AUTHOR:        John Morrison
-*CREATION DATE: 04/10/03
-*LAST MODIFIED: 04/10/03
-*PURPOSE:
-*  Returns a pointer to the buildings Object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetBuildings
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 04/10/03
+ *LAST MODIFIED: 04/10/03
+ *PURPOSE:
+ *  Returns a pointer to the buildings Object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 building *screenGetBuildings() {
   if (!threadsGetContext()) {
     return clientGetBuildings();
@@ -440,16 +438,16 @@ building *screenGetBuildings() {
 }
 
 /*********************************************************
-*NAME:          screenGetExplosions
-*AUTHOR:        John Morrison
-*CREATION DATE: 04/10/03
-*LAST MODIFIED: 04/10/03
-*PURPOSE:
-*  Returns a pointer to the explosions Object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetExplosions
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 04/10/03
+ *LAST MODIFIED: 04/10/03
+ *PURPOSE:
+ *  Returns a pointer to the explosions Object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 explosions *screenGetExplosions() {
   if (!threadsGetContext()) {
     return clientGetExplosions();
@@ -459,16 +457,16 @@ explosions *screenGetExplosions() {
 }
 
 /*********************************************************
-*NAME:          screenGetFloodFill
-*AUTHOR:        John Morrison
-*CREATION DATE: 04/10/03
-*LAST MODIFIED: 04/10/03
-*PURPOSE:
-*  Returns a pointer to the floodfill object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetFloodFill
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 04/10/03
+ *LAST MODIFIED: 04/10/03
+ *PURPOSE:
+ *  Returns a pointer to the floodfill object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 floodFill *screenGetFloodFill() {
   if (!threadsGetContext()) {
     return clientGetFloodFill();
@@ -478,16 +476,16 @@ floodFill *screenGetFloodFill() {
 }
 
 /*********************************************************
-*NAME:          screenGetGrass
-*AUTHOR:        John Morrison
-*CREATION DATE: 04/10/03
-*LAST MODIFIED: 04/10/03
-*PURPOSE:
-*  Returns a pointer to the grass object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetGrass
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 04/10/03
+ *LAST MODIFIED: 04/10/03
+ *PURPOSE:
+ *  Returns a pointer to the grass object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 grass *screenGetGrass() {
   if (!threadsGetContext()) {
     return clientGetGrass();
@@ -497,16 +495,16 @@ grass *screenGetGrass() {
 }
 
 /*********************************************************
-*NAME:          screenGetMines
-*AUTHOR:        John Morrison
-*CREATION DATE: 04/10/03
-*LAST MODIFIED: 04/10/03
-*PURPOSE:
-*  Returns a pointer to the mines object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetMines
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 04/10/03
+ *LAST MODIFIED: 04/10/03
+ *PURPOSE:
+ *  Returns a pointer to the mines object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 mines *screenGetMines() {
   if (!threadsGetContext()) {
     return clientGetMines();
@@ -516,16 +514,16 @@ mines *screenGetMines() {
 }
 
 /*********************************************************
-*NAME:          screenGetMinesExp
-*AUTHOR:        John Morrison
-*CREATION DATE: 04/10/03
-*LAST MODIFIED: 04/10/03
-*PURPOSE:
-*  Returns a pointer to the mines explosion object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetMinesExp
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 04/10/03
+ *LAST MODIFIED: 04/10/03
+ *PURPOSE:
+ *  Returns a pointer to the mines explosion object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 minesExp *screenGetMinesExp() {
   if (!threadsGetContext()) {
     return clientGetMinesExp();
@@ -534,16 +532,16 @@ minesExp *screenGetMinesExp() {
 }
 
 /*********************************************************
-*NAME:          screenGetRubble
-*AUTHOR:        John Morrison
-*CREATION DATE: 04/10/03
-*LAST MODIFIED: 04/10/03
-*PURPOSE:
-*  Returns a pointer to the rubble object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetRubble
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 04/10/03
+ *LAST MODIFIED: 04/10/03
+ *PURPOSE:
+ *  Returns a pointer to the rubble object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 rubble *screenGetRubble() {
   if (!threadsGetContext()) {
     return clientGetRubble();
@@ -552,16 +550,16 @@ rubble *screenGetRubble() {
 }
 
 /*********************************************************
-*NAME:          screenGetSwamp
-*AUTHOR:        John Morrison
-*CREATION DATE: 04/10/03
-*LAST MODIFIED: 04/10/03
-*PURPOSE:
-*  Returns a pointer to the swamp object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetSwamp
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 04/10/03
+ *LAST MODIFIED: 04/10/03
+ *PURPOSE:
+ *  Returns a pointer to the swamp object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 swamp *screenGetSwamp() {
   if (!threadsGetContext()) {
     return clientGetSwamp();
@@ -570,16 +568,16 @@ swamp *screenGetSwamp() {
 }
 
 /*********************************************************
-*NAME:          screenGetTankExplosions
-*AUTHOR:        John Morrison
-*CREATION DATE: 04/10/03
-*LAST MODIFIED: 04/10/03
-*PURPOSE:
-*  Returns a pointer to the tank explosions object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetTankExplosions
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 04/10/03
+ *LAST MODIFIED: 04/10/03
+ *PURPOSE:
+ *  Returns a pointer to the tank explosions object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 tkExplosion *screenGetTankExplosions() {
   if (!threadsGetContext()) {
     return clientGetTankExplosions();
@@ -588,16 +586,16 @@ tkExplosion *screenGetTankExplosions() {
 }
 
 /*********************************************************
-*NAME:          screenGetNetPnb
-*AUTHOR:        John Morrison
-*CREATION DATE: 04/10/03
-*LAST MODIFIED: 04/10/03
-*PURPOSE:
-*  Returns a pointer to the Pnb Object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetNetPnb
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 04/10/03
+ *LAST MODIFIED: 04/10/03
+ *PURPOSE:
+ *  Returns a pointer to the Pnb Object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 netPnbContext *screenGetNetPnb() {
   if (!threadsGetContext()) {
     return clientGetNetPnb();
@@ -606,35 +604,35 @@ netPnbContext *screenGetNetPnb() {
 }
 
 /*********************************************************
-*NAME:          screenGetNetMnt
-*AUTHOR:        John Morrison
-*CREATION DATE: 04/10/03
-*LAST MODIFIED: 04/10/03
-*PURPOSE:
-*  Returns a pointer to the Pnb Object
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetNetMnt
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 04/10/03
+ *LAST MODIFIED: 04/10/03
+ *PURPOSE:
+ *  Returns a pointer to the Pnb Object
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 netMntContext *screenGetNetMnt() {
-if (!threadsGetContext()) {
+  if (!threadsGetContext()) {
     return clientGetNetMnt();
   }
   return serverCoreGetNetMnt();
 }
 
 /*********************************************************
-*NAME:          screenSetInStartFind
-*AUTHOR:        John Morrison
-*CREATION DATE: 28/11/99
-*LAST MODIFIED: 28/11/99
-*PURPOSE:
-*  Sets if we are entering of leaving the find a start
-*  position
-*
-*ARGUMENTS:
-*  entering - true if entering, false if leaving
-*********************************************************/
+ *NAME:          screenSetInStartFind
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 28/11/99
+ *LAST MODIFIED: 28/11/99
+ *PURPOSE:
+ *  Sets if we are entering of leaving the find a start
+ *  position
+ *
+ *ARGUMENTS:
+ *  entering - true if entering, false if leaving
+ *********************************************************/
 void screenSetInStartFind(bool entering) {
   if (!threadsGetContext()) {
     clientSetInStartFind(entering);
@@ -642,17 +640,17 @@ void screenSetInStartFind(bool entering) {
 }
 
 /*********************************************************
-*NAME:          screenGetInStartFind
-*AUTHOR:        John Morrison
-*CREATION DATE: 28/11/99
-*LAST MODIFIED: 28/11/99
-*PURPOSE:
-*  Gets if we are entering or leaving the find a start
-*  position
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetInStartFind
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 28/11/99
+ *LAST MODIFIED: 28/11/99
+ *PURPOSE:
+ *  Gets if we are entering or leaving the find a start
+ *  position
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 bool screenGetInStartFind() {
   if (!threadsGetContext()) {
     return clientGetInStartFind();
@@ -661,16 +659,16 @@ bool screenGetInStartFind() {
 }
 
 /*********************************************************
-*NAME:          screenGetGameType
-*AUTHOR:        John Morrison
-*CREATION DATE: 17/12/03
-*LAST MODIFIED: 17/12/03
-*PURPOSE:
-*  Returns a pointer to the game type
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          screenGetGameType
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 17/12/03
+ *LAST MODIFIED: 17/12/03
+ *PURPOSE:
+ *  Returns a pointer to the game type
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 gameType *screenGetGameType() {
   if (!threadsGetContext()) {
     return clientGetGameType();
@@ -678,10 +676,7 @@ gameType *screenGetGameType() {
   return serverCoreGetGameType();
 }
 
-bool backendGetContext() {
-  return threadsGetContext();
-}
-
+bool backendGetContext() { return threadsGetContext(); }
 
 /*
 typedef enum {
@@ -693,85 +688,81 @@ typedef enum {
 } buildSelect;
 */
 
+/*********************************************************
+ *NAME:          getBuildCurrentSelect
+ *AUTHOR:        Chris Lesnieski
+ *CREATION DATE: 10/05/2009
+ *LAST MODIFIED: 10/05/2009
+ *PURPOSE:
+ *  Will get the currently selected build action.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+buildSelect getBuildCurrentSelect() { return BsCurrent; }
 
 /*********************************************************
-*NAME:          getBuildCurrentSelect
-*AUTHOR:        Chris Lesnieski
-*CREATION DATE: 10/05/2009
-*LAST MODIFIED: 10/05/2009
-*PURPOSE:
-*  Will get the currently selected build action.
-*
-*ARGUMENTS:
-*
-*********************************************************/
-buildSelect getBuildCurrentSelect() {
-	return BsCurrent;
-}
-
-
-/*********************************************************
-*NAME:          setBuildCurrentSelect
-*AUTHOR:        Chris Lesnieski
-*CREATION DATE: 10/05/2009
-*LAST MODIFIED: 10/05/2009
-*PURPOSE:
-*  When passed in a type of build parameter, will set the
-*  BsCurrent variable, which holds the current build action.
-*
-*ARGUMENTS:
-*  bs - this should denote one of the build buttons
-*       on the left hand side of the screen.
-*
-*********************************************************/
+ *NAME:          setBuildCurrentSelect
+ *AUTHOR:        Chris Lesnieski
+ *CREATION DATE: 10/05/2009
+ *LAST MODIFIED: 10/05/2009
+ *PURPOSE:
+ *  When passed in a type of build parameter, will set the
+ *  BsCurrent variable, which holds the current build action.
+ *
+ *ARGUMENTS:
+ *  bs - this should denote one of the build buttons
+ *       on the left hand side of the screen.
+ *
+ *********************************************************/
 void setBuildCurrentSelect(buildSelect bs) {
-
-	/* Didn't send the right type of variable */
-	if ((bs != BsTrees) && (bs != BsRoad) && (bs != BsBuilding) && (bs != BsPillbox) && (bs != BsMine)) {
-		return;
-	} else {
-		BsCurrent = bs;
-	}
+  /* Didn't send the right type of variable */
+  if ((bs != BsTrees) && (bs != BsRoad) && (bs != BsBuilding) &&
+      (bs != BsPillbox) && (bs != BsMine)) {
+    return;
+  } else {
+    BsCurrent = bs;
+  }
 }
 
-
 /*********************************************************
-*NAME:          Timer Functions
-*AUTHOR:        Minhiriath	
-*CREATION DATE: 1/1/2009
-*LAST MODIFIED: 1/1/2009
-*PURPOSE:
-*  Deals with all timer functions in winbolo client and server.
-*
-*ARGUMENTS:
-*
-*********************************************************/
-void initWinboloTimer(void){
+ *NAME:          Timer Functions
+ *AUTHOR:        Minhiriath
+ *CREATION DATE: 1/1/2009
+ *LAST MODIFIED: 1/1/2009
+ *PURPOSE:
+ *  Deals with all timer functions in winbolo client and server.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+void initWinboloTimer(void) {
 #ifdef _WIN32
-	timeBeginPeriod(1);
+  timeBeginPeriod(1);
 #else
-	// inset linux stuff here
-    gettimeofday(&start_time, nullptr);
+  // inset linux stuff here
+  gettimeofday(&start_time, nullptr);
 #endif
 }
 
 DWORD winboloTimer(void) {
 #ifdef _WIN32
-	return timeGetTime();
+  return timeGetTime();
 #else
-	// insert linux stuff here
-	// return SDL_GetTicks();
-	struct timeval t;
-	gettimeofday(&t, nullptr);
-	return (DWORD) ((t.tv_sec - start_time.tv_sec) * 1000000 + (t.tv_usec - start_time.tv_usec))/1000;
+  // insert linux stuff here
+  // return SDL_GetTicks();
+  struct timeval t;
+  gettimeofday(&t, nullptr);
+  return (DWORD)((t.tv_sec - start_time.tv_sec) * 1000000 +
+                 (t.tv_usec - start_time.tv_usec)) /
+         1000;
 #endif
 }
 
-void endWinboloTimer(void){
+void endWinboloTimer(void) {
 #ifdef _WIN32
-	timeEndPeriod(1);
+  timeEndPeriod(1);
 #else
-	// insert linux stuff here
-#endif	
+  // insert linux stuff here
+#endif
 }
-

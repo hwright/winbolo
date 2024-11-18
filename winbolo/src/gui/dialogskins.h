@@ -14,73 +14,73 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Dialog - Skins
-*Filename:      dialogSkins.h
-*Author:        John Morrison
-*Creation Date: 28/09/03
-*Last Modified: 28/09/03
-*Purpose:
-*  Looks after the skins dialog
-*********************************************************/
+ *Name:          Dialog - Skins
+ *Filename:      dialogSkins.h
+ *Author:        John Morrison
+ *Creation Date: 28/09/03
+ *Last Modified: 28/09/03
+ *Purpose:
+ *  Looks after the skins dialog
+ *********************************************************/
 
 #include <windows.h>
+
 #include "..\..\bolo\global.h"
 
+/*********************************************************
+ *NAME:          dialogSkinsCallback
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 28/09/03
+ *LAST MODIFIED: 28/09/03
+ *PURPOSE:
+ *  The Skins Dialog call back function.
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *  msg    - The message
+ *  wParam - Message parameters
+ *  lParam - More Message parameters
+ *********************************************************/
+BOOL CALLBACK dialogSkinsCallback(HWND hWnd, unsigned uMsg, WPARAM wParam,
+                                  LPARAM lParam);
 
 /*********************************************************
-*NAME:          dialogSkinsCallback
-*AUTHOR:        John Morrison
-*CREATION DATE: 28/09/03
-*LAST MODIFIED: 28/09/03
-*PURPOSE:
-*  The Skins Dialog call back function.
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*  msg    - The message
-*  wParam - Message parameters
-*  lParam - More Message parameters
-*********************************************************/
-BOOL CALLBACK dialogSkinsCallback( HWND hWnd, unsigned uMsg, WPARAM wParam, LPARAM lParam );
-
-/*********************************************************
-*NAME:          dialogSkinsSetInit
-*AUTHOR:        John Morrison
-*CREATION DATE: 28/09/03
-*LAST MODIFIED: 28/09/03
-*PURPOSE:
-*  The Skins Dialog init function
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*********************************************************/
+ *NAME:          dialogSkinsSetInit
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 28/09/03
+ *LAST MODIFIED: 28/09/03
+ *PURPOSE:
+ *  The Skins Dialog init function
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *********************************************************/
 void dialogSkinsInit(HWND hWnd);
 
 /*********************************************************
-*NAME:          dialogSkinsLoadList
-*AUTHOR:        John Morrison
-*CREATION DATE: 28/09/03
-*LAST MODIFIED: 28/09/03
-*PURPOSE:
-*  Loads the list of available skins into the 
-*  dialog box
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*********************************************************/
+ *NAME:          dialogSkinsLoadList
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 28/09/03
+ *LAST MODIFIED: 28/09/03
+ *PURPOSE:
+ *  Loads the list of available skins into the
+ *  dialog box
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *********************************************************/
 void dialogSkinsLoadList(HWND hWnd);
 
 /*********************************************************
-*NAME:          dialogSkinsSetText
-*AUTHOR:        John Morrison
-*CREATION DATE: 28/09/03
-*LAST MODIFIED: 28/09/03
-*PURPOSE:
-*  Sets the text in the dialog box
-*
-*ARGUMENTS:
-*  hWnd   - Handle to the window
-*********************************************************/
+ *NAME:          dialogSkinsSetText
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 28/09/03
+ *LAST MODIFIED: 28/09/03
+ *PURPOSE:
+ *  Sets the text in the dialog box
+ *
+ *ARGUMENTS:
+ *  hWnd   - Handle to the window
+ *********************************************************/
 void dialogSkinsSetText(HWND hWnd);

@@ -14,16 +14,15 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          crc
-*Filename:      crc.h
-*Author:        John Morrison
-*Creation Date: 7/3/98
-*Last Modified: 7/3/99
-*Purpose:
-*  Provides CRC Operations
-*********************************************************/
+ *Name:          crc
+ *Filename:      crc.h
+ *Author:        John Morrison
+ *Creation Date: 7/3/98
+ *Last Modified: 7/3/99
+ *Purpose:
+ *  Provides CRC Operations
+ *********************************************************/
 
 #ifndef CRC_H
 #define CRC_H
@@ -37,54 +36,53 @@
 #define CRC_SHIFT_RIGHT 24
 #define CRC_SHIFT_LEFT_2 24
 
-
 /*********************************************************
-*NAME:          CRCCalc
-*AUTHOR:        John Morrison
-*CREATION DATE: 7/3/98
-*LAST MODIFIED: 7/3/98
-*PURPOSE:
-*  Generates a CRC for a buffer buff of length buffLen
-*  Sets number of bases to zero
-*
-*ARGUMENTS:
-*  buff    - Pointer to the buffer
-*  buffLen - Length of the buffer
-*********************************************************/
+ *NAME:          CRCCalc
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 7/3/98
+ *LAST MODIFIED: 7/3/98
+ *PURPOSE:
+ *  Generates a CRC for a buffer buff of length buffLen
+ *  Sets number of bases to zero
+ *
+ *ARGUMENTS:
+ *  buff    - Pointer to the buffer
+ *  buffLen - Length of the buffer
+ *********************************************************/
 int CRCCalc(BYTE *buff, int buffLen);
 
 /*********************************************************
-*NAME:          CRCCalcBytes
-*AUTHOR:        John Morrison
-*CREATION DATE: 7/3/98
-*LAST MODIFIED: 7/3/98
-*PURPOSE:
-*  Generates a CRC for a buffer buff of length buffLen
-*  Sets number of bases to zero
-*
-*ARGUMENTS:
-*  buff    - Pointer to the buffer
-*  buffLen - Length of the buffer
-*  crcA    - Pointer to hold CRC Byte 1
-*  crcB    - Pointer to hold CRC Byte 2
-*********************************************************/
+ *NAME:          CRCCalcBytes
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 7/3/98
+ *LAST MODIFIED: 7/3/98
+ *PURPOSE:
+ *  Generates a CRC for a buffer buff of length buffLen
+ *  Sets number of bases to zero
+ *
+ *ARGUMENTS:
+ *  buff    - Pointer to the buffer
+ *  buffLen - Length of the buffer
+ *  crcA    - Pointer to hold CRC Byte 1
+ *  crcB    - Pointer to hold CRC Byte 2
+ *********************************************************/
 void CRCCalcBytes(BYTE *buff, int buffLen, BYTE *crcA, BYTE *crcB);
 
 /*********************************************************
-*NAME:          CRCCheck
-*AUTHOR:        John Morrison
-*CREATION DATE: 7/3/98
-*LAST MODIFIED: 7/3/98
-*PURPOSE:
-*  Checks a CRC known CRC against a buffer to see if they
-*  match
-*
-*ARGUMENTS:
-*  buff    - Pointer to the buffer
-*  buffLen - Length of the buffer
-*  crcA    - CRC Byte 1
-*  crcB    - CRC Byte 2
-*********************************************************/
+ *NAME:          CRCCheck
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 7/3/98
+ *LAST MODIFIED: 7/3/98
+ *PURPOSE:
+ *  Checks a CRC known CRC against a buffer to see if they
+ *  match
+ *
+ *ARGUMENTS:
+ *  buff    - Pointer to the buffer
+ *  buffLen - Length of the buffer
+ *  crcA    - CRC Byte 1
+ *  crcB    - CRC Byte 2
+ *********************************************************/
 bool CRCCheck(BYTE *buff, int buffLen, BYTE crcA, BYTE crcB);
 
 #endif /* CRC_H */

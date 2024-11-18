@@ -14,11 +14,9 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef _DIALOG_GAME_SETUP_H
 #define _DIALOG_GAME_SETUP_H
 #include <gtk/gtk.h>
 
-GtkWidget* dialogGameSetupCreate(void); 
+GtkWidget* dialogGameSetupCreate(void);
 #endif
-

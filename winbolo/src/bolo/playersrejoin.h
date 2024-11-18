@@ -14,23 +14,22 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          PlayersRejoin
-*Filename:      playersrejoin.h
-*Author:        John Morrison
-*Creation Date: 22/6/00
-*Last Modified: 22/6/00
-*Purpose:
-*  Looks after players rejoin and ownerships.
-*********************************************************/
+ *Name:          PlayersRejoin
+ *Filename:      playersrejoin.h
+ *Author:        John Morrison
+ *Creation Date: 22/6/00
+ *Last Modified: 22/6/00
+ *Purpose:
+ *  Looks after players rejoin and ownerships.
+ *********************************************************/
 
 #ifndef _PLAYERS_REJOIN_H
 #define _PLAYERS_REJOIN_H
 
+#include "bases.h"
 #include "global.h"
 #include "pillbox.h"
-#include "bases.h"
 
 #define MAX_REJOIN_TIME 6000
 
@@ -40,7 +39,7 @@ typedef struct {
   char playerName[PLAYER_NAME_LEN]; /* Player name */
   PlayerBitMap pills;               /* pills and base ownership */
   PlayerBitMap bases;
-  int timeOut;                     /* Time left */
+  int timeOut; /* Time left */
 } playerRejoinInfo;
 
 /* Array of all the players */
@@ -51,86 +50,88 @@ typedef struct {
 /* Prototypes */
 
 /*********************************************************
-*NAME:          playersRejoinCreate
-*AUTHOR:        John Morrison
-*CREATION DATE: 22/6/00
-*LAST MODIFIED: 22/6/00
-*PURPOSE:
-* Sets up the players rejoin structure.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          playersRejoinCreate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/6/00
+ *LAST MODIFIED: 22/6/00
+ *PURPOSE:
+ * Sets up the players rejoin structure.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void playersRejoinCreate();
 
 /*********************************************************
-*NAME:          playersRejoinDestroy
-*AUTHOR:        John Morrison
-*CREATION DATE: 22/6/00
-*LAST MODIFIED: 22/6/00
-*PURPOSE:
-* Destroys the players rejoin structure
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          playersRejoinDestroy
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/6/00
+ *LAST MODIFIED: 22/6/00
+ *PURPOSE:
+ * Destroys the players rejoin structure
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void playersRejoinDestroy();
 
 /*********************************************************
-*NAME:          playersRejoinUpdate
-*AUTHOR:        John Morrison
-*CREATION DATE: 22/6/00
-*LAST MODIFIED: 22/6/00
-*PURPOSE:
-* Updates the players rejoin structure. Timeouts etc.
-*
-*ARGUMENTS:
-*
-*********************************************************/
+ *NAME:          playersRejoinUpdate
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/6/00
+ *LAST MODIFIED: 22/6/00
+ *PURPOSE:
+ * Updates the players rejoin structure. Timeouts etc.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
 void playersRejoinUpdate();
 
 /*********************************************************
-*NAME:          playersAddPlayer
-*AUTHOR:        John Morrison
-*CREATION DATE: 22/6/00
-*LAST MODIFIED: 22/6/00
-*PURPOSE:
-* Adds a player to the rejoin structure
-*
-*ARGUMENTS:
-*
-*********************************************************/
-void playersRejoinAddPlayer(char *playerName, PlayerBitMap pills, PlayerBitMap bases);
+ *NAME:          playersAddPlayer
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/6/00
+ *LAST MODIFIED: 22/6/00
+ *PURPOSE:
+ * Adds a player to the rejoin structure
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+void playersRejoinAddPlayer(char *playerName, PlayerBitMap pills,
+                            PlayerBitMap bases);
 
 /*********************************************************
-*NAME:          playersRejoinRequest
-*AUTHOR:        John Morrison
-*CREATION DATE: 22/6/00
-*LAST MODIFIED: 22/6/00
-*PURPOSE:
-* A player wish to rejoin. See if they exists and assign
-* items to his ownership if they aren't owned by someone
-* else.
-*
-*ARGUMENTS:
-*  playerName - The player name requesting the rejoin
-*  playerNum  - The rejoining players player number
-*  pb         - Pointer to the pillboxes structure
-*  bs         - Pointer to the bases structure
-*********************************************************/
-void playersRejoinRequest(char *playerName, BYTE playerNum, pillboxes *pb, bases *bs);
+ *NAME:          playersRejoinRequest
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/6/00
+ *LAST MODIFIED: 22/6/00
+ *PURPOSE:
+ * A player wish to rejoin. See if they exists and assign
+ * items to his ownership if they aren't owned by someone
+ * else.
+ *
+ *ARGUMENTS:
+ *  playerName - The player name requesting the rejoin
+ *  playerNum  - The rejoining players player number
+ *  pb         - Pointer to the pillboxes structure
+ *  bs         - Pointer to the bases structure
+ *********************************************************/
+void playersRejoinRequest(char *playerName, BYTE playerNum, pillboxes *pb,
+                          bases *bs);
 
 /*********************************************************
-*NAME:          serverCoreRequestRejoin
-*AUTHOR:        John Morrison
-*CREATION DATE: 22/6/00
-*LAST MODIFIED: 22/6/00
-*PURPOSE:
-* A player number has requested a rejoin
-*
-*ARGUMENTS:
-*  playerNum - Player number requesting join
-********************************************************/
+ *NAME:          serverCoreRequestRejoin
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/6/00
+ *LAST MODIFIED: 22/6/00
+ *PURPOSE:
+ * A player number has requested a rejoin
+ *
+ *ARGUMENTS:
+ *  playerNum - Player number requesting join
+ ********************************************************/
 void serverCoreRequestRejoin(BYTE playerNum);
 
 #endif /* _PLAYERS_REJOIN_H */

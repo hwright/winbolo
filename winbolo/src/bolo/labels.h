@@ -14,16 +14,15 @@
  * GNU General Public License for more details.
  */
 
-
 /*********************************************************
-*Name:          Labels
-*Filename:      label.h
-*Author:        John Morrison
-*Creation Date:  2/2/99
-*Last Modified:  2/2/99
-*Purpose:
-*  Responsable for message labels (short/long etc).
-*********************************************************/
+ *Name:          Labels
+ *Filename:      label.h
+ *Author:        John Morrison
+ *Creation Date:  2/2/99
+ *Last Modified:  2/2/99
+ *Purpose:
+ *  Responsable for message labels (short/long etc).
+ *********************************************************/
 
 #ifndef LABELS_H
 #define LABELS_H
@@ -37,73 +36,73 @@
 /* Prototypes */
 
 /*********************************************************
-*NAME:          labelSetSenderLength
-*AUTHOR:        John Morrison
-*CREATION DATE:  2/2/99
-*LAST MODIFIED:  2/2/99
-*PURPOSE:
-* Sets the message sender length item (short/long)
-*
-*ARGUMENTS:
-*  isLengthShort - New Length
-*********************************************************/
+ *NAME:          labelSetSenderLength
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  2/2/99
+ *LAST MODIFIED:  2/2/99
+ *PURPOSE:
+ * Sets the message sender length item (short/long)
+ *
+ *ARGUMENTS:
+ *  isLengthShort - New Length
+ *********************************************************/
 void labelSetSenderLength(labelLen isLengthShort);
 
 /*********************************************************
-*NAME:          labelSetTankLength
-*AUTHOR:        John Morrison
-*CREATION DATE:  2/2/99
-*LAST MODIFIED:  2/2/99
-*PURPOSE:
-* Sets the tank label length (short/long)
-*
-*ARGUMENTS:
-*  isLengthShort - New Length
-*********************************************************/
+ *NAME:          labelSetTankLength
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  2/2/99
+ *LAST MODIFIED:  2/2/99
+ *PURPOSE:
+ * Sets the tank label length (short/long)
+ *
+ *ARGUMENTS:
+ *  isLengthShort - New Length
+ *********************************************************/
 void labelSetTankLength(labelLen isLengthShort);
 
 /*********************************************************
-*NAME:          labelSetLabelOwnTank
-*AUTHOR:        John Morrison
-*CREATION DATE:  2/2/99
-*LAST MODIFIED:  2/2/99
-*PURPOSE:
-* Sets the tank label length (short/long)
-*
-*ARGUMENTS:
-*  labelOwn - TRUE if you should label your own tank
-*********************************************************/
+ *NAME:          labelSetLabelOwnTank
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  2/2/99
+ *LAST MODIFIED:  2/2/99
+ *PURPOSE:
+ * Sets the tank label length (short/long)
+ *
+ *ARGUMENTS:
+ *  labelOwn - TRUE if you should label your own tank
+ *********************************************************/
 void labelSetLabelOwnTank(bool labelOwn);
 
 /*********************************************************
-*NAME:          labelMakeMessage
-*AUTHOR:        John Morrison
-*CREATION DATE:  2/2/99
-*LAST MODIFIED:  2/2/99
-*PURPOSE:
-*  Makes a message label from the parameters given
-*
-*ARGUMENTS:
-*  res  - Holds the resultant string
-*  name - The tank name
-*  loc  - The location of the tank
-*********************************************************/
+ *NAME:          labelMakeMessage
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  2/2/99
+ *LAST MODIFIED:  2/2/99
+ *PURPOSE:
+ *  Makes a message label from the parameters given
+ *
+ *ARGUMENTS:
+ *  res  - Holds the resultant string
+ *  name - The tank name
+ *  loc  - The location of the tank
+ *********************************************************/
 void labelMakeMessage(char *res, char *name, char *loc);
 
 /*********************************************************
-*NAME:          labelMakeTankLabel
-*AUTHOR:        John Morrison
-*CREATION DATE:  2/2/99
-*LAST MODIFIED:  2/2/99
-*PURPOSE:
-*  Makes a tank label from the parameters given
-*
-*ARGUMENTS:
-*  res   - Holds the resultant string
-*  name  - The tank name
-*  loc   - The location of the tank
-*  isOwn - Is this tank your own
-*********************************************************/
+ *NAME:          labelMakeTankLabel
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  2/2/99
+ *LAST MODIFIED:  2/2/99
+ *PURPOSE:
+ *  Makes a tank label from the parameters given
+ *
+ *ARGUMENTS:
+ *  res   - Holds the resultant string
+ *  name  - The tank name
+ *  loc   - The location of the tank
+ *  isOwn - Is this tank your own
+ *********************************************************/
 void labelMakeTankLabel(char *res, char *name, char *loc, bool isOwn);
 
 #endif /* LABELS_H */
