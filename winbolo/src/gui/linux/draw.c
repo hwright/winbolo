@@ -55,6 +55,7 @@
 #include "../../gui/lang.h"
 #include "draw.h"
 #include "messagebox.h"
+#include "../../lzw/lzw.h"
 
 #include "tiles.xph"
 #include "background.xph"
@@ -98,7 +99,6 @@ static int drawPosY[255];
 
 void drawSetupArrays(BYTE zoomFactor);
 void drawDownloadScreen(bool justBlack);
-int lzwdecoding(char *src, char *dest, int len);
 void clientMutexWaitFor(void);
 void clientMutexRelease(void);
 

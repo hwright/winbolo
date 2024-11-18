@@ -61,6 +61,7 @@
 #include "netpacks.h"
 #include "backend.h"
 #include "log.h"
+#include "../lzw/lzw.h"
 #include "../server/BigDigits/bigd.h"
 #include "../server/rsaalgorithm.h"
 
@@ -117,8 +118,6 @@ static udpPackets udpp;
 /* Network time */
 static DWORD dwSysNetTotal = 0;
 static DWORD dwSysNet = 0;
-
-int lzwdecoding(char *src, char *dest, int len);
 
 /*********************************************************
 *NAME:          netSetup

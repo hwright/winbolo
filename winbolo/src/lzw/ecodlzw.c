@@ -20,9 +20,10 @@
 /* This used to be a LZW implemtnation, hence the directory, file and function names but replaced by a RLE implementation as it was more effecient. Could probably be replaced with built in map RLE functions. */
 
 /* Error codes sent to the caller */
-/* Useful constants. */
-#define FALSE 0
-#define TRUE  1
+
+#include "lzw.h"
+
+#include <stdbool.h>
 
 /* Global variables. */
 static char *compressSrc, *compressDest;
@@ -32,11 +33,11 @@ static int uncompressLen; /* Length of the data to compress */
 static int compressUpto; /* Where we are up to in the compression */
 
 /* Pseudo procedures */
-static inline int conend_of_data() {
+static inline bool conend_of_data() {
   if (compressUpto >= uncompressLen) {
-    return TRUE;
+    return true;
   } else {
-    return FALSE;
+    return false;
   }
 }
 
@@ -52,7 +53,7 @@ static inline void conwrite_byte(char c) {
   compressLen++;
 }
 
-void conwrite_array(unsigned char *c, int numBytes) {
+static void conwrite_array(unsigned char *c, int numBytes) {
   int count = 0;
   while (count < numBytes) {
     compressDest[compressLen] = c[count];
