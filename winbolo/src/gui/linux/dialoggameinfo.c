@@ -38,17 +38,17 @@
 #include "dialoggameinfo.h"
 
 /* Text Labels */
-GtkWidget *lblMapName;
-GtkWidget *lblNumPlayers;
-GtkWidget *lblGameType;
-GtkWidget *lblHiddenMines;
-GtkWidget *lblCompTanks;
-GtkWidget *lblGameTimeLimit;
+static GtkWidget *lblMapName;
+static GtkWidget *lblNumPlayers;
+static GtkWidget *lblGameType;
+static GtkWidget *lblHiddenMines;
+static GtkWidget *lblCompTanks;
+static GtkWidget *lblGameTimeLimit;
 
 /* Game Timer */
 int timerGameInfo;
-BYTE dlgGameInfoNumPlayers;      /* Number of players in the game */
-long dlgGameInfoTimeRemain;     /* Time remaining in the game */
+static BYTE dlgGameInfoNumPlayers;      /* Number of players in the game */
+static long dlgGameInfoTimeRemain;     /* Time remaining in the game */
 
 
 /*********************************************************

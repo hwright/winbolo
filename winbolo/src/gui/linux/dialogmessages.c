@@ -35,18 +35,18 @@
 /* Time to wait before next message send */
 #define WAIT_TIME 2000
 
-  GtkWidget *idc_label;
-  GtkWidget *idc_allplayers;
-  GtkWidget *idc_allallies;
-  GtkWidget *idc_allnearby;
-  GtkWidget *idc_selection;
-  GtkWidget *idc_textmessage;
-  GtkWidget *idc_sendbutton;
-  bool dialogMessagesEnabled = TRUE;
-  guint dialogMessagesTimeoutId;
+static GtkWidget *idc_label;
+static GtkWidget *idc_allplayers;
+static GtkWidget *idc_allallies;
+static GtkWidget *idc_allnearby;
+static GtkWidget *idc_selection;
+static GtkWidget *idc_textmessage;
+static GtkWidget *idc_sendbutton;
+static bool dialogMessagesEnabled = TRUE;
+static guint dialogMessagesTimeoutId;
 
   
-  gboolean dialogMessagesChange(GtkWidget *widget, GdkEventButton *event, gpointer user_data) {  
+static gboolean dialogMessagesChange(GtkWidget *widget, GdkEventButton *event, gpointer user_data) {  
   char output[256]; /* Output string                */
   int numSend;      /* Number of players to send to */
 
@@ -74,14 +74,14 @@
 } 
 
 
-gint dialogMessagesEnableButton(gpointer data) {
+static gint dialogMessagesEnableButton(gpointer data) {
   gtk_widget_set_sensitive (idc_sendbutton, TRUE);
   gtk_timeout_remove(dialogMessagesTimeoutId);
   dialogMessagesEnabled = TRUE;
   return FALSE;
 }
 
-gboolean dialogMessagesSend(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogMessagesSend(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   char message[256]; /* Message to send */
   gchar* gc;
   
@@ -107,7 +107,7 @@ gboolean dialogMessagesSend(GtkWidget *widget,  GdkEventButton *event, gpointer 
 }
 
 
-gboolean dialogMessagesKey (GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
+static gboolean dialogMessagesKey (GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   if (event->keyval == 65293) {
     if (dialogMessagesEnabled == TRUE) {
       dialogMessagesSend(NULL, NULL, NULL);
@@ -119,7 +119,7 @@ gboolean dialogMessagesKey (GtkWidget *widget, GdkEventKey *event, gpointer user
 
 void windowMessagesClose();
 
-gboolean dialogMessagesClose(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogMessagesClose(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (dialogMessagesEnabled == FALSE) {
     gtk_timeout_remove(dialogMessagesTimeoutId);
   }

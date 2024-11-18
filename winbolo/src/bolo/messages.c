@@ -36,21 +36,21 @@
 /* Module Variables */
 
 /* Messages */
-char topLine[MESSAGE_WIDTH];
-char bottomLine[MESSAGE_WIDTH];
+static char topLine[MESSAGE_WIDTH];
+static char bottomLine[MESSAGE_WIDTH];
 
-char newMessage[FILENAME_MAX]; /* A new message */
-BYTE newMessageFrom;           /* Where it came from */
+static char newMessage[FILENAME_MAX]; /* A new message */
+static BYTE newMessageFrom;           /* Where it came from */
 
 /* What types to show */
-bool showNewswire = true;
-bool showAssistant = true;
-bool showAI = false;
-bool showNetwork = false;
-bool showNetStat = true;
+static bool showNewswire = true;
+static bool showAssistant = true;
+static bool showAI = false;
+static bool showNetwork = false;
+static bool showNetStat = true;
 
 /* Queue DS for waiting messages */
-message msg;
+static message msg;
 
 /*********************************************************
 *NAME:          messageCreate

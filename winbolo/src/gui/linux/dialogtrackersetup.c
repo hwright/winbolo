@@ -26,12 +26,12 @@
 #include "../../bolo/global.h"
 #include "gamefront.h"
 
-GtkWidget *dialogTrackerUse;
-GtkWidget *entry1;
-GtkWidget *entry2;
-GtkWidget *dialogTrackerUs;
+static GtkWidget *dialogTrackerUse;
+static GtkWidget *entry1;
+static GtkWidget *entry2;
+static GtkWidget *dialogTrackerUs;
 
-gboolean dialogTrackerUseFunc(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogTrackerUseFunc(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)) == TRUE) {
     gtk_widget_set_sensitive (entry2, TRUE);
     gtk_widget_set_sensitive (entry1, TRUE);
@@ -43,7 +43,7 @@ gboolean dialogTrackerUseFunc(GtkWidget *widget,  GdkEventButton *event, gpointe
 }
 
 
-gboolean dialogTrackerOK(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogTrackerOK(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   char addr[FILENAME_MAX]; /* Tracker address   */
   gchar *str;
   unsigned short port;     /* Port              */
@@ -64,7 +64,7 @@ gboolean dialogTrackerOK(GtkWidget *widget,  GdkEventButton *event, gpointer use
   return FALSE;
 }
 
-gboolean dialogTrackerCancel(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogTrackerCancel(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   gtk_grab_remove(dialogTrackerUs);
   gtk_widget_destroy(dialogTrackerUs);
   gtk_main_quit();

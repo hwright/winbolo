@@ -37,7 +37,7 @@ typedef SDL_mutex *HANDLE;
 #include "../../bolo/global.h"
 #include "../clientmutex.h"
 
-HANDLE hClientMutexHandle = NULL;
+static HANDLE hClientMutexHandle = NULL;
 
 
 /*********************************************************

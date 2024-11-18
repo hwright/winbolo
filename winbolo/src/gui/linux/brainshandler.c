@@ -63,16 +63,16 @@ typedef unsigned int UNIT;
 #define GetProcAddress(X, Y) g_module_symbol(X, Y, (gpointer *) &brainsProc)
 
 
-char brainsDir[MAX_PATH]; /* The Brains Directory */
-char brainsLocalDir[MAX_PATH];
-int brainsNum; /* Number of brains */
-bool brainsRunning; /* Is a brain running */
-HINSTANCE brainsInst; /* Brains Instance */
-bool bIsFirst;        /* Is this the first time a brain will be called */
-bool brainsProcExecuting = FALSE; /* Is the brain proc in execution */
-BrainInfo bInfo; /* The Brain Info */
-bool brainsLoadedOnce = FALSE; /* We only want this to be displayed once */
-short (*brainsProc)(BrainInfo*);
+static char brainsDir[MAX_PATH]; /* The Brains Directory */
+static char brainsLocalDir[MAX_PATH];
+static int brainsNum; /* Number of brains */
+static bool brainsRunning; /* Is a brain running */
+static HINSTANCE brainsInst; /* Brains Instance */
+static bool bIsFirst;        /* Is this the first time a brain will be called */
+static bool brainsProcExecuting = FALSE; /* Is the brain proc in execution */
+static BrainInfo bInfo; /* The Brain Info */
+static bool brainsLoadedOnce = FALSE; /* We only want this to be displayed once */
+static short (*brainsProc)(BrainInfo*);
 
 G_MODULE_IMPORT short BrainMain(BrainInfo *bi); 
 
@@ -83,7 +83,7 @@ extern GtkWidget *manual1;
 extern GtkWidget *window;
 extern GSList *brainsGroup;
 extern bool isInMenu;
-GSList *brainsLoadedList = NULL;
+static GSList *brainsLoadedList = NULL;
 
 void brainsHandlerManual(HWND hWnd); 
 bool brainsHandlerStart(HWND hWnd, char *str, char *name);

@@ -33,13 +33,13 @@
 #include "scroll.h"
 
 /* Is it auto scrolling or not */
-bool autoScroll = false;
-BYTE scrollX = 0;
-BYTE scrollY = 0;
-BYTE xPositive = true;
-BYTE yPositive = true;
-bool autoScrollOverRide = false;
-bool mods = false;
+static bool autoScroll = false;
+static BYTE scrollX = 0;
+static BYTE scrollY = 0;
+static BYTE xPositive = true;
+static BYTE yPositive = true;
+static bool autoScrollOverRide = false;
+static bool mods = false;
 
 
 /*********************************************************

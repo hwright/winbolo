@@ -43,35 +43,35 @@
 
 #define EMPTY_STRING "\0"
 
-GtkWidget *dialogGameFindUs;
-bool useTracker = TRUE;  /* Do we use the tracker for lookups */
-char motd[4 *4096];
-currentGames cg = NULL;
-GtkWidget *idc_address;
-GtkWidget *idc_gamefindport;
-GtkWidget *idc_gamefindversion;
-GtkWidget *idc_gamefindnumplayers;
-GtkWidget *idc_gamefindtype;
-GtkWidget *idc_gamefindbases;
-GtkWidget *idc_gamefindpills;
-GtkWidget *idc_gamefindmines;
-GtkWidget *idc_gamefindpass;
-GtkWidget *idc_gamefindbrains;
-GtkWidget *idc_gamefindstatus;
-GtkWidget *idc_gamefindjoin;
-GtkWidget *idc_gamefindrejoin;
-GtkWidget *list1;
-GtkWidget *button9;
-GtkWidget *button1;
-GtkWidget *button2;
-GtkWidget *button4;
-GtkWidget *button6;
-GtkWidget *button8;
-GtkWidget *button7;
-GtkWidget *idc_gamefindmapname;
-bool dialogGameFinderClosing = FALSE;
+static GtkWidget *dialogGameFindUs;
+static bool useTracker = TRUE;  /* Do we use the tracker for lookups */
+static char motd[4 *4096];
+static currentGames cg = NULL;
+static GtkWidget *idc_address;
+static GtkWidget *idc_gamefindport;
+static GtkWidget *idc_gamefindversion;
+static GtkWidget *idc_gamefindnumplayers;
+static GtkWidget *idc_gamefindtype;
+static GtkWidget *idc_gamefindbases;
+static GtkWidget *idc_gamefindpills;
+static GtkWidget *idc_gamefindmines;
+static GtkWidget *idc_gamefindpass;
+static GtkWidget *idc_gamefindbrains;
+static GtkWidget *idc_gamefindstatus;
+static GtkWidget *idc_gamefindjoin;
+static GtkWidget *idc_gamefindrejoin;
+static GtkWidget *list1;
+static GtkWidget *button9;
+static GtkWidget *button1;
+static GtkWidget *button2;
+static GtkWidget *button4;
+static GtkWidget *button6;
+static GtkWidget *button8;
+static GtkWidget *button7;
+static GtkWidget *idc_gamefindmapname;
+static bool dialogGameFinderClosing = FALSE;
 
-gboolean dialogGameFinderSelect(GtkWidget *widget, gpointer user_data);
+static gboolean dialogGameFinderSelect(GtkWidget *widget, gpointer user_data);
 bool netClientFindBroadcastGames(GtkWidget *hWnd, currentGames *cg);
 bool netClientFindTrackedGames(GtkWidget *hWnd, currentGames *cg, char *trackerAddress, unsigned short port, char *motd);
 
@@ -107,7 +107,7 @@ void dialogGameFinderClear() {
  gtk_list_clear_items(GTK_LIST(list1), 0, -1);
 }
 
-gboolean dialogGameFinderCancel(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameFinderCancel(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (dialogGameFinderClosing == FALSE) {
     dialogGameFinderClosing = TRUE;
     gameFrontSetDlgState(dialogGameFindUs, openWelcome);
@@ -128,7 +128,7 @@ gboolean dialogGameFinderCancel(GtkWidget *widget,  GdkEventButton *event, gpoin
 *ARGUMENTS:
 *
 *********************************************************/
-bool dialogGameFinderJoinTest() {
+static bool dialogGameFinderJoinTest() {
   bool returnValue;                 /* Value to return */
   char address[FILENAME_MAX];       /* Address of the machine to join */
   char playerName[PLAYER_NAME_LEN]; /* Player Name */
@@ -154,7 +154,7 @@ bool dialogGameFinderJoinTest() {
   /* Check version */
 
 
-gboolean dialogGameFinderReJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameFinderReJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (dialogGameFinderJoinTest() == TRUE) {
     gameFrontEnableRejoin();
     dialogGameFinderClosing = TRUE;
@@ -170,7 +170,7 @@ gboolean dialogGameFinderReJoin(GtkWidget *widget,  GdkEventButton *event, gpoin
   return FALSE;
 }
 
-gboolean dialogGameFinderNew(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameFinderNew(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (useTracker  == TRUE) {
     gameFrontSetDlgState(dialogGameFindUs, openInternetSetup); 
   } else {
@@ -179,7 +179,7 @@ gboolean dialogGameFinderNew(GtkWidget *widget,  GdkEventButton *event, gpointer
   return FALSE;
 }
 
-gboolean dialogGameFinderJoinByAddress(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameFinderJoinByAddress(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   char address[FILENAME_MAX];       /* Address of the machine to join */
   char playerName[PLAYER_NAME_LEN]; /* Player Name */
   unsigned short port;              /* Port of the machine to join    */
@@ -201,7 +201,7 @@ gboolean dialogGameFinderJoinByAddress(GtkWidget *widget,  GdkEventButton *event
   return FALSE;
 }
 
-gboolean dialogGameFinderJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameFinderJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (dialogGameFinderJoinTest() == TRUE) {
     gtk_widget_set_sensitive(dialogGameFindUs, FALSE);
     gdk_threads_leave();
@@ -214,12 +214,12 @@ gboolean dialogGameFinderJoin(GtkWidget *widget,  GdkEventButton *event, gpointe
   return FALSE;
 }
 
-gboolean dialogGameFinderMOTD(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameFinderMOTD(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   MessageBox(motd, langGetText(STR_DLGGAMEFINDER_MESSAGEOFTHEDAY));
   return FALSE;
 }
 
-gboolean dialogGameFinderShow(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameFinderShow(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   dialogGameFinderClosing = FALSE;
   dialogGameFinderClear();
   return FALSE;
@@ -236,7 +236,7 @@ gboolean dialogGameFinderShow(GtkWidget *widget,  GdkEventButton *event, gpointe
 *ARGUMENTS:
 *  hWnd   - Handle to the window
 *********************************************************/
-void dialogGameFinderBuildList() {
+static void dialogGameFinderBuildList() {
   int count; /* Looping variable */
   int total; /* Total number of games found */
   char server[FILENAME_MAX]; /* Server name */
@@ -273,7 +273,7 @@ void dialogGameFinderBuildList() {
 *ARGUMENTS:
 * motd - The message of the day string to remove \r's from
 **********************************************************/
-void dialogGameFinderFixMotd(char *motd) {
+static void dialogGameFinderFixMotd(char *motd) {
   int len; /* Length of the string */
   int pos; /* Our current position */
 
@@ -300,7 +300,7 @@ void dialogGameFinderFixMotd(char *motd) {
 *ARGUMENTS:
 * 
 **********************************************************/
-void dialogGameFinderSearch() {
+static void dialogGameFinderSearch() {
   char addr[FILENAME_MAX]; /* Tracker address */
   unsigned short port;     /* Tracker port    */
   bool dummy;              /* dummy variable  */
@@ -331,7 +331,7 @@ void dialogGameFinderSearch() {
 *ARGUMENTS:
 *  hWnd   - Handle to the window
 *********************************************************/
-gboolean dialogGameFinderRefresh(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameFinderRefresh(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
 //  SetCursor(LoadCursor(NULL, IDC_WAIT));
   motd[0] = '\0';
  
@@ -372,7 +372,7 @@ gboolean dialogGameFinderRefresh(GtkWidget *widget,  GdkEventButton *event, gpoi
 }
 
 
- gboolean dialogGameFinderSelect(GtkWidget *widget, gpointer user_data){
+ static gboolean dialogGameFinderSelect(GtkWidget *widget, gpointer user_data){
   char address[FILENAME_MAX];
   char str[FILENAME_MAX];
   char mapName[MAP_STR_SIZE];
@@ -450,7 +450,7 @@ gboolean dialogGameFinderRefresh(GtkWidget *widget,  GdkEventButton *event, gpoi
   return FALSE;
 }
 
-gboolean dialogGameFinderSetName(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameFinderSetName(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   GtkWidget *g;
 
   g = dialogSetNameCreate(FALSE);
@@ -460,7 +460,7 @@ gboolean dialogGameFinderSetName(GtkWidget *widget,  GdkEventButton *event, gpoi
 
   return FALSE;
 }
-gboolean dialogGameFinderTracker(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameFinderTracker(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   GtkWidget *tracker;
 
   tracker = dialogTrackerCreate();

@@ -42,11 +42,11 @@
 #include "treegrow.h"
 
 /* The tree growth structure */
-BYTE treeGrowX;
-BYTE treeGrowY;
-int treeGrowTime;
-int treeGrowScore;
-WORD seed;
+static BYTE treeGrowX;
+static BYTE treeGrowY;
+static int treeGrowTime;
+static int treeGrowScore;
+static WORD seed;
 
 /*********************************************************
 *NAME:          treeGrowCreate

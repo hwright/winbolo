@@ -25,15 +25,15 @@
 #include "input.h"
 #include "../../bolo/backend.h"
 
-keyItems keySetupKeys; /* Copy of the keys for use by the dialog box */
-GtkWidget *dialogKeySetupUs;
-GtkWidget *idc_keyautoshow;
-GtkWidget *idc_keyautoslow;
+static keyItems keySetupKeys; /* Copy of the keys for use by the dialog box */
+static GtkWidget *dialogKeySetupUs;
+static GtkWidget *idc_keyautoshow;
+static GtkWidget *idc_keyautoslow;
 
 
 void windowSetKeys(keyItems *value);
 
-gboolean on_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
+static gboolean on_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   uint *ptr;
   ptr = (uint *) (user_data);
 
@@ -43,7 +43,7 @@ gboolean on_press(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   return FALSE;
 }
 
-void
+static void
 on_button2_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {
@@ -53,7 +53,7 @@ on_button2_clicked                     (GtkButton       *button,
 }
 
 
-void
+static void
 on_button1_clicked                     (GtkButton       *button,
                                         gpointer         user_data)
 {

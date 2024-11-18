@@ -31,14 +31,14 @@
 #include "../../bolo/global.h"
 
 
-GtkWidget *dialogWbnUs;
-GtkWidget *dialogWbnUse;
-GtkWidget *dialogWbnSavePass;
-GtkWidget *dialogWbnPassword;
+static GtkWidget *dialogWbnUs;
+static GtkWidget *dialogWbnUse;
+static GtkWidget *dialogWbnSavePass;
+static GtkWidget *dialogWbnPassword;
 
 void gameFrontGetPlayerName(char *pn);
 
-void dialogWinboloNetCloseBox(GtkWidget *widget, gpointer user_data) {
+static void dialogWinboloNetCloseBox(GtkWidget *widget, gpointer user_data) {
   gtk_widget_destroy(dialogWbnUs);
   gtk_main_quit();
 }
@@ -46,7 +46,7 @@ void dialogWinboloNetCloseBox(GtkWidget *widget, gpointer user_data) {
 void gameFrontSetWinbolonetSettings(char *password, bool useWbn, bool savePass);
 void gameFrontGetWinbolonetSettings(char *password, bool *useWbn, bool *savePass);
 
-void dialogWinbolonetOK(GtkWidget *widget, gpointer user_data) {
+static void dialogWinbolonetOK(GtkWidget *widget, gpointer user_data) {
   char password[FILENAME_MAX];
   bool useWbn = FALSE;
   bool savePass = FALSE;

@@ -37,7 +37,7 @@
   #include <gtk/gtk.h>
   #include "../gui/linux/messagebox.h"
   #include "../gui/linux/dialogalliance.h"
-  GtkWidget *dlgAllianceWnd;
+  static GtkWidget *dlgAllianceWnd;
 
   extern char messageBody[16*1024];
   extern char messageTitle[256];

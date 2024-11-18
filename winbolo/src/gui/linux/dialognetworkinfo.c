@@ -32,13 +32,13 @@
 #include "dialognetworkinfo.h"
 
 /* Labels */
-GtkWidget *lblServerAddress;
-GtkWidget *lblGameAddress;
-GtkWidget *lblPing;
-GtkWidget *lblPPS;
-GtkWidget *lblStatus;
-GtkWidget *lblErrors;
-GtkWidget *dialogNetworkUs;
+static GtkWidget *lblServerAddress;
+static GtkWidget *lblGameAddress;
+static GtkWidget *lblPing;
+static GtkWidget *lblPPS;
+static GtkWidget *lblStatus;
+static GtkWidget *lblErrors;
+static GtkWidget *dialogNetworkUs;
 /* Timer */
 int timerNetworkInfo;
 

@@ -37,7 +37,7 @@
 /* Max bases = 16 as a double */
 #define BASE_MAX_DOUBLE 16.0
 
-gameType gmeType = gameOpen; /* Type of game being played */
+static gameType gmeType = gameOpen; /* Type of game being played */
 
 /*********************************************************
 *NAME:          gameTypeSet

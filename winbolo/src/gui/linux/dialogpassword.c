@@ -34,10 +34,10 @@
 #include "../../bolo/global.h"
 #include "gamefront.h"
 
-GtkWidget *dialogPasswordUs;
-GtkWidget *idc_passwordtxt;
+static GtkWidget *dialogPasswordUs;
+static GtkWidget *idc_passwordtxt;
 
-gboolean dialogPasswordClose(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogPasswordClose(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   char pass[MAP_STR_SIZE]; /* Tracker address   */
   gchar *str;
 
@@ -51,7 +51,7 @@ gboolean dialogPasswordClose(GtkWidget *widget,  GdkEventButton *event, gpointer
   return FALSE;
 }
 
-gboolean dialogPasswordKey(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
+static gboolean dialogPasswordKey(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   if (event->keyval == 65293) {
     dialogPasswordClose(dialogPasswordUs, NULL, NULL);
   }

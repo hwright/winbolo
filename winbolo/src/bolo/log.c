@@ -41,17 +41,17 @@
 #include "../server/servernet.h"
 #include "../winbolonet/winbolonet.h"
 
-zipFile logFile;               /* File to log to */
-unsigned short logLastEvent; /* Last event logged. Increments each time there are no events */
-unsigned short logNumEvents; /* Last event logged. Increments each time there are no events */
-bool  logIsRunning;          /* Are we saving a log */
-BYTE *logMem = NULL;
-unsigned short logMemSize;   /* How much memory are we using */
-BYTE logKey; /* Current log encryption key */
-BYTE logOldKey; /* Old key needed for writing state */
-bool logLastEmpty; /* Was the last log empty? */
+static zipFile logFile;               /* File to log to */
+static unsigned short logLastEvent; /* Last event logged. Increments each time there are no events */
+static unsigned short logNumEvents; /* Last event logged. Increments each time there are no events */
+static bool  logIsRunning;          /* Are we saving a log */
+static BYTE *logMem = NULL;
+static unsigned short logMemSize;   /* How much memory are we using */
+static BYTE logKey; /* Current log encryption key */
+static BYTE logOldKey; /* Old key needed for writing state */
+static bool logLastEmpty; /* Was the last log empty? */
 
-logTanks logCheckTanks;
+static logTanks logCheckTanks;
 
 /*********************************************************
 *NAME:          logCreate

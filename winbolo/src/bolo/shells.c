@@ -53,8 +53,8 @@
 
 
 
-bool c;
-shellsNetHit snh;
+static bool c;
+static shellsNetHit snh;
 
 #undef SHELL_START_ADD
 #define SHELL_START_ADD 5

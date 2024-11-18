@@ -34,12 +34,12 @@
 #include "cursor.h"
 
 /* Is the cursor inside the main view area */
-bool cursorInMainView = false;
-SDL_Cursor *saveCursor = NULL;
-SDL_Cursor *boloCursor = NULL;
+static bool cursorInMainView = false;
+static SDL_Cursor *saveCursor = NULL;
+static SDL_Cursor *boloCursor = NULL;
 
-Uint8 cd[8] = { 0,0,0,0,0,0,0,0 };
-Uint8 cm[8] = { 56, 40, 238, 124, 238, 40, 56 };
+static Uint8 cd[8] = { 0,0,0,0,0,0,0,0 };
+static Uint8 cm[8] = { 56, 40, 238, 124, 238, 40, 56 };
 /*********************************************************
 *NAME:          cursorSetup
 *AUTHOR:        John Morrison
