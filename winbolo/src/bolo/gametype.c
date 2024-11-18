@@ -37,8 +37,6 @@
 /* Max bases = 16 as a double */
 #define BASE_MAX_DOUBLE 16.0
 
-static gameType gmeType = gameOpen; /* Type of game being played */
-
 /*********************************************************
 *NAME:          gameTypeSet
 *AUTHOR:        John Morrison

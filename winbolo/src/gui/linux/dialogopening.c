@@ -39,7 +39,6 @@ static GtkWidget *idc_openlocal;
 static GtkWidget *idc_openinternet;
 static GtkWidget *us;
 
-static GtkRequisition req;
 static gint opening_configure_event (GtkWidget *window, GdkEventConfigure *event) {
   GdkPixmap *pixmap;
   GdkBitmap *mask;
