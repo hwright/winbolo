@@ -1065,7 +1065,6 @@ void serverNetChangePlayerName(BYTE playerNum, BYTE *buff) {
 }
 
 void serverTransportDoChecks();
-void playerNeedUpdateDone();
 /*********************************************************
 *NAME:          serverNetMakePosPackets
 *AUTHOR:        John Morrison
