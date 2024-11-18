@@ -29,7 +29,7 @@
 #ifndef MATHWINBOLO_H
 #define MATHWINBOLO_H
 
-struct vectorBody {
+struct mathVectorBody {
 	TURNTYPE  angle;
 	TURNTYPE  angle_prev;
 	SPEEDTYPE speedX;
@@ -108,7 +108,7 @@ int mathAngleTravelUsingComponents(float, float);
 /*
  * Gonna be lots of explanation for this one, I suspect...
  */
-void mathUpdateVectorBody(struct vectorBody*, SPEEDTYPE, WORLD, WORLD, WORLD, WORLD, TURNTYPE);
+void mathUpdateVectorBody(struct mathVectorBody*, SPEEDTYPE, WORLD, WORLD, WORLD, WORLD, TURNTYPE);
 
 /*
  * Returns the distance between two points based on WORLD coordinates.

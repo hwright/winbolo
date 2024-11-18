@@ -406,6 +406,8 @@ void drawKillsDeaths(int xValue, int yValue, int kills, int deaths);
 *********************************************************/
 void drawSetupArrays(BYTE zoomFactor);
 
+void drawDownloadScreen(bool justBlack);
+
 #endif
 
 

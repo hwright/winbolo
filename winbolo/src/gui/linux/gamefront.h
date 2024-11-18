@@ -221,7 +221,7 @@ void gameFrontGetCmdArg(char *getName);
 *ARGUMENTS:
 *  getName - Holds the filename
 *********************************************************/
-void gameFrontSetFileName(char *getName);
+void gameFrontSetFileName(const char *getName);
 
 /*********************************************************
 *NAME:          gameFrontSetGameOptions

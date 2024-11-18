@@ -31,7 +31,7 @@
 #include <windows.h>
 typedef unsigned int langid;
 #else
-typedef char* langid;
+typedef const char* langid;
 typedef int HMENU;
 #endif
 #include "../bolo/global.h"

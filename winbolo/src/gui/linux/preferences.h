@@ -47,7 +47,7 @@
 * output   - The output variable to store in
 * filename - Filename and path to read file from
 *********************************************************/
-void GetPrivateProfileString(char *section, char *item, char *def, char *output, int outlen, char *filename);
+void GetPrivateProfileString(const char *section, const char *item, const char *def, char *output, int outlen, const char *filename);
 
 /*********************************************************
 *NAME:          WritePrivateProfileString 
@@ -63,7 +63,7 @@ void GetPrivateProfileString(char *section, char *item, char *def, char *output,
 * value   - The value to set the item name too
 * filename - Filename and path to write too
 *********************************************************/
-void WritePrivateProfileString(char *section, char *item, char *value, char *filename);
+void WritePrivateProfileString(const char *section, const char *item, const char *value, const char *filename);
 
 /*********************************************************
 *NAME:          preferencesGetPreferenceFile 

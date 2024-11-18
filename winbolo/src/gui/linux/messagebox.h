@@ -20,11 +20,11 @@
 #include "../../bolo/global.h"
 #define DIALOG_BOX_TITLE "LinBolo"
 
-void MessageBox(char *label, char *title);
+void MessageBox(const char *label, const char *title);
 
-void MessageBox2(char *label, char *title, char *label2, char *title2);
+void MessageBox2(const char *label, const char *title, const char *label2, const char *title2);
 
-void MessageBox3(char *label, char *title, char *label2, char *title2, char *label3, char *title3); 
+void MessageBox3(const char *label, const char *title, const char *label2, const char *title2, const char *label3, const char *title3); 
 
 #endif
 

@@ -332,7 +332,7 @@ void netSend(BYTE *buff, int len);
 *                  WinBolo.net
 *  wbnPassword   - Our WinBolo.net password
 *********************************************************/
-bool netSetup(netType value, unsigned short myPort, char *targetIp, unsigned short targetPort, char *password, bool usCreate, char *trackerAddr, unsigned short trackerPort, bool useTracker, bool wantRejoin, bool useWinboloNet, char *wbnPassword);
+bool netSetup(netType value, unsigned short myPort, const char *targetIp, unsigned short targetPort, const char *password, bool usCreate, const char *trackerAddr, unsigned short trackerPort, bool useTracker, bool wantRejoin, bool useWinboloNet, const char *wbnPassword);
 
 /*********************************************************
 *NAME:          netDestroy
@@ -452,7 +452,7 @@ void netMakePingRespsonse(PING_PACKET *buff);
 *  usCreate   - Is this client hosting the server
 *  gamePassword - The game password (if we started it)
 *********************************************************/
-bool netJoin(char *ip, unsigned short port, bool wantRejoin, char *userName, char *password, bool useWbn, bool usCreate, char *gamePassword);
+bool netJoin(const char *ip, unsigned short port, bool wantRejoin, const char *userName, const char *password, bool useWbn, bool usCreate, const char *gamePassword);
 
 /*********************************************************
 *NAME:          netJoinInit
@@ -471,7 +471,7 @@ bool netJoin(char *ip, unsigned short port, bool wantRejoin, char *userName, cha
 *  usCreate     - True if we created the game
 *  gamePassword - The game password (if we started it)
 *********************************************************/
-bool netJoinInit(char *ip, unsigned short port, bool usCreate, char *gamePassword);
+bool netJoinInit(const char *ip, unsigned short port, bool usCreate, const char *gamePassword);
 
 /*********************************************************
 *NAME:          netJoinFinalise
@@ -492,7 +492,7 @@ bool netJoinInit(char *ip, unsigned short port, bool usCreate, char *gamePasswor
 *  password   - Account password
 *  useWbn     - Do we want to try and use WBN?
 *********************************************************/
-bool netJoinFinalise(char *targetip, unsigned short port, bool wantRejoin, char *userName, char *password, bool useWbn);
+bool netJoinFinalise(const char *targetip, unsigned short port, bool wantRejoin, const char *userName, const char *password, bool useWbn);
 
 /*********************************************************
 *NAME:          netPlayerJoined
@@ -845,7 +845,7 @@ void netProcessedDnsLookup(char *ip, char *host);
 *  userName   - Account name we wish to use
 *  password   - Account password
 *********************************************************/
-bool netWinBoloNetSetup(char *userName, char *password);
+bool netWinBoloNetSetup(const char *userName, const char *password);
 
 /*********************************************************
 *NAME:          netSend

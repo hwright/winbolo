@@ -85,7 +85,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines, int srtDe
 *  gmeLen      - Length of the game (in 50ths) 
 *                (-1 =unlimited)
 *********************************************************/
-bool serverCoreCreateCompressed(BYTE *buff, int buffLen, char *mapn, gameType game, bool hiddenMines, int srtDelay, long gmeLen);
+bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn, gameType game, bool hiddenMines, int srtDelay, long gmeLen);
 
 /*********************************************************
 *NAME:          serverDestroy
@@ -575,7 +575,7 @@ void serverCoreRequestRejoin(BYTE playerNum);
 ********************************************************/
 void serverCoreSetQuietMode(bool mode);
 
-void serverMessageConsoleMessage(char *msg);
+void serverMessageConsoleMessage(const char *msg);
 
 /*********************************************************
 *NAME:          screenCoreServerConsoleMessage
@@ -588,7 +588,7 @@ void serverMessageConsoleMessage(char *msg);
 *ARGUMENTS:
 *  mode - Server mode
 ********************************************************/
-void screenServerConsoleMessage(char *msg);
+void screenServerConsoleMessage(const char *msg);
 
 
 /*********************************************************
@@ -602,7 +602,7 @@ void screenServerConsoleMessage(char *msg);
 *ARGUMENTS:
 *  mode - Server mode
 ********************************************************/
-void serverCoreServerConsoleMessage(char *msg);
+void serverCoreServerConsoleMessage(const char *msg);
 
 
 bool serverCoreRunning();

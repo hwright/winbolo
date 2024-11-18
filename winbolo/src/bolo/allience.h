@@ -48,7 +48,6 @@ struct allienceObj {
   BYTE playerNum; /* The player this person is allied to */
 };
 
-
 /* Prototypes */
 
 /*********************************************************
