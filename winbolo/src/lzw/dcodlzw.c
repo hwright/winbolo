@@ -26,16 +26,13 @@
    Purpose: Example of RLE type 1 decoding with a file source to decompress
 */
 
+#include "lzw.h"
+
+#include <stdbool.h>
 #include <stdio.h>
 /* For routines printf,fgetc,fputc and fwrite */
 #include <memory.h>
 /* For routine memset */
-
-#include "lzw.h"
-
-/* Useful constants */
-#define FALSE 0
-#define TRUE  1
 
 /* Global variables. */
 static char *compressSrc, *compressDest;
@@ -45,11 +42,11 @@ static int uncompressLen; /* Length of the data to compress */
 static int compressUpto; /* Where we are up to in the compression */
 
 /* Pseudo procedures */
-static inline int decend_of_data() {
+static inline bool decend_of_data() {
   if (compressUpto >= uncompressLen) {
-    return TRUE;
+    return true;
   } else {
-    return FALSE;
+    return false;
   }
 }
 
