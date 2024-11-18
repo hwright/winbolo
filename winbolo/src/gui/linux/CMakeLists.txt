@@ -1,14 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
-
-project(Bolo VERSION 1.90.0)
-
-set(CMAKE_C_STANDARD 11)
-set(C_STANDARD_REQUIRED ON)
-
-find_package(PkgConfig)
-pkg_check_modules(MINIZIP REQUIRED minizip)
-pkg_check_modules(SDL REQUIRED sdl)
-pkg_check_modules(GTK REQUIRED gtk+)
+cmake_minimum_required(VERSION 3.10)
 
 add_subdirectory(../../lzw lzw)
 add_subdirectory(../../server/BigDigits bd)
