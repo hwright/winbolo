@@ -41,9 +41,9 @@ typedef SDL_mutex *HANDLE;
 #include "servercore.h"
 #include "threads.h"
 
-HANDLE hMutexHandle = NULL;
-bool threadServerContext = false;
-bool threadStarted = false;
+static HANDLE hMutexHandle = NULL;
+static bool threadServerContext = false;
+static bool threadStarted = false;
 
 /*********************************************************
 *NAME:          threadsCreate

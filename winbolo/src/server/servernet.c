@@ -54,16 +54,16 @@
 
 #define RSA_RANDOMMESSAGENUMBER 5
 /* Password in netgames */
-char netPassword[MAP_STR_SIZE];
+static char netPassword[MAP_STR_SIZE];
 // holder for random string
-char rmsg[RSA_RANDOMMESSAGENUMBER][256];
-aiType allowAi;
-bool netUseTracker; /* Do we use the tracker or not */
-bool serverLock;    /* Is the game locked by server? */
-bool hasPass;       /* Do we have a password         */
-BYTE snMaxPlayers;  /* Max Players */
+static char rmsg[RSA_RANDOMMESSAGENUMBER][256];
+static aiType allowAi;
+static bool netUseTracker; /* Do we use the tracker or not */
+static bool serverLock;    /* Is the game locked by server? */
+static bool hasPass;       /* Do we have a password         */
+static BYTE snMaxPlayers;  /* Max Players */
 
-netPlayers np; /* Network players status */
+static netPlayers np; /* Network players status */
 
 int lzwencoding(char *src, char *dest, int len);
 void basesRemoveTimer(int playerNumber);
