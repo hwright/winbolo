@@ -231,8 +231,6 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs, lgm 
             screenMoveViewOffsetUp(false);
           } else if (testY < my) {
             screenMoveViewOffsetUp(true);
-          } else {
-            my = my;
           }
         }
         my = newmy;
