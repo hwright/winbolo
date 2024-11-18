@@ -55,21 +55,21 @@
 
 bool httpSendLogFile(char *fileName, BYTE *key, bool wantFeedback);
 
-DWORD oldTick;     /* Number of ticks passed */
-bool quitOnWinFlag = false;
-bool autoClose = false;
-bool isGameOver = false;
-bool printGameWinners = false;
-bool isQuiet = false;
-bool isNoInput = false;
-unsigned int serverTimerGameID = 1;
-char fileName[MAX_PATH]; /* Log file Name */
-bool isLogging = false;
-bool dontSendLog = false;
+static DWORD oldTick;     /* Number of ticks passed */
+static bool quitOnWinFlag = false;
+static bool autoClose = false;
+static bool isGameOver = false;
+static bool printGameWinners = false;
+static bool isQuiet = false;
+static bool isNoInput = false;
+static unsigned int serverTimerGameID = 1;
+static char fileName[MAX_PATH]; /* Log file Name */
+static bool isLogging = false;
+static bool dontSendLog = false;
 
-bool statusFile = false;
+static bool statusFile = false;
 
-time_t ticks = 0;
+static time_t ticks = 0;
 
 /* Game Tick */
 #define SERVER_TICK_LENGTH (GAME_TICK_LENGTH*2)
@@ -92,11 +92,11 @@ typedef enum {
 } alarmType;
 
 
-alarmType alarmRaised;
+static alarmType alarmRaised;
 
 #ifndef _WIN32
 /* Signal handler for linux */
-void
+static void
 catch_alarm (int sig)
 {
   switch (sig) {
@@ -115,14 +115,14 @@ catch_alarm (int sig)
 #endif
 
 
-void strlower(char *s) {
+static void strlower(char *s) {
   while(*s) {
     *s = tolower(*s);
     s++;
   }
 }
 
-void saveMap(char *line) {
+static void saveMap(char *line) {
   char *ptr;
   int len;
   ptr = line;
@@ -154,7 +154,7 @@ void saveMap(char *line) {
 
 bool serverCoreRunning();
 
-void printHelp() {
+static void printHelp() {
   fprintf(stderr, "Help:\n Lock - Locks the server and stops new players from joining.\n Unlock - Unlocks the server and allows new players to join.\n savemap <map file> - Save the map file to path and file <map file>\n Say <text> - Sends this message to all players in the game unless they have turned off server messages.\n Quit - Exits the server.\n Info - Provide information about the current game\n Kick - Kicks a player. Case insensitive, prefix a * for WBN players.\n Status - Returns list of players who aren't locked.\n");
 }
 
@@ -214,7 +214,7 @@ void processKeys(bool isQuiet) {
 
 #else
 /* Linux */
-void processKeys() {
+static void processKeys() {
   char keyBuff[256] = "\0";
   char saveBuff[256] = "\0";
   fd_set fdmask; /* for our select               */
@@ -403,7 +403,7 @@ void CALLBACK serverGameTimer(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWOR
 #endif
 }
 
-void printArgs() {
+static void printArgs() {
 #ifdef _WIN32
   fprintf(stderr, "Usage:\nWinBoloDS -map <Filename> -port <Port> -gametype <GameType> -mines <Mines> -ai <AiType> -delay <Delay> -limit <Limit> -tracker <Tracker> -password <Password>\n\n");
 #else 
@@ -439,7 +439,7 @@ void printArgs() {
 }
 
 
-void processTrackerArg(char *argItem, char *trackerAddr, unsigned short *trackerPort) {
+static void processTrackerArg(char *argItem, char *trackerAddr, unsigned short *trackerPort) {
   char *tmp;
   tmp = strtok(argItem, ":");
   strcpy(trackerAddr, tmp);
@@ -449,7 +449,7 @@ void processTrackerArg(char *argItem, char *trackerAddr, unsigned short *tracker
 
 #define ARG_NOT_FOUND -1 
 
-int findArg(int numArgs, char **argv, const char *argname) {
+static int findArg(int numArgs, char **argv, const char *argname) {
   int returnValue; /* Value to return */
   char temp[255];
   int count;
@@ -474,7 +474,7 @@ int findArg(int numArgs, char **argv, const char *argname) {
 }
 
 
-bool argExist(int numArgs, char **argv, char *argname) {
+static bool argExist(int numArgs, char **argv, char *argname) {
   bool returnValue; /* Value to return */
   char temp[255];
   int count;
@@ -496,7 +496,7 @@ bool argExist(int numArgs, char **argv, char *argname) {
 }
 
 /** Generates a log file name based on current time and map name and copies to fileName */
-void makeLogFileName(char *fileName) {
+static void makeLogFileName(char *fileName) {
   time_t t;
   struct tm *tmt;
   int count = 0;
@@ -518,7 +518,7 @@ void makeLogFileName(char *fileName) {
   }
 }
 
-bool processArgs(int numArgs, char **argv, char *mapName, unsigned short *port, gameType *game, bool *hiddenMines, aiType *ai, int *srtDelay, long *gmeLen, char *trackerAddr, unsigned short *trackerPort, bool *trackerUse, char *password) {
+static bool processArgs(int numArgs, char **argv, char *mapName, unsigned short *port, gameType *game, bool *hiddenMines, aiType *ai, int *srtDelay, long *gmeLen, char *trackerAddr, unsigned short *trackerPort, bool *trackerUse, char *password) {
   bool returnValue; /* Value to return */
   int argNum;
   char temp[255];

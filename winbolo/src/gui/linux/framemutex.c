@@ -37,7 +37,7 @@ typedef SDL_mutex *HANDLE;
 #include "../../bolo/global.h"
 #include "framemutex.h"
 
-HANDLE hFrameMutexHandle = NULL;
+static HANDLE hFrameMutexHandle = NULL;
 
 
 /*********************************************************

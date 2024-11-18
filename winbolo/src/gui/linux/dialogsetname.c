@@ -36,11 +36,11 @@
 #include "gamefront.h"
 #include "messagebox.h"
 
-GtkWidget *idc_setnametxt;
-bool setNameInGame = FALSE; /* Are we in a game or not */
-GtkWidget *dialogSetNameUs;
+static GtkWidget *idc_setnametxt;
+static bool setNameInGame = FALSE; /* Are we in a game or not */
+static GtkWidget *dialogSetNameUs;
 
-gboolean dialogSetNameOK(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
+static gboolean dialogSetNameOK(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   bool closeDialog;              /* Should the dialog be closed */
   bool changeOK;                 /* Is the name change ok */
   char oldName[PLAYER_NAME_LEN]; /* Old player name */
@@ -92,14 +92,14 @@ gboolean dialogSetNameOK(GtkWidget *widget, GdkEventKey *event, gpointer user_da
   return FALSE;
 }
     
-gboolean dialogSetNameKey(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
+static gboolean dialogSetNameKey(GtkWidget *widget, GdkEventKey *event, gpointer user_data) {
   if (event->keyval == 65293) {
     dialogSetNameOK(dialogSetNameUs, NULL, NULL);
   }
   return FALSE;
 }
 
-gboolean dialogSetNameClose(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogSetNameClose(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   gtk_grab_remove(dialogSetNameUs);
   gtk_widget_destroy(dialogSetNameUs);
   gtk_main_quit();

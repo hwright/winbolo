@@ -35,7 +35,7 @@
 
 /* Prototypes */
 
-BYTE sbm[MAP_ARRAY_SIZE][MAP_ARRAY_SIZE];
+static BYTE sbm[MAP_ARRAY_SIZE][MAP_ARRAY_SIZE];
 
 /*********************************************************
 *NAME:          screenBrainMapCreate

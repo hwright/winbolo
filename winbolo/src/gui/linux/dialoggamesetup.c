@@ -39,30 +39,30 @@
 /* There are 60 seconds in a minute */
 #define NUM_SECONDS 60 
 
-GtkWidget *idc_gamesetupstartdelay;
-GtkWidget *idc_gamesetuptxtstartdelay;
-GtkWidget *idc_gamesetupradio1;
-GtkWidget *idc_gamesetupradio2;
-GtkWidget *idc_gamesetupradio3;
-GtkWidget *idc_gamesetuphiddenmines;
-GtkWidget *idc_gamesetupcomptanks1;
-GtkWidget *idc_gamesetupcomptanks2;
-GtkWidget *idc_gamesetupselectedmap;
-GtkWidget *idc_gamesetupgamepassword;
-GtkWidget *idc_gamesetuptextpassword;
-GtkWidget *idc_gamesetuptimelimit;
-GtkWidget *idc_gamesetuptxtlimit;
-GtkWidget     *filew;
-GtkWidget *dialogGameSetupUs;
+static GtkWidget *idc_gamesetupstartdelay;
+static GtkWidget *idc_gamesetuptxtstartdelay;
+static GtkWidget *idc_gamesetupradio1;
+static GtkWidget *idc_gamesetupradio2;
+static GtkWidget *idc_gamesetupradio3;
+static GtkWidget *idc_gamesetuphiddenmines;
+static GtkWidget *idc_gamesetupcomptanks1;
+static GtkWidget *idc_gamesetupcomptanks2;
+static GtkWidget *idc_gamesetupselectedmap;
+static GtkWidget *idc_gamesetupgamepassword;
+static GtkWidget *idc_gamesetuptextpassword;
+static GtkWidget *idc_gamesetuptimelimit;
+static GtkWidget *idc_gamesetuptxtlimit;
+static GtkWidget     *filew;
+static GtkWidget *dialogGameSetupUs;
 
-bool closing = FALSE;
-char fileName[FILENAME_MAX]; /* The filename and path that should be opened */
+static bool closing = FALSE;
+static char fileName[FILENAME_MAX]; /* The filename and path that should be opened */
 
-void file_cancel_sel (GtkWidget *w, GtkFileSelection *fs) {
+static void file_cancel_sel (GtkWidget *w, GtkFileSelection *fs) {
   gtk_widget_destroy (filew);
 }
 
-void file_ok_sel (GtkWidget *w, GtkFileSelection *fs) {
+static void file_ok_sel (GtkWidget *w, GtkFileSelection *fs) {
   gchar *sTempFile;
   sTempFile = gtk_file_selection_get_filename (GTK_FILE_SELECTION (fs));
 		 
@@ -70,7 +70,7 @@ void file_ok_sel (GtkWidget *w, GtkFileSelection *fs) {
   gtk_widget_destroy (filew);
 }
 
-int DestroyDialog (GtkWidget *widget, gpointer *data) {
+static int DestroyDialog (GtkWidget *widget, gpointer *data) {
   gtk_grab_remove (widget);
   gtk_main_quit();
   return (FALSE);
@@ -89,7 +89,7 @@ int DestroyDialog (GtkWidget *widget, gpointer *data) {
 *ARGUMENTS:
 *  fileName - filename to check
 *********************************************************/
-void dialogGameSetupMapCheck(char *fileName) {
+static void dialogGameSetupMapCheck(char *fileName) {
   char mapName[FILENAME_MAX]; /* Name of the map */
   char output[FILENAME_MAX];  /* String to output */
   bool openOK;                /* Was the map opened OK? */
@@ -111,7 +111,7 @@ void dialogGameSetupMapCheck(char *fileName) {
   }
 }
 
-gboolean dialogGameSetupChooseMap(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameSetupChooseMap(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   fileName[0] = '\0';
   filew = gtk_file_selection_new ("Open Map File...");
 
@@ -130,7 +130,7 @@ gboolean dialogGameSetupChooseMap(GtkWidget *widget,  GdkEventButton *event, gpo
   return FALSE;
 }
 
-gboolean dialogGameSetupPassword(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameSetupPassword(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)) == TRUE) {
     gtk_widget_set_sensitive (idc_gamesetuptextpassword, TRUE);
   } else {
@@ -139,7 +139,7 @@ gboolean dialogGameSetupPassword(GtkWidget *widget,  GdkEventButton *event, gpoi
   return FALSE;
 }
 
-gboolean dialogGameSetupCompTanks(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameSetupCompTanks(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)) == TRUE) {
     gtk_widget_set_sensitive(idc_gamesetupcomptanks2, TRUE);
   } else {
@@ -149,7 +149,7 @@ gboolean dialogGameSetupCompTanks(GtkWidget *widget,  GdkEventButton *event, gpo
   return FALSE;
 }
 
-gboolean dialogGameSetupTimeLimit(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameSetupTimeLimit(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)) == TRUE) {
     gtk_widget_set_sensitive (idc_gamesetuptxtlimit, TRUE);
   } else {
@@ -157,7 +157,7 @@ gboolean dialogGameSetupTimeLimit(GtkWidget *widget,  GdkEventButton *event, gpo
   }
   return FALSE;
 }
-gboolean dialogGameSetupStartDelay(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameSetupStartDelay(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)) == TRUE) {
     gtk_widget_set_sensitive (idc_gamesetuptxtstartdelay, TRUE);
   } else {
@@ -166,7 +166,7 @@ gboolean dialogGameSetupStartDelay(GtkWidget *widget,  GdkEventButton *event, gp
   return FALSE;
 }
 
-gboolean dialogGameSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   char password[FILENAME_MAX]; /* Dialog Options               */
   gameType gt;
   bool hm;
@@ -252,7 +252,7 @@ gboolean dialogGameSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer
   return FALSE;
 }
 
-gboolean dialogGameSetupOK(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameSetupOK(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   gameType gt;            /* Game type */
   bool hm;                /* Hidden Mines */
   aiType ai;              /* AI Type */
@@ -341,7 +341,7 @@ gboolean dialogGameSetupOK(GtkWidget *widget,  GdkEventButton *event, gpointer u
   return FALSE;
 }
 
-gboolean dialogGameSetupCancel(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogGameSetupCancel(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (closing == FALSE) {
     closing = TRUE;
     gameFrontSetDlgState(dialogGameSetupUs, openWelcome);

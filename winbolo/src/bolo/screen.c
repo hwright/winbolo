@@ -76,73 +76,73 @@
 
 /* Module Level Variables */
 
-screen view = NULL;
-screenMines mineView = NULL;
-map mymp = NULL;
-bases mybs = NULL;
-pillboxes mypb = NULL;
-starts myss = NULL;
-tank mytk = NULL;
-shells myshs = NULL;
-lgm mylgman = NULL;
-players plyrs = NULL;
-building clientBlds = NULL;
-explosions clientExpl = NULL;
-floodFill clientFF = NULL;
-grass clientGrass = NULL;
-mines clientMines = NULL;
-minesExp clientMinesExp = NULL;
-rubble clientRubble = NULL;
-swamp clientSwamp = NULL;
-tkExplosion clientTankExplosions = NULL;
-netPnbContext clientPNB = NULL;
-netMntContext clientNMT = NULL;
-gameType myGame;
+static screen view = NULL;
+static screenMines mineView = NULL;
+static map mymp = NULL;
+static bases mybs = NULL;
+static pillboxes mypb = NULL;
+static starts myss = NULL;
+static tank mytk = NULL;
+static shells myshs = NULL;
+static lgm mylgman = NULL;
+static players plyrs = NULL;
+static building clientBlds = NULL;
+static explosions clientExpl = NULL;
+static floodFill clientFF = NULL;
+static grass clientGrass = NULL;
+static mines clientMines = NULL;
+static minesExp clientMinesExp = NULL;
+static rubble clientRubble = NULL;
+static swamp clientSwamp = NULL;
+static tkExplosion clientTankExplosions = NULL;
+static netPnbContext clientPNB = NULL;
+static netMntContext clientNMT = NULL;
+static gameType myGame;
 
 /* The offset from the top and left of the map */
-BYTE xOffset;
-BYTE yOffset;
+static BYTE xOffset;
+static BYTE yOffset;
 
 /* Pillbox View Stuff */
-bool inPillView = false; /* Are we in tank view or pillbox view */
-BYTE pillViewX = 0;      /* Pillbox View X and Y co-ordinates */
-BYTE pillViewY = 0;
+static bool inPillView = false; /* Are we in tank view or pillbox view */
+static BYTE pillViewX = 0;      /* Pillbox View X and Y co-ordinates */
+static BYTE pillViewY = 0;
 
 /* Map name */
-char mapName[MAP_STR_SIZE];
+static char mapName[MAP_STR_SIZE];
 
 /* Game length and start delay */
-int gmeStartDelay;
-long gmeLength;
+static int gmeStartDelay;
+static long gmeLength;
 
 /* Time game was created */
-time_t timeStart;
+static time_t timeStart;
 
 /* Are we running? */
-bool screenGameRunning = false;
+static bool screenGameRunning = false;
 
-bool needScreenReCalc = false;
+static bool needScreenReCalc = false;
 
 /* Whether computer tanks are allowed */
-aiType allowComputerTanks = aiNone;
+static aiType allowComputerTanks = aiNone;
 
 /* In start calculation */
-bool inStart = false;
+static bool inStart = false;
 
 /* Used by Brain */
-unsigned long brainHoldKeys; /* Keys the brain is holding down */
-unsigned long brainTapKeys;      /* Keys the brain has tapped - Executed once */
-BuildInfo *brainBuildInfo = NULL;
-PlayerBitMap brainsWantAllies;   /* Who you want to be allied to */
-PlayerBitMap brainsMessageDest;  /* Destination for messages */
-char brainsMessage[FILENAME_MAX]; /* Message to send */
-unsigned short brainsNumObjects;  /* Number of brain objects */
-ObjectInfo brainObjects[1024];    /* Array of brain objects  */
+static unsigned long brainHoldKeys; /* Keys the brain is holding down */
+static unsigned long brainTapKeys;      /* Keys the brain has tapped - Executed once */
+static BuildInfo *brainBuildInfo = NULL;
+static PlayerBitMap brainsWantAllies;   /* Who you want to be allied to */
+static PlayerBitMap brainsMessageDest;  /* Destination for messages */
+static char brainsMessage[FILENAME_MAX]; /* Message to send */
+static unsigned short brainsNumObjects;  /* Number of brain objects */
+static ObjectInfo brainObjects[1024];    /* Array of brain objects  */
 
 void moveMousePointer(updateType value);
 
 /* Cursor Positions */
-int cursorPosX, cursorPosY;
+static int cursorPosX, cursorPosY;
 
 /*********************************************************
 *NAME:          screenSetup

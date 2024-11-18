@@ -25,11 +25,11 @@
 #define TRUE  1
 
 /* Global variables. */
-char *compressSrc, *compressDest;
+static char *compressSrc, *compressDest;
 
-int compressLen; /* Length of the compressed array */
-int uncompressLen; /* Length of the data to compress */
-int compressUpto; /* Where we are up to in the compression */
+static int compressLen; /* Length of the compressed array */
+static int uncompressLen; /* Length of the data to compress */
+static int compressUpto; /* Where we are up to in the compression */
 
 /* Pseudo procedures */
 static inline int conend_of_data() {

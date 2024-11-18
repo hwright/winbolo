@@ -45,6 +45,12 @@
 #include "screenbrainmap.h"
 #include "screen.h"
 
+static struct mapObj {
+	BYTE mapItem[MAP_ARRAY_SIZE][MAP_ARRAY_SIZE]; /* The actual map */
+  mapNet mn;
+  mapNet mninc;
+} mapObj;
+
 #undef MAP_MAX_SERVER_WAIT
 #define MAP_MAX_SERVER_WAIT 200
 

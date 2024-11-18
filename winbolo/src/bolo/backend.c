@@ -40,7 +40,7 @@ void clientSoundDist(sndEffects value, BYTE mx, BYTE my);
 void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my);
 
 /* Current building item selected */
-buildSelect BsCurrent = BsTrees;
+static buildSelect BsCurrent = BsTrees;
 
 /*********************************************************
 *NAME:          screenGetNumNeutralBases

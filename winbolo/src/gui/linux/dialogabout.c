@@ -35,9 +35,9 @@
 #include "../linresource.h"
 #include "boloicon.xpm"
 
-GtkWidget *dialogAboutUs;
+static GtkWidget *dialogAboutUs;
 
-gboolean dialogAboutFunc(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogAboutFunc(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   gtk_grab_remove(dialogAboutUs);
   gtk_widget_destroy(dialogAboutUs);
   gtk_main_quit();

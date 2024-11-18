@@ -33,13 +33,13 @@
 #include "dialogtrackersetup.h"
 #include "messagebox.h"
 
-GtkWidget *idc_updsetuptxtthereport;
-GtkWidget *idc_updsetuptxtourport;
-GtkWidget *idc_updsetuptxtplayername;
-GtkWidget *idc_udpmachinename;
-GtkWidget *idc_updsetupremembername;
-GtkWidget *us;
-bool dialogUdpClosing = FALSE;
+static GtkWidget *idc_updsetuptxtthereport;
+static GtkWidget *idc_updsetuptxtourport;
+static GtkWidget *idc_updsetuptxtplayername;
+static GtkWidget *idc_udpmachinename;
+static GtkWidget *idc_updsetupremembername;
+static GtkWidget *us;
+static bool dialogUdpClosing = FALSE;
 
 /*********************************************************
 *NAME:          dialogUdpSetupDone
@@ -54,7 +54,7 @@ bool dialogUdpClosing = FALSE;
 *ARGUMENTS:
 *  isJoin - True if we are joing a game else false
 *********************************************************/
-bool dialogUdpSetupDone(bool isJoin) {
+static bool dialogUdpSetupDone(bool isJoin) {
   bool returnValue;         /* Value to return */
   gchar *str;   /* Temp string for conversions */
   char add[FILENAME_MAX];   /* Target address */
@@ -103,7 +103,7 @@ bool dialogUdpSetupDone(bool isJoin) {
   return returnValue;
 }
 
-gboolean dialogUdpSetupTracker(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogUdpSetupTracker(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   GtkWidget *tracker;
 
   tracker = dialogTrackerCreate();
@@ -113,7 +113,7 @@ gboolean dialogUdpSetupTracker(GtkWidget *widget,  GdkEventButton *event, gpoint
   return FALSE;
 }
 
-gboolean dialogUdpSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogUdpSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   char pn[PLAYER_NAME_LEN];   /* Player name */
   char add[PLAYER_NAME_LEN];  /* Target machine address */
   unsigned short myUdp;       /* Udp Ports */
@@ -134,7 +134,7 @@ gboolean dialogUdpSetupShow(GtkWidget *widget,  GdkEventButton *event, gpointer 
   return FALSE;
 }
 
-gboolean dialogUdpSetupReJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogUdpSetupReJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
 
   if (dialogUdpSetupDone(TRUE) == TRUE) {
     gameFrontEnableRejoin();
@@ -152,7 +152,7 @@ gboolean dialogUdpSetupReJoin(GtkWidget *widget,  GdkEventButton *event, gpointe
   return FALSE;
 }
 
-gboolean dialogUdpSetupJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogUdpSetupJoin(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
 
   if (dialogUdpSetupDone(TRUE) == TRUE) {
     dialogUdpClosing = TRUE;
@@ -172,7 +172,7 @@ gboolean dialogUdpSetupJoin(GtkWidget *widget,  GdkEventButton *event, gpointer 
 }
 
 
-gboolean dialogUdpSetupNew(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogUdpSetupNew(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   unsigned short udp;       /* Udp ports */
   unsigned short myUdp;
   gchar *str;
@@ -192,7 +192,7 @@ gboolean dialogUdpSetupNew(GtkWidget *widget,  GdkEventButton *event, gpointer u
 }
 
 
-gboolean dialogUdpSetupCancel(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
+static gboolean dialogUdpSetupCancel(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   if (dialogUdpClosing == FALSE) {
     dialogUdpClosing = TRUE;
     gameFrontSetDlgState(us, openWelcome);

@@ -29,9 +29,9 @@
 #include "global.h"
 #include "labels.h"
 
-bool labelOwnTank = true; /* Should own tank be labeled? */
-labelLen labelMessage = lblShort; /* Should message labels be short? */
-labelLen labelTankLabel = lblShort; /* Should tank labels be short? */
+static bool labelOwnTank = true; /* Should own tank be labeled? */
+static labelLen labelMessage = lblShort; /* Should message labels be short? */
+static labelLen labelTankLabel = lblShort; /* Should tank labels be short? */
 
 /*********************************************************
 *NAME:          labelSetSenderLength

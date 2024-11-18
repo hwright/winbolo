@@ -34,7 +34,7 @@
 #include "backend.h"
 #include "log.h"
 
-playersRejoin rejoin;
+static playersRejoin rejoin;
 
 /*********************************************************
 *NAME:          playersRejoinCreate

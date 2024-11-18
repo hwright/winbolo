@@ -63,7 +63,7 @@ typedef struct {
 	BYTE new;
 } linuxLgmFix;
 
-linuxLgmFix llf;
+static linuxLgmFix llf;
 
 
 #define DIALOG_BOX_TITLE "LinBolo"
@@ -115,99 +115,99 @@ linuxLgmFix llf;
 /* Nothing has been selected */
 #define NO_SELECT -1
 
-bool isTutorial;
+static bool isTutorial;
 bool isInMenu = FALSE;
-bool isQuiting = FALSE;
+static bool isQuiting = FALSE;
 
 /* Time since the game timer last went up */
-DWORD oldTick;
-DWORD ttick;
-DWORD oldFrameTick;
+static DWORD oldTick;
+static DWORD ttick;
+static DWORD oldFrameTick;
 
 /* Stuff for the system info dialog box */
-DWORD dwSysFrameTotal = 0;
-DWORD dwSysFrame = 0;
-DWORD dwSysGameTotal = 0;
-DWORD dwSysGame = 0;
-DWORD dwSysBrainTotal = 0;
-DWORD dwSysBrain = 0;
+static DWORD dwSysFrameTotal = 0;
+static DWORD dwSysFrame = 0;
+static DWORD dwSysGameTotal = 0;
+static DWORD dwSysGame = 0;
+static DWORD dwSysBrainTotal = 0;
+static DWORD dwSysBrain = 0;
 
-bool doingTutorial = FALSE;
+static bool doingTutorial = FALSE;
 /* Current building item selected */
-buildSelect BsLinuxCurrent = BsTrees;
+static buildSelect BsLinuxCurrent = BsTrees;
 
 /* Whether the Gunsight is shown or not */
-bool showGunsight = FALSE;
+static bool showGunsight = FALSE;
 
 /* Whether the sound effects are turn on or not */
-bool soundEffects = FALSE;
+static bool soundEffects = FALSE;
 /* Do we play background sound */
-bool backgroundSound = TRUE;
+static bool backgroundSound = TRUE;
 
 /* Is the sound card of the ISA variety */
-bool isISASoundCard = TRUE;
-bool doneInitTutorial = FALSE;
+static bool isISASoundCard = TRUE;
+static bool doneInitTutorial = FALSE;
 
 /* 
  *  new players */
-bool allowNewPlayers = TRUE;
-bool allowAlianceRequest = TRUE;
+static bool allowNewPlayers = TRUE;
+static bool allowAlianceRequest = TRUE;
 
 /* 5 Message Shown Status */
-bool showNewswireMessages = TRUE;
-bool showAssistantMessages = TRUE;
-bool showAIMessages = FALSE;
-bool showNetworkStatusMessages = TRUE;
-bool showNetworkDebugMessages = FALSE;
+static bool showNewswireMessages = TRUE;
+static bool showAssistantMessages = TRUE;
+static bool showAIMessages = FALSE;
+static bool showNetworkStatusMessages = TRUE;
+static bool showNetworkDebugMessages = FALSE;
 
-bool useAutoslow; /* Other key preferences options */
-bool useAutohide;
+static bool useAutoslow; /* Other key preferences options */
+static bool useAutohide;
 
 
 /* Winbolo.net settings */
-char gameFrontWbnPass[FILENAME_MAX];
-bool gameFrontWbnUse;
-bool gameFrontWbnSavePass;
+static char gameFrontWbnPass[FILENAME_MAX];
+static bool gameFrontWbnUse;
+static bool gameFrontWbnSavePass;
 
 /* Automatic Scrolling or not */
-bool autoScrollingEnabled = FALSE;
+static bool autoScrollingEnabled = FALSE;
 
 /* Whether Pillbox & base labels should be shown */
-bool showPillLabels = FALSE;
-bool showBaseLabels = FALSE;
+static bool showPillLabels = FALSE;
+static bool showBaseLabels = FALSE;
 
 /* Labels of stuff */
-bool labelSelf = FALSE;
-labelLen labelMsg = lblShort;
-labelLen labelTank = lblShort;
+static bool labelSelf = FALSE;
+static labelLen labelMsg = lblShort;
+static labelLen labelTank = lblShort;
 
 
 #define itoa(X, Y, Z) (sprintf(Y, "%d", X))
 #define ltoa(X, Y, Z) (sprintf(Y, "%ld", X))
 
 /* The Window scaling */
-BYTE zoomFactor = 1; //FIXME: ZOOM_FACTOR_NORMAL;
+static BYTE zoomFactor = 1; //FIXME: ZOOM_FACTOR_NORMAL;
 
-keyItems keys;
+static keyItems keys;
 
 GtkWidget *window;
 GtkWidget *menu_bar;
 GtkWidget *drawingarea1;
-GtkWidget *windowSysInfo;
-GtkWidget *windowNetInfo;
-GtkWidget *windowGameInfo;
-GtkWidget *windowMessages;
-GtkWidget *change_player_name1;
+static GtkWidget *windowSysInfo;
+static GtkWidget *windowNetInfo;
+static GtkWidget *windowGameInfo;
+static GtkWidget *windowMessages;
+static GtkWidget *change_player_name1;
 GSList *brainsGroup = NULL;
 GtkWidget *brains1_menu;
 
-SDL_TimerID timerGameID = 0;
-SDL_TimerID timerFrameID = 0;
+static SDL_TimerID timerGameID = 0;
+static SDL_TimerID timerFrameID = 0;
 
 gchar *applicationPath;
 
 void windowStartTutorial();
-void menus(GtkWidget *window);
+static void menus(GtkWidget *window);
 bool brainsHandlerLoadBrains(GtkWidget *hWnd);
 void brainsHandlerManual(GtkWidget *hWnd);
 void clientMutexWaitFor(void);

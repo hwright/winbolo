@@ -41,7 +41,7 @@
 #include "../winbolonet/winbolonet.h"
 #include "bases.h"
 
-int baseTimer[MAX_TANKS];
+static int baseTimer[MAX_TANKS];
 
 void basesUpdateTimer(int playerNumber){
 	baseTimer[playerNumber]=BASE_TICKS_BETWEEN_REFUEL;

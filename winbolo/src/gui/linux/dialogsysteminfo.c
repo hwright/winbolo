@@ -43,12 +43,12 @@
 #include "dialogsysteminfo.h"
 
 /* Text Widgets */
-GtkWidget *lblSimModelling;
-GtkWidget *lblCommProcessing;
-GtkWidget *lblGraphics;
-GtkWidget *lblAi;
-GtkWidget *lblTotal;
-GtkWidget *lblFPS;
+static GtkWidget *lblSimModelling;
+static GtkWidget *lblCommProcessing;
+static GtkWidget *lblGraphics;
+static GtkWidget *lblAi;
+static GtkWidget *lblTotal;
+static GtkWidget *lblFPS;
 
 int sysInfoTimer;
 
@@ -121,7 +121,7 @@ gint dialogSysInfoUpdate(gpointer data) {
 
 void windowSystemInfoClose();
 
-gint dialogSystemInfoClose(GtkWidget *widget, gpointer gdata) {
+static gint dialogSystemInfoClose(GtkWidget *widget, gpointer gdata) {
   gtk_timeout_remove(sysInfoTimer);
   windowSystemInfoClose();
   return FALSE;

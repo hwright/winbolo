@@ -28,9 +28,9 @@
 #include "../lang.h"
 #include "../linresource.h"
 
-char langBuff[16*1024];
-char langBuff2[16*1024];
-char langFileName[FILENAME_MAX];
+static char langBuff[16*1024];
+static char langBuff2[16*1024];
+static char langFileName[FILENAME_MAX];
 
 /*********************************************************
 *NAME:          langSetup

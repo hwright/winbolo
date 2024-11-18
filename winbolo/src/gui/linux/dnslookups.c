@@ -41,12 +41,12 @@
 
 
 
-HANDLE hDnsMutexHandle = NULL;
-SDL_Thread *hDnsThread;
-dnsList dnsProcessing;
-dnsList dnsWaiting;
-bool dnsShouldRun;
-bool dnsFinished;
+static HANDLE hDnsMutexHandle = NULL;
+static SDL_Thread *hDnsThread;
+static dnsList dnsProcessing;
+static dnsList dnsWaiting;
+static bool dnsShouldRun;
+static bool dnsFinished;
 
 /*********************************************************
 *NAME:          eCreate

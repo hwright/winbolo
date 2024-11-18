@@ -46,7 +46,7 @@
 #include "../server/servercore.h"
 
 
-char myLastPlayerName[PLAYER_NAME_LEN];
+static char myLastPlayerName[PLAYER_NAME_LEN];
 
 /*********************************************************
 *NAME:          playersCreate

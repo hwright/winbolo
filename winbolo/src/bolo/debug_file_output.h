@@ -5,8 +5,6 @@
 #include <stdio.h>
 #include <string.h>
 
-char streamText[2048];
-
 void getFileName(char *file);
 
 void setFileName(char *newFileName);

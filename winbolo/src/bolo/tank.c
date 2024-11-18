@@ -60,8 +60,8 @@ int tankCalcCRCSetup(tank *value);
 netPlayers *serverNetGetNetPlayers();
 BYTE serverCoreGetTankPlayer(tank *value);
 
-bool tankShuttingDown = false; // Enourmouse HACK. Please Fix Me FIXME
-BYTE ct[50];
+static bool tankShuttingDown = false; // Enourmouse HACK. Please Fix Me FIXME
+static BYTE ct[50];
 
 /*********************************************************
 *NAME:          tankCreate

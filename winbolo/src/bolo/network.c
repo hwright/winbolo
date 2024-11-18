@@ -37,7 +37,7 @@
   #include <gtk/gtk.h>
   #include "../gui/linux/messagebox.h"
   #include "../gui/linux/dialogalliance.h"
-  GtkWidget *dlgAllianceWnd;
+  static GtkWidget *dlgAllianceWnd;
 
   extern char messageBody[16*1024];
   extern char messageTitle[256];
@@ -82,43 +82,43 @@ void gameFrontSetAIType(aiType ait);
 void gameFrontGetPassword(char *pword);
 
 /* The type of game we are playing */
-netType networkGameType = netNone;
+static netType networkGameType = netNone;
 /* Password in netgames */
-char netPassword[MAP_STR_SIZE];
+static char netPassword[MAP_STR_SIZE];
 // randomly generated string
-char rsastring[128];
+static char rsastring[128];
 
-netStatus netStat = netRunning; /* Network status */
-netStatus oldNetStatus = netRunning; /* Network status */
-BYTE netFailedHigh = 0xFF;
-BYTE netYPos; /* Y Position we want for data downloading */
+static netStatus netStat = netRunning; /* Network status */
+static netStatus oldNetStatus = netRunning; /* Network status */
+static BYTE netFailedHigh = 0xFF;
+static BYTE netYPos; /* Y Position we want for data downloading */
 
 /* Data for network status dialog box */
-int netRingDelay = 0;           /* Total Ring delay */
-int netDownStreamDelay = 0;     /* Downstream time delay */
-int netPacketsPerSecond = 0;    /* Number of packets per second */
-int netNumErrors = 0;           /* Number of network Errors */
-int netRetransmissions = 0;     /* Number of network Retransmissions */
+static int netRingDelay = 0;           /* Total Ring delay */
+static int netDownStreamDelay = 0;     /* Downstream time delay */
+static int netPacketsPerSecond = 0;    /* Number of packets per second */
+static int netNumErrors = 0;           /* Number of network Errors */
+static int netRetransmissions = 0;     /* Number of network Retransmissions */
 
 /* And Totals of for the last second */
-int netTotPacketsPerSecond = 0; /* Number of packets per second */
+static int netTotPacketsPerSecond = 0; /* Number of packets per second */
 
-long netLastTokenTime = 0;
-long tknTime;                              /* Time since last token */
+static long netLastTokenTime = 0;
+static long tknTime;                              /* Time since last token */
 
-bool netUseTracker; /* Do we use the tracker or not */
-bool inNetShutdown; /* Are we shutting down - Don't send packets */
+static bool netUseTracker; /* Do we use the tracker or not */
+static bool inNetShutdown; /* Are we shutting down - Don't send packets */
 
-time_t netLastHeard; /* Last time we got a packet from the server */
+static time_t netLastHeard; /* Last time we got a packet from the server */
 
 /* Udp packets */
-udpPackets udpp;
+static udpPackets udpp;
 
 /* Maximum retries for network things */
 #define MAX_RETRIES 3
 /* Network time */
-DWORD dwSysNetTotal = 0;
-DWORD dwSysNet = 0;
+static DWORD dwSysNetTotal = 0;
+static DWORD dwSysNet = 0;
 
 int lzwdecoding(char *src, char *dest, int len);
 

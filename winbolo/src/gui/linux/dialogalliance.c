@@ -31,10 +31,10 @@
 #include "../linresource.h"
 #include "../lang.h"
 
-GtkWidget *label1;
-GtkWidget *dialogAllianceUs;
-BYTE dialogAlliancePlayerNum;
-bool dialogAllianceIsShowing = FALSE;
+static GtkWidget *label1;
+static GtkWidget *dialogAllianceUs;
+static BYTE dialogAlliancePlayerNum;
+static bool dialogAllianceIsShowing = FALSE;
 
 void dialogAllianceSetName(char *playerName, BYTE playerNum) {
   char output[FILENAME_MAX];
@@ -50,13 +50,13 @@ void dialogAllianceSetName(char *playerName, BYTE playerNum) {
   dialogAllianceIsShowing = TRUE;
 }
 
-gboolean dialogAllianceAccept(GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
+static gboolean dialogAllianceAccept(GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
   netAllianceAccept(dialogAlliancePlayerNum);
   dialogAllianceIsShowing = FALSE;
   gtk_widget_hide(dialogAllianceUs);
   return FALSE;
 }
-gboolean dialogAllianceReject(GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
+static gboolean dialogAllianceReject(GtkWidget *widget, GdkEventButton *event, gpointer user_data) {
   dialogAllianceIsShowing = FALSE;
   gtk_widget_hide(dialogAllianceUs);
     
