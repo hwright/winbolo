@@ -146,7 +146,7 @@ static void saveMap(char *line) {
     } else if (strcmp(ptr+len-4, ".map") != 0) {
       strcat(ptr, ".map");
     }
-    if (serverCoreSaveMap(ptr) == false) {
+    if (!serverCoreSaveMap(ptr)) {
       fprintf(stderr, "Sorry, an error occured saving the map. Is the path correct?\n");
     }
   }
@@ -230,8 +230,8 @@ static void processKeys() {
   FD_ZERO(&fdmask);
   FD_SET(STDIN_FILENO, &fdmask);
 
-  if (isQuiet == true || isNoInput == true) {
-    while (serverCoreRunning() == true && isGameOver == false) {
+  if (isQuiet || isNoInput) {
+    while (serverCoreRunning() && !isGameOver) {
     if (alarmRaised == alarmInterrupt) {
        break;
     } else if (alarmRaised == alarmLock) {
@@ -245,7 +245,7 @@ static void processKeys() {
     sleep(1);
     }
   } else {
-    while (strncmp(keyBuff, "quit", 4) != 0 && isGameOver == false && serverCoreRunning()) {
+    while (strncmp(keyBuff, "quit", 4) != 0 && !isGameOver && serverCoreRunning()) {
       if (strncmp(keyBuff, "help", 4) == 0) {
         /* Help */
         printHelp();
@@ -340,12 +340,12 @@ void CALLBACK serverGameTimer(UINT uID, UINT uMsg, DWORD dwUser, DWORD dw1, DWOR
       ticks++;
       oldTick += SERVER_TICK_LENGTH;
     }
-    if (quitOnWinFlag == true || autoClose == true || (winbolonetIsRunning() == true && serverCoreGetActualGameType() != gameOpen)) {
+    if (quitOnWinFlag || autoClose || (winbolonetIsRunning() && serverCoreGetActualGameType() != gameOpen)) {
       threadsWaitForMutex();
-      if (quitOnWinFlag == true && isGameOver == false){
+      if (quitOnWinFlag && !isGameOver){
 		isGameOver = serverCoreCheckGameWin(printGameWinners);
 	  }
-      if (autoClose == true && isGameOver == false) {
+      if (autoClose && !isGameOver) {
         isGameOver = serverCoreCheckAutoClose();
       }
       threadsReleaseMutex();
@@ -483,7 +483,7 @@ static bool argExist(int numArgs, char **argv, const char *argname) {
   strlower(temp);
   returnValue = false;
   count = 0;
-  while (returnValue == false && count < numArgs) {
+  while (!returnValue && count < numArgs) {
     strlower((char *) argv[count]);
     if (strcmp((char *) argv[count], temp) == 0) {
       returnValue = true;
@@ -529,7 +529,7 @@ static bool processArgs(int numArgs, char **argv, char *mapName, unsigned short 
   argNum = findArg(numArgs, argv, "map");
   if (argNum != ARG_NOT_FOUND) {
     strcpy(mapName, (char *) argv[argNum]);
-  } else if (argExist(numArgs, argv, "inbuilt") == true) {
+  } else if (argExist(numArgs, argv, "inbuilt")) {
     strcpy(mapName, "-inbuilt");
   } else {
     fprintf(stderr, "Missing map file\n");
@@ -695,12 +695,12 @@ int main(int argc, char **argv) {
   signal(SIGUSR2, catch_alarm);
 #endif
     
-  if (processArgs(argc, argv, mapName, &port, &game, &hiddenMines, &ai, &srtDelay, &gmeLen, trackerAddr, &trackerPort, &trackerUse, pass) == false) {
+  if (!processArgs(argc, argv, mapName, &port, &game, &hiddenMines, &ai, &srtDelay, &gmeLen, trackerAddr, &trackerPort, &trackerUse, pass)) {
     fprintf(stderr, "Error in command line parameters\n");
     printArgs();
     exit(0);
   }
-  if (argExist(argc, argv, "quiet") == true) {
+  if (argExist(argc, argv, "quiet")) {
     serverCoreSetQuietMode(true);
     isQuiet = true;
   }
@@ -709,7 +709,7 @@ int main(int argc, char **argv) {
     serverCoreSetServerLogFile((char *) argv[findArg(argc, argv, "logfile")]);
   }
 
-  if (argExist(argc, argv, "maxplayers") == true) {
+  if (argExist(argc, argv, "maxplayers")) {
     maxPlayers = atoi((char *) argv[findArg(argc, argv, "maxplayers")]);
     if (maxPlayers < 0 || maxPlayers > MAX_TANKS) {
       maxPlayers = 0;
@@ -753,7 +753,7 @@ int main(int argc, char **argv) {
 
 #endif
   } else {
-    if (serverCoreCreate(mapName, game, hiddenMines, srtDelay, gmeLen) == false) {
+    if (!serverCoreCreate(mapName, game, hiddenMines, srtDelay, gmeLen)) {
       fprintf(stderr, "Error starting Core Simulation\n");
 #ifdef USING_SDL
       SDL_Quit();
@@ -763,7 +763,7 @@ int main(int argc, char **argv) {
   }
   useAddr = nullptr;
   httpSetAltIpAddress("");
-  if (argExist(argc, argv, "addr") == true) {
+  if (argExist(argc, argv, "addr")) {
     useAddr = (char *) argv[findArg(argc, argv, "addr")];
 	httpSetAltIpAddress(useAddr);
   }
@@ -773,7 +773,7 @@ int main(int argc, char **argv) {
   autoClose = argExist(argc, argv, "autoclose");
   printGameWinners = argExist(argc, argv, "printwinners");
 
-  if (serverNetCreate(port, pass, ai, trackerAddr, trackerPort, trackerUse, useAddr, (BYTE) maxPlayers) == false) {
+  if (!serverNetCreate(port, pass, ai, trackerAddr, trackerPort, trackerUse, useAddr, (BYTE) maxPlayers)) {
     fprintf(stderr, "Error starting Network\n");
     serverNetDestroy();
     serverCoreDestroy();
@@ -783,15 +783,15 @@ int main(int argc, char **argv) {
 return 0;
   }
 
-  if (argExist(argc, argv, "nowinbolonet") == false) {
+  if (!argExist(argc, argv, "nowinbolonet")) {
     char mapName[255];
     serverCoreGetMapName(mapName);
-    winbolonetCreateServer(mapName, port, (BYTE) game, (BYTE) ai, serverCoreGetAllowHiddenMines(), (BYTE) (pass[0] == 0 ? false : true), screenNumBases(), screenNumPills(), serverCoreGetNumNeutralBases(), serverCoreGetNumNeutralPills(), serverCoreGetNumPlayers(), serverCoreGetTimeGameCreated());
+    winbolonetCreateServer(mapName, port, (BYTE) game, (BYTE) ai, serverCoreGetAllowHiddenMines(), (BYTE) (pass[0] != 0), screenNumBases(), screenNumPills(), serverCoreGetNumNeutralBases(), serverCoreGetNumNeutralPills(), serverCoreGetNumPlayers(), serverCoreGetTimeGameCreated());
   }
   dontSendLog = argExist(argc, argv, "dontsendlog");
 
   /* Log file generation */
-  if (argExist(argc, argv, "log") == true) {
+  if (argExist(argc, argv, "log")) {
     char logFileName[512];
     int arg = findArg(argc, argv, "log");
 
@@ -810,11 +810,11 @@ return 0;
       strcat(logFileName, ".wbv");
     }
     strcpy(fileName, logFileName);
-    isLogging = serverCoreStartLog(logFileName, ai, maxPlayers, (BYTE) (pass[0] == 0 ? false : true));
+    isLogging = serverCoreStartLog(logFileName, ai, maxPlayers, (BYTE) (pass[0] != 0));
   }
 
 
-  if (threadsCreate(true) == false) {
+  if (!threadsCreate(true)) {
     fprintf(stderr, "Error starting Thread Manger\n");
     threadsDestroy();
     serverNetDestroy();
@@ -846,7 +846,7 @@ return 0;
   threadsDestroy();
   serverCoreStopLog();
 
-  if (isLogging == true && winbolonetIsRunning() == true && argExist(argc, argv, "dontsendlog") == false) {
+  if (isLogging && winbolonetIsRunning() && !argExist(argc, argv, "dontsendlog")) {
     winboloNetGetServerKey(key);
   } else {
     key[0] = EMPTY_CHAR;
@@ -854,7 +854,7 @@ return 0;
 
   winbolonetDestroy();
 
-  if (isLogging == true && key[0] != EMPTY_CHAR && argExist(argc, argv, "dontsendlog") == false) {
+  if (isLogging && key[0] != EMPTY_CHAR && !argExist(argc, argv, "dontsendlog")) {
     screenServerConsoleMessage((char *)"Uploading log file to winbolo.net");  
     httpCreate();
     httpSendLogFile(fileName, key, false);

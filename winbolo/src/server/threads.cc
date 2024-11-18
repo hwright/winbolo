@@ -61,7 +61,7 @@ static bool threadStarted = false;
 bool threadsCreate(bool context) {
   bool returnValue = true; /* Value to return */
 
-  if (threadStarted == true) {
+  if (threadStarted) {
     return true;
   }
   threadServerContext = context;

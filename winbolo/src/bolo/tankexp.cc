@@ -196,7 +196,7 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs, lgm 
       newY = (WORLD) (position->y + moveY);
 
       /*  Moving screen position check */
-      if (isServer == false) {
+      if (!isServer) {
         conv = newX;
         conv >>= TANK_SHIFT_MAPSIZE;
         testX = (BYTE) conv;
@@ -226,7 +226,7 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs, lgm 
 
       if ((mapGetSpeed(mp,pb,bs,mx,newmy, true, NEUTRAL)) > 0) {
         position->y = (WORLD) (position->y + moveY);
-        if (isServer == false && position->creator == playerNum) {
+        if (!isServer && position->creator == playerNum) {
           if (testY > my) {
             screenMoveViewOffsetUp(false);
           } else if (testY < my) {
@@ -237,7 +237,7 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs, lgm 
       } 
       if ((mapGetSpeed(mp,pb,bs,newmx,my, true, NEUTRAL)) > 0) {
         position->x = (WORLD) (position->x + moveX);
-        if (isServer == false && position->creator == playerNum) {
+        if (!isServer && position->creator == playerNum) {
           if (testX > mx) {
             screenMoveViewOffsetLeft(false);
           } else if (testX < mx) {
@@ -253,8 +253,8 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs, lgm 
       if (currentPos == DEEP_SEA) {
         /* Check for deep sea death */
         needUpdate = false;
-        if (position->own == true) {
-		  if (isServer == false) {
+        if (position->own) {
+		  if (!isServer) {
             soundDist(tankSinkNear, mx, my);
 		    tankSetLastTankDeath(tank,LAST_DEATH_BY_DEEPSEA); /* Override LAST_DEATH_BY_SHELL */
             messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(MESSAGE_TANKSUNK));
@@ -302,7 +302,7 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs, lgm 
       tkExplosionDeleteItem(tke, &position);
     }    
     /* Get the next Item */
-    if (*tke != nullptr && needUpdate == true) {
+    if (*tke != nullptr && needUpdate) {
       position = TkExplosionTail(position);
     }
   }
@@ -567,7 +567,7 @@ BYTE tkExplosionNetMake(tkExplosion *tke, BYTE *buff) {
   q = *tke;
 
   while (NonEmpty(q)) {
-    if (q->packSent == false) {
+    if (!q->packSent) {
       /* Need to add */
       memcpy(pnt, &(q->x), wsz); /* X */
       pnt += wsz;
@@ -630,11 +630,7 @@ void tkExplosionNetExtract(tkExplosion *tke, BYTE *buff, BYTE dataLen, BYTE play
 
 
   isServer = threadsGetContext();
-  if (isServer == true) {
-    isSent = false;
-  } else {
-    isSent = true;
-  }
+  isSent = !isServer;
 
   ttsz = sizeof(TURNTYPE);
   wsz = sizeof(WORLD);
@@ -663,7 +659,7 @@ void tkExplosionNetExtract(tkExplosion *tke, BYTE *buff, BYTE dataLen, BYTE play
     pos++;
     if (creator != playerNum) {
       /* Add it */
-      if (isServer == false) {
+      if (!isServer) {
         BYTE lgmMX;
         BYTE lgmMY;
         BYTE lgmPX;

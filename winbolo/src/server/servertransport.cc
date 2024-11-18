@@ -103,7 +103,7 @@ bool serverTransportCreate(unsigned short port, char *addrToUse) {
 
   screenServerConsoleMessage((char *) "Server Transport Startup");
 
-  if (returnValue == true) {
+  if (returnValue) {
     myPort = port;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
@@ -117,7 +117,7 @@ bool serverTransportCreate(unsigned short port, char *addrToUse) {
   }
 
   /* Create Sockets */
-  if (returnValue == true) {    
+  if (returnValue) {    
     sockUdp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (sockUdp == INVALID_SOCKET) {
       fprintf(stderr, "Error Creating UDP Socket\n");
@@ -126,7 +126,7 @@ bool serverTransportCreate(unsigned short port, char *addrToUse) {
   }
 
   /* Binding */
-  if (returnValue == true) {
+  if (returnValue) {
     ret = bind(sockUdp, (struct sockaddr *)&addr, sizeof(addr));
     if (ret < 0) {
       fprintf(stderr, "Error Binding UDP Socket\n");
@@ -136,7 +136,7 @@ bool serverTransportCreate(unsigned short port, char *addrToUse) {
   
 
   /* Set to non blocking */
-  if (returnValue == true) {
+  if (returnValue) {
     ret = fcntl(sockUdp, F_SETFL, O_NONBLOCK | fcntl(sockUdp, F_GETFL));
     if (ret == SOCKET_ERROR) {
       returnValue = false;
@@ -268,7 +268,7 @@ void serverTransportGetUs(struct in_addr *dest, unsigned short *port) {
 void serverTransportSendUDPLast(BYTE *buff, int len, bool wantCrc) {
   BYTE crcA, crcB;
 
-  if (wantCrc == true) {
+  if (wantCrc) {
     CRCCalcBytes(buff, len, &crcA, &crcB);
     buff[len] = crcA;
     buff[len+1] = crcB;

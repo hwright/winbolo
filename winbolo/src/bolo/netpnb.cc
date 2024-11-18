@@ -116,7 +116,7 @@ void netPNBAdd(netPnbContext *pnbc, BYTE event, BYTE itemNum, BYTE owner, BYTE o
 		add1->y = opt2;
 		add1->opt = opt3;
 		/* We are a server */
-		if (threadsGetContext() == true) {
+		if (threadsGetContext()) {
 			add1->id = (*pnbc)->netPnbUpto;
 			(*pnbc)->netPnbUpto++;
 			if ((*pnbc)->netPnbUpto == 250) {
@@ -226,7 +226,7 @@ bool netPNBExtractItemServer(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 			basesGetBase(bs, &bb, (BYTE) (itemNum + 1));
 			tankGetWorld(tnk, &tankWx, &tankWy);
 /*			basesGetStats(bs, basesGetBaseNum(bs, tankGetMX(tnk), tankGetMY(tnk)), &dummy, &dummy, &amount); */
-			if (bb.armour >= BASE_ARMOUR_GIVE && utilIsItemInRange(tankWx, tankWy, (WORLD) ((bb.x << 8) + MAP_SQUARE_MIDDLE), (WORLD) ((bb.y << 8) + MAP_SQUARE_MIDDLE), 512, &dummyD) == true && playersIsAllie(screenGetPlayers(), bb.owner, owner) == true) {
+			if (bb.armour >= BASE_ARMOUR_GIVE && utilIsItemInRange(tankWx, tankWy, (WORLD) ((bb.x << 8) + MAP_SQUARE_MIDDLE), (WORLD) ((bb.y << 8) + MAP_SQUARE_MIDDLE), 512, &dummyD) && playersIsAllie(screenGetPlayers(), bb.owner, owner)) {
 				basesNetGiveArmour(bs, itemNum);
 				tankSetArmour(tnk, (BYTE) (tankGetArmour(tnk) + BASE_ARMOUR_GIVE));
 			} else {
@@ -239,7 +239,7 @@ bool netPNBExtractItemServer(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 			basesGetBase(bs, &bb, (BYTE) (itemNum + 1));
 			tankGetWorld(tnk, &tankWx, &tankWy);
 /*			basesGetStats(bs, basesGetBaseNum(bs, tankGetMX(tnk), tankGetMY(tnk)), &amount, &dummy, &dummy); */
-			if (bb.shells >= BASE_SHELLS_GIVE && utilIsItemInRange(tankWx, tankWy, (WORLD) ((bb.x << 8) + MAP_SQUARE_MIDDLE), (WORLD) ((bb.y << 8) + MAP_SQUARE_MIDDLE), 512, &dummyD) == true && playersIsAllie(screenGetPlayers(), bb.owner, owner) == true) {
+			if (bb.shells >= BASE_SHELLS_GIVE && utilIsItemInRange(tankWx, tankWy, (WORLD) ((bb.x << 8) + MAP_SQUARE_MIDDLE), (WORLD) ((bb.y << 8) + MAP_SQUARE_MIDDLE), 512, &dummyD) && playersIsAllie(screenGetPlayers(), bb.owner, owner)) {
 				basesNetGiveShells(bs, itemNum);
 				tankSetShells(tnk, (BYTE) (tankGetShells(tnk) + BASE_SHELLS_GIVE));
 			} else {
@@ -252,7 +252,7 @@ bool netPNBExtractItemServer(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 			tankGetWorld(tnk, &tankWx, &tankWy);
 
 /*			basesGetStats(bs, basesGetBaseNum(bs, tankGetMX(tnk), tankGetMY(tnk)), &dummy, &amount, &dummy); */
-			if (bb.mines >= BASE_MINES_GIVE && utilIsItemInRange(tankWx, tankWy, (WORLD) ((bb.x << 8) + MAP_SQUARE_MIDDLE), (WORLD) ((bb.y << 8) + MAP_SQUARE_MIDDLE), 512, &dummyD) == true && playersIsAllie(screenGetPlayers(), bb.owner, owner) == true) {
+			if (bb.mines >= BASE_MINES_GIVE && utilIsItemInRange(tankWx, tankWy, (WORLD) ((bb.x << 8) + MAP_SQUARE_MIDDLE), (WORLD) ((bb.y << 8) + MAP_SQUARE_MIDDLE), 512, &dummyD) && playersIsAllie(screenGetPlayers(), bb.owner, owner)) {
 				basesNetGiveMines(bs, itemNum);
 				tankSetMines(tnk, (BYTE) (tankGetMines(tnk) + BASE_MINES_GIVE));
 			} else {
@@ -269,7 +269,7 @@ bool netPNBExtractItemServer(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 			break;
 		case NPNB_PILL_PICKUP:
 			pillsSetPillInTank(pb, (BYTE) (itemNum + 1), true);
-			if (threadsGetContext() == false) {
+			if (!threadsGetContext()) {
 				frontEndStatusPillbox((BYTE) (itemNum+1), (pillsGetAllianceNum(pb, (BYTE) (itemNum+1))));
 			}
 			break;
@@ -358,7 +358,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 		case NPNB_BASE_CAPTURE: /* Base capture */
 			basesSetOwner(bs, opt1, opt2, owner, false);
 			/* Client context */
-			if (threadsGetContext() == false) {
+			if (!threadsGetContext()) {
 				frontEndStatusBase((BYTE) (itemNum+1), (basesGetStatusNum(bs, (BYTE) (itemNum+1))));
 			}
 			needCalc = true;
@@ -431,7 +431,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 					/* The player is still alive */
 					tankPutPill(screenGetTankFromPlayer(playerNum), pb, (BYTE) (itemNum+1));
 					pillsSetPillInTank(pb, (BYTE) (itemNum+ 1), true);
-					if (threadsGetContext() == false) {
+					if (!threadsGetContext()) {
 						/* We are a client */
 						frontEndStatusPillbox((BYTE) (itemNum+1), (pillsGetAllianceNum(pb, (BYTE) (itemNum+1))));
 					}
@@ -439,7 +439,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 			} else {
 				/* Some other tank picked up a pill */
 				pillsSetPillInTank(pb, (BYTE) (itemNum+1), true);
-				if (threadsGetContext() == false) {
+				if (!threadsGetContext()) {
 					/* We are a client */
 					frontEndStatusPillbox((BYTE) (itemNum+1), (pillsGetAllianceNum(pb, (BYTE) (itemNum+1))));
 				}
@@ -456,7 +456,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 			addPill.inTank = false;
 			addPill.justSeen = false;
 			pillsSetPill(pb, &addPill, (BYTE) (itemNum+1));
-			if (threadsGetContext() == false) {
+			if (!threadsGetContext()) {
 				frontEndStatusPillbox((BYTE) (itemNum+1), (pillsGetAllianceNum(pb, (BYTE) (itemNum+1))));
 			}
 			soundDist(manBuildingNear, opt1, opt2);
@@ -473,7 +473,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 			addPill.inTank = false;
 			addPill.justSeen = false;
 			pillsSetPill(pb, &addPill, (BYTE) (itemNum+1));
-			if (threadsGetContext() == false) {
+			if (!threadsGetContext()) {
 				frontEndStatusPillbox((BYTE) (itemNum+1), (pillsGetAllianceNum(pb, (BYTE) (itemNum+1))));
 			}
 			needCalc = true;
@@ -483,7 +483,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 			/* Pill repair */
 			pillsRepairPos(pb, opt1, opt2, opt3);
 			soundDist(manBuildingNear, opt1, opt2);
-			if (threadsGetContext() == false) {
+			if (!threadsGetContext()) {
 				frontEndStatusPillbox((BYTE) (itemNum+1), (pillsGetAllianceNum(pb, (BYTE) (itemNum+1))));
 /*				frontEndStatusPillbox((BYTE) (itemNum+1), (pillsGetAllianceNum(pb, (BYTE) (itemNum+1)))); */
 			}
@@ -491,13 +491,13 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs, pillboxes 
 			break;
 		case NPNB_LGM_DEAD:
 			/* LGM Died */
-			if (itemNum == false) {
+			if (!static_cast<bool>(itemNum)) {
 				netPNBMessage(owner, langGetText(MESSAGE_LGM_DEAD));
 				soundDist(manDyingNear, opt1, opt2);
 				if (owner == playerNum) {
 					lgmSetIsDead(screenGetLgmFromPlayerNum(playerNum), true);
 				}
-			} else if (itemNum == true && owner == playerNum) {
+			} else if (static_cast<bool>(itemNum) && owner == playerNum) {
 				lgmSetIsDead(screenGetLgmFromPlayerNum(playerNum), false);
 			}
 			break;
@@ -581,27 +581,27 @@ bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb, BYTE 
 	count++;
 
     /* Process the occurence */
-    if (isServer == true) {
-      if (netPNBExtractItemServer(pnbc, mp, bs, pb, event, itemNum, owner, opt1, opt2, opt3) == true) {
+    if (isServer) {
+      if (netPNBExtractItemServer(pnbc, mp, bs, pb, event, itemNum, owner, opt1, opt2, opt3)) {
         netPNBAdd(pnbc, event, itemNum, owner, opt1, opt2, 0);
       }
     } else {
       testCalc = netPNBExtractItemClient(pnbc, mp, bs, pb, event, itemNum, owner, opt1, opt2, opt3);
-      if (needCalc == false) {
+      if (!needCalc) {
         needCalc = testCalc;
       }
     }
   }
   
-  if (needCalc == true) {
+  if (needCalc) {
     /* Recalc Screen if required */
     screenReCalc();
   }
-  if (returnValue == false) {
+  if (!returnValue) {
     /* Print error */
     messageAdd(networkMessage, (char *) "\0", (char *) "pnb-no");
   }
-  if (errOccurred == true) {
+  if (errOccurred) {
     messageAdd(networkMessage, (char *) "\0", (char *) "pnb-a");
   }
 

@@ -124,7 +124,7 @@ void netMNTAdd(netMntContext *nmtc, BYTE event, BYTE itemNum, BYTE owner, BYTE o
     add1 = new netMNTObj;
     add1->item = utilPutNibble(event, itemNum);
     add1->owner = owner;
-    if (threadsGetContext() == true) {
+    if (threadsGetContext()) {
       add1->id = (*nmtc)->netMntUpto;
       (*nmtc)->netMntUpto++;
       if ((*nmtc)->netMntUpto == 250) {
@@ -352,7 +352,7 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
     if (pos < MINE_START) {
       mapSetPos(mp, opt1, opt2, (BYTE) (pos + MINE_SUBTRACT), false, false);
     }
-    if (playersIsAllie(screenGetPlayers(), playersGetSelf(screenGetPlayers()), owner) == true) {
+    if (playersIsAllie(screenGetPlayers(), playersGetSelf(screenGetPlayers()), owner)) {
       needCalc = true;
       minesAddItem(screenGetMines(), opt1, opt2);
     }
@@ -479,27 +479,27 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs, tank 
     opt2 = buff[count];
     count++;
     /* Process the occurence */
-    if (isServer == true) {
-      if (netMNTExtractServer(nmtc, mp, pb, bs, event, itemNum, owner, opt1, opt2) == true) {
+    if (isServer) {
+      if (netMNTExtractServer(nmtc, mp, pb, bs, event, itemNum, owner, opt1, opt2)) {
         netMNTAdd(nmtc, event, itemNum, owner, opt1, opt2);
       }
     } else {
       testCalc = netMNTExtractClient(nmtc, mp, pb, bs, tnk, event, itemNum, owner, opt1, opt2);
-      if (needCalc == false) {
+      if (!needCalc) {
         needCalc = testCalc;
       }
     }
 
   }
   /* Recalc Screen if required */
-  if (needCalc == true) {
+  if (needCalc) {
     screenReCalc();
   }
 
-  if (returnValue == false) {
+  if (!returnValue) {
     messageAdd(networkMessage, (char *) "\0", (char *) "mnt-no");
   }
-  if (errOccurred == true) {
+  if (errOccurred) {
     messageAdd(networkMessage, (char *) "\0", (char *) "nmt-a");
   }
   return true;

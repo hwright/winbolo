@@ -195,10 +195,10 @@ void shellsUpdate(shells *value, map *mp, pillboxes *pb, bases *bs, tank *tk, BY
 	/* While there are shells to process.. */
 	while (NonEmpty(position)) {
 		needUpdate = true;
-		if (position->shellDead == true && (position->packSent == true || netGetType() == netSingle)) {
+		if (position->shellDead && (position->packSent || netGetType() == netSingle)) {
 			needUpdate = false;
 			shellsDeleteItem(value, &position);
-		} else if (position->shellDead == true && position->packSent == false) {
+		} else if (position->shellDead && !position->packSent) {
 			needUpdate = true;
 		} else if (position->length > SHELL_DEATH) {
 			/* Move the shell */
@@ -206,7 +206,7 @@ void shellsUpdate(shells *value, map *mp, pillboxes *pb, bases *bs, tank *tk, BY
 			newX = (WORLD) (position->x + xAdd);
 			newY = (WORLD) (position->y + yAdd);
 			/* Check for colision */
-			if ((shellsCalcCollision(mp, pb, tk, bs, &newX, &newY, position->angle, position->owner, position->onBoat, numTanks, isServer)) == true)
+			if (shellsCalcCollision(mp, pb, tk, bs, &newX, &newY, position->angle, position->owner, position->onBoat, numTanks, isServer))
 			{
 				/* Get X and Y map co-ords. */
 				conv = newX;
@@ -237,7 +237,7 @@ void shellsUpdate(shells *value, map *mp, pillboxes *pb, bases *bs, tank *tk, BY
 					lgmDeathCheck(screenGetLgmFromPlayerNum(screenGetTankPlayer(&tk[count])), mp, pb, bs, newX, newY, position->owner);
 					count++;
 				}        
-				if (position->packSent == true) { 
+				if (position->packSent) { 
 					needUpdate = false;
 					shellsDeleteItem(value, &position);
 				} else {
@@ -276,7 +276,7 @@ void shellsUpdate(shells *value, map *mp, pillboxes *pb, bases *bs, tank *tk, BY
 			explosionsAddItem(screenGetExplosions(), sx,sy,spx,spy,EXPLOSION_START);
 			minesExpAddItem(screenGetMinesExp(), mp, bmx, bmy);
 			testPos = mapGetPos(mp, bmx, bmy);
-			if (isServer == true && testPos >= MINE_START && testPos <= MINE_END) {
+			if (isServer && testPos >= MINE_START && testPos <= MINE_END) {
 				netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, screenGetTankPlayer(tk), bmx, bmy);
 			}
 			count = 0;
@@ -284,15 +284,15 @@ void shellsUpdate(shells *value, map *mp, pillboxes *pb, bases *bs, tank *tk, BY
 				lgmDeathCheck(screenGetLgmFromPlayerNum(screenGetTankPlayer(&tk[count])), mp, pb, bs, position->x, position->y, position->owner);
 				count++;
 			}
-			if (position->packSent == true) {
+			if (position->packSent) {
 				shellsDeleteItem(value, &position);
-			} else if (position->shellDead == false) {
+			} else if (!position->shellDead) {
 				position->shellDead = true;
 			}
 		}
 
 		/* Get the next Item */
-		if (*value != nullptr && needUpdate == true) {
+		if (*value != nullptr && needUpdate) {
 			position = ShellsTail(position);
 		}
 	}
@@ -362,7 +362,7 @@ void shellsCalcScreenBullets(shells *value, screenBullets *sBullets, BYTE leftPo
 
   q = *value;
   c = false;
-  while (NonEmpty(q) && c == false) {
+  while (NonEmpty(q) && !c) {
     conv = q->x;
     conv >>= TANK_SHIFT_MAPSIZE;
     x = (BYTE) conv;
@@ -436,7 +436,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 	mapY = (BYTE) conv;
 
 	/* Pill is hit by the shell */
-	if ((pillsIsPillHit(pb, mapX, mapY)) == true) {
+	if (pillsIsPillHit(pb, mapX, mapY)) {
 		returnValue = true;
 		*xValue = mapX;
 		*xValue <<= TANK_SHIFT_MAPSIZE;
@@ -445,9 +445,9 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 		*yValue <<= TANK_SHIFT_MAPSIZE;
 		*yValue += MAP_SQUARE_MIDDLE;
 		/* We are the server or are in a single player game */
-		if (isServer == true || gameT == netSingle) {
+		if (isServer || gameT == netSingle) {
 			/* The pill has died */
-			if (pillsDamagePos(pb, mapX, mapY, true, true) == true) {
+			if (pillsDamagePos(pb, mapX, mapY, true, true)) {
 				count = pillsGetPillNum(pb, mapX, mapY, false, false);
 				netPNBAdd(screenGetNetPnb(), NPNB_PILL_DEAD, (BYTE) (count-1), pillsGetPillOwner(pb, count), mapX, mapY, 0);
 			} else {
@@ -462,9 +462,9 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 
 
 	/* Shell did not hit pillbox */
-	if (returnValue == false) {
+	if (!returnValue) {
 		count = 0;
-		while (count < numTanks && returnValue == false) 
+		while (count < numTanks && !returnValue) 
 		{
 			if (screenGetTankPlayer(&tk[count]) != owner) 
 			{
@@ -473,10 +473,10 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 				{
 					case TH_HIT:
 						returnValue = true;
-						if (threadsGetContext() == false) {
+						if (!threadsGetContext()) {
 							frontEndPlaySound(hitTankSelf);
 						}
-						if (isServer == false) {
+						if (!isServer) {
 							if ((mapGetPos(mp, tankGetMX(&(tk[count])), tankGetMY(&(tk[count]))) == DEEP_SEA)) {
 								/* We have drowned - They have killed us */
 /*								if (owner != NEUTRAL) { */
@@ -490,7 +490,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 						break;
 					case TH_KILL_SMALL:
 						returnValue = true;
-						if (isServer == false) {
+						if (!isServer) {
 							tkExplosionAddItem(screenGetTankExplosions(), *xValue, *yValue, angle, TK_EXPLODE_LENGTH, TK_SMALL_EXPLOSION);
 /*							if (owner != NEUTRAL) { */
 							netMNTAdd(screenGetNetMnt(), NMNT_KILLME, playersGetSelf(screenGetPlayers()), screenGetTankPlayer(&(tk[count])), owner, 0xFF);
@@ -498,13 +498,13 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 /*								netMNTAdd(NMNT_KILLME, owner, screenGetTankPlayer(&(tk[count])), 0xFF, 0xFF); */
 /*							} */
 						}
-						if (threadsGetContext() == false) {
+						if (!threadsGetContext()) {
 							frontEndPlaySound(hitTankSelf);
 						}
 						break;
 					case TH_KILL_BIG:
 						returnValue = true;
-						if (isServer == false) {
+						if (!isServer) {
 							tkExplosionAddItem(screenGetTankExplosions(), *xValue, *yValue, angle, TK_EXPLODE_LENGTH, TK_LARGE_EXPLOSION);
 /*							if (owner != NEUTRAL) { */
 /*								netMNTAdd(NMNT_KILLME, owner, screenGetTankPlayer(&(tk[count])), playersGetSelf(), 0); */
@@ -512,7 +512,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 							netMNTAdd(screenGetNetMnt(), NMNT_KILLME, playersGetSelf(screenGetPlayers()), screenGetTankPlayer(&(tk[count])), owner, 0xFF);
 /*							} */
 						}
-						if (threadsGetContext() == false) {
+						if (!threadsGetContext()) {
 							frontEndPlaySound(hitTankSelf);
 						}
 						break;
@@ -526,7 +526,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 	}
 
 	/* Check for player hit */
-	if (returnValue == false && isServer == false) {
+	if (!returnValue && !isServer) {
 		playerHit = playersIsTankHit(screenGetPlayers(), *xValue, *yValue, angle, owner);
 		if (playerHit != NEUTRAL) {
 			returnValue = true;
@@ -534,11 +534,11 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 		}
 	}
 
-	if (returnValue == false) {
+	if (!returnValue) {
 		baseExist = basesExistPos(bs, mapX, mapY); 
 		/* Check for base */
-		if (baseExist == true) {
-			if (onBoat == true) {
+		if (baseExist) {
+			if (onBoat) {
 				returnValue = true;
 				*xValue = mapX;
 				*xValue <<= TANK_SHIFT_MAPSIZE;
@@ -547,15 +547,15 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 				*yValue <<= TANK_SHIFT_MAPSIZE;
 				*yValue += MAP_SQUARE_MIDDLE;
 				/* Play sound */
-				if ((basesCanHit(bs, mapX, mapY, owner)) == true) {
-					if (isServer == true || gameT == netSingle) {
+				if (basesCanHit(bs, mapX, mapY, owner)) {
+					if (isServer || gameT == netSingle) {
 						basesDamagePos(bs, mapX, mapY);
 						netPNBAdd(screenGetNetPnb(), NPNB_BASE_HIT, 0, screenGetTankPlayer(tk), mapX, mapY, 0);
 					}
 					pillsBaseHit(pb, mapX, mapY, (basesGetOwnerPos(bs, mapX, mapY)));
 				}
 				soundDist(shotBuildingNear, mapX, mapY);
-			} else if ((basesCanHit(bs, mapX, mapY, owner)) == true) { /* Huh? */
+			} else if (basesCanHit(bs, mapX, mapY, owner)) { /* Huh? */
 				returnValue = true;
 				*xValue = mapX;
 				*xValue <<= TANK_SHIFT_MAPSIZE;
@@ -564,7 +564,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 				*yValue <<= TANK_SHIFT_MAPSIZE;
 				*yValue += MAP_SQUARE_MIDDLE;
 				/* Do damage to base */
-				if (isServer == true || gameT == netSingle) {
+				if (isServer || gameT == netSingle) {
 					basesDamagePos(bs, mapX, mapY);
 					netPNBAdd(screenGetNetPnb(), NPNB_BASE_HIT, 0, screenGetTankPlayer(tk), mapX, mapY, 0);
 				}
@@ -575,9 +575,9 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 		}
 	}
 
-	if (returnValue == false)
+	if (!returnValue)
 	{
-		if ((mapIsPassable(mp, mapX, mapY, onBoat)) == false && baseExist == false)
+		if (!mapIsPassable(mp, mapX, mapY, onBoat) && !baseExist)
 		{
 			returnValue = true;
 			*xValue = mapX;
@@ -607,9 +607,9 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 					soundDist(shotBuildingNear, mapX, mapY);
 					break;
 				case FOREST:
-					if (isMine == true) {
+					if (isMine) {
 						mapSetPos(mp, mapX, mapY, GRASS+MINE_SUBTRACT, false, false);
-						if (isServer == true) {
+						if (isServer) {
 							netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, screenGetTankPlayer(tk), mapX, mapY);
 						}
 					} else {
@@ -626,9 +626,9 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 					soundDist(shotBuildingNear, mapX, mapY);
 					break;
 				case GRASS:
-					if (isMine == true) {
+					if (isMine) {
 						mapSetPos(mp, mapX, mapY, GRASS+MINE_SUBTRACT, false, false);
-						if (isServer == true) {
+						if (isServer) {
 							netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, screenGetTankPlayer(tk), mapX, mapY);
 						}
 					} else {
@@ -640,9 +640,9 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 					}
 					break;
 				case SWAMP:
-					if (isMine == true) {
+					if (isMine) {
 						mapSetPos(mp, mapX, mapY, SWAMP+MINE_SUBTRACT, false, false);
-						if (isServer == true) {
+						if (isServer) {
 							netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, screenGetTankPlayer(tk), mapX, mapY);
 						}
 					} else {
@@ -654,9 +654,9 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 					}
 					break;
 				case RUBBLE:
-					if (isMine == true) {
+					if (isMine) {
 						mapSetPos(mp, mapX, mapY, RUBBLE+MINE_SUBTRACT, false, false);
-						if (isServer == true) {
+						if (isServer) {
 							netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, screenGetTankPlayer(tk), mapX, mapY);
 						}
 					} else {
@@ -668,9 +668,9 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 					}
 					break;
 				case ROAD:
-					if (isMine == true) {
+					if (isMine) {
 						mapSetPos(mp, mapX, mapY, ROAD+MINE_SUBTRACT, false, false);
-						if (isServer == true) {
+						if (isServer) {
 							netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, screenGetTankPlayer(tk), mapX, mapY);
 						}
 					} else {
@@ -680,7 +680,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs, WORLD *xVa
 		}
 	}
 
-	if (returnValue == true) {
+	if (returnValue) {
 		screenReCalc();
 	}
 
@@ -714,19 +714,19 @@ BYTE shellsCheckRoad(map *mp, pillboxes *pb, bases *bs, BYTE mapX, BYTE mapY, TU
   dir16 = utilGet16Dir(dir);
 
   if (dir16 < BRADIANS_NEAST || dir16 >= BRADIANS_NWEST) {
-    if (mapIsLand(mp, pb, bs, mapX, (BYTE) (mapY-1)) == false) {
+    if (!mapIsLand(mp, pb, bs, mapX, (BYTE) (mapY-1))) {
       returnValue = RIVER;
     }
   } else if (dir16 >= BRADIANS_NEAST && dir16 < BRADIANS_SEAST) {
-    if (mapIsLand(mp, pb, bs, (BYTE) (mapX+1), mapY) == false) {
+    if (!mapIsLand(mp, pb, bs, (BYTE) (mapX+1), mapY)) {
       returnValue = RIVER;
     }
   } else if (dir16 >= BRADIANS_SEAST && dir16 < BRADIANS_SWEST) {
-    if (mapIsLand(mp, pb, bs, mapX, (BYTE) (mapY+1)) == false) {
+    if (!mapIsLand(mp, pb, bs, mapX, (BYTE) (mapY+1))) {
       returnValue = RIVER;
     }
   } else {
-    if (mapIsLand(mp, pb, bs, (BYTE) (mapX-1), mapY) == false) {
+    if (!mapIsLand(mp, pb, bs, (BYTE) (mapX-1), mapY)) {
       returnValue = RIVER;
     }
   }
@@ -771,10 +771,10 @@ BYTE shellsNetMake(shells *value, BYTE *buff, BYTE noPlayerNum, bool sentState) 
   q = *value;
 
   while (NonEmpty(q)) {
-    if (q->packSent == false && q->creator != noPlayerNum) {
+    if (!q->packSent && q->creator != noPlayerNum) {
       /* Need to add */
       /* Check range from things */
-      if (screenTankInView(noPlayerNum, (BYTE) (q->x >> TANK_SHIFT_MAPSIZE), (BYTE) (q->y >> TANK_SHIFT_MAPSIZE)) == true) {
+      if (screenTankInView(noPlayerNum, (BYTE) (q->x >> TANK_SHIFT_MAPSIZE), (BYTE) (q->y >> TANK_SHIFT_MAPSIZE))) {
         memcpy(pnt, &(q->x), wsz); /* X */
         pnt += wsz;
         returnValue = (BYTE) (returnValue + wsz);
@@ -876,13 +876,13 @@ void shellsNetExtract(shells *value, pillboxes *pb, BYTE *buff, BYTE dataLen, bo
     pos++;
 
     /* Check to see if we should add to it */
-    if (isServer == true) {
+    if (isServer) {
       if (owner != NEUTRAL) {
         tnk = screenGetTankFromPlayer(creator);
         tankGetWorld(tnk, &twx, &twy);
         amount = tankGetShells(tnk);
         if (amount > 0) {
-          if (utilIsItemInRange(twx, twy, wx, wy, 512, &dummy) == true) {
+          if (utilIsItemInRange(twx, twy, wx, wy, 512, &dummy)) {
             amount--;
             tankSetShells(tnk, amount);
             shouldAdd = true;
@@ -905,8 +905,8 @@ void shellsNetExtract(shells *value, pillboxes *pb, BYTE *buff, BYTE dataLen, bo
 			yAdd++;
 		}
 		/* If a pill exists at the location of ??? and a dead pill does not exist at that same location */
-        if ((pillsExistPos(pb, (BYTE) ((WORLD) (wx-xAdd) >> M_W_SHIFT_SIZE), (BYTE) ((WORLD) (wy-yAdd) >> M_W_SHIFT_SIZE)) == true)
-			&& (pillsDeadPos(pb, (BYTE) ((WORLD) (wx-xAdd) >> M_W_SHIFT_SIZE), (BYTE) ((WORLD) (wy-yAdd) >> M_W_SHIFT_SIZE)) == false)) {
+        if ((pillsExistPos(pb, (BYTE) ((WORLD) (wx-xAdd) >> M_W_SHIFT_SIZE), (BYTE) ((WORLD) (wy-yAdd) >> M_W_SHIFT_SIZE)))
+			&& (!pillsDeadPos(pb, (BYTE) ((WORLD) (wx-xAdd) >> M_W_SHIFT_SIZE), (BYTE) ((WORLD) (wy-yAdd) >> M_W_SHIFT_SIZE)))) {
           shouldAdd = true;
         }
       }
@@ -924,13 +924,9 @@ void shellsNetExtract(shells *value, pillboxes *pb, BYTE *buff, BYTE dataLen, bo
 
 
     /* Add it if required */
-    if (shouldAdd == true) {
+    if (shouldAdd) {
       q = new shellsObj;
-      if (isServer == true) {
-        q->packSent = false;
-      } else {
-        q->packSent = true;
-      }
+      q->packSent = !isServer;
       q->x = wx;
       q->y = wy;
       q->angle = tt;
@@ -1010,7 +1006,7 @@ void shellsGetBrainShellsInRect(shells *value, BYTE leftPos, BYTE rightPos, BYTE
       /* In the rectangle */
       if (position->owner == NEUTRAL) {
         owner = SHELLS_BRAIN_NEUTRAL;
-      } else if (playersIsAllie(screenGetPlayers(), playerNum, position->owner) == true) {
+      } else if (playersIsAllie(screenGetPlayers(), playerNum, position->owner)) {
         owner = SHELLS_BRAIN_FRIENDLY;
       } else {
         owner = SHELLS_BRAIN_HOSTILE;

@@ -52,7 +52,7 @@ void clientSoundDist(sndEffects value, BYTE mx, BYTE my) {
   BYTE gapX;  /* Distance from tank to sound */
   BYTE gapY;
 
-  if (logIsRecording() == true) {
+  if (logIsRecording()) {
     soundDistLog(value, mx, my);
   }
   if (mineExplosionNear == value) {
@@ -243,7 +243,7 @@ void soundDistLog(sndEffects value, BYTE mx, BYTE my) {
     break;
   }
 
-  if (wantLog == true) {
+  if (wantLog) {
     logAddEvent((logitem)logMessageType, mx, my, 0, 0, 0, nullptr);
   }
 

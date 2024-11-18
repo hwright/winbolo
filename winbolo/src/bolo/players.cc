@@ -64,7 +64,7 @@ void playersCreate(players *plrs) {
 
   *plrs = new playersObj;
   memset(*plrs, 0, sizeof(**plrs));
-  if (backendGetContext() == false) {
+  if (!backendGetContext()) {
     myLastPlayerName[0] = EMPTY_CHAR;
   }
     
@@ -138,9 +138,9 @@ bool playersSetSelf(players *plrs, BYTE playerNum, char *playerName) {
   bool returnValue; /* Value to return */
 
   returnValue = false;
-  if ((*plrs)->item[playerNum].inUse == false) {
-    if (playersNameTaken(plrs, playerName) == false) {
-      if (backendGetContext() == false) {
+  if (!(*plrs)->item[playerNum].inUse) {
+    if (!playersNameTaken(plrs, playerName)) {
+      if (!backendGetContext()) {
         strcpy(myLastPlayerName, playerName);
       }
       returnValue = true;
@@ -149,10 +149,10 @@ bool playersSetSelf(players *plrs, BYTE playerNum, char *playerName) {
       (*plrs)->myPlayerNum = playerNum;
       lgmSetPlayerNum(screenGetLgmFromPlayerNum(playerNum), playerNum);
       utilCtoPString(playerName, (char *) (*plrs)->playerBrainNames[playerNum]);
-      if (threadsGetContext() == false) {
+      if (!threadsGetContext()) {
         frontEndSetPlayer((playerNumbers) playerNum, playerName);
       }
-      if (backendGetContext() == false) {
+      if (!backendGetContext()) {
         strcpy(myLastPlayerName, playerName);
       }
     }
@@ -184,8 +184,8 @@ bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
   messageStr[0] = '\0';
   label[0] = '\0';
   returnValue = false;
-  if ((*plrs)->item[playerNum].inUse == true) {
-    if (playersNameTaken(plrs, playerName) == false) {
+  if ((*plrs)->item[playerNum].inUse) {
+    if (!playersNameTaken(plrs, playerName)) {
       /* OK to change do so and then make the message */
       returnValue = true;
       /* Make Message */
@@ -208,10 +208,10 @@ bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
       if (playerNum != (*plrs)->myPlayerNum) {
         strcat(temp, "@");
         strcat(temp, (*plrs)->item[playerNum].location);
-      } else if (backendGetContext() == false) {
+      } else if (!backendGetContext()) {
         strcpy(myLastPlayerName, playerName);
       }
-      if (threadsGetContext() == false) {
+      if (!threadsGetContext()) {
         frontEndSetPlayer((playerNumbers) playerNum, temp);
       }
       /* Log it */
@@ -239,13 +239,13 @@ void playersSetPlayersMenu(players *plrs) {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true) {
+    if ((*plrs)->item[count].inUse) {
       strcpy(temp, (*plrs)->item[count].playerName);
       if (count != (*plrs)->myPlayerNum) {
         strcat(temp, "@");
         strcat(temp, (*plrs)->item[count].location);
       }
-      if (threadsGetContext() == false) {
+      if (!threadsGetContext()) {
         frontEndSetPlayer((playerNumbers) count, temp);
       }
     }
@@ -285,7 +285,7 @@ void playersSetPlayer(players *plrs, BYTE playerNum, char *playerName, char *loc
   iPlayerNum = (int)playerNum;
 
   /* This code block is only executed for clients besides your own in the player list */
-  if ((*plrs)->item[playerNum].inUse == false) {
+  if (!(*plrs)->item[playerNum].inUse) {
     (*plrs)->item[playerNum].inUse = true;
     strcpy((*plrs)->item[playerNum].playerName, playerName);
     strcpy((*plrs)->item[playerNum].location, location);
@@ -316,7 +316,7 @@ void playersSetPlayer(players *plrs, BYTE playerNum, char *playerName, char *loc
       strcat(str, "@");
       strcat(str, (*plrs)->item[playerNum].location);
     }
-    if (threadsGetContext() == false) {
+    if (!threadsGetContext()) {
       frontEndSetPlayer((playerNumbers) playerNum, str);
       frontEndStatusTank((BYTE) (playerNum+1), playersScreenAllience(plrs, playerNum));
 	  frontEndRedrawAll();
@@ -346,7 +346,7 @@ void playerSetLocation(players *plrs, char *ip, char *host) {
   
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && count != (*plrs)->myPlayerNum) {
+    if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum) {
       if (strcmp((*plrs)->item[count].location, ip) == 0) {
         strcpy((*plrs)->item[count].location, host);
         found = count;
@@ -363,7 +363,7 @@ void playerSetLocation(players *plrs, char *ip, char *host) {
         strcat(str, "@");
         strcat(str, (*plrs)->item[found].location);
       }
-      if (threadsGetContext() == false) {
+      if (!threadsGetContext()) {
         frontEndSetPlayer((playerNumbers) found, str);
         frontEndSetPlayerCheckState((playerNumbers) found, (*plrs)->item[found].isChecked);
       }
@@ -395,7 +395,7 @@ void playerSetLocation(players *plrs, char *ip, char *host) {
 * lgmFrame   - Lgm Frame number
 *********************************************************/
 void playersUpdate(players *plrs, BYTE playerNum, BYTE mx, BYTE my, BYTE px, BYTE py, BYTE frame, bool onBoat, BYTE lgmMX, BYTE lgmMY, BYTE lgmPX, BYTE lgmPY, BYTE lgmFrame) {
- if ((*plrs)->item[playerNum].inUse == true) {
+ if ((*plrs)->item[playerNum].inUse) {
     (*plrs)->item[playerNum].mapX = mx;
     (*plrs)->item[playerNum].mapY = my;
     (*plrs)->item[playerNum].pixelX = px;
@@ -438,7 +438,7 @@ void playersGameTickUpdate(players *plrs) {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true) {
+    if ((*plrs)->item[count].inUse) {
       if ((*plrs)->item[count].lgmMapX != 0 && (*plrs)->item[count].lgmMapY != 0 && (*plrs)->item[count].lgmFrame != LGM_HELICOPTER_FRAME) {
         (*plrs)->item[count].lgmFrame++;
         if ((*plrs)->item[count].lgmFrame > LGM_MAX_FRAMES ) {
@@ -465,12 +465,12 @@ void playersGameTickUpdate(players *plrs) {
 *********************************************************/
 void playersGetPlayerName(players *plrs, BYTE playerNum, char *dest) {
   if (plrs != nullptr) {
-    if ((*plrs)->item[playerNum].inUse == true) {
+    if ((*plrs)->item[playerNum].inUse) {
       strcpy(dest, (*plrs)->item[playerNum].playerName);
     } else {
       strcpy(dest, NO_TANK);
     }
-  } else if (backendGetContext() == false) {
+  } else if (!backendGetContext()) {
     /* We are a client.. */
     strcpy(dest, myLastPlayerName);
   }
@@ -491,7 +491,7 @@ void playersGetPlayerName(players *plrs, BYTE playerNum, char *dest) {
 *********************************************************/
 void playersGetPlayerLocation(players *plrs, BYTE playerNum, char *dest) {
   if (plrs != nullptr) {
-    if ((*plrs)->item[playerNum].inUse == true) {
+    if ((*plrs)->item[playerNum].inUse) {
       strcpy(dest, (*plrs)->item[playerNum].location);
     } else {
       strcpy(dest, NO_TANK);
@@ -519,7 +519,7 @@ void playersMakeMessageName(players *plrs, BYTE playerNum, char *dest) {
   if (playerNum == (*plrs)->myPlayerNum) {
     labelMakeMessage(label, (*plrs)->item[playerNum].playerName, langGetText(MESSAGE_THIS_COMPUTER));
     strcpy(dest, label);
-  } else if ((*plrs)->item[playerNum].inUse == false) {
+  } else if (!(*plrs)->item[playerNum].inUse) {
     strcpy(dest, NO_TANK);
   } else {
     labelMakeMessage(label, (*plrs)->item[playerNum].playerName, (*plrs)->item[playerNum].location);
@@ -544,7 +544,7 @@ void playersMakeScreenName(players *plrs, BYTE playerNum, char *dest) {
   char label[FILENAME_MAX];   /* Used to hold the string made by label */
   
   label[0] = '\0';
-  if ((*plrs)->item[playerNum].inUse == true) {
+  if ((*plrs)->item[playerNum].inUse) {
     if (playerNum == (*plrs)->myPlayerNum) {
       labelMakeTankLabel(label, (*plrs)->item[playerNum].playerName, langGetText(MESSAGE_THIS_COMPUTER), true);
     } else {
@@ -582,10 +582,10 @@ bool playersIsAllie(players *plrs, BYTE playerA, BYTE playerB) {
     returnValue = false;
   } else {
     /* Check for exist */
-    if ((*plrs)->item[playerA].inUse == true) {
+    if ((*plrs)->item[playerA].inUse) {
       check = playerA;
       check2 = playerB;
-    } else if ((*plrs)->item[playerB].inUse == true) {
+    } else if ((*plrs)->item[playerB].inUse) {
       check = playerB;
       check2 = playerA;
     }
@@ -614,7 +614,7 @@ BYTE playersGetNumAllie(players *plrs, BYTE playerNum) {
   BYTE returnValue; /* Value to return */
 
   returnValue = 0;
-  if ((*plrs)->item[playerNum].inUse == true) {
+  if ((*plrs)->item[playerNum].inUse) {
     returnValue = allienceNumAllies(&((*plrs)->item[playerNum].allie)) + 1;
   }
   return returnValue;
@@ -639,8 +639,8 @@ bool playersNameTaken(players *plrs, char *checkName) {
   count = 0;
   returnValue = false;
 
-  while (count<MAX_TANKS && returnValue == false) {
-    if ((*plrs)->item[count].inUse == true) {
+  while (count<MAX_TANKS && !returnValue) {
+    if ((*plrs)->item[count].inUse) {
       if (strcmp((*plrs)->item[count].playerName, checkName) == 0) {
         returnValue = true;
       } else if ((*plrs)->item[count].playerName[0] == '*') {
@@ -674,11 +674,11 @@ tankAlliance playersScreenAllience(players *plrs, BYTE playerNum) {
 
   returnValue = tankNone;
   if (playerNum < MAX_TANKS) {
-    if ((*plrs)->item[playerNum].inUse == false) {
+    if (!(*plrs)->item[playerNum].inUse) {
       returnValue = tankNone;
     } else if (playerNum == (*plrs)->myPlayerNum) {
       returnValue = tankSelf;
-    } else if (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), playerNum) == true) {
+    } else if (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), playerNum)) {
       returnValue = tankAllie;
     } else {
       returnValue = tankEvil;
@@ -723,7 +723,7 @@ void playersMakeScreenTanks(players *plrs, screenTanks *value, BYTE leftPos, BYT
   screenGetTankWorld(&ourTankX, &ourTankY);
   
   for (count=0;count<MAX_TANKS;count++) {
-    if ((*plrs)->item[count].inUse == true && count != (*plrs)->myPlayerNum) {
+    if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum) {
       playerName[0] = EMPTY_CHAR;
       /* Extract fixed map co-ordinates */
       conv = (*plrs)->item[count].mapX;
@@ -756,7 +756,7 @@ void playersMakeScreenTanks(players *plrs, screenTanks *value, BYTE leftPos, BYT
         } else {
           conv2 = ourTankY - ty;
         }
-        if ((screenIsItemInTrees(tx, ty) == false) || (conv < MIN_TREEHIDE_DIST && conv2 < MIN_TREEHIDE_DIST)  ) {
+        if ((!screenIsItemInTrees(tx, ty)) || (conv < MIN_TREEHIDE_DIST && conv2 < MIN_TREEHIDE_DIST)  ) {
           /* Extract fixed pixel co-ordinates */
           conv = (*plrs)->item[count].mapX;
           conv <<= TANK_SHIFT_MAPSIZE;
@@ -780,10 +780,10 @@ void playersMakeScreenTanks(players *plrs, screenTanks *value, BYTE leftPos, BYT
           /* Extract player screen name */
           playersMakeScreenName(plrs, count, playerName);
           frame = (*plrs)->item[count].frame;
-          if ((*plrs)->item[count].onBoat == true) {
+          if ((*plrs)->item[count].onBoat) {
             frame += TANK_BOAT_ADD;
           }
-          if (allienceExist(&((*plrs)->item[count].allie), (*plrs)->myPlayerNum) == true) {
+          if (allienceExist(&((*plrs)->item[count].allie), (*plrs)->myPlayerNum)) {
             frame += TANK_GOOD_ADD;
           } else {
             frame += TANK_EVIL_ADD;
@@ -821,7 +821,7 @@ void playersMakeScreenLgm(players *plrs, screenLgm *value, BYTE leftPos, BYTE ri
   BYTE count;                    /* Looping variable */
 
   for (count=0;count<MAX_TANKS;count++) {
-    if ((*plrs)->item[count].inUse == true && count != (*plrs)->myPlayerNum) {
+    if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum) {
       if ((*plrs)->item[count].lgmMapX >= leftPos && (*plrs)->item[count].lgmMapX <= rightPos && (*plrs)->item[count].lgmMapY >= top && (*plrs)->item[count].lgmMapY <= bottom) {
         wx = (*plrs)->item[count].lgmMapX << TANK_SHIFT_MAPSIZE;
         wx += (*plrs)->item[count].lgmPixelX << TANK_SHIFT_RIGHT2;
@@ -839,7 +839,7 @@ void playersMakeScreenLgm(players *plrs, screenLgm *value, BYTE leftPos, BYTE ri
           conv2 = ourTankY - wy;
         }
         
-        if ((*plrs)->item[count].lgmFrame == LGM_HELICOPTER_FRAME || screenIsItemInTrees(wx, wy) == false || (conv < MIN_TREEHIDE_DIST && conv2 < MIN_TREEHIDE_DIST)) {
+        if ((*plrs)->item[count].lgmFrame == LGM_HELICOPTER_FRAME || !screenIsItemInTrees(wx, wy) || (conv < MIN_TREEHIDE_DIST && conv2 < MIN_TREEHIDE_DIST)) {
           screenLgmAddItem(value,(BYTE) ((*plrs)->item[count].lgmMapX - leftPos), (BYTE) ((*plrs)->item[count].lgmMapY - top), (*plrs)->item[count].lgmPixelX, (*plrs)->item[count].lgmPixelY, (*plrs)->item[count].lgmFrame); 
         }
       }
@@ -868,7 +868,7 @@ BYTE playersGetNumPlayers(players *plrs) {
   if (*plrs != nullptr){
 	  if (*plrs != nullptr) {
 		for (count=0;count<MAX_TANKS;count++) {
-		  if ((*plrs)->item[count].inUse == true) {
+		  if ((*plrs)->item[count].inUse) {
 			returnValue++;
 		  }
 		}
@@ -912,11 +912,11 @@ bool playersIsTankCloser(players *plrs, WORLD x, WORLD y, BYTE pillOwner, double
   test = 0;
   count = 0;
 
-  while (count < MAX_TANKS && returnValue == false) {
+  while (count < MAX_TANKS && !returnValue) {
     /* Check to see player slot is being used */
-    if ((*plrs)->item[count].inUse == true && count != (*plrs)->myPlayerNum) {
+    if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum) {
       /* Check for non-allined tank */
-      if (allienceExist(&((*plrs)->item[count].allie), pillOwner) == false && count != pillOwner && ((*plrs)->item[count].mapX != 0 && (*plrs)->item[count].mapY != 0)) {
+      if (!allienceExist(&((*plrs)->item[count].allie), pillOwner) && count != pillOwner && ((*plrs)->item[count].mapX != 0 && (*plrs)->item[count].mapY != 0)) {
         /* Make tankX and tankY */
         tankX = (*plrs)->item[count].mapX;
         tankX <<= BRADIAN_ADD8;
@@ -939,10 +939,10 @@ bool playersIsTankCloser(players *plrs, WORLD x, WORLD y, BYTE pillOwner, double
           diffY = y - tankY;
         }
         /* Not in trees check */
-        if (screenIsItemInTrees(tankX, tankY) == false || (diffX < MIN_TREEHIDE_DIST && diffY < MIN_TREEHIDE_DIST)) {
+        if (!screenIsItemInTrees(tankX, tankY) || (diffX < MIN_TREEHIDE_DIST && diffY < MIN_TREEHIDE_DIST)) {
           /* Distance check */
           inRange = utilIsItemInRange(x, y, tankX, tankY, PILLBOX_RANGE, &test);
-          if (inRange == true && test < tankAmount) {
+          if (inRange && test < tankAmount) {
             returnValue = true;
           }
         }
@@ -983,7 +983,7 @@ BYTE playersIsTankHit(players *plrs, WORLD x, WORLD y, TURNTYPE angle, BYTE owne
 
   while (count < MAX_TANKS && returnValue == NEUTRAL) {
     /* Check to see player slot is being used */
-    if ((*plrs)->item[count].inUse == true && count != (*plrs)->myPlayerNum && count != owner) {
+    if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum && count != owner) {
       /* Check for a collision */
        tankX = (*plrs)->item[count].mapX;
        tankX <<= TANK_SHIFT_MAPSIZE;
@@ -996,7 +996,7 @@ BYTE playersIsTankHit(players *plrs, WORLD x, WORLD y, TURNTYPE angle, BYTE owne
        conv <<= TANK_SHIFT_RIGHT2;
        tankY += conv;
        tankAngle = (TURNTYPE) (((*plrs)->item[count].frame) * TANK_FRAMES);
-       if ((utilIsTankHit(tankX, tankY, tankAngle, x, y, angle)) == true) {
+       if (utilIsTankHit(tankX, tankY, tankAngle, x, y, angle)) {
          returnValue = count;
        }
     }
@@ -1052,7 +1052,7 @@ BYTE playersGetFirstNotUsed(players *plrs) {
   returnValue = NEUTRAL;
   count = 0;
   while (count < MAX_TANKS && returnValue == NEUTRAL) {
-    if ((*plrs)->item[count].inUse == false) {
+    if (!(*plrs)->item[count].inUse) {
       returnValue = count;
     }
     count++;
@@ -1078,12 +1078,12 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
   BYTE count;                /* Looping variable */
 
 
-  if ((*plrs)->item[playerNum].inUse == true) {
+  if ((*plrs)->item[playerNum].inUse) {
     allienceDestroy(&((*plrs)->item[playerNum].allie));
 
     count = 0;
     while (count < MAX_TANKS) {
-      if ((*plrs)->item[playerNum].inUse == true && count != playerNum) {
+      if ((*plrs)->item[playerNum].inUse && count != playerNum) {
         allienceRemove(&((*plrs)->item[count].allie), playerNum);
       }
       count++;
@@ -1096,7 +1096,7 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
     (*plrs)->item[playerNum].needUpdate = false;
     (*plrs)->item[playerNum].isChecked = false;
     (*plrs)->playerBrainNames[playerNum][0] = '\0';
-    if (threadsGetContext() == false) {
+    if (!threadsGetContext()) {
       frontEndClearPlayer((playerNumbers) playerNum);
       frontEndStatusTank((BYTE) (playerNum + 1), tankNone);
       frontEndSetPlayerCheckState((playerNumbers) playerNum, false);
@@ -1126,18 +1126,18 @@ void playersSetMenuItems(players *plrs) {
   char str[512]; /* The player name */
 
   for (count=0;count<MAX_TANKS;count++) {
-    if ((*plrs)->item[count].inUse == true  ) {
+    if ((*plrs)->item[count].inUse  ) {
       strcpy(str, (*plrs)->item[count].playerName);
       if (count != (*plrs)->myPlayerNum) {
         strcat(str, "@");
         strcat(str, (*plrs)->item[count].location);
       }
-      if (threadsGetContext() == false) {
+      if (!threadsGetContext()) {
         frontEndSetPlayer((playerNumbers) count, str);
       }
     }
   }
-  if (threadsGetContext() == false) {
+  if (!threadsGetContext()) {
     frontEndEnableRequestAllyMenu(false);
     frontEndEnableLeaveAllyMenu(false);
   }
@@ -1182,7 +1182,7 @@ int playersGetNumChecked(players *plrs) {
   returnValue = 0;
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && (*plrs)->item[count].isChecked == true) {
+    if ((*plrs)->item[count].inUse && (*plrs)->item[count].isChecked) {
       returnValue++;
     }
     count++;
@@ -1207,12 +1207,8 @@ void playersCheckAllies(players *plrs) {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count) == true || count == (*plrs)->myPlayerNum)) {
-      (*plrs)->item[count].isChecked = true;
-    } else {
-      (*plrs)->item[count].isChecked = false;
-    }
-    if (threadsGetContext() == false) {
+    (*plrs)->item[count].isChecked = (*plrs)->item[count].inUse && (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count) || count == (*plrs)->myPlayerNum);
+    if (!threadsGetContext()) {
       frontEndSetPlayerCheckState((playerNumbers) count, (*plrs)->item[count].isChecked);
     }
     count++;
@@ -1238,9 +1234,9 @@ void playersCheckAllNone(players *plrs, bool isChecked) {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true) {
+    if ((*plrs)->item[count].inUse) {
       (*plrs)->item[count].isChecked = isChecked;
-      if (threadsGetContext() == false) {
+      if (!threadsGetContext()) {
         frontEndSetPlayerCheckState((playerNumbers) count, isChecked);
       }
     }
@@ -1263,13 +1259,9 @@ void playersCheckAllNone(players *plrs, bool isChecked) {
 *********************************************************/
 void playersToggleCheckedState(players *plrs, BYTE playerNum) {
   if (playerNum < MAX_TANKS) {
-    if ((*plrs)->item[playerNum].inUse == true  ) {
-      if ((*plrs)->item[playerNum].isChecked == true) {
-        (*plrs)->item[playerNum].isChecked = false;
-      } else {
-        (*plrs)->item[playerNum].isChecked = true;
-      }
-      if (threadsGetContext() == false) {
+    if ((*plrs)->item[playerNum].inUse  ) {
+      (*plrs)->item[playerNum].isChecked = !(*plrs)->item[playerNum].isChecked;
+      if (!threadsGetContext()) {
         frontEndSetPlayerCheckState((playerNumbers) playerNum, (*plrs)->item[playerNum].isChecked);
       }
     }
@@ -1297,15 +1289,11 @@ void playersCheckNearbyPlayers(players *plrs, BYTE xValue, BYTE yValue) {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true) {
+    if ((*plrs)->item[count].inUse) {
       xDiff = xValue - (*plrs)->item[count].mapX;
       yDiff = yValue - (*plrs)->item[count].mapY;
-      if (xDiff >= PLAYER_MAX_SELECT_LEFT && xDiff <= PLAYER_MAX_SELECT_RIGHT && yDiff >= PLAYER_MAX_SELECT_TOP && yDiff <= PLAYER_MAX_SELECT_BOTTOM) {
-        (*plrs)->item[count].isChecked = true;
-      } else {
-        (*plrs)->item[count].isChecked = false;
-      }
-      if (threadsGetContext() == false) {
+      (*plrs)->item[count].isChecked = xDiff >= PLAYER_MAX_SELECT_LEFT && xDiff <= PLAYER_MAX_SELECT_RIGHT && yDiff >= PLAYER_MAX_SELECT_TOP && yDiff <= PLAYER_MAX_SELECT_BOTTOM;
+      if (!threadsGetContext()) {
         frontEndSetPlayerCheckState((playerNumbers) count, (*plrs)->item[count].isChecked);
       }
     }
@@ -1336,7 +1324,7 @@ int playersNumNearbyPlayers(players *plrs, BYTE xValue, BYTE yValue) {
   count = 0;
   returnValue = 1;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true) {
+    if ((*plrs)->item[count].inUse) {
       xDiff = xValue - (*plrs)->item[count].mapX;
       yDiff = yValue - (*plrs)->item[count].mapY;
       if (xDiff >= PLAYER_MAX_SELECT_LEFT && xDiff <= PLAYER_MAX_SELECT_RIGHT && yDiff >= PLAYER_MAX_SELECT_TOP && yDiff <= PLAYER_MAX_SELECT_BOTTOM) {
@@ -1366,7 +1354,7 @@ void playersSendMessageAllAllies(players *plrs, char *messageStr) {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count) == true) {
+    if ((*plrs)->item[count].inUse && allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count)) {
       netMessageSendPlayer((*plrs)->myPlayerNum, count, messageStr);
     }
     count++;
@@ -1391,7 +1379,7 @@ void playersSendMessageAllSelected(players *plrs, char *messageStr) {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && (*plrs)->item[count].isChecked == true) {
+    if ((*plrs)->item[count].inUse && (*plrs)->item[count].isChecked) {
       if ((*plrs)->myPlayerNum == count) {
         /* Send self */
         topLine[0] = '\0';
@@ -1427,7 +1415,7 @@ void playersSendMessageAllNearby(players *plrs, BYTE xValue, BYTE yValue, char *
 
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true) {
+    if ((*plrs)->item[count].inUse) {
       xDiff = xValue - (*plrs)->item[count].mapX;
       yDiff = yValue - (*plrs)->item[count].mapY;
       if (xDiff >= PLAYER_MAX_SELECT_LEFT && xDiff <= PLAYER_MAX_SELECT_RIGHT && yDiff >= PLAYER_MAX_SELECT_TOP && yDiff <= PLAYER_MAX_SELECT_BOTTOM) {
@@ -1472,7 +1460,7 @@ bool playersIsInUse(players *plrs, BYTE playerNumber) {
 * frame     - LGM Frame
 *********************************************************/
 void playersGetLgmDetails(players *plrs, BYTE playerNumber, BYTE *mx, BYTE *my , BYTE *px, BYTE *py, BYTE *frame){
-  if ((*plrs)->item[playerNumber].inUse == true) {
+  if ((*plrs)->item[playerNumber].inUse) {
     *mx = (*plrs)->item[playerNumber].lgmMapX;
     *my = (*plrs)->item[playerNumber].lgmMapY;
     *px = (*plrs)->item[playerNumber].lgmPixelX;
@@ -1518,8 +1506,8 @@ bool playersCheckCollision(players *plrs, BYTE playerNum, WORLD xValue, WORLD yV
   *downPos = 0;
   returnValue = false;
 
-  while (returnValue == false && count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && count != playerNum) {
+  while (!returnValue && count < MAX_TANKS) {
+    if ((*plrs)->item[count].inUse && count != playerNum) {
       /* Test for collision */
       conv = (*plrs)->item[count].mapX;
       conv <<= TANK_SHIFT_MAPSIZE;
@@ -1589,18 +1577,18 @@ void playersSetAllieMenu(players *plrs) {
   count = 0;
   req = false;
   leave = false;
-  while (count < MAX_TANKS && leave == false) {
-    if ((*plrs)->item[count].inUse == true && count != (*plrs)->myPlayerNum) {
-      if (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count) == true) {
+  while (count < MAX_TANKS && !leave) {
+    if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum) {
+      if (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count)) {
         leave = true;
         req = false;
-      } else if ((*plrs)->item[count].isChecked == true){
+      } else if ((*plrs)->item[count].isChecked){
         req = true;
       }
     }
     count++;
   }
-  if (threadsGetContext() == false) {
+  if (!threadsGetContext()) {
     frontEndEnableRequestAllyMenu(req);
     frontEndEnableLeaveAllyMenu(leave);
   }
@@ -1622,8 +1610,8 @@ void playersRequestAlliance(players *plrs) {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && count != (*plrs)->myPlayerNum && (*plrs)->item[count].isChecked == true) {
-      if (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count) == false) {
+    if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum && (*plrs)->item[count].isChecked) {
+      if (!allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count)) {
         /* Place request */
         netRequestAlliance((*plrs)->myPlayerNum, count);
       }
@@ -1650,9 +1638,9 @@ void playersLeaveAlliance(players *plrs, BYTE playerNum) {
   bool found;
   count = 0;
   found = false;
-  while (count < MAX_TANKS && found == false) {
+  while (count < MAX_TANKS && !found) {
     if (playerNum != count) {
-      if (playersIsAllie(plrs, count, playerNum) == true) {
+      if (playersIsAllie(plrs, count, playerNum)) {
         found = true;
 	  }
 	}
@@ -1667,7 +1655,7 @@ void playersLeaveAlliance(players *plrs, BYTE playerNum) {
   (*plrs)->item[playerNum].allie = allienceCreate();
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && count != playerNum) {
+    if ((*plrs)->item[count].inUse && count != playerNum) {
        allienceRemove(&((*plrs)->item[count].allie), playerNum);
     }
     count++;
@@ -1675,7 +1663,7 @@ void playersLeaveAlliance(players *plrs, BYTE playerNum) {
  
   
   /* Update the screen */
-  if (threadsGetContext() == false) {
+  if (!threadsGetContext()) {
     total = screenNumBases();
     for (count=1;count<=total;count++) {
       frontEndStatusBase(count, screenBaseAlliance(count));
@@ -1720,7 +1708,7 @@ void playersAcceptAlliance(players *plrs, BYTE acceptedBy, BYTE newMember) {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true) {
+    if ((*plrs)->item[count].inUse) {
       test = (allyA >>count);
       test &= 1;
       if (test) {
@@ -1754,7 +1742,7 @@ void playersAcceptAlliance(players *plrs, BYTE acceptedBy, BYTE newMember) {
       
  
   /* Update the screen */
-  if (threadsGetContext() == false) {
+  if (!threadsGetContext()) {
     total = screenNumBases();
     for (count=1;count<=total;count++) {
       frontEndStatusBase(count, screenBaseAlliance(count));
@@ -1802,7 +1790,7 @@ void playersConnectionLost(players *plrs) {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && count != (*plrs)->myPlayerNum) {
+    if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum) {
       playersLeaveGame(plrs, count);
     }
     count++;
@@ -1851,7 +1839,7 @@ void playersGetBrainTanksInRect(players *plrs, BYTE leftPos, BYTE rightPos, BYTE
 */
 
   while (count<MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && count != (*plrs)->myPlayerNum) {   
+    if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum) {   
       /* X Position */
       wx = (*plrs)->item[count].mapX;
       wx <<= TANK_SHIFT_MAPSIZE;
@@ -1877,11 +1865,11 @@ void playersGetBrainTanksInRect(players *plrs, BYTE leftPos, BYTE rightPos, BYTE
       }
       
       
-      if ((*plrs)->item[count].mapX >= leftPos && (*plrs)->item[count].mapX <= rightPos && (*plrs)->item[count].mapY >= top && (*plrs)->item[count].mapY <= bottom && (screenIsItemInTrees(wx, wy) == false || (diffX < MIN_TREEHIDE_DIST && diffY < MIN_TREEHIDE_DIST))) {
+      if ((*plrs)->item[count].mapX >= leftPos && (*plrs)->item[count].mapX <= rightPos && (*plrs)->item[count].mapY >= top && (*plrs)->item[count].mapY <= bottom && (!screenIsItemInTrees(wx, wy) || (diffX < MIN_TREEHIDE_DIST && diffY < MIN_TREEHIDE_DIST))) {
         /* In the rectangle */  
         /* wx and wy already set */
         /* Info */
-        if (allienceExist(&((*plrs)->item[count].allie), (*plrs)->myPlayerNum) == true) {
+        if (allienceExist(&((*plrs)->item[count].allie), (*plrs)->myPlayerNum)) {
           owner = PLAYERS_BRAIN_FRIENDLY;
         } else {
           owner = PLAYERS_BRAIN_HOSTILE;
@@ -1935,7 +1923,7 @@ void playersGetBrainLgmsInRect(players *plrs, BYTE leftPos, BYTE rightPos, BYTE 
 */
 
   while (count<MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && count != (*plrs)->myPlayerNum) {
+    if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum) {
       if ((*plrs)->item[count].lgmMapX >= leftPos && (*plrs)->item[count].lgmMapX <= rightPos && (*plrs)->item[count].lgmMapY >= top && (*plrs)->item[count].lgmMapY <= bottom) {
         /* In trees check */
         wx = (*plrs)->item[count].lgmMapX << TANK_SHIFT_MAPSIZE;
@@ -1954,7 +1942,7 @@ void playersGetBrainLgmsInRect(players *plrs, BYTE leftPos, BYTE rightPos, BYTE 
           conv2 = ourTankY - wy;
         }
         
-        if ((*plrs)->item[count].lgmFrame == LGM_HELICOPTER_FRAME || (screenIsItemInTrees(wx, wy) == false || (conv < MIN_TREEHIDE_DIST && conv2 < MIN_TREEHIDE_DIST))) {
+        if ((*plrs)->item[count].lgmFrame == LGM_HELICOPTER_FRAME || (!screenIsItemInTrees(wx, wy) || (conv < MIN_TREEHIDE_DIST && conv2 < MIN_TREEHIDE_DIST))) {
           /* In the rectangle */  
           /* Object Type */
           if ((*plrs)->item[count].lgmFrame == LGM_HELICOPTER_FRAME) {
@@ -1975,7 +1963,7 @@ void playersGetBrainLgmsInRect(players *plrs, BYTE leftPos, BYTE rightPos, BYTE 
           conv <<= TANK_SHIFT_RIGHT2;
           wy += conv;
           /* Info */
-          if (allienceExist(&((*plrs)->item[count].allie), (*plrs)->myPlayerNum) == true) {
+          if (allienceExist(&((*plrs)->item[count].allie), (*plrs)->myPlayerNum)) {
             owner = PLAYERS_BRAIN_FRIENDLY;
           } else {
             owner = PLAYERS_BRAIN_HOSTILE;
@@ -2024,8 +2012,8 @@ unsigned long playersGetAlliesBitMap(players *plrs, BYTE playerNum) {
   count = 0;
 
   while (count<MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true) {
-      if (count == playerNum || allienceExist(&((*plrs)->item[count].allie), playerNum) == true) {
+    if ((*plrs)->item[count].inUse) {
+      if (count == playerNum || allienceExist(&((*plrs)->item[count].allie), playerNum)) {
         returnValue |= 1 << count;
       }
     }
@@ -2058,7 +2046,7 @@ void playersSendAiMessage(players *plrs, unsigned long bitMap, char *messageStr)
   while (count < MAX_TANKS) {
     test = (bitMap >>count);
     test &= 1;
-    if ((*plrs)->item[count].inUse == true && test) {
+    if ((*plrs)->item[count].inUse && test) {
       if (count == (*plrs)->myPlayerNum) {
         topLine[0] = '\0';
         playersMakeMessageName(plrs, (*plrs)->myPlayerNum, topLine);
@@ -2097,7 +2085,7 @@ bool playersPrepareLogSnapshotForPlayer(players *value, BYTE playerNum, BYTE *bu
   *len = 2;
   tnk = serverCoreGetTankFromPlayer(playerNum);
   lgm = serverCoreGetLgmFromPlayerNum(playerNum);
-  if (returnValue == true && tnk != nullptr && lgm != nullptr) {
+  if (returnValue && tnk != nullptr && lgm != nullptr) {
     /* Set MX/MY/PX/PY/frame/onBoat/lgmMX/lgmMY/lgmPX/lgmPX/frame/Name/Location */
     buff[2] = tankGetMX(tnk);
     buff[3] = tankGetMY(tnk);
@@ -2119,7 +2107,7 @@ bool playersPrepareLogSnapshotForPlayer(players *value, BYTE playerNum, BYTE *bu
 }
 
 void playersCheckUpdate(players *plrs, BYTE playerNum) {
-  if ((*plrs)->item[playerNum].inUse == true) {
+  if ((*plrs)->item[playerNum].inUse) {
     (*plrs)->item[playerNum].mapX = 0;
     (*plrs)->item[playerNum].mapY = 0;
     (*plrs)->item[playerNum].needUpdate = true;
@@ -2127,7 +2115,7 @@ void playersCheckUpdate(players *plrs, BYTE playerNum) {
 }
 
 bool playersNeedUpdate(players *plrs, BYTE playerNum) {
-  if ((*plrs)->item[playerNum].inUse == true && (*plrs)->item[playerNum].needUpdate == true) {
+  if ((*plrs)->item[playerNum].inUse && (*plrs)->item[playerNum].needUpdate) {
     (*plrs)->item[playerNum].needUpdate = false;
     return true;
   }
@@ -2138,7 +2126,7 @@ void playerNeedUpdateDone(players *plrs) {
   BYTE count;
   count = 0;
   while (count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true) {
+    if ((*plrs)->item[count].inUse) {
       (*plrs)->item[count].needUpdate = false;
     }
     count++;
@@ -2169,8 +2157,8 @@ bool playersCheckSameSquare(players *plrs, BYTE playerNum, BYTE xValue, BYTE yVa
   count = 0;
   returnValue = false;
 
-  while (returnValue == false && count < MAX_TANKS) {
-    if ((*plrs)->item[count].inUse == true && count != playerNum) {
+  while (!returnValue && count < MAX_TANKS) {
+    if ((*plrs)->item[count].inUse && count != playerNum) {
       /* Test for collision */
       conv = (*plrs)->item[count].mapX;
       conv <<= TANK_SHIFT_MAPSIZE;

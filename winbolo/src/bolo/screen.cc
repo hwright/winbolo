@@ -298,11 +298,11 @@ void screenUpdate(updateType value) {
   BYTE oldXOffset = xOffset;
   BYTE oldYOffset = yOffset;
 
-  if (needScreenReCalc == true) {
+  if (needScreenReCalc) {
     needScreenReCalc = false;
     screenUpdateView((updateType) 0);
   }
-  if (b == true) {
+  if (b) {
     return;
   }
   ns = netGetStatus();
@@ -310,7 +310,7 @@ void screenUpdate(updateType value) {
     frontEndDrawDownload(false);
     return;
   }
-  if (inStart == true) {
+  if (inStart) {
     frontEndDrawDownload(true);
     return;
   }
@@ -341,8 +341,8 @@ void screenUpdate(updateType value) {
     break;
   case left:
     /* Left button Pressed */
-    if (inPillView == false) {
-      if (scrollCheck((BYTE) (xOffset-1), yOffset, x, y) == true) {
+    if (!inPillView) {
+      if (scrollCheck((BYTE) (xOffset-1), yOffset, x, y)) {
         xOffset--;
 //        screenTankScroll();
 		moveMousePointer(left);
@@ -359,8 +359,8 @@ void screenUpdate(updateType value) {
     break;
   case right:
     /* Right button Pressed */
-    if (inPillView == false) {
-      if (scrollCheck((BYTE) (xOffset+1), yOffset, x, y) == true) {     
+    if (!inPillView) {
+      if (scrollCheck((BYTE) (xOffset+1), yOffset, x, y)) {     
         char str[255];
         xOffset++;
 //        screenTankScroll();
@@ -378,8 +378,8 @@ void screenUpdate(updateType value) {
     break;
   case up:
     /* Up button Pressed */
-    if (inPillView == false) {
-      if (scrollCheck(xOffset, (BYTE) (yOffset-1), x, y) == true) {
+    if (!inPillView) {
+      if (scrollCheck(xOffset, (BYTE) (yOffset-1), x, y)) {
         yOffset--;
   //      screenTankScroll();
 		moveMousePointer(up);
@@ -396,8 +396,8 @@ void screenUpdate(updateType value) {
   case down:
   default:
     /* Down button pressed */
-    if (inPillView == false) {
-      if (scrollCheck(xOffset, (BYTE) (yOffset+1), x, y) == true) {
+    if (!inPillView) {
+      if (scrollCheck(xOffset, (BYTE) (yOffset+1), x, y)) {
         yOffset++;
     //    screenTankScroll();
 		moveMousePointer(down);
@@ -420,7 +420,7 @@ void screenUpdate(updateType value) {
     screenTanksPrepare(&scnTnk, &mytk, xOffset, (BYTE) (xOffset + MAIN_BACK_BUFFER_SIZE_X), yOffset, (BYTE) (yOffset + MAIN_BACK_BUFFER_SIZE_Y));
     /* Prepare the lgms */
     screenLgmPrepare(&lgms, xOffset, (BYTE) (xOffset + MAIN_BACK_BUFFER_SIZE_X-1 ), yOffset, (BYTE) (yOffset + MAIN_BACK_BUFFER_SIZE_Y-1));
-    if (tankIsGunsightShow(&mytk) == true) {
+    if (tankIsGunsightShow(&mytk)) {
       tankGetGunsight(&mytk, &gsX, &(gs.mapY), &(gs.pixelX), &(gs.pixelY));
       gs.mapX = gsX;
 
@@ -543,9 +543,9 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
 
   (*mineView).mineItem[scrX][scrY] = false;
   /* Set up Items */
-  if ((pillsExistPos(&mypb,xValue,yValue)) == true) {
+  if (pillsExistPos(&mypb,xValue,yValue)) {
     returnValue = pillsGetScreenHealth(&mypb, xValue, yValue);
-  } else if ((basesExistPos(&mybs,xValue,yValue)) == true) {
+  } else if (basesExistPos(&mybs,xValue,yValue)) {
      ba = basesGetAlliancePos(&mybs, xValue, yValue);
     switch (ba) {
     case baseOwnGood:
@@ -558,7 +558,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
       returnValue = BASE_NEUTRAL;
       break;
     case baseDead:
-      if (basesAmOwner(&mybs, playersGetSelf(screenGetPlayers()), xValue, yValue) == true) {
+      if (basesAmOwner(&mybs, playersGetSelf(screenGetPlayers()), xValue, yValue)) {
         returnValue = BASE_GOOD;
       } else {
         returnValue = BASE_EVIL;
@@ -578,8 +578,8 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
 	  currentPos = currentPos - MINE_SUBTRACT;
 	  mapSetPos(&mymp, xValue, yValue, currentPos,true,true);
 	}
-    if (mapIsMine(&mymp, xValue, yValue) == true) {
-      if (minesExistPos(&clientMines, xValue, yValue) == true) {
+    if (mapIsMine(&mymp, xValue, yValue)) {
+      if (minesExistPos(&clientMines, xValue, yValue)) {
         (*mineView).mineItem[scrX][scrY] = true;
       }
 	  if (currentPos != DEEP_SEA) {
@@ -589,7 +589,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
       (*mineView).mineItem[scrX][scrY] = false;
     }
 
-    if (basesExistPos(&mybs, (BYTE) (xValue-1), (BYTE) (yValue-1)) == true) {
+    if (basesExistPos(&mybs, (BYTE) (xValue-1), (BYTE) (yValue-1))) {
       aboveLeft = ROAD;
     } else {
       aboveLeft = mapGetPos(&mymp,(BYTE) (xValue-1),(BYTE) (yValue-1));
@@ -598,7 +598,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
       }
     }
 
-    if (basesExistPos(&mybs, xValue, (BYTE) (yValue-1)) == true) {
+    if (basesExistPos(&mybs, xValue, (BYTE) (yValue-1))) {
       above = ROAD;
     } else {
       above = mapGetPos(&mymp,xValue,(BYTE) (yValue-1));
@@ -607,7 +607,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
       }
     }
 
-    if (basesExistPos(&mybs, (BYTE) (xValue+1), (BYTE) (yValue-1)) == true) {
+    if (basesExistPos(&mybs, (BYTE) (xValue+1), (BYTE) (yValue-1))) {
       aboveRight = ROAD;
     } else {
       aboveRight = mapGetPos(&mymp,(BYTE) (xValue+1),(BYTE) (yValue-1));
@@ -616,7 +616,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
       }
     }
 
-    if (basesExistPos(&mybs, (BYTE) (xValue-1), yValue) == true) {
+    if (basesExistPos(&mybs, (BYTE) (xValue-1), yValue)) {
       leftPos = ROAD;
     } else {
       leftPos = mapGetPos(&mymp,(BYTE) (xValue-1),yValue);
@@ -625,7 +625,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
       }
     }
 
-    if (basesExistPos(&mybs, (BYTE) (xValue+1), yValue) == true) {
+    if (basesExistPos(&mybs, (BYTE) (xValue+1), yValue)) {
       rightPos = ROAD;
     } else {
       rightPos = mapGetPos(&mymp,(BYTE) (xValue+1),yValue);
@@ -634,7 +634,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
       }
     }
 
-    if (basesExistPos(&mybs, (BYTE) (xValue-1), (BYTE) (yValue+1)) == true) {
+    if (basesExistPos(&mybs, (BYTE) (xValue-1), (BYTE) (yValue+1))) {
       belowLeft = ROAD;
     } else {
       belowLeft = mapGetPos(&mymp,(BYTE) (xValue-1),(BYTE) (yValue+1));
@@ -644,7 +644,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
     }
 
 
-    if (basesExistPos(&mybs, xValue, (BYTE) (yValue+1)) == true) {
+    if (basesExistPos(&mybs, xValue, (BYTE) (yValue+1))) {
       below = ROAD;
     } else {
       below = mapGetPos(&mymp,xValue,(BYTE) (yValue+1));
@@ -653,7 +653,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
       }
     }
 
-    if (basesExistPos(&mybs, (BYTE) (xValue+1), (BYTE) (yValue+1)) == true) {
+    if (basesExistPos(&mybs, (BYTE) (xValue+1), (BYTE) (yValue+1))) {
       belowRight = ROAD;
     } else {
       belowRight = mapGetPos(&mymp,(BYTE) (xValue+1),(BYTE) (yValue+1));
@@ -737,7 +737,7 @@ bool screenLoadMap(char *fileName, gameType game, bool hiddenMines, long srtDela
 
   }   */
 
-  if (returnValue == true) {
+  if (returnValue) {
     utilExtractMapName(fileName, mapName);
     utilStripNameReplace(playerName);
     screenSetupTank(playerName);
@@ -748,7 +748,7 @@ bool screenLoadMap(char *fileName, gameType game, bool hiddenMines, long srtDela
     screenDestroy();
     doneFree = true;
   }
-  if (doneFree == false && wantFree == true) {
+  if (!doneFree && wantFree) {
     screenDestroy();
   }
 
@@ -795,7 +795,7 @@ tankButton screenTranslateBrainButtons(bool *isShoot, bool isGameTick) {
     tankGunsightDecrease(&mytk);
   }
   if (testkey(brainTapKeys, KEY_shoot)) {
-    if (isGameTick == true) {
+    if (isGameTick) {
       *isShoot = true;
     } else {
       setkey(temp2, KEY_shoot);
@@ -845,7 +845,7 @@ tankButton screenTranslateBrainButtons(bool *isShoot, bool isGameTick) {
   if (testkey(brainHoldKeys, KEY_lessrange)) {
     tankGunsightDecrease(&mytk);
   }
-  if (testkey(brainHoldKeys, KEY_shoot) && isGameTick == true) {
+  if (testkey(brainHoldKeys, KEY_shoot) && isGameTick) {
     *isShoot = true;
   }
   if (testkey(brainHoldKeys, KEY_dropmine)) {
@@ -898,13 +898,13 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
   ngs = netGetStatus();
 
 
-  if (screenGameRunning == false || ngs == netFailed) {
+  if (!screenGameRunning || ngs == netFailed) {
     return;
   }
 
 
   /* Check Tank CRC for changes */
-  if (threadsGetContext() == false) {
+  if (!threadsGetContext()) {
 //    if (tankCheck(&mytk) == true) {
 //      netMNTAdd(screenGetNetMnt(), NMNT_TANKHIT, playersGetSelf(screenGetPlayers()), playersGetSelf(screenGetPlayers()), 0xFF , 0xFF);
 //    }
@@ -945,7 +945,7 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
   }
   
   /* Do the brain translation if required */
-  if (isBrain == true) {
+  if (isBrain) {
     tb = screenTranslateBrainButtons(&tankShoot, true);
   }
 
@@ -954,10 +954,10 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
   
   if (tankGetSpeed(&mytk) > 0) {
     tankGetGunsight(&mytk, &tmx, &tmy, &pmx, &pmy);
-    if (inPillView == false) {
+    if (!inPillView) {
       int oldXOffset = xOffset;
       int oldYOffset = yOffset;
-      if (scrollUpdate(&mypb, &xOffset, &yOffset, (tankGetScreenMX(&mytk)), (tankGetScreenMY(&mytk)), true, tmx, tmy,(tankGetSpeed(&mytk)), (tankGetArmour(&mytk)), (TURNTYPE) (tankGetTravelAngel(&mytk)),  false) == true) {
+      if (scrollUpdate(&mypb, &xOffset, &yOffset, (tankGetScreenMX(&mytk)), (tankGetScreenMY(&mytk)), true, tmx, tmy,(tankGetSpeed(&mytk)), (tankGetArmour(&mytk)), (TURNTYPE) (tankGetTravelAngel(&mytk)),  false)) {
         if (oldXOffset < xOffset) {
           cursorPosX--;
 		  moveMousePointer(right);
@@ -980,8 +980,8 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
 
 
   /* Check we are still allowed to be in pillbox view */
-  if (inPillView == true) {
-    if (pillsCheckView(&mypb, pillViewX, pillViewY) == false) {
+  if (inPillView) {
+    if (!pillsCheckView(&mypb, pillViewX, pillViewY)) {
       screenTankView();
     }
   }
@@ -1032,7 +1032,7 @@ void screenKeysTick(tankButton tb, bool isBrain) {
   BYTE bmy;
   bool dummy; /* Dummy variable used for parameter passing */
   
-  if (screenGameRunning == false || netGetStatus() == netFailed) {
+  if (!screenGameRunning || netGetStatus() == netFailed) {
     return;
   }
 
@@ -1043,7 +1043,7 @@ void screenKeysTick(tankButton tb, bool isBrain) {
   }
 
   /* Do the brain translation if required */
-  if (isBrain == true) {
+  if (isBrain) {
     tb = screenTranslateBrainButtons(&dummy, false);
   }
 
@@ -1149,7 +1149,7 @@ void screenGetTankStats(BYTE *shellsAmount, BYTE *minesAmount, BYTE *armourAmoun
 *             decrease range
 *********************************************************/
 void screenGunsightRange(bool increase) {
-  if (increase == true) {
+  if (increase) {
     tankGunsightIncrease(&mytk);
   } else {
     tankGunsightDecrease(&mytk);
@@ -1183,7 +1183,7 @@ void screenSetGunsight(bool shown) {
 *
 *********************************************************/
 void screenReCalc(void) {
-  if (threadsGetContext() == false) {
+  if (!threadsGetContext()) {
     needScreenReCalc = true;
   }
 }
@@ -1613,7 +1613,7 @@ bool screenSetPlayerName(char *value) {
 
   utilStripNameReplace(value);
   returnValue = playersSetPlayerName(screenGetPlayers(), playersGetSelf(screenGetPlayers()), value);
-  if (returnValue == true) {
+  if (returnValue) {
     if (netGetType() != netSingle) {
       netSendChangePlayerName(playersGetSelf(screenGetPlayers()), value);
     }
@@ -1697,14 +1697,14 @@ void screenTankView() {
 void screenPillView(int horz, int vert) {
   bool result; /* Was the operation successful */
 
-  if (inPillView == false) {
-    if (pillsCheckView(&mypb, pillViewX, pillViewY) == true) {
+  if (!inPillView) {
+    if (pillsCheckView(&mypb, pillViewX, pillViewY)) {
       inPillView = true;
       scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
       screenReCalc();
     } else {
       result = pillsGetNextView(&mypb, &pillViewX, &pillViewY, false);
-      if (result == true) {
+      if (result) {
         /* Center on the object */
         inPillView = true;
         scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
@@ -1716,7 +1716,7 @@ void screenPillView(int horz, int vert) {
   } else {
     if (horz == 0 && vert == 0) {
       result = pillsGetNextView(&mypb, &pillViewX, &pillViewY, true);
-      if (result == false) {
+      if (!result) {
         screenTankView();
       } else {
         /* Center on the object */
@@ -1724,7 +1724,7 @@ void screenPillView(int horz, int vert) {
         screenReCalc();
       }
     } else {
-      if (pillsMoveView(&mypb, &pillViewX, &pillViewY, horz, vert) == true) {
+      if (pillsMoveView(&mypb, &pillViewX, &pillViewY, horz, vert)) {
         scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
         screenReCalc();
       }
@@ -1773,7 +1773,7 @@ bool screenSaveMap(char *fileName) {
   name[0] = '\0';
 
   returnValue = mapWrite(fileName, &mymp, &mypb, &mybs, &myss);
-  if (returnValue == true) {
+  if (returnValue) {
     netPNBAdd(&clientPNB, NPNB_SAVEMAP, 0, playersGetSelf(screenGetPlayers()), 0, 0, 0);
     if (netGetType() == netSingle) {
       playersMakeMessageName(screenGetPlayers(), playersGetSelf(screenGetPlayers()), name);
@@ -2283,7 +2283,7 @@ void screenExtractPlayerData(BYTE *buff, int buffLen) {
       tankInView = options >> 2;
       tankInView = tankInView  & 1;
       lgmInView = options & 1;
-      if (tankInView == true) {
+      if (tankInView) {
         /* Tank position */
         mx = buff[pos];
         pos++;
@@ -2295,7 +2295,7 @@ void screenExtractPlayerData(BYTE *buff, int buffLen) {
         pos++;
       }
 
-      if (lgmInView == true) {
+      if (lgmInView) {
         /* Lgm position */
         lgmMX = buff[pos];
         pos++;
@@ -2311,7 +2311,7 @@ void screenExtractPlayerData(BYTE *buff, int buffLen) {
     /* Update Players */
     if (myPlayerNum != playerNum) {
       playersUpdate(screenGetPlayers(), playerNum, mx, my, px, py, frame, onBoat, lgmMX, lgmMY, lgmPX, lgmPY, lgmFrame);
-    } else if (lgmInView == true) {
+    } else if (lgmInView) {
       /* Put our lgm values in */
       WORLD wx;
       WORLD wy;
@@ -2472,7 +2472,7 @@ void screenExtractTKData(BYTE *buff, BYTE dataLen) {
 void screenLeaveGame(void) {
 
   /* Only have to do this if not a single player game */
-  if (threadsGetContext() == true) {
+  if (threadsGetContext()) {
     tankDropPills(&mytk, &mymp, &mypb, &mybs);
 //    netMNTAdd(NMNT_QUIT, 0, playersGetSelf(), 0, 0);
 //    netCheckLast();
@@ -2753,7 +2753,7 @@ void screenChangeOwnership(BYTE oldOwner) {
 *  isLeft - true for left, false for right
 *********************************************************/
 void screenMoveViewOffsetLeft(bool isLeft) {
-  if (isLeft == true) {
+  if (isLeft) {
     xOffset--;
   } else {
     xOffset++;
@@ -2772,7 +2772,7 @@ void screenMoveViewOffsetLeft(bool isLeft) {
 *  isup - true for up, false for dpwm
 *********************************************************/
 void screenMoveViewOffsetUp(bool isUp) {
-  if (isUp == true) {
+  if (isUp) {
     yOffset--;
   } else {
     yOffset++;
@@ -2893,9 +2893,9 @@ void screenMakeBrainViewData(BYTE *buff, BYTE leftPos, BYTE rightPos, BYTE topPo
   pos = 0;
   for (count1=topPos;count1<=bottomPos;count1++) {
     for (count2=leftPos;count2<=rightPos;count2++) {
-      if (basesExistPos(&mybs, count2, count1) == true) {
+      if (basesExistPos(&mybs, count2, count1)) {
         buff[pos] = BREFBASE_T;
-      } else if (pillsExistPos(&mypb, count2, count1) == true) {
+      } else if (pillsExistPos(&mypb, count2, count1)) {
         buff[pos] = BPILLBOX_T;
       } else {
         buff[pos] = mapGetPos(&mymp, count2, count1);
@@ -2904,7 +2904,7 @@ void screenMakeBrainViewData(BYTE *buff, BYTE leftPos, BYTE rightPos, BYTE topPo
         } else if (buff[pos] >= MINE_START && buff[pos] <= MINE_END) {
           buff[pos] = buff[pos] - MINE_SUBTRACT;
         }
-        if (minesExistPos(&clientMines, count2, count1) == true) {
+        if (minesExistPos(&clientMines, count2, count1)) {
           buff[pos] |= TERRAIN_MINE;
         }
       }
@@ -2960,7 +2960,7 @@ void screenMakeBrainInfo(BrainInfo *value, bool first) {
   
   value->gunrange = tankGetGunsightLength(&mytk);
   value->reload = tankGetReloadTime(&mytk);
-  if (first == true) {
+  if (first) {
     /* Reset stuff */
     brainHoldKeys = 0;
     brainTapKeys = 0;
@@ -2995,7 +2995,7 @@ void screenMakeBrainInfo(BrainInfo *value, bool first) {
 
   /* Pillview */
   value->pillview = new WORD;
-  if (inPillView == true) {
+  if (inPillView) {
     *(value->pillview) = pillsGetPillNum(&mypb, pillViewX, pillViewY, false, false) -1;
     value->view_left = pillViewX-7;
     value->view_width = 15; 
@@ -3041,7 +3041,7 @@ void screenMakeBrainInfo(BrainInfo *value, bool first) {
   brainsNumObjects = 0;
 
   /* Message */
-  if (messageIsNewMessage() == true) {
+  if (messageIsNewMessage()) {
     //unsigned long *ul;
     value->message = new MessageInfo;
     value->message->receivers = new PlayerBitMap;
@@ -3078,7 +3078,7 @@ void screenMakeBrainInfo(BrainInfo *value, bool first) {
   value->gameinfo.start_delay = gmeStartDelay;
   value->gameinfo.time_limit = gmeLength;
 
-  if (minesGetAllowHiddenMines(&clientMines) == true) {
+  if (minesGetAllowHiddenMines(&clientMines)) {
     value->gameinfo.hidden_mines = GAMEINFO_HIDDENMINES;
   } else {
     value->gameinfo.hidden_mines = GAMEINFO_ALLMINES_VISIBLE;
@@ -3110,7 +3110,7 @@ void screenExtractBrainInfo(BrainInfo *value) {
   if (*(value->pillview) != 0x8000) {
     pillNum = (BYTE) (*(value->pillview));
     if (pillNum != (pillsGetPillNum(&mypb, pillViewX, pillViewY, false, false)-1)) {
-      if (pillsSetView(&mypb, pillNum, playersGetSelf(screenGetPlayers())) == true) {
+      if (pillsSetView(&mypb, pillNum, playersGetSelf(screenGetPlayers()))) {
         /* We can set the new view */
         pillbox p;
         pillsGetPill(&mypb, &p, (BYTE) (pillNum+ 1));
@@ -3448,7 +3448,7 @@ bool screenGenerateMapPreview(char *fileName, BYTE *buff) {
 
   /* Load */
   returnValue = mapRead(fileName, &prevmp, &prevpb, &prevbs, &prevss);
-  if (returnValue == true) {
+  if (returnValue) {
     /* Make preview map info */
     xValue = 0;
     yValue = 0;
@@ -3456,11 +3456,11 @@ bool screenGenerateMapPreview(char *fileName, BYTE *buff) {
     /* Set up Items */
     while (yValue < 255) {
       while (xValue < 255) {
-        if ((pillsExistPos(&prevpb, xValue, yValue)) == true) {
+        if (pillsExistPos(&prevpb, xValue, yValue)) {
           *ptr = 17;
-        } else if ((basesExistPos(&prevbs, xValue, yValue)) == true) {
+        } else if (basesExistPos(&prevbs, xValue, yValue)) {
           *ptr = 18;
-        } else if ((startsExistPos(&prevss, xValue, yValue)) == true) {
+        } else if (startsExistPos(&prevss, xValue, yValue)) {
           *ptr = 19;
         } else {
           *ptr = mapGetPos(&prevmp, xValue, yValue);
@@ -3638,9 +3638,9 @@ bool clientCheckPillsRange(BYTE xValue, BYTE yValue, BYTE playerNum, double dist
   startY = (yValue << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
   count = 1;
   total = pillsGetNumPills(&mypb);
-  while (returnValue == true && count <= total) {
+  while (returnValue && count <= total) {
     pillsGetPill(&mypb, &pill, count);
-    if (playersIsAllie(screenGetPlayers(), playerNum, pill.owner) == false) {
+    if (!playersIsAllie(screenGetPlayers(), playerNum, pill.owner)) {
       testX = (pill.x << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
       testY = (pill.y << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
       returnValue = !(utilIsItemInRange(startX, startY, testX, testY, (WORLD) distance, &dummy));
@@ -3789,7 +3789,7 @@ void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my) {
     break;
   }
 
-  if (wantLog == true) {
+  if (wantLog) {
     logAddEvent((logitem)logMessageType, mx, my, 0, 0, 0, nullptr);
   }
 

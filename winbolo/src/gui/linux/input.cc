@@ -108,53 +108,53 @@ tankButton inputGetKeys(bool isMenu) {
  } */
  tb = TNONE;
   /* Now set up the tank buttons */
-  if (heldKeys.kiForward == true &&  heldKeys.kiRight == true) {
+  if (static_cast<bool>(heldKeys.kiForward) &&  static_cast<bool>(heldKeys.kiRight)) {
     tb = TRIGHTACCEL;
-  } else if (heldKeys.kiForward == true && heldKeys.kiLeft == true) {
+  } else if (static_cast<bool>(heldKeys.kiForward) && static_cast<bool>(heldKeys.kiLeft)) {
     tb = TLEFTACCEL;
-  } else if (heldKeys.kiBackward == true && heldKeys.kiLeft == true) {
+  } else if (static_cast<bool>(heldKeys.kiBackward) && static_cast<bool>(heldKeys.kiLeft)) {
     tb = TLEFTDECEL;
-  } else if (heldKeys.kiBackward == true && heldKeys.kiRight == true) {
+  } else if (static_cast<bool>(heldKeys.kiBackward) && static_cast<bool>(heldKeys.kiRight)) {
     tb = TRIGHTDECEL;
-  } else if (heldKeys.kiForward == true) {
+  } else if (static_cast<bool>(heldKeys.kiForward)) {
     tb = TACCEL;
-  } else if (heldKeys.kiBackward == true) {
+  } else if (static_cast<bool>(heldKeys.kiBackward)) {
     tb = TDECEL;
-  } else if (heldKeys.kiLeft == true) {
+  } else if (static_cast<bool>(heldKeys.kiLeft)) {
     tb = TLEFT;
-  } else if (heldKeys.kiRight == true) {
+  } else if (static_cast<bool>(heldKeys.kiRight)) {
     tb = TRIGHT;
   } else {
     tb = TNONE;
   }
   /* Get whether the tank is lay a mine */
-  if (heldKeys.kiLayMine == true) {
+  if (static_cast<bool>(heldKeys.kiLayMine)) {
       screenTankLayMine();
   }
   scrollKeyCount++;
-  if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && isMenu == false) {
+  if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && !isMenu) {
     scrollKeyCount = 0;
     /* Scroll Check */
-    if (heldKeys.kiScrollUp == true) {
+    if (static_cast<bool>(heldKeys.kiScrollUp)) {
       screenUpdate(up);
     }
-    if (heldKeys.kiScrollDown == true) {
+    if (static_cast<bool>(heldKeys.kiScrollDown)) {
       screenUpdate(down);
     }
-    if (heldKeys.kiScrollLeft == true) {
+    if (static_cast<bool>(heldKeys.kiScrollLeft)) {
       screenUpdate(left);
     }
-    if (heldKeys.kiScrollRight == true) {
+    if (static_cast<bool>(heldKeys.kiScrollRight)) {
       screenUpdate(right);
     }
   }
   gunsightKeyCount++;
-  if (gunsightKeyCount >= INPUT_GUNSIGHT_WAIT_TIME && isMenu == false) {
+  if (gunsightKeyCount >= INPUT_GUNSIGHT_WAIT_TIME && !isMenu) {
     /* Gunsight Check */
-    if (heldKeys.kiGunIncrease == true) {
+    if (static_cast<bool>(heldKeys.kiGunIncrease)) {
       screenGunsightRange(true);
       gunsightKeyCount = 0;
-    } else if (heldKeys.kiGunDecrease == true) {
+    } else if (static_cast<bool>(heldKeys.kiGunDecrease)) {
       screenGunsightRange(false);
       gunsightKeyCount = 0;
     } else if (gunsightKeyCount > (INPUT_GUNSIGHT_WAIT_TIME + 1)) {
@@ -179,19 +179,19 @@ tankButton inputGetKeys(bool isMenu) {
 *********************************************************/
 void inputScroll(bool isMenu) {
   scrollKeyCount++;
-  if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && isMenu == false) {
+  if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && !isMenu) {
     scrollKeyCount = 0;
     /* Scroll Check */
-    if (heldKeys.kiScrollUp == true) {
+    if (static_cast<bool>(heldKeys.kiScrollUp)) {
       screenUpdate(up);
     }
-    if (heldKeys.kiScrollDown == true) {
+    if (static_cast<bool>(heldKeys.kiScrollDown)) {
       screenUpdate(down);
     }
-    if (heldKeys.kiScrollLeft == true) {
+    if (static_cast<bool>(heldKeys.kiScrollLeft)) {
       screenUpdate(left);
     }
-    if (heldKeys.kiScrollRight == true) {
+    if (static_cast<bool>(heldKeys.kiScrollRight)) {
        screenUpdate(right);
     }
   }
@@ -219,7 +219,7 @@ bool inputIsFireKeyPressed(bool isMenu) {
   returnValue = false;
  
   /* Get the fire button state here if it is OK to proceed */
-  if (heldKeys.kiShoot == true) {
+  if (static_cast<bool>(heldKeys.kiShoot)) {
     returnValue = true;
   }
   return returnValue;

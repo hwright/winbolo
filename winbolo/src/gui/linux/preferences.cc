@@ -51,12 +51,12 @@ void GetPrivateProfileString(const char *section, const char *item, const char *
   fp = fopen(filename, "r");
   if (fp) {
     sprintf(sec, "[%s]\n", section);
-    while (found == false && !feof(fp)) {
+    while (!found && !feof(fp)) {
       fgets(line, 512, fp);
       if (strcmp(line, sec) == 0) {
         sprintf(sec, "%s=", item);
 	len = strlen(sec);
-        while (found == false && !feof(fp)) {
+        while (!found && !feof(fp)) {
           fgets(line, 512, fp);
 	  if (strncmp(sec, line, len) == 0) {
 	    found = true;
@@ -72,7 +72,7 @@ void GetPrivateProfileString(const char *section, const char *item, const char *
     fclose(fp);
   }
 
-  if (found == false) {
+  if (!found) {
     strncpy(output, def, outlen);
   } else {
     /* Stip newline if required */
@@ -115,21 +115,21 @@ void WritePrivateProfileString(const char *section, const char *item, const char
   if (fp) {
    fgets(line, 512, fp);
    while (!feof(fp)) {
-      if (done == false) {
-        if (strncmp(sec, line, secLen) == 0 && inSec == false) {
+      if (!done) {
+        if (strncmp(sec, line, secLen) == 0 && !inSec) {
           /* Found section */
           inSec = true;
 	  strcat(buff, line);
           sprintf(sec, "%s=", item);
           len = strlen(sec);
-        } else if (inSec == true && line[0] == '[') {
+        } else if (inSec && line[0] == '[') {
           /* Leaving section - Add here */
           strcat(buff, item);
           strcat(buff, "=");
           strcat(buff, value);
           strcat(buff, "\n");
 	  strcat(buff, line);
-	} else if (inSec == true && strncmp(sec, line, len) == 0) {
+	} else if (inSec && strncmp(sec, line, len) == 0) {
           /* Found the line to replace */
           strcat(buff, item);
           strcat(buff, "=");
@@ -151,11 +151,11 @@ void WritePrivateProfileString(const char *section, const char *item, const char
     sprintf(buff, "%s\n%s=%s\n", sec, item, value);
     done = true;
   }
-  if (done == false) {
+  if (!done) {
     /* We didn't find it in the file and we are still in the right section
      * Append it here
      */
-    if (inSec == false) {
+    if (!inSec) {
       strcat(buff, sec);
       strcat(buff, "\n");
     }

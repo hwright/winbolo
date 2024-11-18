@@ -94,7 +94,7 @@ void playersRejoinUpdate() {
  
   count = 0;
   while (count < MAX_TANKS) {
-    if (rejoin.item[count].inUse == true) {
+    if (rejoin.item[count].inUse) {
       rejoin.item[count].timeOut++;
       if (rejoin.item[count].timeOut == MAX_REJOIN_TIME) {
         rejoin.item[count].inUse = false;
@@ -125,8 +125,8 @@ void playersRejoinAddPlayer(char *playerName, PlayerBitMap pills, PlayerBitMap b
   done = false;
   best = 0;
   timeBest = MAX_REJOIN_TIME;
-  while (count < MAX_TANKS && done == false) {
-    if (rejoin.item[count].inUse == false) {
+  while (count < MAX_TANKS && !done) {
+    if (!rejoin.item[count].inUse) {
       done = true;
       best = count;
     } else if (rejoin.item[count].timeOut < timeBest) {
@@ -169,7 +169,7 @@ void playersRejoinRequest(char *playerName, BYTE playerNum, pillboxes *pb, bases
  
   count = 0;
   found = false;
-  while (count < MAX_TANKS && found == false) {
+  while (count < MAX_TANKS && !found) {
     if (strcmp(rejoin.item[count].playerName, playerName) == 0) {
       /* Found them */
       found = true;
@@ -178,7 +178,7 @@ void playersRejoinRequest(char *playerName, BYTE playerNum, pillboxes *pb, bases
     count++;
   }
 
-  if (found == true) {
+  if (found) {
     /* They did exist */
     count = 0;
     logAddEvent(log_PlayerRejoin, playerNum, 0, 0, 0, 0, nullptr);

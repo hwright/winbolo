@@ -124,7 +124,7 @@ void clientMessageAdd(messageType msgType, const char *top, const char *bottom) 
   switch (msgType) {
   /* 4 Main message Types */
   case newsWireMessage:
-    if (showNewswire == true) {
+    if (showNewswire) {
       if (lastMessage != newsWireMessage) {
         messageAddItem(top,bottom);
       } else {
@@ -134,7 +134,7 @@ void clientMessageAdd(messageType msgType, const char *top, const char *bottom) 
     }
     break;
   case assistantMessage:
-    if (showAssistant == true) {
+    if (showAssistant) {
       if (lastMessage != assistantMessage) {
         messageAddItem(top,bottom);
       } else {
@@ -144,7 +144,7 @@ void clientMessageAdd(messageType msgType, const char *top, const char *bottom) 
     }
     break;
   case AIMessage:
-    if (showAI == true) {
+    if (showAI) {
       if (lastMessage != AIMessage) {
         messageAddItem(top,bottom);
       } else {
@@ -154,7 +154,7 @@ void clientMessageAdd(messageType msgType, const char *top, const char *bottom) 
     }
     break;
   case networkMessage:
-    if (showNetwork == true) {
+    if (showNetwork) {
       if (lastMessage != networkMessage) {
         messageAddItem(top,bottom);
       } else {
@@ -325,7 +325,7 @@ void clientMessageAdd(messageType msgType, const char *top, const char *bottom) 
       lastMessage = player15Message;
       break;
     case networkStatus:
-      if (showNetStat == true) {
+      if (showNetStat) {
         newMessageFrom = networkStatus;
         if (lastMessage != networkStatus) {
           messageAddItem(top, bottom);
@@ -412,7 +412,7 @@ void messageAddItem(const char *top, const char *bottom) {
   }
 
 
-  if (newQ == true) {
+  if (newQ) {
     q = msg;
     msg = MessageTail(q);
     delete q;
@@ -455,7 +455,7 @@ void messageUpdate(void) {
     topLine[MESSAGE_WIDTH-1] = END_OF_STRING;
     bottomLine[MESSAGE_WIDTH-1] = END_OF_STRING;
     /* Update the screen */
-    if (threadsGetContext() == false) {
+    if (!threadsGetContext()) {
       frontEndMessages(topLine,bottomLine);
     }
   }

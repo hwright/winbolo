@@ -143,7 +143,7 @@ bool minesExistPos(mines *visMines, BYTE xValue, BYTE yValue) {
   
   if (xValue <= MAP_MINE_EDGE_LEFT || xValue >= MAP_MINE_EDGE_RIGHT || yValue <= MAP_MINE_EDGE_TOP || yValue >= MAP_MINE_EDGE_BOTTOM) {
     returnValue = true;
-  } else if ((*visMines)->minesHiddenMines == true) {
+  } else if ((*visMines)->minesHiddenMines) {
     returnValue = (*visMines)->pos[xValue][yValue];
   } else {
     returnValue = screenMapIsMine(xValue, yValue);

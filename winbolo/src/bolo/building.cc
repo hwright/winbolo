@@ -92,7 +92,7 @@ BYTE buildingAddItem(building *bld, BYTE x, BYTE y) {
   returnValue = HALFBUILDING;
   count = 0;
   
-  while (found == false && NonEmpty(inc)) {
+  while (!found && NonEmpty(inc)) {
     count++;
     if (inc->x == x && inc->y == y) {
       found = true;
@@ -102,13 +102,13 @@ BYTE buildingAddItem(building *bld, BYTE x, BYTE y) {
         buildingDeleteItem(bld, count);
       } 
 	  }
-    if (found == false) {
+    if (!found) {
 		  inc = BuildingTail(inc);
     }    
   }
 
   /* If not found add a new item */
-  if (found == false) {
+  if (!found) {
     q = new buildingObj;
     q->x = x;
     q->y = y;
@@ -179,7 +179,7 @@ void buildingRemovePos(building *bld, BYTE x, BYTE y) {
   found = false;
   count = 0;
   
-  while (found == false && NonEmpty(inc)) {
+  while (!found && NonEmpty(inc)) {
     count++;
     if (inc->x == x && inc->y == y) {
       found = true;
@@ -188,7 +188,7 @@ void buildingRemovePos(building *bld, BYTE x, BYTE y) {
   }
 
   /* If found remove item */
-  if (found == true) {
+  if (found) {
     buildingDeleteItem(bld, count);
   }
 }

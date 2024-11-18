@@ -59,8 +59,8 @@ void serverMessagesSetLogFile(char *logFile) {
 *********************************************************/
 void serverMessageAdd(messageType msgType, const char *top, const char *bottom) {
   FILE *fp; /* File to write to */
-  if (msgType != assistantMessage && isServerQuiet == false) {
-    if (serverMessageUseLogFile == false) {
+  if (msgType != assistantMessage && !isServerQuiet) {
+    if (!serverMessageUseLogFile) {
       fprintf(stdout, "%s\n%s\n", top, bottom);
      } else {
       fp = fopen(serverMessageLogFile, "a");
@@ -74,8 +74,8 @@ void serverMessageAdd(messageType msgType, const char *top, const char *bottom) 
 
 void serverMessageConsoleMessage(const char *msg) {
   FILE *fp; /* File to write to */
-  if (isServerQuiet == false) {
-    if (serverMessageUseLogFile == false) {
+  if (!isServerQuiet) {
+    if (!serverMessageUseLogFile) {
       fprintf(stderr, "%s\n", msg);
     } else {
       fp = fopen(serverMessageLogFile, "a");

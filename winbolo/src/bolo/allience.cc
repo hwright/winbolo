@@ -80,7 +80,7 @@ void allienceDestroy(allience *value) {
 void allienceAdd(allience *value, BYTE playerNum) {
   allience q;
 
-  if ((allienceExist(value, playerNum)) == false) {
+  if (!allienceExist(value, playerNum)) {
     /* Doesn't exist yet. Add */
     q = new allienceObj;
     q->playerNum = playerNum;
@@ -108,7 +108,7 @@ void allienceRemove(allience *value, BYTE playerNum) {
   bool first;    /* Is first item */
 
   first = true;
-  if ((allienceExist(value, playerNum)) == true) {
+  if (allienceExist(value, playerNum)) {
     q = *value;
     prev = q;
     test = AllienceHead(q);
@@ -118,7 +118,7 @@ void allienceRemove(allience *value, BYTE playerNum) {
       q = AllienceTail(q);
       test = AllienceHead(q);
     }
-    if (first == false) {
+    if (!first) {
       prev->next = q->next;
     } else {
       (*value) = (*value)->next;
@@ -146,7 +146,7 @@ bool allienceExist(allience *value, BYTE playerNum) {
 
   q = *value;
   returnValue = false;
-  while (returnValue == false && NonEmpty(q)) {
+  while (!returnValue && NonEmpty(q)) {
 
     test = AllienceHead(q);
     if (test == playerNum) {

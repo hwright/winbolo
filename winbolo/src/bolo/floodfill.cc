@@ -94,7 +94,7 @@ void floodAddItem(floodFill *ff, BYTE x, BYTE y) {
   prev = inc = *ff;
   found = false;
   
-  while (found == false && NonEmpty(inc)) {
+  while (!found && NonEmpty(inc)) {
     if (inc->x == x && inc->y == y) {
       found = true;
     }
@@ -103,14 +103,14 @@ void floodAddItem(floodFill *ff, BYTE x, BYTE y) {
   }
 
   /* If not found add a new item */
-  if (found == false && IsEmpty(*ff)) {
+  if (!found && IsEmpty(*ff)) {
     q = new floodFillObj;
     q->x = x;
     q->y = y;
     q->time = FLOOD_FILL_WAIT;
     q->next = *ff;
     *ff = q;
-  } else if (found == false) {
+  } else if (!found) {
     q = new floodFillObj;
     q->x = x;
     q->y = y;
@@ -157,7 +157,7 @@ void floodUpdate(floodFill *ff, map *mp, pillboxes *pb, bases *bs) {
     }
     
     /* Get the next Item */
-    if (*ff != nullptr && needUpdate == true) {
+    if (*ff != nullptr && needUpdate) {
       position = FloodFillTail(position);
     } else {
       position = nullptr;
@@ -228,27 +228,27 @@ void floodCheckFill(floodFill *ff, map *mp, pillboxes *pb, bases *bs, BYTE mx, B
   rightPos = mapGetPos(mp, (BYTE) (mx+1), my);
 
   /* Check for pills, bases etc. If found change to non crater / water */
-  if (pillsExistPos(pb, mx, (BYTE) (my-1)) == true) {
+  if (pillsExistPos(pb, mx, (BYTE) (my-1))) {
     above = ROAD;
-  } else if (basesExistPos(bs, mx, (BYTE) (my-1)) == true) {
+  } else if (basesExistPos(bs, mx, (BYTE) (my-1))) {
     above = ROAD;
   }
 
-  if (pillsExistPos(pb, mx, (BYTE) (my+1)) == true) {
+  if (pillsExistPos(pb, mx, (BYTE) (my+1))) {
     below  = ROAD;
-  } else if (basesExistPos(bs, mx, (BYTE) (my+1)) == true) {
+  } else if (basesExistPos(bs, mx, (BYTE) (my+1))) {
     below = ROAD;
   }
 
-  if (pillsExistPos(pb, (BYTE) (mx-1), my) == true) {
+  if (pillsExistPos(pb, (BYTE) (mx-1), my)) {
     leftPos = ROAD;
-  } else if (basesExistPos(bs, (BYTE) (mx-1),  my) == true) {
+  } else if (basesExistPos(bs, (BYTE) (mx-1),  my)) {
     leftPos = ROAD;
   }
 
-  if (pillsExistPos(pb, (BYTE) (mx+1), my) == true) {
+  if (pillsExistPos(pb, (BYTE) (mx+1), my)) {
     rightPos = ROAD;
-  } else if (basesExistPos(bs, (BYTE) (mx-1),  my) == true) {
+  } else if (basesExistPos(bs, (BYTE) (mx-1),  my)) {
     rightPos = ROAD;
   }
 

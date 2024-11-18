@@ -118,7 +118,7 @@ void labelMakeMessage(char *res, char *name, char *loc) {
 *********************************************************/
 void labelMakeTankLabel(char *res, char *name, char *loc, bool isOwn) {
   res[0] = '\0';
-  if (labelTankLabel != lblNone && (isOwn == false || (isOwn == true && labelOwnTank == true))) {
+  if (labelTankLabel != lblNone && (!isOwn || (isOwn && labelOwnTank))) {
     strcat(res, name);
     if (labelTankLabel == lblLong) {
       strcat(res, LABEL_AT_SYMBOL);

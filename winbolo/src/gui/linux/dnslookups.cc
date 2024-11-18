@@ -74,7 +74,7 @@ bool dnsLookupsCreate(void) {
   }
 
   /* create thread and run */
-  if (returnValue == true) {
+  if (returnValue) {
     hDnsThread = SDL_CreateThread(dnsLookupsRun, nullptr);
     if (hDnsThread  == nullptr) {
       SDL_DestroyMutex(hDnsMutexHandle);
@@ -103,7 +103,7 @@ void dnsLookupsDestroy(void) {
   if (hDnsMutexHandle != nullptr) { /* FIXME: Will be non null if we started it OK. Is there a better way? (threadid?) */
     /* Wait for current to finish */
     dnsShouldRun = false;
-    while (dnsFinished == false) {
+    while (!dnsFinished) {
       /* Wait a bit for the last call to finish */
       sleep(DNS_SHUTDOWN_SLEEP_TIME_LINUX);
     }
@@ -146,7 +146,7 @@ void dnsLookupsDestroy(void) {
 void dnsLookupsAddRequest(char *ip, void (*func)(char*, char*)) {
   dnsList add; /* Used to add to the queue */
 
-  if (dnsShouldRun == true) {
+  if (dnsShouldRun) {
     add = new dnsListObj;
     strcpy(add->ip, ip);
     add->func = func;
@@ -173,13 +173,13 @@ int dnsLookupsRun(void*) {
   char dest[512]; /* Destination address space */
   dnsList q;      /* Used to iterate through the list */
 
-  while (dnsShouldRun == true) {
+  while (dnsShouldRun) {
     SDL_mutexP(hDnsMutexHandle);
     dnsProcessing = dnsWaiting;
     dnsWaiting = nullptr;
     SDL_mutexV(hDnsMutexHandle);
     
-    while (NonEmpty(dnsProcessing) && dnsShouldRun == true) {
+    while (NonEmpty(dnsProcessing) && dnsShouldRun) {
       q = dnsProcessing;
       netClientGetAddress(q->ip, dest);
 /*      func = q->func;

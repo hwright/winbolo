@@ -433,7 +433,7 @@ void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my) {
     break;
   }
 
-  if (wantLog == true) {
+  if (wantLog) {
     logAddEvent((logitem)logMessageType, mx, my, 0, 0, 0, nullptr);
   }
 

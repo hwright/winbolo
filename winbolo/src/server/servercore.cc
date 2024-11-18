@@ -165,7 +165,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines, int srtDe
 
   returnValue = mapRead(fileName, &mp, &pb, &bs, &ss);
 
-  if (returnValue == true) {
+  if (returnValue) {
     utilExtractMapName(fileName, sMapName);
     basesClearMines(&bs, &mp);
     serverCoreGameRunning = true;
@@ -236,7 +236,7 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn, gameT
 
   returnValue = mapLoadCompressedMap(&mp, &pb, &bs, &ss, buff, buffLen);
 
-  if (returnValue == true) {
+  if (returnValue) {
     strcpy(sMapName, mapn);
     basesClearMines(&bs, &mp);
     serverCoreGameRunning = true;
@@ -291,7 +291,7 @@ void serverCoreDestroy() {
 
 /* FIXME: Comment */
 void serverCoreLogTick() {
-  if (logIsRecording() == true) {
+  if (logIsRecording()) {
     BYTE temp1, temp2, temp3, mx, my;
     int count, entries;
     screenBullets sb = screenBulletsCreate();
@@ -301,7 +301,7 @@ void serverCoreLogTick() {
         mx = tankGetMX(&tk[count]);
         my = tankGetMY(&tk[count]);
         logAddEvent(log_PlayerLocation, (BYTE) count, mx, my, utilPutNibble(tankGetPX(&tk[count]), tankGetPY(&tk[count])), (BYTE) utilPutNibble(tankGetDir(&tk[count]), tankIsOnBoat(&tk[count])), nullptr);
-        if (lgmIsOut(&lgman[count]) == true) {
+        if (lgmIsOut(&lgman[count])) {
           logAddEvent(log_LgmLocation, utilPutNibble((BYTE) count, lgmGetFrame(&lgman[count])), lgmGetMX(&lgman[count]), lgmGetMY(&lgman[count]), utilPutNibble(lgmGetPX(&lgman[count]), lgmGetPY(&lgman[count])), 0, nullptr);
         }
       }
@@ -341,7 +341,7 @@ void serverCoreGameTick() {
   BYTE numTanks;       /* Number of tanks  */
   
 
-  if (serverCoreGameRunning == false ) {
+  if (!serverCoreGameRunning ) {
     return;
   }
   if (sGmeStartDelay > 0) {
@@ -659,9 +659,9 @@ void serverCorePlayerLeave(BYTE playerNum) {
   } else {
     count = 0;
     found = false;
-    while (count < MAX_TANKS && found == false) {
+    while (count < MAX_TANKS && !found) {
       if (playerNum != count) {
-        if (playersIsAllie(&splrs, count, playerNum) == true) {
+        if (playersIsAllie(&splrs, count, playerNum)) {
           found = true;
         }
       }
@@ -835,7 +835,7 @@ void serverCorePreparePosPackets() {
 
   count = 0;
   while (count < MAX_TANKS) {
-    if (playersIsInUse(&splrs, count) == true && tk[count] != nullptr) {
+    if (playersIsInUse(&splrs, count) && tk[count] != nullptr) {
       playersPosData[count].len = 0;
       pos = 0;
 
@@ -905,7 +905,7 @@ int serverCoreMakePosPackets(BYTE *buff, BYTE noPlayer, bool sendStale) {
     if (playersPosData[count].len != -1) {
       /* Is the player's LGM out of their tank? */
       lgmInView = lgmIsOut(&lgman[count]);
-      if (lgmInView == true) {
+      if (lgmInView) {
 		/* LGM is parachuting in */
 		if (lgmGetFrame(&lgman[count]) == LGM_HELICOPTER_FRAME) {
           lgmInView = true;
@@ -918,25 +918,25 @@ int serverCoreMakePosPackets(BYTE *buff, BYTE noPlayer, bool sendStale) {
       tankInView = false;
       if (noPlayer != count) {
         tankInView = playersNeedUpdate(&splrs, count);
-        if (tankInView == false) {
+        if (!tankInView) {
           tankInView = serverCoreTankInView(noPlayer, tankGetMX(&tk[count]), tankGetMY(&tk[count]));
         }
       }
-      if (tankInView == true || lgmInView == true) {
+      if (tankInView || lgmInView) {
         *loc = utilPutNibble(count, (BYTE) (((tankInView << 2) + lgmInView)));
         loc++;
         pos++;
-        if (tankInView == true) {
+        if (tankInView) {
           memcpy(loc, playersPosData[count].buff, 4);
           loc += 4;
           pos += 4;
         }
-        if (lgmInView == true) {
+        if (lgmInView) {
           memcpy(loc, (playersPosData[count].buff+4), 4);
           loc += 4;
           pos += 4;
         }
-      } else if (sendStale == true && noPlayer != count) {
+      } else if (sendStale && noPlayer != count) {
         /* Send off stale data */
         *loc = utilPutNibble(count, 0xF);
         loc++;
@@ -1315,7 +1315,7 @@ void serverCoreGetTankWorldFromLgm(lgm *lgmans, WORLD *x, WORLD *y) {
 
   *x = 0;
   *y = 0;
-  while (count < MAX_TANKS && found == false) {
+  while (count < MAX_TANKS && !found) {
     if (lgmans == &lgman[count]) {
       found = true;
       tankGetWorld(&tk[count], x, y);
@@ -1399,7 +1399,7 @@ bool serverCoreCheckTankRange(BYTE x, BYTE y, BYTE playerNum, double distance) {
   ourWY = (y << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
   
   count = 0;
-  while (count < MAX_TANKS && returnValue == true) {
+  while (count < MAX_TANKS && returnValue) {
     if (playerNum != count && tk[count] != nullptr && count != playerNum) {
       tankGetWorld(&tk[count], &testWX, &testWY);
       returnValue = !(utilIsItemInRange(ourWX, ourWY, testWX, testWY, (WORLD) distance, &dummy));
@@ -1442,9 +1442,9 @@ bool serverCoreCheckPillsRange(BYTE xValue, BYTE yValue, BYTE playerNum, double 
   startY = (yValue << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
   count = 1;
   total = pillsGetNumPills(&pb);
-  while (returnValue == true && count <= total) {
+  while (returnValue && count <= total) {
     pillsGetPill(&pb, &pill, count);
-    if (playersIsAllie(&splrs, playerNum, pill.owner) == false) {
+    if (!playersIsAllie(&splrs, playerNum, pill.owner)) {
       testX = (pill.x << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
       testY = (pill.y << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE;
       returnValue = !(utilIsItemInRange(startX, startY, testX, testY, (WORLD) distance, &dummy));
@@ -1484,7 +1484,7 @@ void serverCoreSendTeams() {
   count = 0;
   arrayPos = 1;
   while (count < MAX_TANKS) {
-    if (donePlayers[count] == false && tk[count] != nullptr) {
+    if (!static_cast<bool>(donePlayers[count]) && tk[count] != nullptr) {
       /* This is a new team */
       numTeams++;
       count2 = 0;
@@ -1541,7 +1541,7 @@ bool serverCoreCheckGameWin(bool printWinners) {
   returnValue = true;
   max = basesGetNumBases(&bs);
   count = 1;
-  while (count <= max && returnValue == true) {
+  while (count <= max && returnValue) {
     current = basesGetBaseOwner(&bs, count);
     basesGetStats(&bs, count, &shellsAmount, &minesAmount, &armourAmount);
     if (current == NEUTRAL || armourAmount <= MIN_ARMOUR_CAPTURE) {
@@ -1556,20 +1556,20 @@ bool serverCoreCheckGameWin(bool printWinners) {
     count++;
   }
 
-  if (returnValue == true && doneWbnOnce == false) {
+  if (returnValue && !doneWbnOnce) {
     serverCoreSendTeams();
     /* Tell WinBolo.net about it */
     winbolonetAddEvent(WINBOLO_NET_EVENT_WIN, true, first, WINBOLO_NET_NO_PLAYER);
     doneWbnOnce = true;
   }
 
-  if (returnValue == true && printWinners == true && doneOnce == false) {
+  if (returnValue && printWinners && !doneOnce) {
     doneOnce = true;
     serverMessageConsoleMessage("Winners");
     count = 0;
     while (count < MAX_TANKS) {
       if (tk[count] != nullptr) {
-        if (playersIsAllie(&splrs, first, count) == true) {
+        if (playersIsAllie(&splrs, first, count)) {
           /* Print it */
           playersGetPlayerName(&splrs, count, dest);
           serverMessageConsoleMessage(dest);
@@ -1598,7 +1598,7 @@ bool serverCoreCheckAutoClose() {
   static bool hadPlayers = false; /* Have we done this once successfully */
   bool returnValue = false; /* Value to return */
 
-  if (hadPlayers == false) {
+  if (!hadPlayers) {
     if (playersGetNumPlayers(&splrs) > 0) {
       hadPlayers = true;
     }
@@ -1930,7 +1930,7 @@ void serverCoreInformation() {
   fprintf(stdout, "\n");
   fprintf(stdout, BOLO_VERSION_STRING);
   fprintf(stdout, "\nGame start time: %sMap Name: %s - Locked: ", asctime(gmtime(&sTimeStart)), sMapName);
-  if (serverNetGetIsLocked() == true) {
+  if (serverNetGetIsLocked()) {
     fprintf(stdout, "Yes");
   } else {
     fprintf(stdout, "No");
@@ -1942,7 +1942,7 @@ void serverCoreInformation() {
     
     count = 0;
     while (count < MAX_TANKS) {
-      if (playersIsInUse(&splrs, count) == true) {
+      if (playersIsInUse(&splrs, count)) {
         playersGetPlayerName(&splrs, count, name);
         playersGetPlayerLocation(&splrs, count, location);
         fprintf(stderr, "%s@%s - (P:%d B: %d)\n", name, location, pillsGetNumberOwnedByPlayer(&pb, count), basesGetNumberOwnedByPlayer(&bs, count));

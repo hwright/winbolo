@@ -81,7 +81,7 @@ void minesExpAddItem(minesExp *me, map *mp, BYTE x, BYTE y) {
   inc = *me;
   found = false;
   
-  while (found == false && NonEmpty(inc)) {
+  while (!found && NonEmpty(inc)) {
     if (inc->x == x && inc->y == y) {
       found = true;
     }
@@ -89,7 +89,7 @@ void minesExpAddItem(minesExp *me, map *mp, BYTE x, BYTE y) {
   }
 
   /* If not found add a new item */
-  if (found == false) {
+  if (!found) {
     q = new minesExpObj;
     q->x = x;
     q->y = y;
@@ -168,7 +168,7 @@ void minesExpUpdate(minesExp *me, map *mp, pillboxes *pb, bases *bs, lgm **lgms,
     }
     
     /* Get the next Item */
-    if (*me != nullptr && needUpdate == true) {
+    if (*me != nullptr && needUpdate) {
       position = MinesExpTail(position);
     } else {
       position = nullptr;
@@ -285,16 +285,16 @@ void minesExpCheckFill(minesExp *me, map *mp, pillboxes *pb, bases *bs, lgm **lg
     }
 
     /* Add items if craters */
-    if (leftPos == true) {
+    if (leftPos) {
       minesExpAddItem(me, mp, (BYTE) (mx-1), my);
     }
-    if (rightPos == true) {
+    if (rightPos) {
       minesExpAddItem(me, mp, (BYTE) (mx+1), my);
     }
-    if (abovePos == true) {
+    if (abovePos) {
       minesExpAddItem(me, mp, mx, (BYTE) (my-1));
     }
-    if (belowPos == true) {
+    if (belowPos) {
       minesExpAddItem(me, mp, mx, (BYTE) (my+1));
     }
     screenReCalc();

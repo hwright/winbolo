@@ -56,7 +56,7 @@ static bool mods = false;
 void scrollSetScrollType(bool isAuto) {
   autoScroll = isAuto;
   autoScrollOverRide = false;
-  if (isAuto == false) {
+  if (!isAuto) {
     scrollX = 0;
     scrollY = 0;
     mods = false;
@@ -113,11 +113,11 @@ bool scrollUpdate(pillboxes *pb, BYTE *xValue, BYTE *yValue, BYTE objectX, BYTE 
   bool returnValue; /* Value to return */
   
   returnValue = true;
-  if (screenTankIsDead() == true) {
+  if (screenTankIsDead()) {
     returnValue = false;
-  } else if (manual == true) {
+  } else if (manual) {
     returnValue = scrollManual(xValue, yValue, objectX, objectY, angle);
-  } else if (autoScroll == true && isTank == true && armour <= TANK_FULL_ARMOUR && autoScrollOverRide == false) {
+  } else if (autoScroll && isTank && armour <= TANK_FULL_ARMOUR && !autoScrollOverRide) {
     /* Calculate using the autoscroll function */
     returnValue = scrollAutoScroll(pb, xValue, yValue, objectX, objectY, gunsightX, gunsightY, speed, angle);
   } else {
@@ -212,23 +212,23 @@ bool scrollManual(BYTE *xValue, BYTE *yValue, BYTE objectX, BYTE objectY, TURNTY
 
   
   /* Check to see if moving towards screen edge */
-  if ((objectX - (*xValue)) > MAIN_SCREEN_SIZE_X && leftPos == true) {
+  if ((objectX - (*xValue)) > MAIN_SCREEN_SIZE_X && leftPos) {
     (*xValue)++;
     returnValue = true;
   }
-  if ((objectX-2) < (*xValue) && rightPos == false) {
+  if ((objectX-2) < (*xValue) && !rightPos) {
     (*xValue)--;
     returnValue = true;
   }
-  if ((objectY - (*yValue)) > MAIN_SCREEN_SIZE_Y && downPos == true) {
+  if ((objectY - (*yValue)) > MAIN_SCREEN_SIZE_Y && downPos) {
     (*yValue)++;
     returnValue = true;
   }
-  if (objectY <= (*yValue) && upPos == true) {
+  if (objectY <= (*yValue) && upPos) {
    (*yValue)--;
    returnValue = true;
   }
-  if (mods == true && returnValue == true) {
+  if (mods && returnValue) {
     mods = false;
   }
 
@@ -280,26 +280,26 @@ bool scrollNoAutoScroll(BYTE *xValue, BYTE *yValue, BYTE objectX, BYTE objectY, 
   }
 
   /* Check to see if moving towards screen edge */
-  if ((objectX - (*xValue)) >= (MAIN_SCREEN_SIZE_X-NO_SCROLL_EDGE) && leftPos == true) {
+  if ((objectX - (*xValue)) >= (MAIN_SCREEN_SIZE_X-NO_SCROLL_EDGE) && leftPos) {
     (*xValue)++;
     returnValue = true;
   }
-  if ((objectX-1) < (*xValue)+NO_SCROLL_EDGE && rightPos == true) {
+  if ((objectX-1) < (*xValue)+NO_SCROLL_EDGE && rightPos) {
     (*xValue)--;
     returnValue = true;
   }
-  if ((objectY - (*yValue)) >= (MAIN_SCREEN_SIZE_Y-NO_SCROLL_EDGE) && downPos == true) {
+  if ((objectY - (*yValue)) >= (MAIN_SCREEN_SIZE_Y-NO_SCROLL_EDGE) && downPos) {
     (*yValue)++;
     returnValue = true;
   }
-  if (objectY <= (*yValue)+NO_SCROLL_EDGE && upPos == true) {
+  if (objectY <= (*yValue)+NO_SCROLL_EDGE && upPos) {
    (*yValue)--;
    returnValue = true;
   }
-  if (mods == true && returnValue == true) {
+  if (mods && returnValue) {
     mods = false;
   }
-  if (returnValue == true) {
+  if (returnValue) {
     autoScrollOverRide = false;
   }
 
@@ -376,7 +376,7 @@ bool scrollAutoScroll(pillboxes *pb, BYTE *xValue, BYTE *yValue, BYTE objectX, B
   if (scrollX > 0) {
     returnValue = true;
     scrollX--;
-    if (xPositive == true) {
+    if (static_cast<bool>(xPositive)) {
       (*xValue)++;
     } else {
       (*xValue)--;
@@ -385,7 +385,7 @@ bool scrollAutoScroll(pillboxes *pb, BYTE *xValue, BYTE *yValue, BYTE objectX, B
   if (scrollY > 0) {
     scrollY--;
     returnValue = true;
-    if (yPositive == true) {
+    if (static_cast<bool>(yPositive)) {
       (*yValue)++;
     } else {
       (*yValue)--;

@@ -105,7 +105,7 @@ void screenBrainMapSetPos(BYTE xValue, BYTE yValue, BYTE terrain, bool isMine) {
     sbm[yValue][xValue] = BDEEPSEA;
   }
 
-  if (isMine == true) {
+  if (isMine) {
     sbm[yValue][xValue] |= TERRAIN_MINE;
   }
 }

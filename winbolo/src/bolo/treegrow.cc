@@ -134,7 +134,7 @@ void treeGrowUpdate(map *mp, pillboxes *pb, bases *bs) {
   y = (BYTE) rnd ;
 
 
-  if (pillsExistPos(pb, x, y) == false && basesExistPos(bs, x,y) == false && mapIsMine(mp, x, y) == false && mapGetPos(mp, x, y) != DEEP_SEA) {
+  if (!pillsExistPos(pb, x, y) && !basesExistPos(bs, x,y) && !mapIsMine(mp, x, y) && mapGetPos(mp, x, y) != DEEP_SEA) {
     treeGrowAddItem(x, y,treeGrowCalcScore(mp, pb, bs, x, y));
   }
     
@@ -167,7 +167,7 @@ int treeGrowCalcScore(map *mp, pillboxes *pb, bases *bs, BYTE mx, BYTE my) {
   if (pos >= MINE_START && pos <= MINE_END) {
     pos -= MINE_SUBTRACT;
   }
-  if (pos != FOREST && pos != RIVER && pos != BUILDING && pos != HALFBUILDING && pillsExistPos(pb, mx, my) == false && basesExistPos(bs, mx, my) == false) {
+  if (pos != FOREST && pos != RIVER && pos != BUILDING && pos != HALFBUILDING && !pillsExistPos(pb, mx, my) && !basesExistPos(bs, mx, my)) {
     /* OK to do calculation */
     returnValue += treeGrowCalcSquare(mp, pb, bs, mx, my);
     returnValue += treeGrowCalcSquare(mp, pb, bs, (BYTE) (mx-1), (BYTE) (my-1));
@@ -209,7 +209,7 @@ void treeGrowCheckGrowTree(map *mp, pillboxes *pb, bases *bs) {
     treeGrowScore = TREEGROW_INITIAL_SCORE;
     treeGrowTime = TREEGROW_INITIAL_TIME;
     pos = mapGetPos(mp, treeGrowX, treeGrowY);
-    if (pos != RIVER && pos != BUILDING && pos != HALFBUILDING && pillsExistPos(pb, treeGrowX, treeGrowY) == false && basesExistPos(bs, treeGrowX, treeGrowY) == false) {
+    if (pos != RIVER && pos != BUILDING && pos != HALFBUILDING && !pillsExistPos(pb, treeGrowX, treeGrowY) && !basesExistPos(bs, treeGrowX, treeGrowY)) {
       newPos = FOREST;
       if (pos >= MINE_START && pos <= MINE_END) {
         newPos += MINE_FOREST;
@@ -255,9 +255,9 @@ int treeGrowCalcSquare(map *mp, pillboxes *pb, bases *bs, BYTE mx, BYTE my) {
 
 
   returnValue = 0; //TREE_GROW_ROAD;
-  if (pillsExistPos(pb, mx, my) == true) {
+  if (pillsExistPos(pb, mx, my)) {
     returnValue = TREE_GROW_ROAD;
-  } else if (basesExistPos(bs, mx, my) == true) {
+  } else if (basesExistPos(bs, mx, my)) {
       returnValue = TREE_GROW_ROAD;
   } else {
     terrain = mapGetPos(mp, mx, my);

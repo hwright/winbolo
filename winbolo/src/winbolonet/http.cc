@@ -148,7 +148,7 @@ bool httpCreate() {
 * 
 *********************************************************/
 void httpDestroy() {
-  if (httpStarted == true) {
+  if (httpStarted) {
     /* Perform any cleanup required */
 #ifdef _WIN32
     WSACleanup();
@@ -325,14 +325,14 @@ int httpRecvData(SOCKET sock, BYTE *buff, int maxSize) {
     /* Strip out the header */
     ptr = buff;
     found = false;
-    while (((ptr-buff) < size-3) && found == false) {
+    while (((ptr-buff) < size-3) && !found) {
       if (*ptr == '\r' && *(ptr+1) == '\n' && *(ptr+2) == '\r' && *(ptr+3) == '\n') {
         found = true;
       } else {
         ptr++;
       }
     }
-    if (found == true) {
+    if (found) {
       ptr += 4; /* Skip over \r\n\r\n */
       returnValue = (int) (size - (ptr - buff));
       memcpy(buff, ptr, returnValue);
@@ -370,7 +370,7 @@ int httpSendMessage(BYTE *message, int len, BYTE *response, int maxSize) {
   static unsigned long addressToBind=0; /*This is the address we're going to bind, this is the address winbolo.net will show */
   
 
-  if (httpStarted == true) {
+  if (httpStarted) {
 	ourAddress.sin_family = AF_INET;
 	ourAddress.sin_port = 0; /*setting this to zero should have it just grab a ephemeral port*/
 	ourAddress.sin_addr.s_addr = INADDR_ANY; /* grabs the ip from the default interface */
@@ -403,7 +403,7 @@ int httpSendMessage(BYTE *message, int len, BYTE *response, int maxSize) {
 	  }
     }
 
-    if (returnValue == true) {
+    if (static_cast<bool>(returnValue)) {
       returnValue = httpSendData(sock, message, len);
     }
     if (returnValue >0) {
@@ -526,7 +526,7 @@ bool httpSendLogFile2(char *fileName, BYTE *key, bool wantFeedback, long fileLen
 bool httpSendLogFile(char *fileName, BYTE *key, bool wantFeedback) {
   long fileLength;
 
-  if (httpStarted == true && fileName != nullptr && key != nullptr) {
+  if (httpStarted && fileName != nullptr && key != nullptr) {
     fileLength = httpGetFileLength(fileName);
     if (fileLength != -1) {
       return httpSendLogFile2(fileName, key, wantFeedback, fileLength);

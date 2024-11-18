@@ -99,7 +99,7 @@ void cursorCleanup() {
 * normalCurs - Is it the normal cursor or Bolo one ?
 *********************************************************/
 void cursorSetCursor(bool normalCurs) {
-  if (normalCurs == true) {
+  if (normalCurs) {
     SDL_SetCursor(saveCursor);
     //hCurs = LoadCursor(appInst, MAKEINTRESOURCE(IDC_POINTER));
   } else {
@@ -145,12 +145,12 @@ void cursorMove(int mouseX, int mouseY) {
     top = zoomFactor * MAIN_OFFSET_Y;
     bottom = top + (MAIN_SCREEN_SIZE_Y * (zoomFactor * TILE_SIZE_Y));
     if (xPos >= left && xPos <= right && yPos >= top && yPos <= bottom) {
-      if (cursorInMainView == false) {
+      if (!cursorInMainView) {
         cursorSetCursor(false);
         cursorInMainView = true;
       }
     } else {
-      if (cursorInMainView == true) {
+      if (cursorInMainView) {
         cursorSetCursor(true);
         cursorInMainView = false;
       }
@@ -182,7 +182,7 @@ bool cursorPos(int mouseX, int mouseY, BYTE *xValue, BYTE *yValue) {
   BYTE zoomFactor; /* The zooming factor */
   div_t dt;        /* Used for integer division */
 
-  if (cursorInMainView == true) { 
+  if (cursorInMainView) { 
     if (mouseX != oldX || mouseY != oldY) {
       oldX = mouseX;
       oldY = mouseY;

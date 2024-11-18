@@ -140,7 +140,7 @@ void explosionsUpdate(explosions *expl) {
     }
     
     /* Get the next Item */
-    if (*expl != nullptr && needUpdate == true) {
+    if (*expl != nullptr && needUpdate) {
       position = ExplosionsTail(position);
     }
   }

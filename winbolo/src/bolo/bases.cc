@@ -214,7 +214,7 @@ bool basesExistPos(bases *value, BYTE xValue, BYTE yValue) {
 
   returnValue = false;
   count = 0;
-  while (returnValue == false && count < ((*value)->numBases)) {
+  while (!returnValue && count < ((*value)->numBases)) {
     if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue) {
       returnValue = true;
     }
@@ -247,7 +247,7 @@ baseAlliance basesGetAlliancePos(bases *value, BYTE xValue, BYTE yValue) {
   returnValue = baseNeutral;
   count = 0;
   done = false;
-  while (done == false && count < ((*value)->numBases)) {
+  while (!done && count < ((*value)->numBases)) {
     if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue) {
      if ((*value)->item[count].armour <= MIN_ARMOUR_CAPTURE) {
         returnValue = baseDead;
@@ -255,7 +255,7 @@ baseAlliance basesGetAlliancePos(bases *value, BYTE xValue, BYTE yValue) {
         returnValue = baseNeutral;
       } else if ((*value)->item[count].owner == playersGetSelf(screenGetPlayers())) {
         returnValue = baseOwnGood;
-      } else if (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, playersGetSelf(screenGetPlayers())) == true) {
+      } else if (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, playersGetSelf(screenGetPlayers()))) {
         returnValue = baseAllieGood;
       } else {
         returnValue = baseEvil;
@@ -295,7 +295,7 @@ baseAlliance basesGetStatusNum(bases *value, BYTE baseNum) {
       returnValue = baseNeutral;
     } else if ((*value)->item[baseNum].owner == playersGetSelf(screenGetPlayers())) {
       returnValue = baseOwnGood;
-    } else if (playersIsAllie(screenGetPlayers(), (*value)->item[baseNum].owner, playersGetSelf(screenGetPlayers())) == true) {
+    } else if (playersIsAllie(screenGetPlayers(), (*value)->item[baseNum].owner, playersGetSelf(screenGetPlayers()))) {
       returnValue = baseAllieGood;
     } else {
       returnValue = baseEvil;
@@ -358,7 +358,7 @@ void basesUpdate(bases *value, tank *tnk) {
 		  baseTimer[secondCounter]--;
 		  if(baseTimer[secondCounter]<=0)
 		  {
-			if (isServer == true || netGetType() == netSingle) 
+			if (isServer || netGetType() == netSingle) 
 			{
 				while (count < (*value)->numBases) 
 				{
@@ -384,7 +384,7 @@ void basesUpdate(bases *value, tank *tnk) {
 	  count++;
   }
 
-  if (isServer == false) {
+  if (!isServer) {
     /* Client - Check for refuelling */
     /* Get tanks location */
     tankGetWorld(tnk, &twx, &twy);
@@ -396,7 +396,7 @@ void basesUpdate(bases *value, tank *tnk) {
     baseNum = basesGetBaseNum(value,tx,ty);
     if (baseNum != BASE_NOT_FOUND && tankArmour <= TANK_FULL_ARMOUR) {
       /* On base */
-      if ((*value)->item[baseNum-1].justStopped == false) {
+      if (!(*value)->item[baseNum-1].justStopped) {
         basesRefueling(value, tnk, baseNum);
       } else {
         (*value)->item[baseNum-1].justStopped = false;
@@ -446,7 +446,7 @@ void basesUpdateStock(bases *value, BYTE baseNum) {
       }
       /* Update the frontend status as required */
       if (oldArmour == BASE_DEAD && (*value)->item[baseNum].armour > BASE_DEAD) { /* FIXME: Changed to hardcoded value */
-        if (threadsGetContext() == false) {
+        if (!threadsGetContext()) {
           frontEndStatusBase((BYTE) (baseNum+1), (basesGetStatusNum(value, (BYTE) (baseNum+1))));
         }
       }
@@ -497,9 +497,9 @@ bool basesAmOwner(bases *value, BYTE owner, BYTE xValue, BYTE yValue) {
   done = false;
   /* FIXME: This is redundent. */
   self = owner;
-  while (done == false && count < ((*value)->numBases)) {
+  while (!done && count < ((*value)->numBases)) {
     if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue) {
-      if ((*value)->item[count].owner == self || (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, self) == true)) {
+      if ((*value)->item[count].owner == self || (playersIsAllie(screenGetPlayers(), (*value)->item[count].owner, self))) {
         returnValue = true;
       }
       done = true;
@@ -543,7 +543,7 @@ BYTE basesSetBaseOwner(bases *value, BYTE baseNum, BYTE owner, BYTE migrate) {
   if (baseNum > 0 && baseNum <= (*value)->numBases) {
     baseNum--;
     returnValue = (*value)->item[baseNum].owner;
-    if (migrate == true) {
+    if (static_cast<bool>(migrate)) {
       (*value)->item[baseNum].owner = owner;
     } else if (owner == NEUTRAL) {
       (*value)->item[baseNum].owner = owner;
@@ -568,7 +568,7 @@ BYTE basesSetBaseOwner(bases *value, BYTE baseNum, BYTE owner, BYTE migrate) {
     logAddEvent(log_BaseSetOwner, baseNum, owner, migrate, 0, 0, nullptr);
 
     /* WinBolo.net Stuff */
-    if (migrate == false && owner != NEUTRAL) {
+    if (!static_cast<bool>(migrate) && owner != NEUTRAL) {
       winbolonetAddEvent(WINBOLO_NET_EVENT_BASE_CAPTURE, threadsGetContext(), owner, WINBOLO_NET_NO_PLAYER);
     }
   
@@ -611,10 +611,10 @@ BYTE basesSetOwner(bases *value, BYTE xValue, BYTE yValue, BYTE owner, BYTE migr
   returnValue = false;
   count = 0;
   done = false;
-  while (done == false && count < ((*value)->numBases)) {
+  while (!done && count < ((*value)->numBases)) {
     if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue) {
       returnValue = (*value)->item[count].owner;
-      if (migrate == true) {
+      if (static_cast<bool>(migrate)) {
         (*value)->item[count].owner = owner;
         done = true;
       } else if (owner == NEUTRAL) {
@@ -640,7 +640,7 @@ BYTE basesSetOwner(bases *value, BYTE xValue, BYTE yValue, BYTE owner, BYTE migr
         logAddEvent(log_BaseSetOwner, count, owner, migrate, 0, 0, nullptr);
         done = true;
         /* WinBolo.net Stuff */
-        if (migrate == false && owner != NEUTRAL) {
+        if (!static_cast<bool>(migrate) && owner != NEUTRAL) {
           if (returnValue == NEUTRAL) {
             winbolonetAddEvent(WINBOLO_NET_EVENT_BASE_CAPTURE, threadsGetContext(), owner, WINBOLO_NET_NO_PLAYER);
           } else {
@@ -677,7 +677,7 @@ BYTE basesGetBaseNum(bases *value, BYTE xValue, BYTE yValue) {
   returnValue = BASE_NOT_FOUND-1;
   count = 0;
   done = false;
-  while (done == false && count < ((*value)->numBases)) {
+  while (!done && count < ((*value)->numBases)) {
     if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue) {
       returnValue = count;
       done = true;
@@ -717,7 +717,7 @@ void basesRefueling(bases *value, tank *tnk, BYTE baseNum) {
         tankAddArmour(tnk, BASE_ARMOUR_GIVE);
         (*value)->item[baseNum].refuelTime = basesHalfTickCalulator(BASES_HALFTICK_TYPE_ARMOUR);
         netPNBAdd(screenGetNetPnb(), NPNB_BASE_REFUEL_ARMOUR, baseNum, playersGetSelf(screenGetPlayers()), 0, 0, 0);
-        if (threadsGetContext() == false) {
+        if (!threadsGetContext()) {
           frontEndUpdateBaseStatusBars(((*value)->item[baseNum].shells), ((*value)->item[baseNum].mines), ((*value)->item[baseNum].armour));
         }
       } else if (shellsAmount < TANK_FULL_SHELLS && ((*value)->item[baseNum].shells - BASE_SHELLS_GIVE) >= BASE_MIN_SHELLS) {
@@ -725,7 +725,7 @@ void basesRefueling(bases *value, tank *tnk, BYTE baseNum) {
         tankAddShells(tnk, BASE_SHELLS_GIVE);
         netPNBAdd(screenGetNetPnb(), NPNB_BASE_REFUEL_SHELLS, baseNum, playersGetSelf(screenGetPlayers()), 0, 0, 0);
         (*value)->item[baseNum].refuelTime = basesHalfTickCalulator(BASES_HALFTICK_TYPE_SHELL);
-        if (threadsGetContext() == false) {
+        if (!threadsGetContext()) {
           frontEndUpdateBaseStatusBars(((*value)->item[baseNum].shells), ((*value)->item[baseNum].mines), ((*value)->item[baseNum].armour));
         }
       } else if (mines < TANK_FULL_MINES && ((*value)->item[baseNum].mines - BASE_MINES_GIVE) >= BASE_MIN_MINES) {
@@ -733,7 +733,7 @@ void basesRefueling(bases *value, tank *tnk, BYTE baseNum) {
         tankAddMines(tnk, BASE_MINES_GIVE);
         (*value)->item[baseNum].refuelTime = basesHalfTickCalulator(BASES_HALFTICK_TYPE_MINE);
         netPNBAdd(screenGetNetPnb(), NPNB_BASE_REFUEL_MINES, baseNum, playersGetSelf(screenGetPlayers()), 0, 0, 0);
-        if (threadsGetContext() == false) {
+        if (!threadsGetContext()) {
           frontEndUpdateBaseStatusBars(((*value)->item[baseNum].shells), ((*value)->item[baseNum].mines), ((*value)->item[baseNum].armour));
         }
       }
@@ -776,7 +776,7 @@ BYTE basesGetClosest(bases *value, WORLD tankX, WORLD tankY) {
 
   while (count < (*value)->numBases) {
     /* Check for neutral or allied */
-    if ((*value)->item[count].owner == NEUTRAL || (playersIsAllie(screenGetPlayers(), self, (*value)->item[count].owner) == true)) {
+    if ((*value)->item[count].owner == NEUTRAL || (playersIsAllie(screenGetPlayers(), self, (*value)->item[count].owner))) {
       x = (*value)->item[count].x;
       y = (*value)->item[count].y;
       x <<= 8;
@@ -853,14 +853,14 @@ void basesDamagePos(bases *value, BYTE xValue, BYTE yValue) {
 
   count = 0;
   done = false;
-  while (done == false && count < ((*value)->numBases)) {
+  while (!done && count < ((*value)->numBases)) {
     if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue && (*value)->item[count].armour > 0) { 
       (*value)->item[count].armour -= DAMAGE;
       if ((*value)->item[count].armour > BASE_FULL_ARMOUR) {
         (*value)->item[count].armour = 0;
       }
       if ((*value)->item[count].armour <= BASE_DISPLAY_X) {
-        if (threadsGetContext() == false) {
+        if (!threadsGetContext()) {
           frontEndStatusBase((BYTE) (count+1), baseDead);
         }
       }
@@ -894,9 +894,9 @@ bool basesCanHit(bases *value, BYTE xValue, BYTE yValue, BYTE hitBy) {
   if (hitBy != NEUTRAL) {
     count = 0;
     done = false;
-    while (done == false && count < ((*value)->numBases)) {
+    while (!done && count < ((*value)->numBases)) {
       if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue) {
-        if ((playersIsAllie(screenGetPlayers(), ((*value)->item[count].owner), hitBy) == false) && (*value)->item[count].owner != NEUTRAL && (*value)->item[count].armour > BASE_MIN_CAN_HIT) {
+        if ((!playersIsAllie(screenGetPlayers(), ((*value)->item[count].owner), hitBy)) && (*value)->item[count].owner != NEUTRAL && (*value)->item[count].armour > BASE_MIN_CAN_HIT) {
           returnValue = true;
         }
         done = true;
@@ -932,9 +932,9 @@ bool basesCantDrive(bases *value, BYTE xValue, BYTE yValue, BYTE hitBy) {
   if (hitBy != NEUTRAL) {
     count = 0;
     done = false;
-    while (done == false && count < ((*value)->numBases)) {
+    while (!done && count < ((*value)->numBases)) {
       if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue) {
-        if ((playersIsAllie(screenGetPlayers(), ((*value)->item[count].owner), hitBy) == false) && (*value)->item[count].owner != NEUTRAL && (*value)->item[count].armour > MIN_ARMOUR_CAPTURE) {
+        if ((!playersIsAllie(screenGetPlayers(), ((*value)->item[count].owner), hitBy)) && (*value)->item[count].owner != NEUTRAL && (*value)->item[count].armour > MIN_ARMOUR_CAPTURE) {
           returnValue = true;
         }
         done = true;
@@ -990,7 +990,7 @@ BYTE basesGetOwnerPos(bases *value, BYTE xValue, BYTE yValue) {
   returnValue = NEUTRAL;
   count = 0;
   done = false;
-  while (done == false && count < ((*value)->numBases)) {
+  while (!done && count < ((*value)->numBases)) {
     if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue) {
       returnValue = (*value)->item[count].owner;
       done = true;
@@ -1269,7 +1269,7 @@ void basesServerRefuel(bases *value, BYTE baseNum, BYTE addAmount) {
       }
       /* Update the frontend status as required */
       if (oldArmour == BASE_DEAD && (*value)->item[baseNum].armour > BASE_DEAD) {
-        if (threadsGetContext() == false) {
+        if (!threadsGetContext()) {
           frontEndStatusBase((BYTE) (baseNum+1), (basesGetStatusNum(value, (BYTE) (baseNum+1))));
         }
       }
@@ -1312,7 +1312,7 @@ bool baseIsCapturable(bases *value, BYTE xValue, BYTE yValue) {
   returnValue = false;
   done = false;
   count = 0;
-  while (done == false && count < ((*value)->numBases)) {
+  while (!done && count < ((*value)->numBases)) {
     if (((*value)->item[count].x) == xValue && ((*value)->item[count].y) == yValue) {
       done = true;
       if ((*value)->item[count].owner == NEUTRAL || (*value)->item[count].armour <= MIN_ARMOUR_CAPTURE) {
@@ -1353,7 +1353,7 @@ void basesGetBrainBaseItem(bases *value, BYTE baseNum, WORLD *wx, WORLD *wy, BYT
     *wy <<= TANK_SHIFT_MAPSIZE;
     if ((*value)->item[baseNum].owner == NEUTRAL) {
       *info = BASES_BRAIN_NEUTRAL;
-    } else if (playersIsAllie(screenGetPlayers(), playersGetSelf(screenGetPlayers()), (*value)->item[baseNum].owner) == true) {
+    } else if (playersIsAllie(screenGetPlayers(), playersGetSelf(screenGetPlayers()), (*value)->item[baseNum].owner)) {
       *info = BASES_BRAIN_FRIENDLY;
     } else {
       *info = BASES_BRAIN_HOSTILE;
@@ -1410,7 +1410,7 @@ void basesGetBrainBaseInRect(bases *value, BYTE leftPos, BYTE rightPos, BYTE top
     if ((*value)->item[count].owner != NEUTRAL) {
       isAllie = playersIsAllie(screenGetPlayers(), playerNum, (*value)->item[count].owner);
     }
-    if ((((*value)->item[count].x) >= leftPos && ((*value)->item[count].x) <= rightPos && ((*value)->item[count].y) >= topPos && ((*value)->item[count].y) <= bottomPos) || isAllie == true) {
+    if ((((*value)->item[count].x) >= leftPos && ((*value)->item[count].x) <= rightPos && ((*value)->item[count].y) >= topPos && ((*value)->item[count].y) <= bottomPos) || isAllie) {
       /* In the rectangle */
       wx = (*value)->item[count].x;
       wx <<= TANK_SHIFT_MAPSIZE;
@@ -1420,12 +1420,12 @@ void basesGetBrainBaseInRect(bases *value, BYTE leftPos, BYTE rightPos, BYTE top
       wy += MAP_SQUARE_MIDDLE;
       if ((*value)->item[count].owner == NEUTRAL) {
         owner = BASES_BRAIN_NEUTRAL;
-      } else if (isAllie == true) {
+      } else if (isAllie) {
         owner = BASES_BRAIN_FRIENDLY;
       } else {
         owner = BASES_BRAIN_HOSTILE;
       }
-      if ((*value)->item[count].armour > 0 && isAllie == false) {
+      if ((*value)->item[count].armour > 0 && !isAllie) {
         armour = 1;
       } else {
         armour = (BYTE) ((*value)->item[count].armour / 5);

@@ -168,7 +168,7 @@ bool startsExistPos(starts *value, BYTE xValue, BYTE yValue) {
 
   returnValue = false;
   count = 0;
-  while (count < (*value)->numStarts && returnValue == false) {
+  while (count < (*value)->numStarts && !returnValue) {
     if ((*value)->item[count].x == xValue && (*value)->item[count].y == yValue) {
       returnValue = true;
     }
@@ -212,17 +212,17 @@ void startsGetStart(starts *value, BYTE *x, BYTE *y, TURNTYPE *dir, BYTE playerN
   srand((unsigned int) (rand() * time(nullptr)));
   found = false;
   count = 0;
-  while (count < (*value)->numStarts && found == false) {
+  while (count < (*value)->numStarts && !found) {
     okTank = true;
     rnd = (BYTE) ((rand()+1)% (*value)->numStarts);
     okTank = screenCheckTankRange((*value)->item[rnd].x, (*value)->item[rnd].y, playerNum, 512.0);
-    if (okTank == true) {
+    if (okTank) {
       found = true;
       val = rnd;
     }
     count++;
   }
-  if (found == true) {
+  if (found) {
     *x = (*value)->item[val].x;
     *y = (*value)->item[val].y;
     bt = startsConvertDir(((*value)->item[val].dir));
@@ -272,14 +272,14 @@ void startsGetRandStart(starts *value, BYTE *x, BYTE *y, TURNTYPE *dir) {
     if (rnd == 0) {
       rnd = 1;
     }
-    while (found == false) {
+    while (!found) {
       testX = (*value)->item[(rnd-1)].x;
       testX <<= TANK_SHIFT_MAPSIZE;
       testY = (*value)->item[(rnd-1)].y;
       testY <<= TANK_SHIFT_MAPSIZE;
       testX += 256;
       testY += 256;
-      if (playersCheckCollision(screenGetPlayers(), playersGetSelf(screenGetPlayers()), testX, testY, &dummy1, &dummy2) == false) {
+      if (!playersCheckCollision(screenGetPlayers(), playersGetSelf(screenGetPlayers()), testX, testY, &dummy1, &dummy2)) {
         found = true;
         *x = (*value)->item[(rnd-1)].x;
         *y = (*value)->item[(rnd-1)].y;

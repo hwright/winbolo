@@ -131,7 +131,7 @@ struct sockaddr_in *netPlayersGetAddr(netPlayers *value, BYTE playerNum) {
 *  addr      - Address structure of client
 *********************************************************/
 void netPlayersSetAddr(netPlayers *value, BYTE playerNum, struct sockaddr_in *addr) {
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum]) {
     memcpy(&((*value).addr[playerNum]), addr, sizeof(*addr));
   }
 }
@@ -151,7 +151,7 @@ void netPlayersSetAddr(netPlayers *value, BYTE playerNum, struct sockaddr_in *ad
 *  addr      - Address structure of client
 *********************************************************/
 void netPlayersSetPlayer(netPlayers *value, BYTE playerNum, struct sockaddr_in *addr) {
-  if ((*value).inUse[playerNum] == false) {
+  if (!(*value).inUse[playerNum]) {
     memcpy(&((*value).addr[playerNum]), addr, sizeof(*addr));
     (*value).addr[playerNum].sin_family = AF_INET;
     (*value).inUse[playerNum] = true;
@@ -189,7 +189,7 @@ BYTE netPlayersGetPlayerNumber(netPlayers *value, unsigned long addr, unsigned s
   returnValue = NET_PLAYERS_NOT_FOUND;
   count = 0;
   while (count < MAX_TANKS && returnValue == NET_PLAYERS_NOT_FOUND) {
-    if ((*value).inUse[count] == true) {
+    if ((*value).inUse[count]) {
 #ifdef _WIN32
       if ((*value).addr[count].sin_addr.S_un.S_addr == addr && (*value).addr[count].sin_port == port) {
 #else
@@ -242,7 +242,7 @@ bool netPlayersGetInGame(netPlayers *value, BYTE playerNum) {
   bool returnValue; /* value to return */
 
   returnValue = false;
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum]) {
     returnValue = (*value).inGame[playerNum];
   }
   return returnValue;
@@ -356,8 +356,8 @@ bool netPlayersIsLocked(netPlayers *value) {
 
   returnValue = true;
   count = 0;
-  while (count < MAX_TANKS && returnValue == true) {
-    if ((*value).inUse[count] == true) {
+  while (count < MAX_TANKS && returnValue) {
+    if ((*value).inUse[count]) {
       returnValue = (*value).locked[count];
     }
     count++;
@@ -379,7 +379,7 @@ bool netPlayersIsLocked(netPlayers *value) {
 *  locked    - The lock state to set
 *********************************************************/
 void netPlayersSetLock(netPlayers *value, BYTE playerNum, bool locked) {
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum]) {
     (*value).locked[playerNum] = locked;
   }
 }
@@ -418,7 +418,7 @@ udpPackets netPlayersGetUdpPackets(netPlayers *value, BYTE playerNum) {
 *  port      - Port
 *********************************************************/
 void netPlayersGetPlayerDataReq(netPlayers *value, BYTE playerNum, struct in_addr *addr, unsigned short *port) {
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum]) {
     memcpy(addr, &((*value).addr[playerNum].sin_addr), sizeof(*addr));
     *port = (*value).addr[playerNum].sin_port;
   } else {
@@ -443,7 +443,7 @@ void netPlayersGetPlayerDataReq(netPlayers *value, BYTE playerNum, struct in_add
 bool netPlayersShouldDisconnectPlayer(netPlayers *value, BYTE playerNum) {
   bool returnValue = false; /* Value to return */
 
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum]) {
     if (time(nullptr) - (*value).lastHeard[playerNum] >= NET_PLAYERS_INACTIVEREMOVE_TIME) {
       returnValue = true;
     }
@@ -472,7 +472,7 @@ bool netPlayersCheck(netPlayers *value, BYTE playerNum, time_t t, time_t ourTime
   int ourDiff;
   int diff;
 
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum]) {
     ourDiff = (int) ((ourTime) - (*value).lastServerTime[playerNum]);
     (*value).lastServerTime[playerNum] = ourTime;
     clientDiff = (int) (t - (*value).lastClientTime[playerNum]);
@@ -503,7 +503,7 @@ bool netPlayersCheck(netPlayers *value, BYTE playerNum, time_t t, time_t ourTime
 *  value     - The netPlayers structure 
 *********************************************************/
 void netPlayersSetCheater(netPlayers *value, BYTE playerNum) {
-  if ((*value).inUse[playerNum] == true) {
+  if ((*value).inUse[playerNum]) {
     (*value).cheatCount[playerNum] = 150;
   }
 }

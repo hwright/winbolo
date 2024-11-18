@@ -96,7 +96,7 @@ bool winbolonetThreadCreate(void) {
     }
   }
 #else
-  if (returnValue == true) {
+  if (returnValue) {
     hWbnThread = SDL_CreateThread(winbolonetThreadRun, nullptr);
     if (hWbnThread  == nullptr) {
       SDL_DestroyMutex(hWbnMutexHandle);
@@ -135,7 +135,7 @@ void winbolonetThreadDestroy(void) {
 
     /* Wait for current to finish */
     wbnShouldRun = false;
-    while (wbnFinished == false) {
+    while (!wbnFinished) {
       /* Wait a bit for the last call to finish */
 #ifdef _WIN32
       Sleep(WBN_SHUTDOWN_SLEEP_TIME);
@@ -204,7 +204,7 @@ void winbolonetThreadDestroy(void) {
 void winbolonetThreadAddRequest(BYTE *data, int len) {
   wbnList add; /* Used to add to the queue */
 
-  if (wbnShouldRun == true) {
+  if (wbnShouldRun) {
     add = new wbnListObj;
     memcpy(add->data, data, len);
     add->len = len;
@@ -239,7 +239,7 @@ int winbolonetThreadRun(void *) {
   wbnList q;      /* Used to iterate through the list */
   wbnList prev;      /* Used to iterate through the list */
 
-  while (wbnShouldRun == true) {
+  while (wbnShouldRun) {
 
 #ifdef _WIN32
     WaitForSingleObject(hWbnMutexHandle, INFINITE);
@@ -253,7 +253,7 @@ int winbolonetThreadRun(void *) {
     SDL_mutexV(hWbnMutexHandle);
 #endif    
     
-    while (NonEmpty(wbnProcessing) && wbnShouldRun == true) {
+    while (NonEmpty(wbnProcessing) && wbnShouldRun) {
       /* Get last entry */
       if (wbnProcessing->next == nullptr) {
         /* Only one entry */
