@@ -24,6 +24,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <filesystem>
 #include <format>
 #include <fstream>
 #include <string>
@@ -32,13 +33,14 @@
 
 namespace bolo {
 
-// Get the given preference value.
-//
-// ARGUMENTS:
-//  section  - The section name excluding square [ ]
-//  item     - The item name to read
-//  def      - The default item to replace with if missing
-//  filename - Filename and path to read file from
+namespace {
+
+void makeDir(std::string_view path) {
+  std::filesystem::create_directory(path);
+  std::filesystem::create_directory(std::format("{}/brains", path));
+}
+
+}  // namespace
 std::string GetPrivateProfileString(std::string_view section,
                                     std::string_view item, std::string_view def,
                                     std::string_view filename) {
@@ -156,14 +158,6 @@ void WritePrivateProfileString(const char *section, const char *item,
   delete[] buff;
 }
 
-static void preferencesMakeDir(const char *path) {
-  char mkDirPath[FILENAME_MAX];
-  mkdir(path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-  strcpy(mkDirPath, path);
-  strcat(mkDirPath, "/brains");
-  mkdir(mkDirPath, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
-}
-
 /*********************************************************
  *NAME:          preferencesGetPreferenceFile
  *AUTHOR:        John Morrison
@@ -181,7 +175,7 @@ std::string preferencesGetPreferenceFile() {
 
   pwd = getpwuid(getuid());
   std::string filename = std::format("{}/.linbolo/", pwd->pw_dir);
-  preferencesMakeDir(filename.c_str());
+  makeDir(filename.c_str());
   return std::format("{}{}", filename, PREFERENCE_FILE);
 }
 

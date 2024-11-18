@@ -1,29 +1,22 @@
 /*
- * $Id$
- *
- * Copyright (c) 1998-2008 John Morrison.
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+   Copyright (c) 1998-2008 John Morrison.
+   Copyright (c) 2024-     Hyrum Wright.
+
+   This program is free software; you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation; either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Preferences
- *Filename:      preferences.h
- *Author:        John Morrison
- *Creation Date: 26/11/99
- *Last Modified: 26/11/99
- *Purpose:
- * Implements the Win32 ini file functions required. Also
- * includes function to preference file name and path.
- *********************************************************/
+//********************************************************
+//  Implements the Win32 ini file functions required. Also
+//  includes function to preference file name and path.
+//********************************************************
 
 #ifndef __PREFERENCES_H
 #define __PREFERENCES_H
@@ -35,21 +28,13 @@ namespace bolo {
 
 constexpr std::string_view PREFERENCE_FILE = "linbolo.ini";
 
-/*********************************************************
- *NAME:          GetPrivateProfileString
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/11/99
- *LAST MODIFIED: 26/11/99
- *PURPOSE:
- * Implements the Win32 GetPrivateProfileString function
- *
- *ARGUMENTS:
- * section  - The section name excluding square [ ]
- * item     - The item name to read
- * def      - The default item to replace with if missing
- * output   - The output variable to store in
- * filename - Filename and path to read file from
- *********************************************************/
+// Get the given preference value.
+//
+// ARGUMENTS:
+//  section  - The section name excluding square [ ]
+//  item     - The item name to read
+//  def      - The default item to replace with if missing
+//  filename - Filename and path to read file from
 std::string GetPrivateProfileString(std::string_view section,
                                     std::string_view item, std::string_view def,
                                     std::string_view filename);
