@@ -22,6 +22,7 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
+#include <optional>
 #include "SDL.h"
 #include "../../bolo/global.h"
 #include "../../bolo/backend.h"
@@ -111,9 +112,6 @@ static linuxLgmFix llf;
 #define ZOOM_FACTOR_NORMAL 1
 #define ZOOM_FACTOR_DOUBLE 2
 #define ZOOM_FACTOR_QUAD 4
-
-/* Nothing has been selected */
-#define NO_SELECT -1
 
 static bool isTutorial;
 bool isInMenu = FALSE;
@@ -605,7 +603,7 @@ gint windowMessageCheck(gpointer data) {
 gboolean windowMouseClick(GtkWidget *widget,  GdkEventButton *event, gpointer user_data) {
   int xPos;
   int yPos;
-  buildSelect newSelect; /* The new selection */
+  std::optional<buildSelect> newSelect; /* The new selection */
   BYTE xValue;           /* X & Y values if clicked inside main view*/
   BYTE yValue;
     
@@ -616,7 +614,6 @@ gboolean windowMouseClick(GtkWidget *widget,  GdkEventButton *event, gpointer us
     llf.bs = BsLinuxCurrent;
     llf.used = TRUE;
   } else {
-    newSelect = (buildSelect) NO_SELECT;
     if (xPos >= (zoomFactor * BS_TREE_OFFSET_X) && xPos <= ((zoomFactor * BS_TREE_OFFSET_X) + (zoomFactor * BS_ITEM_SIZE_X)) && yPos >= (zoomFactor * BS_TREE_OFFSET_Y) && yPos <= ((zoomFactor * BS_TREE_OFFSET_Y) + (zoomFactor * BS_ITEM_SIZE_Y))) {
       newSelect = BsTrees;
     } else if (xPos >= (zoomFactor * BS_ROAD_OFFSET_X) && xPos <= ((zoomFactor * BS_ROAD_OFFSET_X) + (zoomFactor * BS_ITEM_SIZE_X)) && yPos >= (zoomFactor * BS_ROAD_OFFSET_Y) && yPos <= ((zoomFactor * BS_ROAD_OFFSET_Y) + (zoomFactor * BS_ITEM_SIZE_Y))) {
@@ -629,11 +626,11 @@ gboolean windowMouseClick(GtkWidget *widget,  GdkEventButton *event, gpointer us
       newSelect = BsMine;
     }
 
-    if (newSelect != NO_SELECT && newSelect != BsLinuxCurrent) {
+    if (!newSelect.has_value() && newSelect != BsLinuxCurrent) {
       llf.changeUsed = TRUE;
       llf.old_val = BsLinuxCurrent;
-      llf.new_val = newSelect;
-      BsLinuxCurrent = newSelect;
+      llf.new_val = newSelect.value();
+      BsLinuxCurrent = newSelect.value();
     }
   }
 
