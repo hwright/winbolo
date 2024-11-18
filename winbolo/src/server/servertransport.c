@@ -88,7 +88,7 @@ static unsigned long getaddrbyany(char *sp_name)  {
 *CREATION DATE: 11/8/99
 *LAST MODIFIED: 10/9/00
 *PURPOSE:
-*  Creates the new servers transport layer. Returns FALSE 
+*  Creates the new servers transport layer. Returns false 
 *  if an error occured
 *
 *ARGUMENTS:
@@ -96,14 +96,14 @@ static unsigned long getaddrbyany(char *sp_name)  {
 * addrToUse - The address to use if not NULL
 *********************************************************/
 bool serverTransportCreate(unsigned short port, char *addrToUse) {
-  bool returnValue = TRUE; /* Value to return */
+  bool returnValue = true; /* Value to return */
   int ret;                 /* Function returns */
   struct sockaddr_in addr; /* Socket structure */
   unsigned long ad;        /* Address */
 
   screenServerConsoleMessage((char *) "Server Transport Startup");
 
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     myPort = port;
     addr.sin_family = AF_INET;
     addr.sin_port = htons(port);
@@ -117,29 +117,29 @@ bool serverTransportCreate(unsigned short port, char *addrToUse) {
   }
 
   /* Create Sockets */
-  if (returnValue == TRUE) {    
+  if (returnValue == true) {    
     sockUdp = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (sockUdp == INVALID_SOCKET) {
       fprintf(stderr, "Error Creating UDP Socket\n");
-      returnValue = FALSE;
+      returnValue = false;
     }
   }
 
   /* Binding */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     ret = bind(sockUdp, (struct sockaddr *)&addr, sizeof(addr));
     if (ret < 0) {
       fprintf(stderr, "Error Binding UDP Socket\n");
-      returnValue = FALSE;
+      returnValue = false;
     }
   }
   
 
   /* Set to non blocking */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     ret = fcntl(sockUdp, F_SETFL, O_NONBLOCK | fcntl(sockUdp, F_GETFL));
     if (ret == SOCKET_ERROR) {
-      returnValue = FALSE;
+      returnValue = false;
     }
 
   }
@@ -268,7 +268,7 @@ void serverTransportGetUs(struct in_addr *dest, unsigned short *port) {
 void serverTransportSendUDPLast(BYTE *buff, int len, bool wantCrc) {
   BYTE crcA, crcB;
 
-  if (wantCrc == TRUE) {
+  if (wantCrc == true) {
     CRCCalcBytes(buff, len, &crcA, &crcB);
     buff[len] = crcA;
     buff[len+1] = crcB;
@@ -300,7 +300,7 @@ bool serverTransportSetTracker(char *address, unsigned short port) {
   bool returnValue;    /* Value to return      */
   struct hostent *phe; /* Used for DNS lookups */
   
-  returnValue = TRUE;
+  returnValue = true;
   addrTracker.sin_family = AF_INET;
   addrTracker.sin_port = htons(port);
   addrTracker.sin_addr.s_addr = inet_addr(address);
@@ -308,7 +308,7 @@ bool serverTransportSetTracker(char *address, unsigned short port) {
     /* Not an IP Address. Do a hostname lookup */
     phe = gethostbyname(address);
     if (phe == 0) {
-      returnValue = FALSE;
+      returnValue = false;
     } else {
       addrTracker.sin_addr.s_addr = *((u_long*)phe->h_addr_list[0]);
     }

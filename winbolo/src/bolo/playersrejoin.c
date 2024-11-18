@@ -52,7 +52,7 @@ void playersRejoinCreate() {
  
   count = 0;
   while (count < MAX_TANKS) {
-    rejoin.item[count].inUse = FALSE;
+    rejoin.item[count].inUse = false;
     count++;
   }
 }
@@ -73,7 +73,7 @@ void playersRejoinDestroy() {
  
   count = 0;
   while (count < MAX_TANKS) {
-    rejoin.item[count].inUse = FALSE;
+    rejoin.item[count].inUse = false;
     count++;
   }
 }
@@ -94,10 +94,10 @@ void playersRejoinUpdate() {
  
   count = 0;
   while (count < MAX_TANKS) {
-    if (rejoin.item[count].inUse == TRUE) {
+    if (rejoin.item[count].inUse == true) {
       rejoin.item[count].timeOut++;
       if (rejoin.item[count].timeOut == MAX_REJOIN_TIME) {
-        rejoin.item[count].inUse = FALSE;
+        rejoin.item[count].inUse = false;
       }
     }
     count++;
@@ -122,12 +122,12 @@ void playersRejoinAddPlayer(char *playerName, PlayerBitMap pills, PlayerBitMap b
   bool done;     /* Finished looping */
  
   count = 0;
-  done = FALSE;
+  done = false;
   best = 0;
   timeBest = MAX_REJOIN_TIME;
-  while (count < MAX_TANKS && done == FALSE) {
-    if (rejoin.item[count].inUse == FALSE) {
-      done = TRUE;
+  while (count < MAX_TANKS && done == false) {
+    if (rejoin.item[count].inUse == false) {
+      done = true;
       best = count;
     } else if (rejoin.item[count].timeOut < timeBest) {
       best = count;
@@ -137,7 +137,7 @@ void playersRejoinAddPlayer(char *playerName, PlayerBitMap pills, PlayerBitMap b
   }
 
   /* Add it to best slot */
-  rejoin.item[best].inUse  = TRUE;
+  rejoin.item[best].inUse  = true;
   strcpy(rejoin.item[best].playerName, playerName);
   rejoin.item[best].pills = pills;
   rejoin.item[best].bases = bases;
@@ -168,17 +168,17 @@ void playersRejoinRequest(char *playerName, BYTE playerNum, pillboxes *pb, bases
   base ba;
  
   count = 0;
-  found = FALSE;
-  while (count < MAX_TANKS && found == FALSE) {
+  found = false;
+  while (count < MAX_TANKS && found == false) {
     if (strcmp(rejoin.item[count].playerName, playerName) == 0) {
       /* Found them */
-      found = TRUE;
+      found = true;
       num = count;
     }
     count++;
   }
 
-  if (found == TRUE) {
+  if (found == true) {
     /* They did exist */
     count = 0;
     logAddEvent(log_PlayerRejoin, playerNum, 0, 0, 0, 0, NULL);
@@ -188,7 +188,7 @@ void playersRejoinRequest(char *playerName, BYTE playerNum, pillboxes *pb, bases
       testItem &= 1;
       if (testItem) {
         if (pillsGetPillOwner(pb, (BYTE) (count+1)) == NEUTRAL) {
-          pillsSetPillOwner(pb, (BYTE) (count+1), playerNum, TRUE);
+          pillsSetPillOwner(pb, (BYTE) (count+1), playerNum, true);
           netMNTAdd(screenGetNetMnt(), NMNT_PILLMIGRATE, count, playerNum, 0, 0);
         }
       }
@@ -198,13 +198,13 @@ void playersRejoinRequest(char *playerName, BYTE playerNum, pillboxes *pb, bases
       if (testItem) {
         if (basesGetBaseOwner(bs, (BYTE) (count+1)) == NEUTRAL) {
           basesGetBase(bs, &ba, (BYTE) (count+1));
-          basesSetBaseOwner(bs, (BYTE) (count+1), playerNum, TRUE);
+          basesSetBaseOwner(bs, (BYTE) (count+1), playerNum, true);
           netMNTAdd(screenGetNetMnt(), NMNT_BASEMIGRATE, count, playerNum, ba.x, ba.y);
         }        
       }
       count++;
     }
-    rejoin.item[num].inUse = FALSE;
+    rejoin.item[num].inUse = false;
   }
 }
 

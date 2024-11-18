@@ -42,8 +42,8 @@ typedef SDL_mutex *HANDLE;
 #include "threads.h"
 
 HANDLE hMutexHandle = NULL;
-bool threadServerContext = FALSE;
-bool threadStarted = FALSE;
+bool threadServerContext = false;
+bool threadStarted = false;
 
 /*********************************************************
 *NAME:          threadsCreate
@@ -56,23 +56,23 @@ bool threadStarted = FALSE;
 *  success
 *
 *ARGUMENTS:
-*  context - TRUE if to start in server context
+*  context - true if to start in server context
 *********************************************************/
 bool threadsCreate(bool context) {
-  bool returnValue = TRUE; /* Value to return */
+  bool returnValue = true; /* Value to return */
 
-  if (threadStarted == TRUE) {
-    return TRUE;
+  if (threadStarted == true) {
+    return true;
   }
   threadServerContext = context;
   screenServerConsoleMessage((char *)"Thread Manager Startup");
 #ifdef _WIN32
-  hMutexHandle = CreateMutex(NULL, FALSE, "WinBoloDS");
+  hMutexHandle = CreateMutex(NULL, false, "WinBoloDS");
 #else 
   hMutexHandle = SDL_CreateMutex();
 #endif
   if (hMutexHandle == NULL) {
-    returnValue = FALSE;
+    returnValue = false;
     fprintf(stderr, "Error Creating Mutex\n");
   }
  
@@ -93,7 +93,7 @@ bool threadsCreate(bool context) {
 *********************************************************/
 void threadsDestroy(void) {
  
-  threadStarted = FALSE;
+  threadStarted = false;
   screenServerConsoleMessage((char *) "Thread Manager Shutdown");
   /* TCP Listener */
 #ifdef _WIN32
@@ -149,7 +149,7 @@ void threadsReleaseMutex(void) {
 *CREATION DATE: 27/07/03
 *LAST MODIFIED: 27/07/03
 *PURPOSE:
-*  Returns the current thread context. TRUE if we are in
+*  Returns the current thread context. true if we are in
 *  a server context, false if we are in a client
 *
 *ARGUMENTS:
@@ -165,7 +165,7 @@ bool threadsGetContext() {
 *CREATION DATE: 27/07/03
 *LAST MODIFIED: 27/07/03
 *PURPOSE:
-*  Sets the current thread context. TRUE if we are in
+*  Sets the current thread context. true if we are in
 *  a server context, false if we are in a client
 *
 *ARGUMENTS:

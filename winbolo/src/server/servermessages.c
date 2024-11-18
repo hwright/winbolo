@@ -29,9 +29,9 @@
 #include "../bolo/messages.h"
 
 
-bool isServerQuiet = FALSE;              /* Is the server running in quiet mode */
+bool isServerQuiet = false;              /* Is the server running in quiet mode */
 char serverMessageLogFile[FILENAME_MAX]; /* FileName to save to */
-bool serverMessageUseLogFile = FALSE; /* Are we using a log file */
+bool serverMessageUseLogFile = false; /* Are we using a log file */
 
 void serverMessageSetQuietMode(bool modeOn) {
   isServerQuiet = modeOn;
@@ -39,7 +39,7 @@ void serverMessageSetQuietMode(bool modeOn) {
 
 void serverMessagesSetLogFile(char *logFile) {
   strcpy(serverMessageLogFile, logFile);
-  serverMessageUseLogFile = TRUE;
+  serverMessageUseLogFile = true;
 }
 
 /*********************************************************
@@ -59,8 +59,8 @@ void serverMessagesSetLogFile(char *logFile) {
 *********************************************************/
 void serverMessageAdd(messageType msgType, char *top, char *bottom) {
   FILE *fp; /* File to write to */
-  if (msgType != assistantMessage && isServerQuiet == FALSE) {
-    if (serverMessageUseLogFile == FALSE) {
+  if (msgType != assistantMessage && isServerQuiet == false) {
+    if (serverMessageUseLogFile == false) {
       fprintf(stdout, "%s\n%s\n", top, bottom);
      } else {
       fp = fopen(serverMessageLogFile, "a");
@@ -74,8 +74,8 @@ void serverMessageAdd(messageType msgType, char *top, char *bottom) {
 
 void serverMessageConsoleMessage(char *msg) {
   FILE *fp; /* File to write to */
-  if (isServerQuiet == FALSE) {
-    if (serverMessageUseLogFile == FALSE) {
+  if (isServerQuiet == false) {
+    if (serverMessageUseLogFile == false) {
       fprintf(stderr, "%s\n", msg);
     } else {
       fp = fopen(serverMessageLogFile, "a");

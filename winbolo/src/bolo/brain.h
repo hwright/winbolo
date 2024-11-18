@@ -26,12 +26,6 @@
 #define export
 #define import extern
 
-/* jm */
-
-typedef BYTE Boolean;
-#define TRUE 1
-#define FALSE 0
-/* end jm */
 
 /* The various accessible tank control functions */
 enum

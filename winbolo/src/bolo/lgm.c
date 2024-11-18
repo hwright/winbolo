@@ -78,8 +78,8 @@ lgm lgmCreate(BYTE playerNum) {
   lgman->playerNum = playerNum;
   lgman->x = 0;
   lgman->y = 0;
-  lgman->inTank = TRUE;
-  lgman->isDead = FALSE;
+  lgman->inTank = true;
+  lgman->isDead = false;
   lgman->nextAction = LGM_IDLE;
   lgman->action = LGM_IDLE;
   lgman->state = LGM_STATE_IDLE;
@@ -136,23 +136,23 @@ void lgmUpdate(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
 	WORLD wy;
 
 	/* Single player or server instance */
-	if (netGetType() == netSingle || threadsGetContext() == TRUE) {
+	if (netGetType() == netSingle || threadsGetContext() == true) {
 
 		/* Man is parachuting in */
-		if ((*lgman)->isDead == TRUE) {
+		if ((*lgman)->isDead == true) {
 			lgmParchutingIn(lgman);
 			/* check to see if lgm will land ontop of a building/pillbox/or base */
 			mx = lgmGetMX(lgman);
 			my = lgmGetMY(lgman);
 			pos = mapGetPos(mp, mx, my);
-			if (pos == BUILDING || pos == HALFBUILDING || pillsExistPos(pb, mx, my) == TRUE || basesExistPos(bs, mx, my) == TRUE) {
-				(*lgman)->onTop = TRUE;
+			if (pos == BUILDING || pos == HALFBUILDING || pillsExistPos(pb, mx, my) == true || basesExistPos(bs, mx, my) == true) {
+				(*lgman)->onTop = true;
 				// if base is owned by player, then, we're not ontop.
-				if(basesAmOwner(bs,(*lgman)->playerNum, mx, my)==TRUE){
-					(*lgman)->onTop = FALSE;
+				if(basesAmOwner(bs,(*lgman)->playerNum, mx, my)==true){
+					(*lgman)->onTop = false;
 				}
 			} else {
-				(*lgman)->onTop = FALSE;
+				(*lgman)->onTop = false;
 			}
 		} else if ((*lgman)->state != LGM_STATE_IDLE) {
 			/* LGM is either going to a destination or returning to the tank */
@@ -207,11 +207,11 @@ void lgmUpdate(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
 			}
 		}
 		/* LGM isn't dead and he's not in the tank */
-		if ((*lgman)->isDead == FALSE && (*lgman)->inTank == FALSE) {
+		if ((*lgman)->isDead == false && (*lgman)->inTank == false) {
 			tankGetWorld(tnk, &wx, &wy);
 			/* Multiplayer game but just a client */
-			if (threadsGetContext() == FALSE) {
-				frontEndManStatus(FALSE, utilCalcAngle((*lgman)->x, (*lgman)->y, wx, wy));
+			if (threadsGetContext() == false) {
+				frontEndManStatus(false, utilCalcAngle((*lgman)->x, (*lgman)->y, wx, wy));
 			}
 		}
 	}
@@ -239,7 +239,7 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk
 *********************************************************/
 void lgmAddRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk, BYTE mapX, BYTE mapY, BYTE action) {
 
-  if ((*lgman)->isDead == TRUE && tankGetArmour(tnk) <= TANK_FULL_ARMOUR) {
+  if ((*lgman)->isDead == true && tankGetArmour(tnk) <= TANK_FULL_ARMOUR) {
 	/* LGM is parachuting in and tank is alive */
     messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_MAN_DEAD));
   } else if ((*lgman)->action != LGM_IDLE) {
@@ -247,7 +247,7 @@ void lgmAddRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk, BYT
     (*lgman)->nextX = mapX;
     (*lgman)->nextY = mapY;
     (*lgman)->nextAction = action;
-  } else if (netGetType() == netSingle || threadsGetContext() == TRUE) {
+  } else if (netGetType() == netSingle || threadsGetContext() == true) {
     /* Man isn't doing something  Check to make sure is possible first */
     lgmNewPrimaryRequest(lgman, mp, pb, bs, tnk, mapX, mapY, action);
   } else {
@@ -257,7 +257,7 @@ void lgmAddRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk, BYT
     BYTE trees;
     BYTE minesAmount;
     bool ok;
-    ok = lgmCheckNewRequest(lgman, mp, pb, bs, tnk, mapX, mapY, &action, &pillNum, &isMine, &trees, &minesAmount, FALSE);
+    ok = lgmCheckNewRequest(lgman, mp, pb, bs, tnk, mapX, mapY, &action, &pillNum, &isMine, &trees, &minesAmount, false);
     (*lgman)->numTrees = trees;
     (*lgman)->numMines = minesAmount;
     (*lgman)->numPills = pillNum;
@@ -266,7 +266,7 @@ void lgmAddRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk, BYT
       netMNTAdd(screenGetNetMnt(), NMNT_MANACTION, action, (*lgman)->playerNum, mapX, mapY);
       (*lgman)->action = action;
     } else {
-      lgmBackInTank(lgman, mp, pb, bs, tnk, TRUE);
+      lgmBackInTank(lgman, mp, pb, bs, tnk, true);
     }
   }
 }  
@@ -329,8 +329,8 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk
   tankY = tankGetMY(tnk);
   tankTrees = (*tnk)->trees;
 
-  proceed = TRUE;
-  *isMine = FALSE;
+  proceed = true;
+  *isMine = false;
   *trees = 0;
   *minesAmount = 0;
   *pillNum = LGM_NO_PILL;
@@ -345,67 +345,67 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk
 
   switch (*action) {
   case LGM_TREE_REQUEST:
-    if (pos != FOREST || isBase == TRUE || isPill == TRUE) {
+    if (pos != FOREST || isBase == true || isPill == true) {
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_NO_TREE));
-      proceed = FALSE;
+      proceed = false;
     }
     break;
   case LGM_ROAD_REQUEST:
-    if (pos == FOREST && isPill == FALSE && isBase == FALSE) {
+    if (pos == FOREST && isPill == false && isBase == false) {
 	  /* Clicked on a tree that doesn't contain a base or pill on it */
       *action = LGM_TREE_REQUEST;
-    } else if (pos == BOAT || pos == DEEP_SEA || pos == BUILDING || pos == HALFBUILDING || isPill == TRUE || isBase == TRUE) {
+    } else if (pos == BOAT || pos == DEEP_SEA || pos == BUILDING || pos == HALFBUILDING || isPill == true || isBase == true) {
 	  /* Clicked one of the following a boat, deep sea, building, half building, pill, base  */
-      proceed = FALSE;
+      proceed = false;
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_NO_BUILD));
     } else if (pos == ROAD) {
 	  /* Clicked on a road */
-      proceed = FALSE;
+      proceed = false;
     } else if (pos == RIVER && mapX == tankX && mapY == tankY && tankIsOnBoat(tnk)) {
 	  /* Clicked on a square that has a tank on a boat on it */
-	  proceed = FALSE;
+	  proceed = false;
 	  messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_NO_BUILD_UNDER_BOAT));
-    } else if (tankGetLgmTrees(tnk, LGM_COST_ROAD, perform) == FALSE) {
-      proceed = FALSE;
+    } else if (tankGetLgmTrees(tnk, LGM_COST_ROAD, perform) == false) {
+      proceed = false;
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_INSUFFICIENT_TREES));
 	} else {
       *trees = LGM_COST_ROAD;
     }
     break;
   case LGM_BUILDING_REQUEST:
-    if (pos == FOREST && isPill == FALSE && isBase == FALSE) {
+    if (pos == FOREST && isPill == false && isBase == false) {
       *action = LGM_TREE_REQUEST;
-    } else if (pos == BOAT || pos == DEEP_SEA || isPill == TRUE || isBase == TRUE) {
-      proceed = FALSE;
+    } else if (pos == BOAT || pos == DEEP_SEA || isPill == true || isBase == true) {
+      proceed = false;
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_NO_BUILD));
     } else if (pos == RIVER && mapX == tankX && mapY == tankY && tankIsOnBoat(tnk)) {
 	  /* Clicked on a square that has a tank on a boat on it */
-	  proceed = FALSE;
+	  proceed = false;
 	  messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_NO_BUILD_UNDER_BOAT));
     } else if (pos == RIVER) {
 	  /* Build a wall on a river, that means build a boat */
       *action = LGM_BOAT_REQUEST;
-      if (tankGetLgmTrees(tnk, LGM_COST_BOAT, perform) == FALSE) {
-        proceed = FALSE;
+      if (tankGetLgmTrees(tnk, LGM_COST_BOAT, perform) == false) {
+        proceed = false;
         messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_INSUFFICIENT_TREES));
       } else {
         *trees = LGM_COST_BOAT;
       }
         
     } else if (tankX == mapX && tankY == mapY) {
-      proceed = FALSE;
+      proceed = false;
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_BUILDTANK));
     } else if (pos == HALFBUILDING) {
-      if (tankGetLgmTrees(tnk, LGM_COST_REPAIRBUILDING, perform) == FALSE) {
-        proceed = FALSE;
+      if (tankGetLgmTrees(tnk, LGM_COST_REPAIRBUILDING, perform) == false) {
+        proceed = false;
         messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_INSUFFICIENT_TREES));
       } else {
         *trees = LGM_COST_REPAIRBUILDING;
       }
     } else if (pos == BUILDING) {
-      proceed = FALSE;
-    } else if (tankGetLgmTrees(tnk, LGM_COST_BUILDING, perform) == FALSE) {
-        proceed = FALSE;
+      proceed = false;
+    } else if (tankGetLgmTrees(tnk, LGM_COST_BUILDING, perform) == false) {
+        proceed = false;
         messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_INSUFFICIENT_TREES));
     } else {
       *trees = LGM_COST_BUILDING;
@@ -413,20 +413,20 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk
 
     break;
   case LGM_PILL_REQUEST:
-    if (pos == BOAT || pos == DEEP_SEA || pos == BUILDING || pos == HALFBUILDING || pos == RIVER || isBase == TRUE) {
-      proceed = FALSE;
+    if (pos == BOAT || pos == DEEP_SEA || pos == BUILDING || pos == HALFBUILDING || pos == RIVER || isBase == true) {
+      proceed = false;
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_NO_BUILD));
-    } else if (pos == FOREST && isPill == FALSE) {
+    } else if (pos == FOREST && isPill == false) {
       *action = LGM_TREE_REQUEST;
     } else if (tankX == mapX && tankY == mapY) {
-      proceed = FALSE;
+      proceed = false;
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_BUILDTANK));
-    } else if (isPill == TRUE) {
+    } else if (isPill == true) {
       if (pillsGetArmourPos(pb, mapX, mapY) == PILLS_MAX_ARMOUR) {
-        proceed= FALSE;
+        proceed= false;
         messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_PILL_NO_NEED_REPAIR));
       } else if (tankTrees<LGM_COST_PILLREPAIR) {
-        proceed = FALSE;
+        proceed = false;
         messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_INSUFFICIENT_TREES));
       } else {
 		pillArmour = pillsGetArmourPos(pb, mapX, mapY);
@@ -449,11 +449,11 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk
 		tankGetLgmTrees(tnk, *trees, perform);
       }
       *pillNum = LGM_NO_PILL;
-    } else if ((tankGetCarriedPill(tnk, pillNum, perform)) == FALSE) {
-      proceed = FALSE;
+    } else if ((tankGetCarriedPill(tnk, pillNum, perform)) == false) {
+      proceed = false;
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_NO_PILLS));
-    } else if (tankGetLgmTrees(tnk, LGM_COST_PILLNEW, perform) == FALSE) {
-      proceed = FALSE;
+    } else if (tankGetLgmTrees(tnk, LGM_COST_PILLNEW, perform) == false) {
+      proceed = false;
       tankPutCarriedPill(tnk, *pillNum);
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_INSUFFICIENT_TREES));
     } else {
@@ -461,21 +461,21 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk
     }
     break;
   case LGM_BOAT_REQUEST:
-    if (pos != RIVER || isPill == TRUE || isBase == TRUE) {
-      proceed = FALSE;
-    } else if (tankGetLgmTrees(tnk, LGM_COST_BOAT, perform) == FALSE) {
-      proceed = FALSE;
+    if (pos != RIVER || isPill == true || isBase == true) {
+      proceed = false;
+    } else if (tankGetLgmTrees(tnk, LGM_COST_BOAT, perform) == false) {
+      proceed = false;
     } else {
       *trees = LGM_COST_BOAT;
     }
     break;
   default:
     /* Case LGM_REQUEST_MINE */
-    if (pos == DEEP_SEA || pos == RIVER || pos == BUILDING || pos == BOAT || pos == HALFBUILDING || isPill == TRUE || isBase == TRUE) {
-      proceed = FALSE;
+    if (pos == DEEP_SEA || pos == RIVER || pos == BUILDING || pos == BOAT || pos == HALFBUILDING || isPill == true || isBase == true) {
+      proceed = false;
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_NO_BUILD));
-    } else if (tankGetLgmMines(tnk, LGM_COST_MINE, perform) == FALSE) {
-      proceed = FALSE;
+    } else if (tankGetLgmMines(tnk, LGM_COST_MINE, perform) == false) {
+      proceed = false;
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_INSUFFICIENT_MINES));
     } else {
       *minesAmount = LGM_COST_MINE;
@@ -483,15 +483,15 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk
     break;
   }
   if (*action == LGM_TREE_REQUEST && pos != FOREST) {
-    proceed = FALSE;
+    proceed = false;
     messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_NO_TREE));
   }
 
-  if (proceed == TRUE) {
+  if (proceed == true) {
     /* Check for a visible mine */
-    if ((minesExistPos(screenGetMines(), mapX, mapY)) == TRUE) {
-      *isMine = TRUE;
-      proceed = FALSE;
+    if ((minesExistPos(screenGetMines(), mapX, mapY)) == true) {
+      *isMine = true;
+      proceed = false;
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT), langGetText2(LGM_PILL_NO_BUILD_ON_MINE));
       if ((*lgman)->nextAction == LGM_MINE_REQUEST && (*lgman)->nextX == mapX && (*lgman)->nextY == mapY) {
         (*lgman)->nextAction = LGM_IDLE;
@@ -530,13 +530,13 @@ void lgmNewPrimaryRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *t
   pillNum = LGM_NO_PILL;
 
   /* If its OK to proceed then set it up */
-  if (lgmCheckNewRequest(lgman, mp, pb, bs, tnk, mapX, mapY, &action, &pillNum, &isMine, &trees, &minesAmount, TRUE) == TRUE) {
+  if (lgmCheckNewRequest(lgman, mp, pb, bs, tnk, mapX, mapY, &action, &pillNum, &isMine, &trees, &minesAmount, true) == true) {
     (*lgman)->numTrees = trees;
     (*lgman)->numMines = minesAmount;
-    if (isMine == TRUE) {
+    if (isMine == true) {
       (*lgman)->state = LGM_STATE_IDLE;
-      (*lgman)->inTank = TRUE;
-      lgmBackInTank(lgman, mp, pb, bs, tnk, FALSE);
+      (*lgman)->inTank = true;
+      lgmBackInTank(lgman, mp, pb, bs, tnk, false);
     } else {
       (*lgman)->destX = mapX;
       (*lgman)->destX <<= TANK_SHIFT_MAPSIZE;
@@ -547,7 +547,7 @@ void lgmNewPrimaryRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *t
       tankGetWorld(tnk, &((*lgman)->x), &((*lgman)->y));
       (*lgman)->state = LGM_STATE_GOING;
       (*lgman)->action = action;
-      (*lgman)->inTank = FALSE;
+      (*lgman)->inTank = false;
       switch (action) {
       case LGM_ROAD_REQUEST:
         if (mapGetPos(mp, mapX, mapY) == RIVER) {
@@ -575,7 +575,7 @@ void lgmNewPrimaryRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *t
         break;
       }
     }
-    if (netGetType() == netUdp || threadsGetContext() == TRUE) {
+    if (netGetType() == netUdp || threadsGetContext() == true) {
       serverNetSendManWorkingMessage(screenGetTankPlayer(tnk), mapX, mapY, minesAmount, trees, pillNum);
     }
   } else {
@@ -585,7 +585,7 @@ void lgmNewPrimaryRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *t
     if (pillNum != LGM_NO_PILL) {
       tankPutCarriedPill(tnk, pillNum);
     }
-    if (threadsGetContext() == TRUE) {
+    if (threadsGetContext() == true) {
       serverNetSendManReturnMessge(screenGetTankPlayer(tnk), trees, minesAmount, pillNum);
     }
 
@@ -599,42 +599,42 @@ bool lgmCheckBlessedSquare(BYTE xValue, BYTE yValue, BYTE action, map *mp, pillb
   bool isBase;
   bool isPill;
 
-  returnValue = TRUE;
+  returnValue = true;
   pos = mapGetPos(mp, xValue, yValue);
   isBase = basesExistPos(bs, xValue, yValue);
   isPill = pillsExistPos(pb, xValue, yValue);
 
   switch (action) {
   case LGM_TREE_REQUEST:
-    if (pos == BUILDING || pos == HALFBUILDING || pos == RIVER || pos == BOAT || pos == DEEP_SEA || isPill == TRUE ) {
-      returnValue = FALSE;
+    if (pos == BUILDING || pos == HALFBUILDING || pos == RIVER || pos == BOAT || pos == DEEP_SEA || isPill == true ) {
+      returnValue = false;
     }
     break;
   case LGM_ROAD_REQUEST:
-    if (pos == BUILDING || pos == HALFBUILDING || pos == BOAT || pos == DEEP_SEA || isPill == TRUE ) {
-      returnValue = FALSE;
+    if (pos == BUILDING || pos == HALFBUILDING || pos == BOAT || pos == DEEP_SEA || isPill == true ) {
+      returnValue = false;
     }
     break;
   case LGM_BUILDING_REQUEST:
-    if (pos == BUILDING || pos == RIVER || pos == BOAT || pos == DEEP_SEA || isPill == TRUE) {
-      returnValue = FALSE;
+    if (pos == BUILDING || pos == RIVER || pos == BOAT || pos == DEEP_SEA || isPill == true) {
+      returnValue = false;
     } 
 
     break;
   case LGM_PILL_REQUEST:
     if (pos == BUILDING || pos == HALFBUILDING || pos == RIVER || pos == BOAT || pos == DEEP_SEA) {
-      returnValue = FALSE;
+      returnValue = false;
     }
     break;
   case LGM_BOAT_REQUEST:
-    if (pos != RIVER || isPill == TRUE) {
-      returnValue = FALSE;
+    if (pos != RIVER || isPill == true) {
+      returnValue = false;
     }
     break;
   default:
     /* Case LGM_REQUEST_MINE */
-    if (pos == DEEP_SEA || pos == RIVER || pos == BUILDING || pos == BOAT || pos == HALFBUILDING || isPill == TRUE || isBase == TRUE) {
-      returnValue = FALSE;
+    if (pos == DEEP_SEA || pos == RIVER || pos == BUILDING || pos == BOAT || pos == HALFBUILDING || isPill == true || isBase == true) {
+      returnValue = false;
     }
     break;
   }
@@ -675,12 +675,12 @@ void lgmMoveAway(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   /* Deal with the tank being on a boat */
   onBoat = lgmCheckTankBoat(lgman, tnk, LGM_TANKBOAT_LEAVE);
 
-  noGo = FALSE;
+  noGo = false;
   tankGetWorld(tnk, &newmx, &newmy);
   angle = utilCalcAngle((*lgman)->x, (*lgman)->y, (*lgman)->destX, (*lgman)->destY);
   frontAngle = utilCalcAngle((*lgman)->x, (*lgman)->y, newmx, newmy);
-  if (threadsGetContext() == FALSE) {
-    frontEndManStatus(FALSE, frontAngle);
+  if (threadsGetContext() == false) {
+    frontEndManStatus(false, frontAngle);
   }
   conv = (*lgman)->x;
   conv >>= TANK_SHIFT_MAPSIZE;
@@ -689,7 +689,7 @@ void lgmMoveAway(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   conv >>= TANK_SHIFT_MAPSIZE;
   bmy = (BYTE) conv;
   
-  if ((bmx == (*lgman)->blessX && bmy == (*lgman)->blessY) || onBoat == TRUE) {
+  if ((bmx == (*lgman)->blessX && bmy == (*lgman)->blessY) || onBoat == true) {
     speed = MAP_MANSPEED_TREFBASE;
   } else {
     speed = mapGetManSpeed(mp, pb, bs, bmx, bmy, (*lgman)->playerNum);
@@ -705,7 +705,7 @@ void lgmMoveAway(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   newbmy = (BYTE) newmy;
 
   /* Huh? */
-  if ((mapGetManSpeed(mp, pb, bs, bmx, newbmy, (*lgman)->playerNum)) > 0 || onBoat == TRUE) {
+  if ((mapGetManSpeed(mp, pb, bs, bmx, newbmy, (*lgman)->playerNum)) > 0 || onBoat == true) {
 
   }
 
@@ -719,25 +719,25 @@ void lgmMoveAway(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   newbmx = (BYTE) newmx;
   newbmy = (BYTE) newmy; */
 
-  if ((mapGetManSpeed(mp, pb, bs, bmx, newbmy, (*lgman)->playerNum)) > 0 || onBoat == TRUE) {
+  if ((mapGetManSpeed(mp, pb, bs, bmx, newbmy, (*lgman)->playerNum)) > 0 || onBoat == true) {
     (*lgman)->y = (WORLD) ((*lgman)->y  + yAdd);
-  } else if (bmx == (*lgman)->blessX && newbmy == (*lgman)->blessY && lgmCheckBlessedSquare(bmx, newbmy, (*lgman)->action, mp, pb, bs, tnk) == TRUE) {
+  } else if (bmx == (*lgman)->blessX && newbmy == (*lgman)->blessY && lgmCheckBlessedSquare(bmx, newbmy, (*lgman)->action, mp, pb, bs, tnk) == true) {
     (*lgman)->y = (WORLD) ((*lgman)->y + yAdd);
     
 //  } else if (bmx == (*lgman)->blessX && newbmy == (*lgman)->blessY) {
 //    (*lgman)->y = (WORLD) ((*lgman)->y + yAdd);
   } else {
     (*lgman)->obstructed = LGM_BRAIN_PARTIAL;
-    noGo = TRUE;
+    noGo = true;
     newbmy = bmy;
   }
-  if ((((mapGetManSpeed(mp, pb, bs, newbmx, newbmy,(*lgman)->playerNum) )) > 0 && xAdd != 0) || onBoat == TRUE) {
+  if ((((mapGetManSpeed(mp, pb, bs, newbmx, newbmy,(*lgman)->playerNum) )) > 0 && xAdd != 0) || onBoat == true) {
     (*lgman)->x = (WORLD) ((*lgman)->x + xAdd);
-  } else if (newbmx == (*lgman)->blessX && bmy == (*lgman)->blessY && lgmCheckBlessedSquare(newbmx, newbmy, (*lgman)->action, mp, pb, bs, tnk) == TRUE) {
+  } else if (newbmx == (*lgman)->blessX && bmy == (*lgman)->blessY && lgmCheckBlessedSquare(newbmx, newbmy, (*lgman)->action, mp, pb, bs, tnk) == true) {
     (*lgman)->x = (WORLD) ((*lgman)->x + xAdd);
 //  } else if (newbmx == (*lgman)->blessX && bmy == (*lgman)->blessY) {
 //    (*lgman)->x = (WORLD) ((*lgman)->x + xAdd);
-  } else if (noGo == TRUE || yAdd == 0) {
+  } else if (noGo == true || yAdd == 0) {
     (*lgman)->state = LGM_STATE_RETURN;
   } 
 
@@ -779,7 +779,7 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   BYTE newbmy;
   BYTE newTerrainX=0,newTerrainY=0,currentTerrain=0;
   BYTE onTopEdgeX=0,onTopEdgeY=0;
-  bool sameTerrainTypeX = FALSE,sameTerrainTypeY = FALSE;
+  bool sameTerrainTypeX = false,sameTerrainTypeY = false;
   int xAdd;       /* Add amounts */
   int yAdd;
   bool onBoat;    /* Is the tank on a boat */
@@ -791,8 +791,8 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   
   angle = utilCalcAngle((*lgman)->x, (*lgman)->y, newmx, newmy);
 
-  if (threadsGetContext() == FALSE) {
-    frontEndManStatus(FALSE, angle);
+  if (threadsGetContext() == false) {
+    frontEndManStatus(false, angle);
   }
   
   conv = (*lgman)->x;
@@ -805,7 +805,7 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   if (tankGetArmour(tnk) > TANK_FULL_ARMOUR || newmx == 0 || newmy == 0) {
     speed = 0;
     return;
-  } else if ((bmx == (*lgman)->blessX && bmy == (*lgman)->blessY) || onBoat == TRUE) {
+  } else if ((bmx == (*lgman)->blessX && bmy == (*lgman)->blessY) || onBoat == true) {
     speed = MAP_MANSPEED_TREFBASE;
   } else {
     speed = mapGetManSpeed(mp, pb, bs, bmx, bmy, (*lgman)->playerNum);
@@ -823,7 +823,7 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   newbmx = (BYTE) newmx;
   newbmy = (BYTE) newmy;
 
-  if ((mapGetManSpeed(mp,pb,bs,bmx,newbmy, (*lgman)->playerNum)) > 0 || onBoat == TRUE) {
+  if ((mapGetManSpeed(mp,pb,bs,bmx,newbmy, (*lgman)->playerNum)) > 0 || onBoat == true) {
     (*lgman)->y = (WORLD) ((*lgman)->y + yAdd);
   } else if (bmx == (*lgman)->blessX && newbmy == (*lgman)->blessY) {
     (*lgman)->y = (WORLD) ((*lgman)->y + yAdd);
@@ -831,7 +831,7 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
     (*lgman)->obstructed = LGM_BRAIN_PARTIAL;
     newbmy = bmy;
   }
-  if ((mapGetManSpeed(mp,pb,bs,newbmx,newbmy, (*lgman)->playerNum)) > 0 || onBoat == TRUE) {
+  if ((mapGetManSpeed(mp,pb,bs,newbmx,newbmy, (*lgman)->playerNum)) > 0 || onBoat == true) {
     (*lgman)->x = (WORLD) ((*lgman)->x + xAdd);
   } else if (newbmx == (*lgman)->blessX && newbmy == (*lgman)->blessY) {
     (*lgman)->x = (WORLD) ((*lgman)->x + xAdd);
@@ -846,7 +846,7 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
     (*lgman)->blessY = 0;
   }
 
-  if((*lgman)->onTop == TRUE){
+  if((*lgman)->onTop == true){
 	/*
 	  ok we landed ontop of a obstruction, so, we're going to keep moving get speed, calculate movement.
 	*/
@@ -883,54 +883,54 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
 
     if (currentTerrain == BUILDING||currentTerrain == HALFBUILDING){
 		if (newTerrainX == BUILDING||newTerrainX == HALFBUILDING){
-			sameTerrainTypeX = TRUE;
+			sameTerrainTypeX = true;
 		}
 		if (newTerrainY == BUILDING||newTerrainY == HALFBUILDING){
-			sameTerrainTypeY = TRUE;
+			sameTerrainTypeY = true;
 		}
 	} else {
 		/* do the check to see if pills/bases are beside each other, to allow the lgm to run around ontop of pills or bases.
 		   if pills exist in the current location, then check to see if the new location is also a pill, if it is, you can go onto it.
 		*/
-		if (pillsExistPos(pb, bmx, bmy) == TRUE){
-			if (pillsExistPos(pb, newbmx, bmy) == TRUE){
-				sameTerrainTypeX = TRUE;
+		if (pillsExistPos(pb, bmx, bmy) == true){
+			if (pillsExistPos(pb, newbmx, bmy) == true){
+				sameTerrainTypeX = true;
 			}
-			if (pillsExistPos(pb, bmx, newbmy) == TRUE){
-				sameTerrainTypeY = TRUE;
+			if (pillsExistPos(pb, bmx, newbmy) == true){
+				sameTerrainTypeY = true;
 			}
 		} else {
 			/* bases will be a bit more complicated, I will have to check for base ownership.
 			   can't have tbe lgm running over onto a based owned by the player.
 			*/
-			if (basesExistPos(bs, bmx, bmy) == TRUE)
+			if (basesExistPos(bs, bmx, bmy) == true)
 			{
-				if (basesExistPos(bs, newbmx, bmy) == TRUE){
-					if(basesAmOwner(bs,(*lgman)->playerNum, newbmx, bmy)==TRUE){
-					  sameTerrainTypeX = FALSE;
+				if (basesExistPos(bs, newbmx, bmy) == true){
+					if(basesAmOwner(bs,(*lgman)->playerNum, newbmx, bmy)==true){
+					  sameTerrainTypeX = false;
 					} else {
-  					  sameTerrainTypeX = TRUE;
+  					  sameTerrainTypeX = true;
 					}
 				}
-				if (basesExistPos(bs, bmx, newbmy) == TRUE){
-					if(basesAmOwner(bs,(*lgman)->playerNum, bmx, newbmy)==TRUE){
-					  sameTerrainTypeY = FALSE;
+				if (basesExistPos(bs, bmx, newbmy) == true){
+					if(basesAmOwner(bs,(*lgman)->playerNum, bmx, newbmy)==true){
+					  sameTerrainTypeY = false;
 					} else {
-					  sameTerrainTypeY = TRUE;
+					  sameTerrainTypeY = true;
 					}
 				}
 			} else {
 			  /* must not be ontop of a building anymore, since its failed all the checks, onTop = false*/
-			  (*lgman)->onTop = FALSE;
+			  (*lgman)->onTop = false;
 			}
 		} 
 	}
 	// if the lgm's old mapx coordinate is still the same, then we can add xAdd and yAdd to the lgm's coordinates)
 	// ok so the below works, now we need to modify it, to allow us to run onto tiles that are next to us.
-	if (bmx == newbmx||sameTerrainTypeX == TRUE){
+	if (bmx == newbmx||sameTerrainTypeX == true){
 	  (*lgman)->x = (WORLD) ((*lgman)->x + xAdd);
 	}
-	if (bmy == newbmy||sameTerrainTypeY == TRUE){
+	if (bmy == newbmy||sameTerrainTypeY == true){
 	  (*lgman)->y = (WORLD) ((*lgman)->y + yAdd);
 	}
 	speed = 0;
@@ -941,15 +941,15 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   if (((*lgman)->x - newmx) >= LGM_RETURN_MIN_GOAL && ((*lgman)->x - newmx) <= LGM_RETURN_MAX_GOAL && ((*lgman)->y - newmy) >= LGM_RETURN_MIN_GOAL && ((*lgman)->y - newmy) <= LGM_RETURN_MAX_GOAL ) {
     /* Arrived back at tank */
     (*lgman)->state = LGM_STATE_IDLE;
-    (*lgman)->inTank = TRUE;
+    (*lgman)->inTank = true;
     (*lgman)->action = LGM_IDLE;
     (*lgman)->blessX = 0;
     (*lgman)->blessY = 0;
-/*    if (threadsGetContext() == TRUE) {
+/*    if (threadsGetContext() == true) {
       serverNetSendManReturnMessge(screenGetTankPlayer(tnk), (*lgman)->numTrees, (*lgman)->numMines, (*lgman)->numPills);
     } */
-    lgmBackInTank(lgman, mp, pb, bs, tnk, TRUE);
-    if (threadsGetContext() == FALSE) {
+    lgmBackInTank(lgman, mp, pb, bs, tnk, true);
+    if (threadsGetContext() == false) {
       frontEndManClear();
     }
   }
@@ -991,23 +991,23 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
   isPill = pillsExistPos(pb, bmx, bmy);
   isBase = basesExistPos(bs, bmx, bmy);
 
-  isMine = FALSE;
+  isMine = false;
   terrain = mapGetPos(mp, bmx, bmy);
   if (terrain >= MINE_START && terrain <= MINE_END) {
     terrain -= MINE_SUBTRACT;
-    isMine = TRUE;
+    isMine = true;
   }
 
 
   switch ((*lgman)->action) {
   case LGM_TREE_REQUEST:
     minesExpAddItem(screenGetMinesExp(), mp, bmx, bmy);
-    if (terrain == FOREST && isBase == FALSE && isPill == FALSE) {
-      if (isMine == TRUE) {
-        mapSetPos(mp, bmx, bmy, (BYTE) (GRASS+MINE_SUBTRACT), TRUE, FALSE);
+    if (terrain == FOREST && isBase == false && isPill == false) {
+      if (isMine == true) {
+        mapSetPos(mp, bmx, bmy, (BYTE) (GRASS+MINE_SUBTRACT), true, false);
         netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, 0, bmx, bmy);
       } else {
-        mapSetPos(mp, bmx, bmy, GRASS, TRUE, FALSE);
+        mapSetPos(mp, bmx, bmy, GRASS, true, false);
       }
       (*lgman)->numTrees = LGM_GATHER_TREE;
       netPNBAdd(screenGetNetPnb(), NPNB_LGM_FARMTREE, 0, (*lgman)->playerNum, bmx, bmy, 0);
@@ -1017,12 +1017,12 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
     break;
   case LGM_ROAD_REQUEST:
 /* HUH?    minesExpAddItem(mp, bmx, bmy); */
-    if (terrain != BUILDING && terrain != HALFBUILDING && terrain != BOAT && terrain != DEEP_SEA && isPill == FALSE && isBase == FALSE) {
-      if (isMine == TRUE) {
-        mapSetPos(mp, bmx, bmy, (BYTE) (ROAD+MINE_SUBTRACT), TRUE, FALSE);
+    if (terrain != BUILDING && terrain != HALFBUILDING && terrain != BOAT && terrain != DEEP_SEA && isPill == false && isBase == false) {
+      if (isMine == true) {
+        mapSetPos(mp, bmx, bmy, (BYTE) (ROAD+MINE_SUBTRACT), true, false);
         netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, 0, bmx, bmy);
       } else {
-        mapSetPos(mp, bmx, bmy, ROAD, TRUE, FALSE);
+        mapSetPos(mp, bmx, bmy, ROAD, true, false);
       }
       (*lgman)->numTrees = 0;
       netPNBAdd(screenGetNetPnb(), NPNB_LGM_BUILDROAD, 0, (*lgman)->playerNum, bmx, bmy, 0);
@@ -1033,9 +1033,9 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
     }
     break; 
   case LGM_BUILDING_REQUEST:
-    if (terrain != BUILDING && terrain != RIVER && terrain != BOAT && terrain != DEEP_SEA && isPill == FALSE && isBase == FALSE) {
-      if (isMine != TRUE) {
-        mapSetPos(mp, bmx, bmy, BUILDING, TRUE, FALSE);
+    if (terrain != BUILDING && terrain != RIVER && terrain != BOAT && terrain != DEEP_SEA && isPill == false && isBase == false) {
+      if (isMine != true) {
+        mapSetPos(mp, bmx, bmy, BUILDING, true, false);
       } else {
         netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, 0, bmx, bmy);
         minesExpAddItem(screenGetMinesExp(), mp, bmx, bmy);
@@ -1049,20 +1049,20 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
     break;
   case LGM_BOAT_REQUEST:
     if (terrain == RIVER) {
-      mapSetPos(mp, bmx, bmy, BOAT, TRUE, FALSE);
+      mapSetPos(mp, bmx, bmy, BOAT, true, false);
       netMNTAdd(screenGetNetMnt(), NMNT_BUILDBOAT, 0, (*lgman)->playerNum, bmx, bmy);
       (*lgman)->numTrees = 0;
       screenReCalc();
     }
     break;
   case LGM_MINE_REQUEST:
-    if ((isPill == FALSE && isBase == FALSE) && (terrain == SWAMP || terrain == CRATER || terrain == ROAD || terrain == FOREST || terrain == RUBBLE || terrain == GRASS)) {
-      if (isMine == TRUE) {
+    if ((isPill == false && isBase == false) && (terrain == SWAMP || terrain == CRATER || terrain == ROAD || terrain == FOREST || terrain == RUBBLE || terrain == GRASS)) {
+      if (isMine == true) {
         minesExpAddItem(screenGetMinesExp(), mp, bmx, bmy);
         netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, 0, bmx, bmy);
       } else {
         netMNTAdd(screenGetNetMnt(), NMNT_MINEPLACE, 0, (*lgman)->playerNum, bmx, bmy);
-        mapSetPos(mp, bmx, bmy, (BYTE) (terrain + MINE_SUBTRACT), FALSE, FALSE);
+        mapSetPos(mp, bmx, bmy, (BYTE) (terrain + MINE_SUBTRACT), false, false);
         minesAddItem(screenGetMines(), bmx, bmy);
         (*lgman)->numMines = 0;
         soundDist(manLayingMineNear, bmx, bmy);
@@ -1075,46 +1075,46 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
     addPill.y = bmy;
     if ((*lgman)->numPills == LGM_NO_PILL) {
       /* Repair pill */
-      if (isPill == TRUE) {
+      if (isPill == true) {
         pillsRepairPos(pb, bmx, bmy,(*lgman)->numTrees);
         netPNBAdd(screenGetNetPnb(), NPNB_PILL_REPAIR, 0, (*lgman)->playerNum, bmx, bmy,(*lgman)->numTrees);
 		(*lgman)->numTrees = 0;
         soundDist(manBuildingNear, bmx, bmy);
       }
     } else {
-      if (isPill == FALSE && isBase == FALSE && minesExistPos(screenGetMines(), bmx, bmy) == FALSE && terrain != BUILDING && terrain != HALFBUILDING && terrain != RIVER && terrain != BOAT && terrain != DEEP_SEA) {
-        if (isMine == TRUE) {
+      if (isPill == false && isBase == false && minesExistPos(screenGetMines(), bmx, bmy) == false && terrain != BUILDING && terrain != HALFBUILDING && terrain != RIVER && terrain != BOAT && terrain != DEEP_SEA) {
+        if (isMine == true) {
           netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, 0, bmx, bmy);
           minesExpAddItem(screenGetMinesExp(), mp, bmx, bmy);
           floodAddItem(screenGetFloodFill(), bmx, bmy);
           lgmDeathCheck(lgman, mp, pb, bs, (WORLD) ((bmx << M_W_SHIFT_SIZE) +MAP_SQUARE_MIDDLE), (WORLD) ((bmy<< M_W_SHIFT_SIZE)+MAP_SQUARE_MIDDLE), NEUTRAL);
           soundDist(mineExplosionNear, bmx, bmy);
-          mapSetPos(mp, bmx, bmy, CRATER, TRUE, FALSE);
+          mapSetPos(mp, bmx, bmy, CRATER, true, false);
         } else {
           (*lgman)->numTrees = 0;
           addPill.owner = (*lgman)->playerNum;
           addPill.armour = PILLS_MAX_ARMOUR;
           addPill.speed = pillsGetAttackSpeed(pb, (*lgman)->numPills);
           addPill.coolDown = 0;
-          addPill.inTank = FALSE;
-          addPill.justSeen = FALSE;
+          addPill.inTank = false;
+          addPill.justSeen = false;
           pillsSetPill(pb, &addPill, (*lgman)->numPills);
           netPNBAdd(screenGetNetPnb(), NPNB_PILL_DROP, (BYTE) ((*lgman)->numPills-1), (*lgman)->playerNum, addPill.x, addPill.y, 0);
           soundDist(manBuildingNear, bmx, bmy);
-          if (threadsGetContext() == FALSE) {
+          if (threadsGetContext() == false) {
             frontEndStatusPillbox((*lgman)->numPills, (pillsGetAllianceNum(pb, (*lgman)->numPills)));
           }
           (*lgman)->numPills = LGM_NO_PILL;
         }
       }
     }
-    /*     if (isMine == TRUE) {
+    /*     if (isMine == true) {
       netMNTAdd(NMNT_MINEEXPLOSION, 0, 0, bmx, bmy);
       minesExpAddItem(mp, bmx, bmy);
       floodAddItem(bmx, bmy);
       lgmDeathCheck(mp, pb, bs, (WORLD) ((bmx << M_W_SHIFT_SIZE) +MAP_SQUARE_MIDDLE), (WORLD) ((bmy<< M_W_SHIFT_SIZE)+MAP_SQUARE_MIDDLE));
       soundDist(mineExplosionNear, bmx, bmy);
-      mapSetPos(mp, bmx, bmy, CRATER, TRUE, FALSE);
+      mapSetPos(mp, bmx, bmy, CRATER, true, false);
     } else {
 */
     lgmCheckRemove(terrain, bmx, bmy);
@@ -1141,7 +1141,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
 *  pb        - Pointer to the pillbox structure
 *  bs        - Pointer to the base structure
 *  tnk       - Pointer to the tank structure
-*  sendItems - If TRUE, send the carriend items back
+*  sendItems - If true, send the carriend items back
 *              to the client
 *********************************************************/
 void lgmBackInTank(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk, bool sendItems) {
@@ -1168,17 +1168,17 @@ void lgmBackInTank(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk, boo
     (*lgman)->numMines = 0;
   }
 
-  if (sendItems == FALSE) {
+  if (sendItems == false) {
     trees = 0;
     minesAmount = 0;
     pillNum = LGM_NO_PILL;
   }
   // Added
-  if (threadsGetContext() == TRUE) {
+  if (threadsGetContext() == true) {
     serverNetSendManReturnMessge(screenGetTankPlayer(tnk), trees, minesAmount, pillNum);
   } else {
     if ((*lgman)->nextAction != LGM_IDLE) {  
-      if (/* FIXME - Removed for lgm problem threadsGetContext() == TRUE || */ netGetType() == netSingle) {
+      if (/* FIXME - Removed for lgm problem threadsGetContext() == true || */ netGetType() == netSingle) {
         lgmNewPrimaryRequest(lgman, mp, pb, bs, tnk, (*lgman)->nextX, (*lgman)->nextY, (*lgman)->nextAction);
       } else {
         /* Network game */
@@ -1189,7 +1189,7 @@ void lgmBackInTank(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk, boo
         bool ok;
         BYTE action;
         action = (*lgman)->nextAction;
-        ok = lgmCheckNewRequest(lgman, mp, pb, bs, tnk, (*lgman)->nextX, (*lgman)->nextY, &action, &pillNum, &isMine, &trees, &minesAmount, FALSE);
+        ok = lgmCheckNewRequest(lgman, mp, pb, bs, tnk, (*lgman)->nextX, (*lgman)->nextY, &action, &pillNum, &isMine, &trees, &minesAmount, false);
         (*lgman)->numTrees = trees;
         (*lgman)->numMines = minesAmount;
 
@@ -1223,11 +1223,11 @@ bool lgmOnScreen(lgm *lgman, BYTE leftPos, BYTE rightPos, BYTE top, BYTE bottom)
   BYTE x;     /* Map X and Y Positions (relative to screen) */
   BYTE y;
  
-  returnValue = FALSE;
+  returnValue = false;
   x = (BYTE) (( (unsigned int)(*lgman)->x -1) >> TANK_SHIFT_MAPSIZE);
   y = (BYTE) (((unsigned int) (*lgman)->y -2) >> TANK_SHIFT_MAPSIZE);
-  if (x >= leftPos && x < rightPos && y >= top && y < bottom && (*lgman)->state != LGM_STATE_IDLE && (*lgman)->inTank == FALSE) {
-    returnValue = TRUE; 
+  if (x >= leftPos && x < rightPos && y >= top && y < bottom && (*lgman)->state != LGM_STATE_IDLE && (*lgman)->inTank == false) {
+    returnValue = true; 
   }
   return returnValue;
 }
@@ -1252,7 +1252,7 @@ bool lgmOnScreen(lgm *lgman, BYTE leftPos, BYTE rightPos, BYTE top, BYTE bottom)
 void lgmGetScreenCoords(lgm *lgman, BYTE leftPos, BYTE topPos, BYTE *mx, BYTE *my, BYTE *px, BYTE *py, BYTE *frame) {
   WORLD conv; /* Used for Bit shifting */
 
-  if ((*lgman)->isDead == TRUE) {
+  if ((*lgman)->isDead == true) {
     *frame = LGM_HELICOPTER_FRAME;
     conv = (*lgman)->x-MAP_SQUARE_MIDDLE;
     conv >>= TANK_SHIFT_MAPSIZE;
@@ -1323,9 +1323,9 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx, WORL
   BYTE count;
   
 
-  if ((threadsGetContext() == TRUE || netGetType() == netSingle) && (*lgman)->isDead == FALSE && (*lgman)->inTank == FALSE) {
+  if ((threadsGetContext() == true || netGetType() == netSingle) && (*lgman)->isDead == false && (*lgman)->inTank == false) {
     WORLD conv;
-    dead = FALSE;
+    dead = false;
     conv = (*lgman)->x - 1;
     conv >>= 8;
     lgmX = (BYTE) conv; 
@@ -1338,42 +1338,42 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx, WORL
 
     utilIsItemInRange((*lgman)->x, (*lgman)->y, wx, wy, PILLBOX_RANGE, &distance);
     pos = mapGetPos(mp, mx, my);
-    solid = FALSE;
-    if (pos == BUILDING || pos == HALFBUILDING || pillsExistPos(pb, mx, my) == TRUE || basesExistPos(bs, mx, my) == TRUE) {
-      solid = TRUE;
+    solid = false;
+    if (pos == BUILDING || pos == HALFBUILDING || pillsExistPos(pb, mx, my) == true || basesExistPos(bs, mx, my) == true) {
+      solid = true;
     }
-    if (solid == FALSE && distance <= MAP_SQUARE_MIDDLE) {
-      dead = TRUE;
-    } else if (solid == TRUE && lgmX == mx && lgmY == my) {
-      dead = TRUE;
+    if (solid == false && distance <= MAP_SQUARE_MIDDLE) {
+      dead = true;
+    } else if (solid == true && lgmX == mx && lgmY == my) {
+      dead = true;
     }
 
-    if (dead == TRUE) {
-      netPNBAdd(screenGetNetPnb(), NPNB_LGM_DEAD, FALSE, (*lgman)->playerNum, lgmX, lgmY, 0);
+    if (dead == true) {
+      netPNBAdd(screenGetNetPnb(), NPNB_LGM_DEAD, false, (*lgman)->playerNum, lgmX, lgmY, 0);
       soundDist(manDyingNear, lgmX, lgmY);
-      (*lgman)->isDead = TRUE;
+      (*lgman)->isDead = true;
       (*lgman)->frame = LGM_HELICOPTER_FRAME;
       (*lgman)->numTrees = 0;
       (*lgman)->numMines = 0;
       (*lgman)->nextAction = LGM_IDLE;
       if ((*lgman)->numPills != LGM_NO_PILL) {
         /* Drop Pill */
-        if (netGetType() == netSingle || threadsGetContext() == TRUE) {
-          finishedPillPlace = FALSE;
+        if (netGetType() == netSingle || threadsGetContext() == true) {
+          finishedPillPlace = false;
           count = 0;
           pillPlaceX = lgmX;
           pillPlaceY = lgmY;
-          while (finishedPillPlace == FALSE) {
+          while (finishedPillPlace == false) {
             item.x = pillPlaceX;
             item.y = pillPlaceY+count;
             if (item.x > MAP_MINE_EDGE_LEFT && item.x < MAP_MINE_EDGE_RIGHT && item.y > MAP_MINE_EDGE_TOP && item.y < MAP_MINE_EDGE_BOTTOM) {
               pos = mapGetPos(mp, item.x, item.y);
-              if (pillsExistPos(pb, item.x, item.y) == FALSE && basesExistPos(bs, item.x, item.y) == FALSE && pos != BUILDING && pos != HALFBUILDING && pos != BOAT) {
-                finishedPillPlace = TRUE;
+              if (pillsExistPos(pb, item.x, item.y) == false && basesExistPos(bs, item.x, item.y) == false && pos != BUILDING && pos != HALFBUILDING && pos != BOAT) {
+                finishedPillPlace = true;
               }
             }
             count++;
-            if (count == 10 && finishedPillPlace == FALSE) {
+            if (count == 10 && finishedPillPlace == false) {
               count = 0;
               item.y = pillPlaceY;
               pillPlaceX++;
@@ -1384,11 +1384,11 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx, WORL
           item.speed = PILLBOX_ATTACK_NORMAL;
           item.reload = PILLBOX_ATTACK_NORMAL;
           item.coolDown = 0;
-          item.inTank = FALSE;
-          item.justSeen = FALSE;
+          item.inTank = false;
+          item.justSeen = false;
           pillsSetPill(pb,&item,(*lgman)->numPills);
           netPNBAdd(screenGetNetPnb(), NPNB_PILL_DEAD, (BYTE) ((*lgman)->numPills-1), (*lgman)->playerNum, item.x, item.y, 0);
-          if (threadsGetContext() == FALSE) {
+          if (threadsGetContext() == false) {
             frontEndStatusPillbox((*lgman)->numPills, (pillsGetAllianceNum(pb, (*lgman)->numPills)));
           }
         }
@@ -1410,16 +1410,16 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx, WORL
       (*lgman)->y = lgmY;
       (*lgman)->y <<= TANK_SHIFT_MAPSIZE;
       (*lgman)->y += MAP_SQUARE_MIDDLE;
-      if (threadsGetContext() == FALSE) {
-        frontEndManStatus(TRUE, 0.0f);
+      if (threadsGetContext() == false) {
+        frontEndManStatus(true, 0.0f);
       }
 
       /* Log it */
       logAddEvent(log_LostMan, (*lgman)->playerNum, 0, 0, 0, 0, NULL);
       /* WinBolo.net it */
-      winbolonetAddEvent(WINBOLO_NET_EVENT_LGM_LOST, TRUE, (*lgman)->playerNum, WINBOLO_NET_NO_PLAYER);
+      winbolonetAddEvent(WINBOLO_NET_EVENT_LGM_LOST, true, (*lgman)->playerNum, WINBOLO_NET_NO_PLAYER);
       if (owner != NEUTRAL) {
-        winbolonetAddEvent(WINBOLO_NET_EVENT_LGM_KILL, TRUE, owner, (*lgman)->playerNum);
+        winbolonetAddEvent(WINBOLO_NET_EVENT_LGM_KILL, true, owner, (*lgman)->playerNum);
       }
       /* Process message */
       playersGetPlayerName(screenGetPlayers(), (*lgman)->playerNum, playerName);
@@ -1455,11 +1455,11 @@ void lgmParchutingIn(lgm *lgman) {
   /* Check for achieved goal */
   if (((*lgman)->x - (*lgman)->destX) >= -16 && ((*lgman)->x - (*lgman)->destX) <=16 && ((*lgman)->y - (*lgman)->destY) >= -16 && ((*lgman)->y - (*lgman)->destY) <=16) {
     /* Arrived at drop off spot. Begin trek back to tank */
-    if (threadsGetContext() == TRUE) {
-      netPNBAdd(screenGetNetPnb(), NPNB_LGM_DEAD, TRUE, (*lgman)->playerNum, 0, 0, 0);
+    if (threadsGetContext() == true) {
+      netPNBAdd(screenGetNetPnb(), NPNB_LGM_DEAD, true, (*lgman)->playerNum, 0, 0, 0);
     }
    
-    (*lgman)->isDead = FALSE;
+    (*lgman)->isDead = false;
     (*lgman)->state = LGM_STATE_RETURN;
     (*lgman)->frame = 0;
   }
@@ -1521,9 +1521,9 @@ bool lgmCheckTankBoat(lgm *lgman, tank *tnk, WORLD dist) {
   WORLD newmy;
   bool returnValue; /* Value to Return */
 
-  returnValue = FALSE;
+  returnValue = false;
   tankGetWorld(tnk, &newmx, &newmy);
-  if (tankIsOnBoat(tnk) == TRUE) {
+  if (tankIsOnBoat(tnk) == true) {
     if ((newmx - (*lgman)->x) < 0) {
       newmx = (*lgman)->x - newmx;
     } else {
@@ -1535,7 +1535,7 @@ bool lgmCheckTankBoat(lgm *lgman, tank *tnk, WORLD dist) {
       newmy = newmy - (*lgman)->y;
     }
     if (newmx < dist && newmy < dist) {
-      returnValue = TRUE;
+      returnValue = true;
     }
   }
   return returnValue;
@@ -1555,12 +1555,12 @@ bool lgmCheckTankBoat(lgm *lgman, tank *tnk, WORLD dist) {
 *  y      - World Y Co-ordinate
 *********************************************************/
 void lgmPutWorld(lgm *lgmman, WORLD x, WORLD y, BYTE frame) {
-  if ((*lgmman)->inTank == FALSE) {
+  if ((*lgmman)->inTank == false) {
     (*lgmman)->x = x;
     (*lgmman)->y = y;
     /* We don't set the frame from the server because its all handled locally */
   /*  (*lgmman)->frame = frame; */
-/*    (*lgmman)->inTank = FALSE; */
+/*    (*lgmman)->inTank = false; */
     (*lgmman)->state = LGM_STATE_GOING;
   }
 }
@@ -1715,20 +1715,20 @@ bool lgmIsOut(lgm *lgman) {
 *ARGUMENTS:
 *  lgman  - Pointer to the lgm sturcture
 *  tnk    - Pointer to this LGM's tank.
-*  isOut  - TRUE if man is out of tank
-*  isDead - TRUE if man is dead
+*  isOut  - true if man is out of tank
+*  isDead - true if man is dead
 *  angle  - Angle man is travelling on
 *********************************************************/
 void lgmGetStatus(lgm *lgman, tank *tnk, bool *isOut, bool *isDead, TURNTYPE *angle) {
   WORLD wx; /* Tanks world co-ordinates */
   WORLD wy;
 
-  *isOut = TRUE;
-  *isDead = FALSE;
-  if ((*lgman)->inTank == TRUE) {
-    *isOut = FALSE;
-  } else if ((*lgman)->isDead == TRUE) {
-    *isDead = TRUE;
+  *isOut = true;
+  *isDead = false;
+  if ((*lgman)->inTank == true) {
+    *isOut = false;
+  } else if ((*lgman)->isDead == true) {
+    *isDead = true;
   } else if ((*lgman)->state == LGM_STATE_GOING) {
     tankGetWorld(tnk, &wx, &wy);
     *angle = utilCalcAngle((*lgman)->x, (*lgman)->y, wx, wy);
@@ -1806,9 +1806,9 @@ BYTE lgmGetBrainState(lgm *lgman) {
   BYTE returnValue; /* Value to return */
 
   returnValue = LGM_BRAIN_MOVING;
-  if ((*lgman)->isDead == TRUE) {
+  if ((*lgman)->isDead == true) {
     returnValue = LGM_BRAIN_DEAD;
-  } else if ((*lgman)->inTank == TRUE) {
+  } else if ((*lgman)->inTank == true) {
     returnValue = LGM_BRAIN_INTANK;
   }
   return returnValue;
@@ -1864,9 +1864,9 @@ void lgmSetBrainObstructed(lgm *lgman, BYTE obstructed) {
 *  pillNum  - Pillbox being carries
 *********************************************************/
 void lgmNetBackInTank(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk, BYTE numTrees, BYTE numMines, BYTE pillNum) {
-  (*lgman)->isDead = FALSE;
+  (*lgman)->isDead = false;
   (*lgman)->state = LGM_STATE_IDLE;
-  (*lgman)->inTank = TRUE;
+  (*lgman)->inTank = true;
   (*lgman)->action = LGM_IDLE;
   (*lgman)->blessX = 0;
   (*lgman)->blessY = 0;
@@ -1874,9 +1874,9 @@ void lgmNetBackInTank(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk, 
   (*lgman)->numPills = pillNum;
   (*lgman)->numTrees = numTrees;
   (*lgman)->numMines = numMines;
-  lgmBackInTank(lgman, mp, pb, bs, tnk, TRUE);
+  lgmBackInTank(lgman, mp, pb, bs, tnk, true);
 
-  if (threadsGetContext() == FALSE) {
+  if (threadsGetContext() == false) {
     frontEndManClear();
   }
 }
@@ -1899,9 +1899,9 @@ void lgmNetBackInTank(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk, 
 *  pillNum  - Pillbox being carries
 *********************************************************/
 void lgmNetManWorking(lgm *lgman, tank *tnk, BYTE mapX, BYTE mapY, BYTE numTrees, BYTE numMines, BYTE pillNum) {
-  (*lgman)->isDead = FALSE;
+  (*lgman)->isDead = false;
   (*lgman)->state = LGM_STATE_GOING;
-  (*lgman)->inTank = FALSE;
+  (*lgman)->inTank = false;
   (*lgman)->blessX = mapX;
   (*lgman)->blessY = mapY;
   (*lgman)->numPills = pillNum;
@@ -1909,10 +1909,10 @@ void lgmNetManWorking(lgm *lgman, tank *tnk, BYTE mapX, BYTE mapY, BYTE numTrees
   (*lgman)->numMines = numMines;
   /* Update the statuses */
   if (numTrees > 0) {
-    tankGetLgmTrees(tnk, numTrees, TRUE);
+    tankGetLgmTrees(tnk, numTrees, true);
   }
   if (numMines > 0) {
-    tankGetLgmMines(tnk, numMines, TRUE);
+    tankGetLgmMines(tnk, numMines, true);
   }
   if (pillNum != LGM_NO_PILL) {
     tankGetCarriedPillNum(tnk, pillNum);
@@ -1953,14 +1953,14 @@ void lgmSetPlayerNum(lgm *lgman, BYTE playerNum) {
 void lgmSetIsDead(lgm *lgman, bool isDead) {
   (*lgman)->isDead = isDead;
   (*lgman)->nextAction = LGM_IDLE;
-  if (isDead == TRUE) {
+  if (isDead == true) {
     (*lgman)->x = 0;
     (*lgman)->y = 0;
-    if (threadsGetContext() == FALSE) {
-      frontEndManStatus(TRUE, 0.0f);
+    if (threadsGetContext() == false) {
+      frontEndManStatus(true, 0.0f);
     }
   } else {
-    if (threadsGetContext() == FALSE) {
+    if (threadsGetContext() == false) {
       frontEndManClear();
     }
   }
@@ -1982,7 +1982,7 @@ void lgmConnectionLost(lgm *lgman, tank *tnk) {
   BYTE lgmX;  /* Used to get start position */
   BYTE lgmY;
   TURNTYPE dummy;
-  if ((*lgman)->isDead == TRUE) {
+  if ((*lgman)->isDead == true) {
     screenGetTankWorldFromLgm(lgman, &((*lgman)->destX), &((*lgman)->destY));
     if ((*lgman)->x == 0 || (*lgman)->y == 0) {
       screenGetRandStart(&lgmX, &lgmY, &dummy);
