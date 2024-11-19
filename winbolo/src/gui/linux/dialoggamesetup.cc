@@ -29,7 +29,10 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include <fstream>
+
 #include "../../bolo/global.h"
+#include "../../bolo/util.h"
 #include "../lang.h"
 #include "../linresource.h"
 #include "gamefront.h"
@@ -90,14 +93,15 @@ static int DestroyDialog(GtkWidget *widget, gpointer *data) {
  *  fileName - filename to check
  *********************************************************/
 static void dialogGameSetupMapCheck(char *fileName) {
-  char mapName[FILENAME_MAX]; /* Name of the map */
   char output[FILENAME_MAX];  /* String to output */
   bool openOK;                /* Was the map opened OK? */
 
   openOK = TRUE;
-  mapName[0] = '\0';
   output[0] = '\0';
-  openOK = screenLoadMap(fileName, gameOpen, FALSE, 0, UNLIMITED_GAME_TIME,
+  std::ifstream input(fileName);
+  std::string mapName = bolo::utilExtractMapName(fileName);
+  openOK = screenLoadMap(input, mapName.c_str(), gameOpen, FALSE, 0,
+                         UNLIMITED_GAME_TIME,
                          langGetText(STR_DLGGAMESETUP_DEFAULTNAME), TRUE);
   if (openOK == FALSE) {
     MessageBox(langGetText(STR_DLGGAMESETUP_ERROROPENINGMAP), DIALOG_BOX_TITLE);
@@ -105,6 +109,8 @@ static void dialogGameSetupMapCheck(char *fileName) {
                        langGetText(STR_DLGGAMESETUP_SELECTEDMAPINBUILT));
     gameFrontSetFileName("");
   } else {
+    char mapName[FILENAME_MAX]; /* Name of the map */
+    mapName[0] = '\0';
     screenGetMapName(mapName);
     strcpy(output, langGetText(STR_DLGGAMESETUP_SELECTEDMAP));
     strcat(output, mapName);

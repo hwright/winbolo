@@ -23,8 +23,9 @@
 #include <stdlib.h>
 
 #include <format>
+#include <fstream>
 #include <optional>
-#include <string>
+#include <sstream>
 
 #include "../../bolo/backend.h"
 #include "../../bolo/global.h"
@@ -47,6 +48,7 @@
 #include "dialogsysteminfo.h"
 #include "dialogudpsetup.h"
 #include "draw.h"
+#include "e_map.h"
 #include "framemutex.h"
 #include "gamefront.h"
 #include "input.h"
@@ -1450,12 +1452,13 @@ bool startSinglePlayer() {
     returnValue = FALSE;
   } else {
     if (strcmp(fileName, "") != 0) {
-      screenLoadMap(fileName, gametype, hiddenMines, startDelay, timeLen,
-                    gameFrontName, FALSE);
+      std::ifstream input(fileName);
+      screenLoadMap(input, bolo::utilExtractMapName(fileName).c_str(), gametype,
+                    hiddenMines, startDelay, timeLen, gameFrontName, false);
     } else {
-      // BYTE emap[6000] = E_MAP;
-      // screenLoadCompressedMap(emap, 5097, "Everard Island", gametype,
-      // hiddenMines, startDelay, timeLen, gameFrontName, FALSE);
+      std::istringstream input(std::string((const char *)e_map, e_map_len));
+      screenLoadMap(input, "Everard Island", gametype, hiddenMines, startDelay,
+                    timeLen, gameFrontName, false);
     }
   }
   if (returnValue == TRUE) {

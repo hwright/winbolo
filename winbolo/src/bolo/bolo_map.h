@@ -197,7 +197,7 @@ void mapDestroy(map *value);
  *  fp    - Pointer to the file being read from
  *  value - Pointer to the pillbox structure
  *********************************************************/
-bool mapReadPills(FILE *fp, pillboxes *value);
+bool mapReadPills(std::istream &input, pillboxes *value);
 
 /*********************************************************
  *NAME:          mapReadBases
@@ -213,7 +213,7 @@ bool mapReadPills(FILE *fp, pillboxes *value);
  *  fp    - Pointer to the file being read from
  *  value - Pointer to the pillbox structure
  *********************************************************/
-bool mapReadBases(FILE *fp, bases *value);
+bool mapReadBases(std::istream &input, bases *value);
 
 /*********************************************************
  *NAME:          mapReadStarts
@@ -229,7 +229,7 @@ bool mapReadBases(FILE *fp, bases *value);
  *  fp    - Pointer to the file being read from
  *  value - Pointer to the pillbox structure
  *********************************************************/
-bool mapReadStarts(FILE *fp, starts *value);
+bool mapReadStarts(std::istream &input, starts *value);
 
 /*********************************************************
  *NAME:          mapProcessRun
@@ -249,8 +249,8 @@ bool mapReadStarts(FILE *fp, starts *value);
  *  startX - The start x co-ordinate
  *  endX   - The end x co-ordinate
  *********************************************************/
-bool mapProcessRun(FILE *fp, map *value, BYTE elems, MAP_Y yValue, BYTE startX,
-                   BYTE endX);
+bool mapProcessRun(std::istream &input, map *value, BYTE elems, MAP_Y yValue,
+                   BYTE startX, BYTE endX);
 
 /*********************************************************
  *NAME:          mapReadRuns
@@ -265,7 +265,7 @@ bool mapProcessRun(FILE *fp, map *value, BYTE elems, MAP_Y yValue, BYTE startX,
  *  fp    - Pointer to the file being read from
  *  value - Pointer to the map data structure
  *********************************************************/
-bool mapReadRuns(FILE *fp, map *value);
+bool mapReadRuns(std::istream &input, map *value);
 
 /*********************************************************
  *NAME:          mapRead
@@ -283,7 +283,8 @@ bool mapReadRuns(FILE *fp, map *value);
  *  bs      - Pointer to the bases structure
  *  pb      - Pointer to the pillbox structure
  *********************************************************/
-bool mapRead(char *fileName, map *value, pillboxes *pb, bases *bs, starts *ss);
+bool mapRead(std::istream &input, map *value, pillboxes *pb, bases *bs,
+             starts *ss);
 
 /*********************************************************
  *NAME:          mapGetPos

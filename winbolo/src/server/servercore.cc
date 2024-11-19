@@ -29,6 +29,7 @@
 #include <string.h>
 #include <time.h>
 
+#include <fstream>
 #include <tuple>
 
 #include "../bolo/bases.h"
@@ -170,7 +171,8 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines,
   minesExpCreate(&serverMinesExp);
   playersRejoinCreate();
 
-  returnValue = mapRead(fileName, &mp, &pb, &bs, &ss);
+  std::ifstream input(fileName);
+  returnValue = mapRead(input, &mp, &pb, &bs, &ss);
 
   if (returnValue) {
     strncpy(sMapName, bolo::utilExtractMapName(fileName).c_str(), 36);
