@@ -171,7 +171,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines,
   returnValue = mapRead(fileName, &mp, &pb, &bs, &ss);
 
   if (returnValue) {
-    utilExtractMapName(fileName, sMapName);
+    strncpy(sMapName, bolo::utilExtractMapName(fileName).c_str(), 36);
     basesClearMines(&bs, &mp);
     serverCoreGameRunning = true;
   } else {

@@ -30,24 +30,9 @@
 #define BRADIAN_ADD8 8
 #define NIBBLE_SHIFT_SIZE 4
 
-/* Used in extracting the map name from the filename and path */
-#define STRTOK_SEPS "\\/"
-#define END3 4
-#define END2 3
-#define END1 2
-#define END0 1
-#define END3CHRA '.'
-#define END2CHRA 'm'
-#define END1CHRA 'a'
-#define END0CHRA 'p'
-#define END2CHRB 'M'
-#define END1CHRB 'A'
-#define END0CHRB 'P'
-
-/* We allow big file names */
-#define BIG_FILENAME 1024
-
 /* Includes */
+#include <string>
+
 #include "global.h"
 #include "types.h"
 
@@ -246,6 +231,8 @@ void utilGetNibbles(BYTE value, BYTE *high, BYTE *low);
  *********************************************************/
 BYTE utilPutNibble(BYTE high, BYTE low);
 
+namespace bolo {
+
 /*********************************************************
  *NAME:          utilExtractMapName
  *AUTHOR:        John Morrison
@@ -259,7 +246,9 @@ BYTE utilPutNibble(BYTE high, BYTE low);
  *  fileName - Map File name and path.
  *  mapName  - Stores the Map Name.
  *********************************************************/
-void utilExtractMapName(char *fileName, char *mapName);
+std::string utilExtractMapName(std::string_view fileName);
+
+}  // namespace bolo
 
 /*********************************************************
  *NAME:          utilStripNameReplace

@@ -769,7 +769,7 @@ bool screenLoadMap(char *fileName, gameType game, bool hiddenMines,
     }   */
 
   if (returnValue) {
-    utilExtractMapName(fileName, mapName);
+    strncpy(mapName, bolo::utilExtractMapName(fileName).c_str(), 36);
     utilStripNameReplace(playerName);
     screenSetupTank(playerName);
     screenUpdateView(redraw);

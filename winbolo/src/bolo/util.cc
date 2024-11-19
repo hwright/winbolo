@@ -27,6 +27,8 @@
 /* Inludes */
 #include <math.h>
 #include <string.h>
+
+#include <filesystem>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -520,43 +522,19 @@ BYTE utilPutNibble(BYTE high, BYTE low) {
   return returnValue;
 }
 
-/*********************************************************
- *NAME:          utilExtractMapName
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/1/99
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- * Extracts the map name from a file name and path.
- *
- *ARGUMENTS:
- *  fileName - Map File name and path.
- *  mapName  - Stores the Map Name.
- *********************************************************/
-void utilExtractMapName(char *fileName, char *mapName) {
-  char *tok;                /* String Tok return value */
-  char dummy[BIG_FILENAME]; /* Dummy copy of filename */
-  int len;                  /* Length of the string */
+namespace bolo {
 
-  dummy[0] = '\0';
-  strcpy(dummy, fileName);
+std::string utilExtractMapName(std::string_view fileName) {
+  std::filesystem::path path(fileName);
+  std::string filename = path.filename();
 
-  tok = strtok(dummy, STRTOK_SEPS);
-  if (tok) {
-    strcpy(mapName, tok);
-    tok = strtok(nullptr, STRTOK_SEPS);
-    while (tok != nullptr) {
-      strcpy(mapName, tok);
-      tok = strtok(nullptr, STRTOK_SEPS);
-    }
-    len = (int)strlen(mapName);
-    if (mapName[len - END3] == END3CHRA &&
-        (mapName[len - END2] == END2CHRA || mapName[len - END2] == END2CHRB) &&
-        (mapName[len - END1] == END1CHRA || mapName[len - END1] == END1CHRB) &&
-        (mapName[len - END0] == END0CHRA || mapName[len - END0] == END0CHRB)) {
-      mapName[len - END3] = '\0';
-    }
+  if (filename.ends_with(".map") || filename.ends_with(".MAP")) {
+    filename = filename.substr(0, filename.size() - 4);
   }
+  return filename;
 }
+
+}  // namespace bolo
 
 /*********************************************************
  *NAME:          utilStripNameReplace
