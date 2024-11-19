@@ -2155,43 +2155,43 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   /* Target UDP Port */
   buff =
       prefs.get("SETTINGS", "Target UDP Port").value_or(itoa(DEFAULT_UDP_PORT));
-  gameFrontTargetUdp = atoi(buff.c_str());
+  gameFrontTargetUdp = std::stoi(buff);
 
   /* My UDP Port */
   buff = prefs.get("SETTINGS", "UDP Port").value_or(itoa(DEFAULT_UDP_PORT));
-  gameFrontMyUdp = atoi(buff.c_str());
+  gameFrontMyUdp = std::stoi(buff);
 
   /* Keys */
   buff = prefs.get("KEYS", "Forward").value_or(itoa(DEFAULT_FORWARD));
-  keys->kiForward = atoi(buff.c_str());
+  keys->kiForward = std::stoi(buff);
   buff = prefs.get("KEYS", "Backwards").value_or(itoa(DEFAULT_BACKWARD));
-  keys->kiBackward = atoi(buff.c_str());
+  keys->kiBackward = std::stoi(buff);
   buff = prefs.get("KEYS", "Left").value_or(itoa(DEFAULT_LEFT));
-  keys->kiLeft = atoi(buff.c_str());
+  keys->kiLeft = std::stoi(buff);
   buff = prefs.get("KEYS", "Right").value_or(itoa(DEFAULT_RIGHT));
-  keys->kiRight = atoi(buff.c_str());
+  keys->kiRight = std::stoi(buff);
   buff = prefs.get("KEYS", "Shoot").value_or(itoa(DEFAULT_SHOOT));
-  keys->kiShoot = atoi(buff.c_str());
+  keys->kiShoot = std::stoi(buff);
   buff = prefs.get("KEYS", "Lay Mine").value_or(itoa(DEFAULT_LAY_MINE));
-  keys->kiLayMine = atoi(buff.c_str());
+  keys->kiLayMine = std::stoi(buff);
   buff = prefs.get("KEYS", "Increase Range")
              .value_or(itoa(DEFAULT_SCROLL_GUNINCREASE));
-  keys->kiGunIncrease = atoi(buff.c_str());
+  keys->kiGunIncrease = std::stoi(buff);
   buff = prefs.get("KEYS", "Decrease Range")
              .value_or(itoa(DEFAULT_SCROLL_GUNDECREASE));
-  keys->kiGunDecrease = atoi(buff.c_str());
+  keys->kiGunDecrease = std::stoi(buff);
   buff = prefs.get("KEYS", "Tank View").value_or(itoa(DEFAULT_TANKVIEW));
-  keys->kiTankView = atoi(buff.c_str());
+  keys->kiTankView = std::stoi(buff);
   buff = prefs.get("KEYS", "Pill View").value_or(itoa(DEFAULT_PILLVIEW));
-  keys->kiPillView = atoi(buff.c_str());
+  keys->kiPillView = std::stoi(buff);
   buff = prefs.get("KEYS", "Scroll Up").value_or(itoa(DEFAULT_SCROLLUP));
-  keys->kiScrollUp = atoi(buff.c_str());
+  keys->kiScrollUp = std::stoi(buff);
   buff = prefs.get("KEYS", "Scroll Down").value_or(itoa(DEFAULT_SCROLLDOWN));
-  keys->kiScrollDown = atoi(buff.c_str());
+  keys->kiScrollDown = std::stoi(buff);
   buff = prefs.get("KEYS", "Scroll Left").value_or(itoa(DEFAULT_SCROLLLEFT));
-  keys->kiScrollLeft = atoi(buff.c_str());
+  keys->kiScrollLeft = std::stoi(buff);
   buff = prefs.get("KEYS", "Scroll Right").value_or(itoa(DEFAULT_SCROLLRIGHT));
-  keys->kiScrollRight = atoi(buff.c_str());
+  keys->kiScrollRight = std::stoi(buff);
 
   /* Remeber */
   buff = prefs.get("SETTINGS", "Remember Player Name").value_or("Yes");
@@ -2201,11 +2201,11 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   buff = prefs.get("GAME OPTIONS", "Hidden Mines").value_or("No");
   hiddenMines = YESNO_TO_TRUEFALSE(buff[0]);
   buff = prefs.get("GAME OPTIONS", "Allow Computer Tanks").value_or("0");
-  compTanks = (aiType)atoi(buff.c_str());
+  compTanks = (aiType)std::stoi(buff);
   buff = prefs.get("GAME OPTIONS", "Game Type").value_or("1");
-  gametype = (gameType)atoi(buff.c_str());
+  gametype = (gameType)std::stoi(buff);
   buff = prefs.get("GAME OPTIONS", "Start Delay").value_or("0");
-  startDelay = atoi(buff.c_str());
+  startDelay = std::stoi(buff);
   buff = prefs.get("GAME OPTIONS", "Time Length")
              .value_or(itoa(UNLIMITED_GAME_TIME));
   timeLen = atol(buff.c_str());
@@ -2218,13 +2218,13 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   buff = prefs.get("TRACKER", "Address").value_or(TRACKER_ADDRESS);
   strncpy(gameFrontTrackerAddr, buff.c_str(), FILENAME_MAX);
   buff = prefs.get("TRACKER", "Port").value_or(itoa(TRACKER_PORT));
-  gameFrontTrackerPort = atoi(buff.c_str());
+  gameFrontTrackerPort = std::stoi(buff);
   buff = prefs.get("TRACKER", "Enabled").value_or("No");
   gameFrontTrackerEnabled = YESNO_TO_TRUEFALSE(buff[0]);
 
   /* Menu Items */
   buff = prefs.get("MENU", "Frame Rate").value_or(itoa(FRAME_RATE_30));
-  frameRate = atoi(buff.c_str());
+  frameRate = std::stoi(buff);
   buff = prefs.get("MENU", "Show Gunsight").value_or("No");
   showGunsight = YESNO_TO_TRUEFALSE(buff[0]);
   buff = prefs.get("MENU", "Sound Effects").value_or("Yes");
@@ -2254,11 +2254,11 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   buff = prefs.get("MENU", "Label Own Tank").value_or("No");
   labelSelf = YESNO_TO_TRUEFALSE(buff[0]);
   buff = prefs.get("MENU", "Window Size").value_or("1");
-  zoomFactor = atoi(buff.c_str());
+  zoomFactor = std::stoi(buff);
   buff = prefs.get("MENU", "Message Label Size").value_or("1");
-  labelMsg = (labelLen)atoi(buff.c_str());
+  labelMsg = (labelLen)std::stoi(buff);
   buff = prefs.get("MENU", "Tank Label Size").value_or("1");
-  labelTank = (labelLen)atoi(buff.c_str());
+  labelTank = (labelLen)std::stoi(buff);
 
   /* Winbolo.net */
   buff = prefs.get("WINBOLO.NET", "Password").value_or("");
