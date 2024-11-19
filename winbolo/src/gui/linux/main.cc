@@ -2142,7 +2142,7 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   std::string buff;        /* Read Buffer               */
   char def[FILENAME_MAX];  /* The default value      */
 
-  std::string prefs = bolo::preferencesGetPreferenceFile();
+  std::string prefs = bolo::GetPreferenceFile();
 
   /* Player Name */
   strcpy(def, langGetText(STR_DLGGAMESETUP_DEFAULTNAME));
@@ -2328,7 +2328,7 @@ void gameFrontPutPrefs(keyItems *keys) {
   char playerName2[PLAYER_NAME_LEN]; /* Current player Name       */
   char buff[FILENAME_MAX];           /* Read Buffer               */
 
-  std::string prefs = bolo::preferencesGetPreferenceFile();
+  std::string prefs = bolo::GetPreferenceFile();
   /* Player Name */
   if ((netGetType() == netSingle || gameFrontRemeber == TRUE) &&
       dlgState != openSetup) {

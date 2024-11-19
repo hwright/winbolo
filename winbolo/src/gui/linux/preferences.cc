@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,11 +16,6 @@
 #include "preferences.h"
 
 #include <pwd.h>
-#include <signal.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <unistd.h>
 
 #include <filesystem>
@@ -35,16 +29,18 @@ namespace bolo {
 
 namespace {
 
-void makeDir(std::string_view path) {
+// Make the `path` directory with a `brains` subdirectory.
+void MakeDir(std::string_view path) {
   std::filesystem::create_directory(path);
   std::filesystem::create_directory(std::format("{}/brains", path));
 }
 
 }  // namespace
+
 std::string GetPrivateProfileString(std::string_view section,
                                     std::string_view item, std::string_view def,
                                     std::string_view filename) {
-  std::ifstream input((std::string(filename).c_str()));
+  std::ifstream input((std::string(filename)));
   if (input.is_open()) {
     std::string sec = std::format("[{}]", section);
     std::string line;
@@ -70,112 +66,74 @@ std::string GetPrivateProfileString(std::string_view section,
   return std::string(def);
 }
 
-/*********************************************************
- *NAME:          WritePrivateProfileString
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/11/99
- *LAST MODIFIED: 26/11/99
- *PURPOSE:
- * Implements the Win32 WritePrivateProfileString function
- *
- *ARGUMENTS:
- * section - The section name excluding square [ ]
- * item    - The item name to write
- * value   - The value to set the item name too
- * filename - Filename and path to write too
- *********************************************************/
-void WritePrivateProfileString(const char *section, const char *item,
-                               const char *value, const char *filename) {
-  char *buff;
+void WritePrivateProfileString(std::string_view section, std::string_view item,
+                               std::string_view value,
+                               std::string_view filename) {
   char line[512];
-  char sec[512];
   int len;
   FILE *fp;
   bool done = false;
   bool inSec = false;
-  int secLen;
 
-  buff = new char[16 * 1024];
-  buff[0] = '\0';
-  fp = fopen(filename, "r");
-  sprintf(sec, "[%s]", section);
-  secLen = strlen(sec);
+  std::string buff;
+  std::string sec = std::format("[{}]", section);
+  int secLen = sec.length();
 
+  fp = fopen(std::string(filename).c_str(), "r");
   if (fp) {
     fgets(line, 512, fp);
     while (!feof(fp)) {
       if (!done) {
-        if (strncmp(sec, line, secLen) == 0 && !inSec) {
-          /* Found section */
+        if (strncmp(sec.c_str(), line, secLen) == 0 && !inSec) {
+          // Found section
           inSec = true;
-          strcat(buff, line);
-          sprintf(sec, "%s=", item);
-          len = strlen(sec);
+          buff.append(line);
+          sec = std::format("{}=", item);
+          len = sec.length();
         } else if (inSec && line[0] == '[') {
-          /* Leaving section - Add here */
-          strcat(buff, item);
-          strcat(buff, "=");
-          strcat(buff, value);
-          strcat(buff, "\n");
-          strcat(buff, line);
-        } else if (inSec && strncmp(sec, line, len) == 0) {
-          /* Found the line to replace */
-          strcat(buff, item);
-          strcat(buff, "=");
-          strcat(buff, value);
-          strcat(buff, "\n");
+          // Leaving section - Add here
+          buff.append(std::format("{}={}\n", item, value));
+          buff.append(line);
+        } else if (inSec && strncmp(sec.c_str(), line, len) == 0) {
+          // Found the line to replace
+          buff.append(std::format("{}={}\n", item, value));
           done = true;
         } else {
-          /* Just add the line */
-          strcat(buff, line);
+          // Just add the line
+          buff.append(line);
         }
       } else {
-        strcat(buff, line);
+        buff.append(line);
       }
       fgets(line, 512, fp);
     }
     fclose(fp);
   } else {
-    sprintf(buff, "%s\n%s=%s\n", sec, item, value);
+    buff = std::format("{}\n{}={}\n", sec, item, value);
     done = true;
   }
+
   if (!done) {
-    /* We didn't find it in the file and we are still in the right section
-     * Append it here
-     */
+    // We didn't find it in the file and we are still in the right section
+    // Append it here
     if (!inSec) {
-      strcat(buff, sec);
-      strcat(buff, "\n");
+      buff.append(std::format("{}\n", sec));
     }
-    strcat(buff, item);
-    strcat(buff, "=");
-    strcat(buff, value);
-    strcat(buff, "\n");
+    buff.append(std::format("{}={}\n", item, value));
   }
-  fp = fopen(filename, "w");
-  fputs(buff, fp);
-  fclose(fp);
-  delete[] buff;
+
+  // Write the entire file back out
+  std::ofstream output((std::string(filename)));
+  output << buff;
+  output.close();
 }
 
-/*********************************************************
- *NAME:          preferencesGetPreferenceFile
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/11/99
- *LAST MODIFIED: 26/11/99
- *PURPOSE:
- * Returns the preference path and file name. Under linux
- * this is $HOME/.linbolo/linbolo.ini
- *
- *ARGUMENTS:
- * value - Pointer to hold path returned
- *********************************************************/
-std::string preferencesGetPreferenceFile() {
+std::string GetPreferenceFile() {
   struct passwd *pwd;
 
   pwd = getpwuid(getuid());
   std::string filename = std::format("{}/.linbolo/", pwd->pw_dir);
-  makeDir(filename.c_str());
+  MakeDir(filename.c_str());
   return std::format("{}{}", filename, PREFERENCE_FILE);
 }
 

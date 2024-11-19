@@ -104,7 +104,7 @@ bool httpCreate() {
   }
   strcpy(prefs, PREFERENCE_FILE);
 #else
-  std::string prefs = bolo::preferencesGetPreferenceFile();
+  std::string prefs = bolo::GetPreferenceFile();
 #endif
 
   wbnHostString[0] = EMPTY_CHAR;

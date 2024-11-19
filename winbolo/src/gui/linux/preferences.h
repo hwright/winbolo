@@ -1,22 +1,20 @@
 /*
-   Copyright (c) 1998-2008 John Morrison.
-   Copyright (c) 2024-     Hyrum Wright.
-
-   This program is free software; you can redistribute it and/or modify
-   it under the terms of the GNU General Public License as published by
-   the Free Software Foundation; either version 2 of the License, or
-   (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
+ * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  */
 
-//********************************************************
-//  Implements the Win32 ini file functions required. Also
-//  includes function to preference file name and path.
-//********************************************************
+// Implements the Win32 ini file functions required. Also
+// includes functions to preference file name and path.
 
 #ifndef __PREFERENCES_H
 #define __PREFERENCES_H
@@ -53,22 +51,16 @@ std::string GetPrivateProfileString(std::string_view section,
  * value   - The value to set the item name too
  * filename - Filename and path to write too
  *********************************************************/
-void WritePrivateProfileString(const char *section, const char *item,
-                               const char *value, const char *filename);
+void WritePrivateProfileString(std::string_view section, std::string_view item,
+                               std::string_view value,
+                               std::string_view filename);
 
-/*********************************************************
- *NAME:          preferencesGetPreferenceFile
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/11/99
- *LAST MODIFIED: 26/11/99
- *PURPOSE:
- * Returns the preference path and file name. Under linux
- * this is $HOME/.linbolo/linbolo.ini
- *
- *ARGUMENTS:
- * value - Pointer to hold path returned
- *********************************************************/
-std::string preferencesGetPreferenceFile();
+// Return the preference path and file name. Under linux
+// this is $HOME/.linbolo/linbolo.ini
+//
+// ARGUMENTS:
+//  value - Pointer to hold path returned
+std::string GetPreferenceFile();
 
 }  // namespace bolo
 
