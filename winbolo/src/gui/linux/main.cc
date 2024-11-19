@@ -641,7 +641,7 @@ gboolean windowMouseClick(GtkWidget *widget, GdkEventButton *event,
       newSelect = BsMine;
     }
 
-    if (!newSelect.has_value() && newSelect != BsLinuxCurrent) {
+    if (newSelect.has_value() && newSelect != BsLinuxCurrent) {
       llf.changeUsed = TRUE;
       llf.old_val = BsLinuxCurrent;
       llf.new_val = newSelect.value();
