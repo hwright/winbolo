@@ -28,6 +28,7 @@
 #include <math.h>
 #include <string.h>
 
+#include <cmath>
 #include <filesystem>
 #ifdef _WIN32
 #include <windows.h>
@@ -68,8 +69,8 @@ void utilCalcDistance(int *xAmount, int *yAmount, TURNTYPE angle, int speed) {
   /* Convert degrees to radians */
   dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
   /* Perform calculation */
-  *xAmount = (int)roundDouble((speed * cos(dbAngle)));
-  *yAmount = (int)roundDouble((speed * sin(dbAngle)));
+  *xAmount = (int)std::round((speed * cos(dbAngle)));
+  *yAmount = (int)std::round((speed * sin(dbAngle)));
 }
 
 /*********************************************************
@@ -101,8 +102,8 @@ void utilCalcTankSlide(BYTE tankSlideTimer, TURNTYPE angle, int *xAmount,
   ratio = (float)tankSlideTimer / (float)speed;
 
   /* Calculate the change in both x and y directions */
-  *xAmount = (int)roundDouble((ratio * cos(angleRad)));
-  *yAmount = (int)roundDouble((ratio * sin(angleRad)) * -1);
+  *xAmount = (int)std::round((ratio * cos(angleRad)));
+  *yAmount = (int)std::round((ratio * sin(angleRad)) * -1);
 
   return;
 }
@@ -556,19 +557,4 @@ void utilStripName(char *name) {
     }
     *(ptr - len) = *ptr;
   }
-}
-
-/*********************************************************
- *NAME:          roundDouble
- *AUTHOR:        Minhiriath
- *CREATION DATE: 23/02/2009
- *LAST MODIFIED: 23/02/2009
- *PURPOSE:
- * Rounds up or down the double so we can stuff it into a int
- *
- *ARGUMENTS:
- *  number - the double to round
- *********************************************************/
-int roundDouble(double number) {
-  return (number >= 0) ? (int)(number + 0.5) : (int)(number - 0.5);
 }
