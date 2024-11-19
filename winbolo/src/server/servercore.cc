@@ -308,17 +308,19 @@ void serverCoreLogTick() {
       if (tk[count] != nullptr) {
         mx = tankGetMX(&tk[count]);
         my = tankGetMY(&tk[count]);
-        logAddEvent(log_PlayerLocation, (BYTE)count, mx, my,
-                    utilPutNibble(tankGetPX(&tk[count]), tankGetPY(&tk[count])),
-                    (BYTE)utilPutNibble(tankGetDir(&tk[count]),
-                                        tankIsOnBoat(&tk[count])),
-                    nullptr);
+        logAddEvent(
+            log_PlayerLocation, (BYTE)count, mx, my,
+            bolo::utilPutNibble(tankGetPX(&tk[count]), tankGetPY(&tk[count])),
+            (BYTE)bolo::utilPutNibble(tankGetDir(&tk[count]),
+                                      tankIsOnBoat(&tk[count])),
+            nullptr);
         if (lgmIsOut(&lgman[count])) {
           logAddEvent(
               log_LgmLocation,
-              utilPutNibble((BYTE)count, lgmGetFrame(&lgman[count])),
+              bolo::utilPutNibble((BYTE)count, lgmGetFrame(&lgman[count])),
               lgmGetMX(&lgman[count]), lgmGetMY(&lgman[count]),
-              utilPutNibble(lgmGetPX(&lgman[count]), lgmGetPY(&lgman[count])),
+              bolo::utilPutNibble(lgmGetPX(&lgman[count]),
+                                  lgmGetPY(&lgman[count])),
               0, nullptr);
         }
       }
@@ -333,8 +335,8 @@ void serverCoreLogTick() {
     entries = screenBulletsGetNumEntries(&sb);
     for (count = 1; count <= entries; count++) {
       screenBulletsGetItem(&sb, count, &mx, &my, &temp1, &temp2, &temp3);
-      logAddEvent(log_Shell, mx, my, utilPutNibble(temp1, temp2), temp3, 0,
-                  nullptr);
+      logAddEvent(log_Shell, mx, my, bolo::utilPutNibble(temp1, temp2), temp3,
+                  0, nullptr);
     }
     screenBulletsDestroy(&sb);
   }
@@ -847,13 +849,13 @@ void serverCorePreparePosPackets() {
       pos++;
       high = tankGetPX(&tk[count]);
       low = tankGetPY(&tk[count]);
-      playersPosData[count].buff[pos] = utilPutNibble(high, low);
+      playersPosData[count].buff[pos] = bolo::utilPutNibble(high, low);
       pos++;
 
       /* Tank Options */
       high = tankIsOnBoat(&tk[count]);
       low = tankGetDir(&tk[count]);
-      playersPosData[count].buff[pos] = utilPutNibble(high, low);
+      playersPosData[count].buff[pos] = bolo::utilPutNibble(high, low);
       pos++;
 
       /* Lgm position */
@@ -862,10 +864,10 @@ void serverCorePreparePosPackets() {
       playersPosData[count].buff[pos] = lgmGetMY(&lgman[count]);
       pos++;
       playersPosData[count].buff[pos] =
-          utilPutNibble(lgmGetPX(&lgman[count]), lgmGetPY(&lgman[count]));
+          bolo::utilPutNibble(lgmGetPX(&lgman[count]), lgmGetPY(&lgman[count]));
       pos++;
       /* Frame */
-      playersPosData[count].buff[pos] = utilPutNibble(
+      playersPosData[count].buff[pos] = bolo::utilPutNibble(
           lgmGetFrame(&lgman[count]), lgmGetBrainObstructed(&lgman[count]));
       pos++;
       playersPosData[count].len = pos;
@@ -927,7 +929,8 @@ int serverCoreMakePosPackets(BYTE *buff, BYTE noPlayer, bool sendStale) {
         }
       }
       if (tankInView || lgmInView) {
-        *loc = utilPutNibble(count, (BYTE)(((tankInView << 2) + lgmInView)));
+        *loc =
+            bolo::utilPutNibble(count, (BYTE)(((tankInView << 2) + lgmInView)));
         loc++;
         pos++;
         if (tankInView) {
@@ -942,7 +945,7 @@ int serverCoreMakePosPackets(BYTE *buff, BYTE noPlayer, bool sendStale) {
         }
       } else if (sendStale && noPlayer != count) {
         /* Send off stale data */
-        *loc = utilPutNibble(count, 0xF);
+        *loc = bolo::utilPutNibble(count, 0xF);
         loc++;
         pos++;
       }

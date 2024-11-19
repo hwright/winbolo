@@ -2146,12 +2146,12 @@ bool playersPrepareLogSnapshotForPlayer(players *value, BYTE playerNum,
      */
     buff[2] = tankGetMX(tnk);
     buff[3] = tankGetMY(tnk);
-    buff[4] = utilPutNibble(tankGetPX(tnk), tankGetPY(tnk));
+    buff[4] = bolo::utilPutNibble(tankGetPX(tnk), tankGetPY(tnk));
     buff[5] = tankGetFrame(tnk);
     buff[6] = tankIsOnBoat(tnk);
     buff[7] = lgmGetMX(lgm);
     buff[8] = lgmGetMY(lgm);
-    buff[9] = utilPutNibble(lgmGetPX(lgm), lgmGetPY(lgm));
+    buff[9] = bolo::utilPutNibble(lgmGetPX(lgm), lgmGetPY(lgm));
     buff[10] = lgmGetFrame(lgm);
     *len = 11;
     utilCtoPString((*value)->item[playerNum].playerName, (char *)buff + 11);

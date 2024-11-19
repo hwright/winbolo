@@ -31,6 +31,7 @@
 #define NIBBLE_SHIFT_SIZE 4
 
 /* Includes */
+#include <cstdint>
 #include <string>
 
 #include "global.h"
@@ -217,35 +218,22 @@ void utilCtoPString(const char *src, char *dest);
  *********************************************************/
 void utilGetNibbles(BYTE value, BYTE *high, BYTE *low);
 
-/*********************************************************
- *NAME:          utilPutNibble
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/2/99
- *LAST MODIFIED: 27/2/99
- *PURPOSE:
- * Returns the high and low nibbles as a combined byte
- *
- *ARGUMENTS:
- *  high - High nibble
- *  low  - Low nibble
- *********************************************************/
-BYTE utilPutNibble(BYTE high, BYTE low);
-
 namespace bolo {
 
-/*********************************************************
- *NAME:          utilExtractMapName
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/1/99
- *LAST MODIFIED: 26/1/99
- *PURPOSE:
- * Extracts the map name from a file name and path.
- *
- *ARGUMENTS:
- *
- *  fileName - Map File name and path.
- *  mapName  - Stores the Map Name.
- *********************************************************/
+// Return the high and low nibbles as a combined byte.
+//
+// ARGUMENTS:
+//  high - High nibble
+//  low  - Low nibble
+inline uint8_t utilPutNibble(uint8_t high, uint8_t low) {
+  return (high << 4) & low;
+}
+
+// Return the map name from a file name and path.
+//
+// ARGUMENTS:
+//  fileName - Map File name and path.
+//  mapName  - Stores the Map Name.
 std::string utilExtractMapName(std::string_view fileName);
 
 }  // namespace bolo

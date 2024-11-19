@@ -110,7 +110,7 @@ void netPNBAdd(netPnbContext *pnbc, BYTE event, BYTE itemNum, BYTE owner,
   if (netGetType() != netSingle &&
       playersGetNumPlayers(screenGetPlayers()) > 0) {
     add1 = new netPNBObj;
-    add1->item = utilPutNibble(event, itemNum);
+    add1->item = bolo::utilPutNibble(event, itemNum);
     add1->owner = owner;
     add1->x = opt1;
     add1->y = opt2;

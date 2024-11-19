@@ -2143,7 +2143,7 @@ BYTE screenMakePosInfo(BYTE *buff) {
   ptr = buff;
   high = playersGetSelf(screenGetPlayers());
   low = tankGetDir(&mytk);
-  *ptr = utilPutNibble(high, low);
+  *ptr = bolo::utilPutNibble(high, low);
   ptr++;
   returnValue++;
   /* Tank position */
@@ -2179,7 +2179,7 @@ BYTE screenMakePosInfo(BYTE *buff) {
   /* Lgm position */
   /*  if (lgmMX != 0 && lgmMY != 0) {
       low = lgmGetFrame(&mylgman);
-      *ptr = utilPutNibble(high, low);
+      *ptr = bolo::utilPutNibble(high, low);
       ptr++;
       returnValue++;
 
@@ -2189,11 +2189,11 @@ BYTE screenMakePosInfo(BYTE *buff) {
       *ptr = lgmGetMY(&mylgman);
       ptr++;
       returnValue++;
-      *ptr = utilPutNibble(lgmGetPX(&mylgman), lgmGetPY(&mylgman));
+      *ptr = bolo::utilPutNibble(lgmGetPX(&mylgman), lgmGetPY(&mylgman));
       ptr++;
       returnValue++;
     } else { */
-  *ptr = utilPutNibble(high, 0xF);
+  *ptr = bolo::utilPutNibble(high, 0xF);
   ptr++;
   returnValue++;
   /*  } */

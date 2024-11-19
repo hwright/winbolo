@@ -501,27 +501,6 @@ void utilGetNibbles(BYTE value, BYTE *high, BYTE *low) {
   *low >>= NIBBLE_SHIFT_SIZE;
 }
 
-/*********************************************************
- *NAME:          utilPutNibble
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/2/99
- *LAST MODIFIED: 27/2/99
- *PURPOSE:
- * Returns the high and low nibbles as a combined byte
- *
- *ARGUMENTS:
- *  high - High nibble
- *  low  - Low nibble
- *********************************************************/
-BYTE utilPutNibble(BYTE high, BYTE low) {
-  BYTE returnValue; /* Value to return */
-
-  returnValue = high;
-  returnValue <<= NIBBLE_SHIFT_SIZE;
-  returnValue += low;
-  return returnValue;
-}
-
 namespace bolo {
 
 std::string utilExtractMapName(std::string_view fileName) {

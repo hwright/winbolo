@@ -122,7 +122,7 @@ void netMNTAdd(netMntContext *nmtc, BYTE event, BYTE itemNum, BYTE owner,
       playersGetNumPlayers(screenGetPlayers()) > 0) {
     /* Check for multiplayer game */
     add1 = new netMNTObj;
-    add1->item = utilPutNibble(event, itemNum);
+    add1->item = bolo::utilPutNibble(event, itemNum);
     add1->owner = owner;
     if (threadsGetContext()) {
       add1->id = (*nmtc)->netMntUpto;
