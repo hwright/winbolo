@@ -179,7 +179,7 @@ static bool labelSelf = FALSE;
 static labelLen labelMsg = lblShort;
 static labelLen labelTank = lblShort;
 
-#define itoa(X) std::format("{}", X)
+#define itoa(X) std::format("{}", (int) X)
 
 /* The Window scaling */
 static BYTE zoomFactor = 1;  // FIXME: ZOOM_FACTOR_NORMAL;
