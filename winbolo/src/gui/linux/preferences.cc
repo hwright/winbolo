@@ -37,95 +37,57 @@ void MakeDir(std::string_view path) {
 
 }  // namespace
 
-std::string GetPrivateProfileString(std::string_view section,
-                                    std::string_view item, std::string_view def,
-                                    std::string_view filename) {
-  std::ifstream input((std::string(filename)));
+Preferences::Preferences(std::string_view filename) : filename_(filename) {
+  std::ifstream input(filename_);
+  std::unordered_map<std::string, std::string>* section_ptr = nullptr;
+
   if (input.is_open()) {
-    std::string sec = std::format("[{}]", section);
-    std::string line;
     while (!input.eof()) {
-      std::getline(input, line, '\n');
-      if (line == sec) {
-        sec = std::format("{}=", item);
-        int len = sec.length();
-        while (!input.eof()) {
-          std::getline(input, line, '\n');
-          if (sec.substr(0, len) == line.substr(0, len)) {
-            return std::string(line, len);
-          } else if (line[0] == '[') {
-            return std::string(def);
-          }
-        }
+      std::string line;
+      std::getline(input, line);
+      if (line[0] == '[') {
+        // Assume section heading
+        std::string section = line.substr(1, line.size() - 2);
+        section_ptr = &prefs_[section];
+      } else if (section_ptr != nullptr && !line.empty()) {
+        // Assume key/value pair
+        int pos = line.find("=");
+        (*section_ptr)[line.substr(0, pos)] = line.substr(pos + 1, line.size());
       }
     }
-
-    input.close();
   }
-
-  return std::string(def);
 }
 
-void WritePrivateProfileString(std::string_view section, std::string_view item,
-                               std::string_view value,
-                               std::string_view filename) {
-  char line[512];
-  int len;
-  FILE *fp;
-  bool done = false;
-  bool inSec = false;
+Preferences::~Preferences() { write(filename_); }
 
-  std::string buff;
-  std::string sec = std::format("[{}]", section);
-  int secLen = sec.length();
+std::optional<std::string> Preferences::get(std::string_view section,
+                                            std::string_view key) {
+  if (auto it = prefs_.find(std::string(section)); it != prefs_.end()) {
+    auto& section = it->second;
+    if (auto it2 = section.find(std::string(key)); it2 != section.end()) {
+      return it2->second;
+    }
+  }
 
-  fp = fopen(std::string(filename).c_str(), "r");
-  if (fp) {
-    fgets(line, 512, fp);
-    while (!feof(fp)) {
-      if (!done) {
-        if (strncmp(sec.c_str(), line, secLen) == 0 && !inSec) {
-          // Found section
-          inSec = true;
-          buff.append(line);
-          sec = std::format("{}=", item);
-          len = sec.length();
-        } else if (inSec && line[0] == '[') {
-          // Leaving section - Add here
-          buff.append(std::format("{}={}\n", item, value));
-          buff.append(line);
-        } else if (inSec && strncmp(sec.c_str(), line, len) == 0) {
-          // Found the line to replace
-          buff.append(std::format("{}={}\n", item, value));
-          done = true;
-        } else {
-          // Just add the line
-          buff.append(line);
-        }
-      } else {
-        buff.append(line);
+  return std::nullopt;
+}
+
+void Preferences::set(std::string_view section, std::string_view key,
+                      std::string_view value) {
+  prefs_[std::string(section)][std::string(key)] = value;
+}
+
+void Preferences::write(std::string_view filename) {
+  std::ofstream output(std::string(filename), std::ios_base::trunc);
+  if (output.is_open()) {
+    for (auto& [heading, section] : prefs_) {
+      output << std::format("[{}]\n", heading);
+      for (auto& [key, value] : section) {
+        output << std::format("{}={}\n", key, value);
       }
-      fgets(line, 512, fp);
     }
-    fclose(fp);
-  } else {
-    buff = std::format("{}\n{}={}\n", sec, item, value);
-    done = true;
+    output.close();
   }
-
-  if (!done) {
-    // We didn't find it in the file and we are still in the right section
-    // Append it here
-    if (!inSec) {
-      buff.append(std::format("{}\n", sec));
-    }
-    buff.append(std::format("{}={}\n", item, value));
-  }
-
-  // Write the entire file back out
-  std::ofstream output((std::string(filename)));
-  output << buff;
-  output.close();
 }
 
 std::string GetPreferenceFile() {
@@ -134,7 +96,7 @@ std::string GetPreferenceFile() {
   pwd = getpwuid(getuid());
   std::string filename = std::format("{}/.linbolo/", pwd->pw_dir);
   MakeDir(filename.c_str());
-  return std::format("{}{}", filename, PREFERENCE_FILE);
+  return std::format("{}{}", filename, Preferences::DEFAULT_FILE);
 }
 
 }  // namespace bolo

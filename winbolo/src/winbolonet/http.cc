@@ -104,18 +104,16 @@ bool httpCreate() {
   }
   strcpy(prefs, PREFERENCE_FILE);
 #else
-  std::string prefs = bolo::GetPreferenceFile();
+  bolo::Preferences prefs(bolo::GetPreferenceFile());
 #endif
 
   wbnHostString[0] = EMPTY_CHAR;
   /* Lookup the server */
-  std::string buff = bolo::GetPrivateProfileString("WINBOLO.NET", "Host",
-                                                   "wbn.winbolo.net", prefs);
+  std::string buff =
+      prefs.get("WINBOLO.NET", "Host").value_or("wbn.winbolo.net");
   strncpy(wbnHostString, buff.c_str(), FILENAME_MAX);
-  bolo::WritePrivateProfileString(
-      "WINBOLO.NET", "Host", wbnHostString,
-      prefs.c_str()); /* Write it back if we are a server (we wont
-                 have a client config file yet) */
+  // Write it back if we are a server (we wont have a client config file yet)
+  prefs.set("WINBOLO.NET", "Host", wbnHostString);
   httpAddrServer.sin_family = AF_INET;
   httpAddrServer.sin_port = htons(80);  // HTTP_SERVER_PORT
   httpAddrServer.sin_addr.s_addr = inet_addr(wbnHostString);
