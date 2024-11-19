@@ -203,22 +203,15 @@ void utilPtoCString(char *src, char *dest);
  *********************************************************/
 void utilCtoPString(const char *src, char *dest);
 
-/*********************************************************
- *NAME:          utilGetNibbles
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/2/99
- *LAST MODIFIED: 27/2/99
- *PURPOSE:
- * Extacts the high and low nibbles out of a byte
- *
- *ARGUMENTS:
- *  value - The byte the nibbles come from
- *  high - Pointer to hold high nibble
- *  low  - Pointer to hold low nibble
- *********************************************************/
-void utilGetNibbles(BYTE value, BYTE *high, BYTE *low);
-
 namespace bolo {
+
+// Return the high and low nibbles out of a byte
+//
+// ARGUMENTS:
+//  value - The byte the nibbles come from
+inline std::tuple<uint8_t, uint8_t> utilGetNibbles(uint8_t value) {
+  return std::make_tuple((value & 0xF0) >> 4, value & 0x0F);
+}
 
 // Return the high and low nibbles as a combined byte.
 //

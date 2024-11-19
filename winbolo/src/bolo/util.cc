@@ -481,26 +481,6 @@ void utilCtoPString(const char *src, char *dest) {
   dest[0] = (char)len;
 }
 
-/*********************************************************
- *NAME:          utilGetNibbles
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/2/99
- *LAST MODIFIED: 27/2/99
- *PURPOSE:
- * Extacts the high and low nibbles out of a byte
- *
- *ARGUMENTS:
- *  value - The byte the nibbles come from
- *  high - Pointer to hold high nibble
- *  low  - Pointer to hold low nibble
- *********************************************************/
-void utilGetNibbles(BYTE value, BYTE *high, BYTE *low) {
-  *high = *low = value;
-  *high >>= NIBBLE_SHIFT_SIZE;
-  *low <<= NIBBLE_SHIFT_SIZE;
-  *low >>= NIBBLE_SHIFT_SIZE;
-}
-
 namespace bolo {
 
 std::string utilExtractMapName(std::string_view fileName) {

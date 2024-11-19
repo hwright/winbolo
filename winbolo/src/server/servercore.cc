@@ -29,6 +29,8 @@
 #include <string.h>
 #include <time.h>
 
+#include <tuple>
+
 #include "../bolo/bases.h"
 #include "../bolo/bolo_map.h"
 #include "../bolo/building.h"
@@ -711,7 +713,7 @@ void serverCoreSetPosData(BYTE *buff) {
   WORLD testY;
 
   ptr = buff;
-  utilGetNibbles(*ptr, &playerNum, &frame);
+  std::tie(playerNum, frame) = bolo::utilGetNibbles(*ptr);
   ptr++;
   if (tk[playerNum] != nullptr) {
     memcpy(&wx, ptr, sizeof(WORLD));
@@ -725,7 +727,7 @@ void serverCoreSetPosData(BYTE *buff) {
     memcpy(&st, ptr, sizeof(SPEEDTYPE));
     ptr += sizeof(SPEEDTYPE);
 
-    utilGetNibbles(*ptr, &onBoat, &lgmFrame);
+    std::tie(onBoat, lgmFrame) = bolo::utilGetNibbles(*ptr);
     ptr++;
     if (lgmFrame != 0xF) {
       /* Lgm position */
@@ -733,7 +735,7 @@ void serverCoreSetPosData(BYTE *buff) {
       ptr++;
       lgmMY = *ptr;
       ptr++;
-      utilGetNibbles(*ptr, &lgmPX, &lgmPY);
+      std::tie(lgmPX, lgmPY) = bolo::utilGetNibbles(*ptr);
       ptr++;
     } else {
       lgmFrame = lgmMX = lgmMY = lgmPX = lgmPY = 0;

@@ -27,6 +27,8 @@
 
 #include "netmt.h"
 
+#include <tuple>
+
 #include "../server/servercore.h"
 #include "../winbolonet/winbolonet.h"
 #include "bolo_map.h"
@@ -479,7 +481,7 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
   returnValue = true;
 
   while (count < dataLen) {
-    utilGetNibbles(buff[count], &event, &itemNum);
+    std::tie(event, itemNum) = bolo::utilGetNibbles(buff[count]);
     // eventNibble = buff[count];
     count++;
     owner = buff[count];

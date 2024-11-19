@@ -27,6 +27,8 @@
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
+
+#include <tuple>
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -156,7 +158,8 @@ void serverNetCheck(BYTE *ptr, int len) {
   BYTE frame;
   time_t t;
   memcpy(&t, ptr + len - sizeof(time_t), sizeof(time_t));
-  utilGetNibbles(*(ptr + BOLOPACKET_REQUEST_SIZE), &playerNum, &frame);
+  std::tie(playerNum, frame) =
+      bolo::utilGetNibbles(*(ptr + BOLOPACKET_REQUEST_SIZE));
   if (netPlayersCheck(&np, playerNum, t, serverMainGetTicks())) {
     serverNetPlayerLeave(playerNum, false);
   }
@@ -362,7 +365,7 @@ void serverNetUDPPacketArrive(BYTE *buff, int len, unsigned long addr,
 
               /* Reset the players address and port for routers that change them
                */
-              utilGetNibbles(*ptr, &playerNum, &dummy);
+              std::tie(playerNum, dummy) = bolo::utilGetNibbles(*ptr);
               sAddr.sin_family = AF_INET;
 #ifdef _WIN32
               sAddr.sin_addr.S_un.S_addr = addr;

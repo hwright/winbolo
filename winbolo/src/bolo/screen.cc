@@ -38,6 +38,8 @@ Morrison <john@winbolo.com>          \0" */
 #include <string.h>
 #include <time.h>
 
+#include <tuple>
+
 #include "../gui/netclient.h"
 #include "backend.h"
 #include "bases.h"
@@ -2282,7 +2284,7 @@ void screenExtractPlayerData(BYTE *buff, int buffLen) {
     lgmPX = 0;
     lgmPY = 0;
     lgmFrame = 0;
-    utilGetNibbles(buff[pos], &playerNum, &options);
+    std::tie(playerNum, options) = bolo::utilGetNibbles(buff[pos]);
     pos++;
     if (options != 0xF) { /* Stale check */
       tankInView = options >> 2;
@@ -2294,9 +2296,9 @@ void screenExtractPlayerData(BYTE *buff, int buffLen) {
         pos++;
         my = buff[pos];
         pos++;
-        utilGetNibbles(buff[pos], &px, &py);
+        std::tie(px, py) = bolo::utilGetNibbles(buff[pos]);
         pos++;
-        utilGetNibbles(buff[pos], (BYTE *)&onBoat, &frame);
+        std::tie(onBoat, frame) = bolo::utilGetNibbles(buff[pos]);
         pos++;
       }
 
@@ -2306,9 +2308,9 @@ void screenExtractPlayerData(BYTE *buff, int buffLen) {
         pos++;
         lgmMY = buff[pos];
         pos++;
-        utilGetNibbles(buff[pos], &lgmPX, &lgmPY);
+        std::tie(lgmPX, lgmPY) = bolo::utilGetNibbles(buff[pos]);
         pos++;
-        utilGetNibbles(buff[pos], &lgmFrame, &lgmObstructed);
+        std::tie(lgmFrame, lgmObstructed) = bolo::utilGetNibbles(buff[pos]);
         pos++;
       }
     }

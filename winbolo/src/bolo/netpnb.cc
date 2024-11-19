@@ -27,6 +27,8 @@
 
 #include "netpnb.h"
 
+#include <tuple>
+
 #include "../server/servercore.h"
 #include "bases.h"
 #include "frontend.h"
@@ -590,7 +592,7 @@ bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb,
   isServer = threadsGetContext();
 
   while (count < dataLen) {
-    utilGetNibbles(buff[count], &event, &itemNum);
+    std::tie(event, itemNum) = bolo::utilGetNibbles(buff[count]);
     // eventNibble = buff[count];
     count++;
     owner = buff[count];
