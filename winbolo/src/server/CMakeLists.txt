@@ -36,7 +36,6 @@ add_executable(linbolods
                ../bolo/screencalc.cc
                ../bolo/shells.cc
                ../bolo/starts.cc
-               ../bolo/swamp.cc
                ../bolo/tank.cc
                ../bolo/tankexp.cc
                ../bolo/udppackets.cc

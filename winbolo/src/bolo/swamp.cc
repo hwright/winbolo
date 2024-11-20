@@ -40,7 +40,7 @@
  *ARGUMENTS:
  *
  *********************************************************/
-void swampCreate(swamp *swmp) { *swmp = nullptr; }
+void swampCreate(swamp *swmp) { *swmp = new swampObj; }
 
 /*********************************************************
  *NAME:          swampDestroy
@@ -53,15 +53,7 @@ void swampCreate(swamp *swmp) { *swmp = nullptr; }
  *ARGUMENTS:
  *
  *********************************************************/
-void swampDestroy(swamp *swmp) {
-  swamp q;
-
-  while (!IsEmpty(*swmp)) {
-    q = *swmp;
-    *swmp = SwampTail(q);
-    delete q;
-  }
-}
+void swampDestroy(swamp *swmp) { delete *swmp; }
 
 /*********************************************************
  *NAME:          swampAddItem
@@ -78,76 +70,19 @@ void swampDestroy(swamp *swmp) {
  *  y     - Y co-ord
  *********************************************************/
 BYTE swampAddItem(swamp *swmp, BYTE x, BYTE y) {
-  BYTE returnValue; /* Value to return */
-  bool found;       /* Is the item found */
-  int count;        /* Looping Variable */
-  swamp q;
-  swamp inc;
+  MapPoint pos{.x = x, .y = y};
 
-  inc = *swmp;
-  found = false;
-  returnValue = SWAMP;
-  count = 0;
-
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-      inc->life--;
-      if (inc->life == SWAMP_DEATH) {
-        returnValue = SWAMP_DEATH_RETURN;
-        swampDeleteItem(swmp, count);
-      }
+  if (auto it = (*swmp)->swamps_.find(pos); it != (*swmp)->swamps_.end()) {
+    it->second -= 1;
+    if (it->second == SWAMP_DEATH) {
+      (*swmp)->swamps_.erase(it);
+      return SWAMP_DEATH_RETURN;
     }
-    if (!found) {
-      inc = SwampTail(inc);
-    }
-  }
-
-  /* If not found add a new item */
-  if (!found) {
-    q = new swampObj;
-    q->x = x;
-    q->y = y;
-    q->life = SWAMP_LIFE;
-    q->next = *swmp;
-    *swmp = q;
-  }
-
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          swampDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  itemNum - The item number to get
- *********************************************************/
-void swampDeleteItem(swamp *swmp, int itemNum) {
-  swamp prev; /* The previous item to link to the delete items next */
-  swamp del;  /* The item to delete */
-  int count;  /* Looping variable */
-
-  if (itemNum == 1) {
-    del = *swmp;
-    *swmp = del->next;
-    delete del;
   } else {
-    count = 1;
-    prev = *swmp;
-    while (count < (itemNum - 1)) {
-      prev = SwampTail(prev);
-      count++;
-    }
-    del = SwampTail(prev);
-    prev->next = del->next;
-    delete del;
+    (*swmp)->swamps_[pos] = SWAMP_LIFE;
   }
+
+  return SWAMP;
 }
 
 /*********************************************************
@@ -165,24 +100,6 @@ void swampDeleteItem(swamp *swmp, int itemNum) {
  *  y     - Y co-ord
  *********************************************************/
 void swampRemovePos(swamp *swmp, BYTE x, BYTE y) {
-  bool found; /* Is the item found */
-  int count;  /* Looping Variable */
-  swamp inc;
-
-  inc = *swmp;
-  found = false;
-  count = 0;
-
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-    }
-    inc = SwampTail(inc);
-  }
-
-  /* If found remove item */
-  if (found) {
-    swampDeleteItem(swmp, count);
-  }
+  MapPoint pos{.x = x, .y = y};
+  (*swmp)->swamps_.erase(pos);
 }

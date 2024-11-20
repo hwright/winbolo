@@ -28,15 +28,9 @@
 #ifndef SWAMP_H
 #define SWAMP_H
 
-#include "global.h"
+#include <unordered_map>
 
-/* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define SwampHeadX(list) ((list)->x);
-#define SwampHeadY(list) ((list)->y);
-#define SwampHeadLength(list) ((list)->life);
-#define SwampTail(list) ((list)->next);
+#include "global.h"
 
 /* How many shots it takes to destroy a peice of grass this is set to 3 becuase
  * for some reason that makes winbolo kill a swamp in 4 shots. 4 shots is what
@@ -53,10 +47,7 @@
 
 typedef struct swampObj *swamp;
 struct swampObj {
-  swamp next; /* Next item */
-  BYTE x;     /* X and Y positions */
-  BYTE y;
-  BYTE life; /* Life time of the swamp */
+  std::unordered_map<MapPoint, uint8_t> swamps_;
 };
 
 /* Prototypes */
