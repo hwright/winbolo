@@ -16,5 +16,7 @@ pkg_check_modules(GTK REQUIRED gtk+)
 
 add_compile_options(-Wall -Wno-missing-braces)
 
+add_subdirectory(bolo)
+
 add_subdirectory(gui/linux)
 add_subdirectory(server)
