@@ -459,30 +459,16 @@ void utilPtoCString(char *src, char *dest) {
   dest[count] = '\0';
 }
 
-/*********************************************************
- *NAME:          utilPtoCString
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/2/99
- *LAST MODIFIED: 21/2/99
- *PURPOSE:
- * Convert a C string to a Bolo's network pascal string
- *
- *ARGUMENTS:
- *  src  - Source string
- *  dest - Destination string
- *********************************************************/
-void utilCtoPString(const char *src, char *dest) {
-  int count; /* Looping variable */
-  int len;   /* Length of the string */
-
-  len = (int)strlen(src);
-  for (count = 1; count <= len; count++) {
-    dest[count] = src[count - 1];
-  }
-  dest[0] = (char)len;
-}
-
 namespace bolo {
+
+std::string utilCtoPString(std::string_view src) {
+  std::string dest;
+
+  dest.push_back((char)src.size());
+  dest.append(src);
+
+  return dest;
+}
 
 std::string utilExtractMapName(std::string_view fileName) {
   std::filesystem::path path(fileName);

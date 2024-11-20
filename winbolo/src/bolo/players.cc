@@ -143,7 +143,8 @@ bool playersSetSelf(players *plrs, BYTE playerNum, char *playerName) {
       (*plrs)->item[playerNum].inUse = true;
       (*plrs)->myPlayerNum = playerNum;
       lgmSetPlayerNum(screenGetLgmFromPlayerNum(playerNum), playerNum);
-      utilCtoPString(playerName, (char *)(*plrs)->playerBrainNames[playerNum]);
+      strcpy((char *)(*plrs)->playerBrainNames[playerNum],
+             bolo::utilCtoPString(playerName).c_str());
       if (!threadsGetContext()) {
         frontEndSetPlayer((playerNumbers)playerNum, playerName);
       }
@@ -200,7 +201,8 @@ bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
       messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE), messageStr);
       /* Update the name */
       strcpy((*plrs)->item[playerNum].playerName, playerName);
-      utilCtoPString(playerName, (char *)(*plrs)->playerBrainNames[playerNum]);
+      strcpy((char *)(*plrs)->playerBrainNames[playerNum],
+             bolo::utilCtoPString(playerName).c_str());
       strcpy(temp, playerName);
       if (playerNum != (*plrs)->myPlayerNum) {
         strcat(temp, "@");
@@ -289,7 +291,8 @@ void playersSetPlayer(players *plrs, BYTE playerNum, char *playerName,
     (*plrs)->item[playerNum].inUse = true;
     strcpy((*plrs)->item[playerNum].playerName, playerName);
     strcpy((*plrs)->item[playerNum].location, location);
-    utilCtoPString(playerName, (char *)((*plrs)->playerBrainNames[playerNum]));
+    strcpy((char *)((*plrs)->playerBrainNames[playerNum]),
+           bolo::utilCtoPString(playerName).c_str());
     (*plrs)->item[playerNum].mapX = mx;
     (*plrs)->item[playerNum].mapY = my;
     (*plrs)->item[playerNum].pixelX = px;
@@ -2154,9 +2157,11 @@ bool playersPrepareLogSnapshotForPlayer(players *value, BYTE playerNum,
     buff[9] = bolo::utilPutNibble(lgmGetPX(lgm), lgmGetPY(lgm));
     buff[10] = lgmGetFrame(lgm);
     *len = 11;
-    utilCtoPString((*value)->item[playerNum].playerName, (char *)buff + 11);
+    strcpy((char *)buff + 11,
+           bolo::utilCtoPString((*value)->item[playerNum].playerName).c_str());
     *len += buff[11] + 1; /* Add 1 for len prefix */
-    utilCtoPString((*value)->item[playerNum].location, (char *)buff + *len);
+    strcpy((char *)buff + *len,
+           bolo::utilCtoPString((*value)->item[playerNum].location).c_str());
     *len += *(buff + *len) + 1;
     *len += allianceMakeLogAlliance(&((*value)->item[playerNum].allie),
                                     buff + *len);

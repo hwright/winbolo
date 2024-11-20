@@ -485,7 +485,7 @@ bool winbolonetRequestServerKey(char *mapName, unsigned short port,
   buff[12] = numPills;
 
   buffPos = 13;
-  utilCtoPString(mapName, (char *)buff + 13);
+  strcpy((char *)buff + 13, bolo::utilCtoPString(mapName).c_str());
   buffPos = 14 + buff[13];
 
   memcpy(buff + buffPos, &port, sizeof(port));
@@ -541,9 +541,9 @@ bool winbolonetRequestClientKey(const char *userName, const char *password,
   buff[3] = WINBOLO_NET_MESSAGE_CLIENTKEY_REQ;
   memcpy(buff + 4, serverKey, WINBOLONET_KEY_LEN);
   buffPos = 4 + WINBOLONET_KEY_LEN;
-  utilCtoPString(userName, (char *)buff + buffPos);
+  strcpy((char *)buff + buffPos, bolo::utilCtoPString(userName).c_str());
   buffPos = buffPos + buff[buffPos] + 1;
-  utilCtoPString(password, (char *)buff + buffPos);
+  strcpy((char *)buff + buffPos, bolo::utilCtoPString(password).c_str());
   buffPos = buffPos + buff[buffPos] + 1;
   ret = httpSendMessage(buff, buffPos, winboloNetBuff, WINBOLONET_BUFFSIZE);
   if (ret > 0) {
@@ -654,7 +654,7 @@ bool winboloNetVerifyClientKey(BYTE *keyBuff, char *userName, BYTE playerNum) {
     buff[3] = WINBOLO_NET_MESSAGE_VERIFYCLIENTKEY_REQ;
     memcpy(buff + 4, winboloNetServerKey, WINBOLONET_KEY_LEN);
     buffPos = 4 + WINBOLONET_KEY_LEN;
-    utilCtoPString(userName, (char *)buff + buffPos);
+    strcpy((char *)buff + buffPos, bolo::utilCtoPString(userName).c_str());
     buffPos = buffPos + buff[buffPos] + 1;
     memcpy(buff + buffPos, keyBuff, WINBOLONET_KEY_LEN);
 

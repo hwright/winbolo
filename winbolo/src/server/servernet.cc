@@ -638,14 +638,15 @@ void serverNetTCPPacketArrive(BYTE *buff, int len, BYTE playerNum,
 
     playersGetPlayerName(screenGetPlayers(), playerNum, str);
     strcat(str, (char *)" is now allowing players to join.");
-    utilCtoPString(str, (char *)ptr);
+    strcpy((char *)ptr, bolo::utilCtoPString(str).c_str());
     logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
     serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
     if (netPlayersIsLocked(&np)) {
       /* Send out game is unlocked message */
-      utilCtoPString(
-          (char *)"This game is now unlocked to new players (client unlock)",
-          (char *)ptr);
+      strcpy((char *)ptr,
+             bolo::utilCtoPString(
+                 "This game is now unlocked to new players (client unlock)")
+                 .c_str());
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
       serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
       if (!serverLock) {
@@ -664,15 +665,16 @@ void serverNetTCPPacketArrive(BYTE *buff, int len, BYTE playerNum,
 
     playersGetPlayerName(screenGetPlayers(), playerNum, str);
     strcat(str, (char *)" is now not allowing players to join.");
-    utilCtoPString(str, (char *)ptr);
+    strcpy((char *)ptr, bolo::utilCtoPString(str).c_str());
     logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
     serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
     netPlayersSetLock(&np, playerNum, true);
     if (netPlayersIsLocked(&np)) {
       /* Send out game is locked message */
-      utilCtoPString(
-          (char *)"This game is now locked to new players (client lock)",
-          (char *)ptr);
+      strcpy((char *)ptr,
+             bolo::utilCtoPString(
+                 "This game is now locked to new players (client lock)")
+                 .c_str());
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
       serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
       winboloNetSendLock(true);
@@ -735,7 +737,7 @@ void serverNetMakeInfoRespsonse(INFO_PACKET *buff) {
   buff->gameid.serveraddress.s_addr = 0;
   /* Get the map name and convert to a pascal string */
   serverCoreGetMapName(dummy);
-  utilCtoPString(dummy, buff->mapname);
+  strcpy(buff->mapname, bolo::utilCtoPString(dummy).c_str());
 
   /* Make game variables */
   buff->gametype = serverCoreGetActualGameType();
@@ -948,7 +950,7 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr,
     serverNetMakePacketHeader(&(npp.h), BOLOPACKET_PLAYERNEWPLAYER);
 
     npp.playerNumber = pnp.playerNumber;
-    utilCtoPString((char *)info, npp.playerName);
+    strcpy(npp.playerName, bolo::utilCtoPString((char *)info).c_str());
     memcpy(info, &npp, sizeof(npp));
     serverNetSendAllExceptPlayer(npp.playerNumber, info, sizeof(npp));
     winbolonetAddEvent(WINBOLO_NET_EVENT_PLAYER_JOIN, true, npp.playerNumber,
@@ -985,7 +987,7 @@ void serverNetSendPlayerLeaveGracefulMessage(BYTE playerNum) {
   strcat(str, (char *)" is quitting.");
 
   /* Send message to clients */
-  utilCtoPString(str, (char *)ptr);
+  strcpy((char *)ptr, bolo::utilCtoPString(str).c_str());
   // FIXME send to WBN  logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)
   // ptr);
   serverNetSendAllExceptPlayer(playerNum, buff,
@@ -1067,7 +1069,8 @@ void serverNetPlayerDataReq() {
     if (playersIsInUse(screenGetPlayers(), count)) {
       pdp.items[count].inUse = true;
       playersGetPlayerName(screenGetPlayers(), count, (char *)sendBuff);
-      utilCtoPString((char *)sendBuff, pdp.items[count].playerName);
+      strcpy(pdp.items[count].playerName,
+             bolo::utilCtoPString((char *)sendBuff).c_str());
       pdp.items[count].numAllies = playersMakeNetAlliences(
           screenGetPlayers(), count, pdp.items[count].allies);
       netPlayersGetPlayerDataReq(&np, count, &(pdp.items[count].addr),
@@ -1497,9 +1500,10 @@ void serverNetSetLock(bool lockState) {
         (char *)"This game is now locked to new players (server lock)");
     if (serverLock != lockState) {
       /* Send message to clients */
-      utilCtoPString(
-          (char *)"This game is now locked to new players (server lock)",
-          (char *)ptr);
+      strcpy((char *)ptr,
+             bolo::utilCtoPString(
+                 "This game is now locked to new players (server lock)")
+                 .c_str());
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
       serverNetSendAll(buff, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
       winboloNetSendLock(true);
@@ -1511,9 +1515,10 @@ void serverNetSetLock(bool lockState) {
         (char *)"This game is now unlocked to new players (server unlock)");
     if (serverLock != lockState) {
       /* Send message to clients */
-      utilCtoPString(
-          (char *)"This game is now unlocked to new players (server unlock)",
-          (char *)ptr);
+      strcpy((char *)ptr,
+             bolo::utilCtoPString(
+                 "This game is now unlocked to new players (server unlock)")
+                 .c_str());
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
       serverNetSendAll(buff, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
       winboloNetSendLock(false);
@@ -1564,7 +1569,8 @@ void serverNetSendQuitMessage() {
   ptr = buff;
   ptr += BOLOPACKET_REQUEST_TYPEPOS + 1;
   /* Send message to clients */
-  utilCtoPString((char *)"Server received quit message", (char *)ptr);
+  strcpy((char *)ptr,
+         bolo::utilCtoPString("Server received quit message").c_str());
   logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
   serverNetSendAll(buff, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
   buff[BOLOPACKET_REQUEST_TYPEPOS] = BOLOPACKET_PACKETQUIT;
@@ -1669,7 +1675,7 @@ void serverNetSendServerMessageAllPlayers(const char *msg) {
   if (msg2[len - 1] == '\n') {
     msg2[len - 1] = EMPTY_CHAR;
   }
-  utilCtoPString(msg2, (char *)ptr);
+  strcpy((char *)ptr, bolo::utilCtoPString(msg2).c_str());
   logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
   serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
   free(msg2);

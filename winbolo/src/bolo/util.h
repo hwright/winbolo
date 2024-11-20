@@ -189,26 +189,26 @@ bool utilIsTankInTrees(map *mp, pillboxes *pb, bases *bs, WORLD wx, WORLD wy);
  *********************************************************/
 void utilPtoCString(char *src, char *dest);
 
-/*********************************************************
- *NAME:          utilPtoCString
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/2/99
- *LAST MODIFIED: 21/2/99
- *PURPOSE:
- * Convert a C string to a Bolo's network pascal string
- *
- *ARGUMENTS:
- *  src  - Source string
- *  dest - Destination string
- *********************************************************/
-void utilCtoPString(const char *src, char *dest);
-
 namespace bolo {
+
+// Converts a C string to a Bolo's network pascal string
+//
+// ARGUMENTS:
+//  src  - Source string
+//  dest - Destination string
+//
+// RETURNS:
+//  The converted Pascal string
+std::string utilCtoPString(std::string_view src);
 
 // Return the high and low nibbles out of a byte
 //
 // ARGUMENTS:
 //  value - The byte the nibbles come from
+//
+// RETURNS:
+//  A tuple whose first element is the high nibble, and second element
+//  is the low nibble
 inline std::tuple<uint8_t, uint8_t> utilGetNibbles(uint8_t value) {
   return std::make_tuple((value & 0xF0) >> 4, value & 0x0F);
 }
@@ -218,6 +218,9 @@ inline std::tuple<uint8_t, uint8_t> utilGetNibbles(uint8_t value) {
 // ARGUMENTS:
 //  high - High nibble
 //  low  - Low nibble
+//
+// RETURNS:
+//  The combined byte
 inline uint8_t utilPutNibble(uint8_t high, uint8_t low) {
   return (high << 4) & low;
 }
@@ -227,6 +230,9 @@ inline uint8_t utilPutNibble(uint8_t high, uint8_t low) {
 // ARGUMENTS:
 //  fileName - Map File name and path.
 //  mapName  - Stores the Map Name.
+//
+// RETURNS:
+//  The filename without path.  If the filename ends in `.map`, it is removed.
 std::string utilExtractMapName(std::string_view fileName);
 
 }  // namespace bolo

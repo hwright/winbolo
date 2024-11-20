@@ -165,7 +165,7 @@ void clientMessageAdd(messageType msgType, const char *top,
     /* Player Messages */
     case player0Message:
       newMessageFrom = BASE_0; /* Using base macro because I am lazy :) */
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player0Message) {
         messageAddItem(top, bottom);
       } else {
@@ -175,7 +175,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player1Message:
       newMessageFrom = BASE_1;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player1Message) {
         messageAddItem(top, bottom);
       } else {
@@ -185,7 +185,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player2Message:
       newMessageFrom = BASE_2;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player2Message) {
         messageAddItem(top, bottom);
       } else {
@@ -195,7 +195,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player3Message:
       newMessageFrom = BASE_3;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player3Message) {
         messageAddItem(top, bottom);
       } else {
@@ -205,7 +205,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player4Message:
       newMessageFrom = BASE_4;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player4Message) {
         messageAddItem(top, bottom);
       } else {
@@ -215,7 +215,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player5Message:
       newMessageFrom = BASE_5;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player5Message) {
         messageAddItem(top, bottom);
       } else {
@@ -225,7 +225,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player6Message:
       newMessageFrom = BASE_6;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player6Message) {
         messageAddItem(top, bottom);
       } else {
@@ -235,7 +235,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player7Message:
       newMessageFrom = BASE_7;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player7Message) {
         messageAddItem(top, bottom);
       } else {
@@ -245,7 +245,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player8Message:
       newMessageFrom = BASE_8;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player8Message) {
         messageAddItem(top, bottom);
       } else {
@@ -255,7 +255,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player9Message:
       newMessageFrom = BASE_9;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player9Message) {
         messageAddItem(top, bottom);
       } else {
@@ -265,7 +265,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player10Message:
       newMessageFrom = BASE_10;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player10Message) {
         messageAddItem(top, bottom);
       } else {
@@ -275,7 +275,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player11Message:
       newMessageFrom = BASE_11;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player11Message) {
         messageAddItem(top, bottom);
       } else {
@@ -285,7 +285,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player12Message:
       newMessageFrom = BASE_12;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player12Message) {
         messageAddItem(top, bottom);
       } else {
@@ -295,7 +295,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player13Message:
       newMessageFrom = BASE_13;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player13Message) {
         messageAddItem(top, bottom);
       } else {
@@ -305,7 +305,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player14Message:
       newMessageFrom = BASE_14;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player14Message) {
         messageAddItem(top, bottom);
       } else {
@@ -315,7 +315,7 @@ void clientMessageAdd(messageType msgType, const char *top,
       break;
     case player15Message:
       newMessageFrom = BASE_15;
-      utilCtoPString(bottom, newMessage);
+      strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (lastMessage != player15Message) {
         messageAddItem(top, bottom);
       } else {
