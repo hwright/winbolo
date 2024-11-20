@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,16 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-
-/*********************************************************
- *Name:          Tree Growth
- *Filename:      treegrow.c
- *Author:        John Morrison
- *Creation Date: 22/1/99
- *Last Modified: 22/1/99
- *Purpose:
- *  Responsible for storing and calculating tree growth
- *********************************************************/
 
 #include "treegrow.h"
 
@@ -42,6 +31,32 @@
 
 namespace {
 
+// The time a tree exist before growing unless we find a better spot
+const int TREEGROW_TIME = 3000;  // 3700
+
+// Initial time delay before we build a tree. This will be overwritten
+// before it gets called
+const int INITIAL_TIME = 30000;
+// Initial scores to beat
+const int INITIAL_SCORE = -10000;
+
+// Weights of the items
+const int FOREST_WEIGHT = 100;         // 67  100
+const int GRASS_WEIGHT = 25;           // 10 17  25
+const int RIVER_WEIGHT = 2;            // 7  10
+const int BOAT_WEIGHT = 1;             // 3  5
+const int DEEP_SEA_WEIGHT = 0;         // 1
+const int DEEP_SWAMP_WEIGHT = 2;       // 1
+const int DEEP_RUBBLE_WEIGHT = -2;     // -2  -1
+const int BUILDING_WEIGHT = -20;       // -7  -5
+const int HALF_BUILDING_WEIGHT = -15;  // -7  -5
+const int CRATER_WEIGHT = -2;          // -2  -1
+const int ROAD_WEIGHT = -100;          // -18 * -14  -10
+const int MINE_WEIGHT = -7;            // -7 -5
+
+// Score must be greater then 0 for it to grow
+const int TREE_NO_GROW = 0;
+
 // Calculates the tree growth score for a specific square
 //
 // ARGUMENTS:
@@ -50,57 +65,55 @@ namespace {
 //  bs - Pointer to the bases structure
 //  pos - Map position
 int calcSquare(map *mp, pillboxes *pb, bases *bs, MapPoint pos) {
-  int returnValue; /* Value to return */
-  BYTE terrain;    /* The terrain at the position */
+  int returnValue = 0;  // ROAD_WEIGHT;
 
-  returnValue = 0;  // TREE_GROW_ROAD;
   if (pillsExistPos(pb, pos.x, pos.y)) {
-    returnValue = TREE_GROW_ROAD;
+    returnValue = ROAD_WEIGHT;
   } else if (basesExistPos(bs, pos.x, pos.y)) {
-    returnValue = TREE_GROW_ROAD;
+    returnValue = ROAD_WEIGHT;
   } else {
-    terrain = mapGetPos(mp, pos.x, pos.y);
+    BYTE terrain = mapGetPos(mp, pos.x, pos.y);
     if (terrain >= MINE_START && terrain <= MINE_END) {
-      returnValue = TREE_GROW_MINE;
+      returnValue = MINE_WEIGHT;
       terrain -= MINE_START;
     }
 
     switch (terrain) {
       case FOREST:
-        returnValue += TREE_GROW_FOREST;
+        returnValue += FOREST_WEIGHT;
         break;
       case GRASS:
-        returnValue += TREE_GROW_GRASS;
+        returnValue += GRASS_WEIGHT;
         break;
       case RIVER:
-        returnValue += TREE_GROW_RIVER;
+        returnValue += RIVER_WEIGHT;
         break;
       case BOAT:
-        returnValue += TREE_GROW_BOAT;
+        returnValue += BOAT_WEIGHT;
         break;
       case DEEP_SEA:
-        returnValue += TREE_GROW_DEEP_SEA;
+        returnValue += DEEP_SEA_WEIGHT;
         break;
       case SWAMP:
-        returnValue += TREE_GROW_DEEP_SWAMP;
+        returnValue += DEEP_SWAMP_WEIGHT;
         break;
       case RUBBLE:
-        returnValue += TREE_GROW_DEEP_RUBBLE;
+        returnValue += DEEP_RUBBLE_WEIGHT;
         break;
       case BUILDING:
-        returnValue += TREE_GROW_BUILDING;
+        returnValue += BUILDING_WEIGHT;
         break;
       case HALFBUILDING:
-        returnValue += TREE_GROW_HALF_BUILDING;
+        returnValue += HALF_BUILDING_WEIGHT;
         break;
       case CRATER:
-        returnValue += TREE_GROW_CRATER;
+        returnValue += CRATER_WEIGHT;
         break;
       case ROAD:
-        returnValue += TREE_GROW_ROAD;
+        returnValue += ROAD_WEIGHT;
         break;
       default:
-        returnValue += TREE_GROW_ROAD;
+        returnValue += ROAD_WEIGHT;
         break;
     }
   }
@@ -109,8 +122,7 @@ int calcSquare(map *mp, pillboxes *pb, bases *bs, MapPoint pos) {
 
 }  // namespace
 
-TreeGrowState::TreeGrowState()
-    : time_(TREEGROW_INITIAL_TIME), score_(TREEGROW_INITIAL_SCORE) {}
+TreeGrowState::TreeGrowState() : time_(INITIAL_TIME), score_(INITIAL_SCORE) {}
 
 void TreeGrowState::addItem(MapPoint point, int score) {
   if (score > score_ && score > TREE_NO_GROW) {
@@ -175,8 +187,8 @@ void TreeGrowState::checkGrowTree(map *mp, pillboxes *pb, bases *bs) {
   time_--;
   /* Check for fill and remove from data structure */
   if (time_ <= 0) {
-    score_ = TREEGROW_INITIAL_SCORE;
-    time_ = TREEGROW_INITIAL_TIME;
+    score_ = INITIAL_SCORE;
+    time_ = INITIAL_TIME;
     pos = mapGetPos(mp, seedling_.x, seedling_.y);
     if (pos != RIVER && pos != BUILDING && pos != HALFBUILDING &&
         !pillsExistPos(pb, seedling_.x, seedling_.y) &&

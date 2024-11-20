@@ -14,15 +14,7 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Tree Growth
- *Filename:      treegrow.h
- *Author:        John Morrison
- *Creation Date: 22/1/99
- *Last Modified: 24/12/99
- *Purpose:
- *  Responsible for storing and calculating tree growth
- *********************************************************/
+//  Responsible for storing and calculating tree growth
 
 #ifndef TREEGROW_H
 #define TREEGROW_H
@@ -32,32 +24,7 @@
 #include "global.h"
 #include "types.h"
 
-/* The time a tree exist before growing unless we find a better spot */
-#define TREEGROW_TIME 3000 /* 3700 */
-
-/* Initial time delay before we build a tree. This will be overwritten
-   before it gets called */
-#define TREEGROW_INITIAL_TIME 30000
-/* Initial scores to beat */
-#define TREEGROW_INITIAL_SCORE -10000
-
-/* Weights of the items */
-#define TREE_GROW_FOREST 100        /* 67  100 */
-#define TREE_GROW_GRASS 25          /* 10 17  25 */
-#define TREE_GROW_RIVER 2           /* 7  10 */
-#define TREE_GROW_BOAT 1            /* 3  5 */
-#define TREE_GROW_DEEP_SEA 0        /* 1 */
-#define TREE_GROW_DEEP_SWAMP 2      /* 1 */
-#define TREE_GROW_DEEP_RUBBLE -2    /* -2  -1 */
-#define TREE_GROW_BUILDING -20      /* -7  -5 */
-#define TREE_GROW_HALF_BUILDING -15 /* -7  -5 */
-#define TREE_GROW_CRATER -2         /* -2  -1  */
-#define TREE_GROW_ROAD -100         /* -18 * -14  -10 */
-#define TREE_GROW_MINE -7           /* -7 -5 */
-
-/* Score must be greater then 0 for it to grow */
-#define TREE_NO_GROW 0
-
+// Track the state of our tree growth apparatus.
 class TreeGrowState {
  public:
   TreeGrowState();
