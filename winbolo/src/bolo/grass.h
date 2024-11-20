@@ -28,15 +28,9 @@
 #ifndef GRASS_H
 #define GRASS_H
 
-#include "global.h"
+#include <unordered_map>
 
-/* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define GrassHeadX(list) ((list)->x);
-#define GrassHeadY(list) ((list)->y);
-#define GrassHeadLength(list) ((list)->life);
-#define GrassTail(list) ((list)->next);
+#include "global.h"
 
 /* How manu shots it takes to destroy a peice of grass */
 #define GRASS_LIFE 4
@@ -51,10 +45,7 @@
 
 typedef struct grassObj *grass;
 struct grassObj {
-  grass next; /* Next item */
-  BYTE x;     /* X and Y positions */
-  BYTE y;
-  BYTE life; /* Life time of the Grass */
+  std::unordered_map<MapPoint, uint8_t> grasses_;
 };
 
 /* Prototypes */

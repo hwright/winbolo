@@ -40,7 +40,7 @@
  *ARGUMENTS:
  * grs - Pointer to the grass object
  *********************************************************/
-void grassCreate(grass *grs) { *grs = nullptr; }
+void grassCreate(grass *grs) { *grs = new grassObj; }
 
 /*********************************************************
  *NAME:          grassDestroy
@@ -53,15 +53,7 @@ void grassCreate(grass *grs) { *grs = nullptr; }
  *ARGUMENTS:
  * grs - Pointer to the grass object
  *********************************************************/
-void grassDestroy(grass *grs) {
-  grass q;
-
-  while (!IsEmpty(*grs)) {
-    q = *grs;
-    *grs = GrassTail(q);
-    delete q;
-  }
-}
+void grassDestroy(grass *grs) { delete *grs; }
 
 /*********************************************************
  *NAME:          grassAddItem
@@ -79,113 +71,22 @@ void grassDestroy(grass *grs) {
  *  y     - Y co-ord
  *********************************************************/
 BYTE grassAddItem(grass *grs, BYTE x, BYTE y) {
-  BYTE returnValue; /* Value to return */
-  bool found;       /* Is the item found */
-  int count;        /* Looping Variable */
-  grass q;
-  grass inc;
+  MapPoint pos{.x = x, .y = y};
 
-  inc = *grs;
-  found = false;
-  returnValue = GRASS;
-  count = 0;
-
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-      inc->life--;
-      if (inc->life == GRASS_DEATH) {
-        returnValue = GRASS_DEATH_RETURN;
-        grassDeleteItem(grs, count);
-      }
+  if (auto it = (*grs)->grasses_.find(pos); it != (*grs)->grasses_.end()) {
+    it->second -= 1;
+    if (it->second == GRASS_DEATH) {
+      (*grs)->grasses_.erase(it);
+      return GRASS_DEATH_RETURN;
     }
-    if (!found) {
-      inc = GrassTail(inc);
-    }
-  }
-
-  /* If not found add a new item */
-  if (!found) {
-    q = new grassObj;
-    q->x = x;
-    q->y = y;
-    q->life = GRASS_LIFE;
-    q->next = *grs;
-    *grs = q;
-  }
-
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          grassDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  grs     - Pointer to the grass object
- *  itemNum - The item number to get
- *********************************************************/
-void grassDeleteItem(grass *grs, int itemNum) {
-  grass prev; /* The previous item to link to the delete items next */
-  grass del;  /* The item to delete */
-  int count;  /* Looping variable */
-
-  if (itemNum == 1) {
-    del = *grs;
-    *grs = del->next;
-    delete del;
   } else {
-    count = 1;
-    prev = *grs;
-    while (count < (itemNum - 1)) {
-      prev = GrassTail(prev);
-      count++;
-    }
-    del = GrassTail(prev);
-    prev->next = del->next;
-    delete del;
+    (*grs)->grasses_[pos] = GRASS_LIFE;
   }
+
+  return GRASS;
 }
 
-/*********************************************************
- *NAME:          grassRemovePos
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/99
- *LAST MODIFIED: 18/1/99
- *PURPOSE:
- *  Removes an item from the grass data structure if it
- *  exists at a specific loaction. Otherwise the function
- *  does nothing
- *
- *ARGUMENTS:
- *  grs - Pointer to the grass object
- *  x   - X co-ord
- *  y   - Y co-ord
- *********************************************************/
 void grassRemovePos(grass *grs, BYTE x, BYTE y) {
-  bool found; /* Is the item found */
-  int count;  /* Looping Variable */
-  grass inc;
-
-  inc = *grs;
-  found = false;
-  count = 0;
-
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-    }
-    inc = GrassTail(inc);
-  }
-
-  /* If found remove item */
-  if (found) {
-    grassDeleteItem(grs, count);
-  }
+  MapPoint pos{.x = x, .y = y};
+  (*grs)->grasses_.erase(pos);
 }
