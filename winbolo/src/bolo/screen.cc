@@ -3198,7 +3198,7 @@ void screenExtractBrainInfo(BrainInfo *value) {
   /* Message Sending */
   if (value->sendmessage[0] != 0) {
     char msg[255];
-    utilPtoCString((char *)value->sendmessage, msg);
+    strcpy(msg, bolo::utilPtoCString((char *)value->sendmessage).c_str());
     if (*(value->messagedest) == 0) {
       /* Its a debug message */
       messageAdd(AIMessage, langGetText(MESSAGE_AI), msg);

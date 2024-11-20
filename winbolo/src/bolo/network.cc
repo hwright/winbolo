@@ -667,7 +667,7 @@ void netTcpPacketArrive(BYTE *buff, int len) {
     char msg[FILENAME_MAX];
     ptr = buff;
     ptr += BOLOPACKET_REQUEST_TYPEPOS + 1;
-    utilPtoCString((char *)ptr, msg);
+    strcpy(msg, bolo::utilPtoCString((char *)ptr).c_str());
     screenNetStatusMessage(msg);
   } else {
     /* Packet corrupt */
@@ -911,7 +911,7 @@ bool netJoinInit(const char *ip, unsigned short port, bool usCreate,
     } else {
       /* Extract map name, AI Type and hidden mines and game start and
        * originator */
-      utilPtoCString(inf.mapname, (char *)buff);
+      strcpy((char *)buff, bolo::utilPtoCString(inf.mapname).c_str());
       screenSetMapName((char *)buff);
       gameFrontSetAIType((aiType)(inf.allow_AI));
       if (inf.allow_mines == HIDDEN_MINES) {
@@ -1301,7 +1301,8 @@ bool netJoinFinalise(const char *targetip, unsigned short port, bool wantRejoin,
         memcpy(&pdres, buff, sizeof(PLAYERDATA_PACKET));
         for (count = 0; count < MAX_TANKS; count++) {
           if (pdres.items[count].inUse == TRUE) {
-            utilPtoCString(pdres.items[count].playerName, (char *)buff);
+            strcpy((char *)buff,
+                   bolo::utilPtoCString(pdres.items[count].playerName).c_str());
             ip = inet_ntoa(pdres.items[count].addr);
             playersSetPlayer(screenGetPlayers(), count, (char *)buff, ip, 0, 0,
                              0, 0, 0, 0, pdres.items[count].numAllies,
@@ -1359,7 +1360,7 @@ void netPlayerJoined(BYTE *buff) {
   char *ip;                   /* New players IP */
 
   memcpy(&npp, buff, sizeof(NEWPLAYER_PACKET));
-  utilPtoCString(npp.playerName, name);
+  strcpy(name, bolo::utilPtoCString(npp.playerName).c_str());
   ip = inet_ntoa(npp.addr);
   dnsLookupsAddRequest(ip, netProcessedDnsLookup);
   playersSetPlayer(screenGetPlayers(), npp.playerNumber, name, ip, 0, 0, 0, 0,
@@ -1923,7 +1924,7 @@ void netMessagePacket(BYTE *data, int dataLen) {
 
   ptr = data;
   ptr += BOLOPACKET_MAPDDOWNLOAD_DATASTART + 1;
-  utilPtoCString((char *)ptr, message);
+  strcpy(message, bolo::utilPtoCString((char *)ptr).c_str());
   ptr -= 2;
   screenIncomingMessage(*ptr, message);
 }
@@ -2000,7 +2001,7 @@ void netSendChangePlayerName(BYTE playerNum, char *newName) {
 void netGetChangePlayerName(PLAYERNAMECHANGE_PACKET *info) {
   char newName[PLAYER_NAME_LEN]; /* The New Player Name */
 
-  utilPtoCString(info->playerName, newName);
+  strcpy(newName, bolo::utilPtoCString(info->playerName).c_str());
   playersSetPlayerName(screenGetPlayers(), info->playerNum, newName);
 }
 

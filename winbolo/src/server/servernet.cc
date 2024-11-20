@@ -411,7 +411,7 @@ void serverNetUDPPacketArrive(BYTE *buff, int len, unsigned long addr,
               PASSWORD_PACKET pp;
               BOLOHEADER h;
               memcpy(&pp, buff, sizeof(pp));
-              utilPtoCString(pp.password, (char *)info);
+              strcpy((char *)info, bolo::utilPtoCString(pp.password).c_str());
               if (strcmp((char *)info, netPassword) != 0) {
                 serverNetMakePacketHeader(&h, BOLOPACKET_PASSWORDFAIL);
                 screenServerConsoleMessage((char *)"Password Failed");
@@ -430,7 +430,7 @@ void serverNetUDPPacketArrive(BYTE *buff, int len, unsigned long addr,
               BYTE numPlayers;
 
               memcpy(&pn, buff, sizeof(pn));
-              utilPtoCString(pn.playerName, (char *)info);
+              strcpy((char *)info, bolo::utilPtoCString(pn.playerName).c_str());
               threadsWaitForMutex();
               numPlayers = playersGetNumPlayers(screenGetPlayers());
               if (serverLock || (numPlayers > 0 && netPlayersIsLocked(&np))) {
@@ -822,7 +822,7 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr,
   /* Check Name not in use */
   memset(&prp, 0, sizeof(prp));
   memcpy(&prp, buff, sizeof(prp));
-  utilPtoCString(prp.password, (char *)info);
+  strcpy((char *)info, bolo::utilPtoCString(prp.password).c_str());
   if (strcmp((char *)info, netPassword) != 0) {
     /* Passwords do not match */
     return;
@@ -886,7 +886,7 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr,
     return;
   }
 
-  utilPtoCString(prp.playerName, (char *)info);
+  strcpy((char *)info, bolo::utilPtoCString(prp.playerName).c_str());
 
   if (!playersNameTaken(screenGetPlayers(), (char *)info) &&
       prp.playerName[0] != '*') {
@@ -915,9 +915,9 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr,
       if (winboloNetVerifyClientKey(prp.key, (char *)info, pnp.playerNumber)) {
         /* We could verify their key */
         info[0] = '*';
-        utilPtoCString(prp.playerName, (char *)info + 1);
+        strcpy((char *)info + 1, bolo::utilPtoCString(prp.playerName).c_str());
       } else {
-        utilPtoCString(prp.playerName, (char *)info);
+        strcpy((char *)info, bolo::utilPtoCString(prp.playerName).c_str());
       }
     }
 
@@ -1172,7 +1172,7 @@ void serverNetChangePlayerName(BYTE playerNum, BYTE *buff) {
     /* Send to everyone */
     serverNetSendAllExceptPlayer(playerNum, buff, sizeof(*pncp));
     /* Process */
-    utilPtoCString(pncp->playerName, name);
+    strcpy(name, bolo::utilPtoCString(pncp->playerName).c_str());
     playersSetPlayerName(screenGetPlayers(), pncp->playerNum, name);
   }
 }

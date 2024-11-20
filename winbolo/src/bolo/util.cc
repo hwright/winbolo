@@ -437,29 +437,14 @@ bool utilIsTankInTrees(map *mp, pillboxes *pb, bases *bs, WORLD wx, WORLD wy) {
   return returnValue;
 }
 
-/*********************************************************
- *NAME:          utilPtoCString
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/2/99
- *LAST MODIFIED: 21/2/99
- *PURPOSE:
- * Convert Bolo's network pascal string to C strings
- *
- *ARGUMENTS:
- *  src  - Source string
- *  dest - Destination string
- *********************************************************/
-void utilPtoCString(char *src, char *dest) {
-  int count; /* Looping variable */
-  int len;   /* Length of the string */
-  len = src[0];
-  for (count = 0; count < len; count++) {
-    dest[count] = src[count + 1];
-  }
-  dest[count] = '\0';
-}
-
 namespace bolo {
+
+// TODO: Consider returning a string_view here, since we are really just
+// pointing at the same memory again.
+std::string utilPtoCString(std::string_view src) {
+  int len = (int)src[0];
+  return std::string(src.substr(1, len + 1));
+}
 
 std::string utilCtoPString(std::string_view src) {
   std::string dest;

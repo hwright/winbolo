@@ -175,21 +175,17 @@ bool utilIsItemInRange(WORLD x, WORLD y, WORLD tankX, WORLD tankY, WORLD range,
  *********************************************************/
 bool utilIsTankInTrees(map *mp, pillboxes *pb, bases *bs, WORLD wx, WORLD wy);
 
-/*********************************************************
- *NAME:          utilPtoCString
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/2/99
- *LAST MODIFIED: 21/2/99
- *PURPOSE:
- * Convert Bolo's network pascal string to C strings
- *
- *ARGUMENTS:
- *  src  - Source string
- *  dest - Destination string
- *********************************************************/
-void utilPtoCString(char *src, char *dest);
-
 namespace bolo {
+
+// Converts Bolo's network pascal string to C strings
+//
+// ARGUMENTS:
+//  src  - Source string
+//  dest - Destination string
+//
+// RETURNS:
+//  The converted C string
+std::string utilPtoCString(std::string_view src);
 
 // Converts a C string to a Bolo's network pascal string
 //
