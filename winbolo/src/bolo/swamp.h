@@ -26,6 +26,12 @@ namespace bolo {
 
 class SwampState {
  public:
+  SwampState() = default;
+
+  // Move-only
+  SwampState(SwampState &) = delete;
+  SwampState &operator=(SwampState &) = delete;
+
   // Add an item of swamp.
   // If one already exists, return the terrain type of the
   //  item and decrements its lifetime.
@@ -39,7 +45,7 @@ class SwampState {
   //
   // ARGUMENTS:
   //  pos - The swamp position
-  void removePos(MapPoint pos);
+  void removePos(MapPoint pos) { swamps_.erase(pos); }
 
  private:
   std::unordered_map<MapPoint, uint8_t> swamps_;

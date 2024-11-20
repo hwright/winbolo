@@ -46,6 +46,4 @@ BYTE SwampState::addItem(MapPoint pos) {
   return SWAMP;
 }
 
-void SwampState::removePos(MapPoint pos) { swamps_.erase(pos); }
-
 }  // namespace bolo
