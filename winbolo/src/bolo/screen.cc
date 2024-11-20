@@ -40,6 +40,7 @@ Morrison <john@winbolo.com>          \0" */
 
 #include <fstream>
 #include <tuple>
+#include <optional>
 
 #include "../gui/netclient.h"
 #include "backend.h"
@@ -101,7 +102,7 @@ static tkExplosion clientTankExplosions = nullptr;
 static netPnbContext clientPNB = nullptr;
 static netMntContext clientNMT = nullptr;
 static gameType myGame;
-static bolo::TreeGrowState *treeGrowState = nullptr;
+static std::optional<bolo::TreeGrowState> treeGrowState;
 
 /* The offset from the top and left of the map */
 static BYTE xOffset;
@@ -193,7 +194,7 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   floodCreate(&clientFF);
   tkExplosionCreate(&clientTankExplosions);
   minesExpCreate(&clientMinesExp);
-  treeGrowState = new bolo::TreeGrowState();
+  treeGrowState = bolo::TreeGrowState();
   netPNBCreate(&clientPNB);
   netMNTCreate(&clientNMT);
   pillsCreate(&mypb);
@@ -251,8 +252,7 @@ void screenDestroy() {
   screenBrainMapDestroy();
   tkExplosionDestroy(&clientTankExplosions);
   minesExpDestroy(&clientMinesExp);
-  delete treeGrowState;
-  treeGrowState = nullptr;
+  treeGrowState = std::nullopt;
   pillsDestroy(&mypb);
   playersDestroy(&plyrs);
   if (view != nullptr) {
