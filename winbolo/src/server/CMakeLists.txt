@@ -41,7 +41,6 @@ add_executable(linbolods
                ../bolo/tank.cc
                ../bolo/tankexp.cc
                ../bolo/udppackets.cc
-               ../bolo/util.cc
                ../winbolonet/http.cc
                ../winbolonet/winbolonet.cc
                ../winbolonet/winbolonetevents.cc

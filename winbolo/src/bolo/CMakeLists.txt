@@ -1,3 +1,4 @@
 cmake_minimum_required(VERSION 3.10)
 
-add_library(bolo STATIC treegrow.cc)
+add_library(bolo STATIC treegrow.cc
+                        util.cc)
