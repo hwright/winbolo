@@ -911,7 +911,7 @@ minesExp *serverGetMinesExp();
  *ARGUMENTS:
  *
  *********************************************************/
-rubble *serverCoreGetRubble();
+RubbleState *serverCoreGetRubble();
 
 /*********************************************************
  *NAME:          serverCoreGetSwamp

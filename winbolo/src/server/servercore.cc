@@ -30,6 +30,7 @@
 #include <time.h>
 
 #include <fstream>
+#include <optional>
 #include <tuple>
 
 #include "../bolo/bases.h"
@@ -91,7 +92,7 @@ static floodFill serverFF = nullptr;
 static grass serverGrass = nullptr;
 static mines serverMines = nullptr;
 static minesExp serverMinesExp = nullptr;
-static rubble serverRubble = nullptr;
+static std::optional<RubbleState> serverRubble;
 static swamp serverSwamp = nullptr;
 static tkExplosion serverTankExp = nullptr;
 static netPnbContext serverPNB = nullptr;
@@ -158,7 +159,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines,
   playersCreate(&splrs);
   shs = shellsCreate();
   explosionsCreate(&serverExpl);
-  rubbleCreate(&serverRubble);
+  serverRubble.emplace();
   buildingCreate(&serverBlds);
   grassCreate(&serverGrass);
   swampCreate(&serverSwamp);
@@ -234,7 +235,7 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn,
   playersRejoinCreate();
   shs = shellsCreate();
   explosionsCreate(&serverExpl);
-  rubbleCreate(&serverRubble);
+  serverRubble.emplace();
   buildingCreate(&serverBlds);
   grassCreate(&serverGrass);
   swampCreate(&serverSwamp);
@@ -287,7 +288,7 @@ void serverCoreDestroy() {
   shellsDestroy(&shs);
   explosionsDestroy(&serverExpl);
   playersRejoinDestroy();
-  rubbleDestroy(&serverRubble);
+  serverRubble = std::nullopt;
   buildingDestroy(&serverBlds);
   grassDestroy(&serverGrass);
   floodDestroy(&serverFF);
@@ -1779,7 +1780,7 @@ minesExp *serverGetMinesExp() { return &serverMinesExp; }
  *ARGUMENTS:
  *
  *********************************************************/
-rubble *serverCoreGetRubble() { return &serverRubble; }
+RubbleState *serverCoreGetRubble() { return &*serverRubble; }
 
 /*********************************************************
  *NAME:          serverCoreGetSwamp

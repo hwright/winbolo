@@ -1160,7 +1160,7 @@ minesExp *clientGetMinesExp() { return nullptr; }
  *ARGUMENTS:
  *
  *********************************************************/
-rubble *clientGetRubble() { return nullptr; }
+RubbleState *clientGetRubble() { return nullptr; }
 
 /*********************************************************
  *NAME:          clientGetSwamp

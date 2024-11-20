@@ -1104,7 +1104,7 @@ minesExp *clientGetMinesExp();
  *ARGUMENTS:
  *
  *********************************************************/
-rubble *clientGetRubble();
+RubbleState *clientGetRubble();
 
 /*********************************************************
  *NAME:          clientGetSwamp

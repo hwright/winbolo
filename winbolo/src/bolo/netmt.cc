@@ -259,7 +259,7 @@ bool netMNTExtractServer(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
       returnValue = false;
       break;
     case NMNT_RUBBLE:
-      rubbleAddItem(screenGetRubble(), opt1, opt2);
+      screenGetRubble()->addItem(MapPoint{.x = opt1, .y = opt2});
       break;
     case NMNT_SWAMP:
       swampAddItem(screenGetSwamp(), opt1, opt2);
@@ -399,7 +399,7 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
     case NMNT_MANACTION:
       break;
     case NMNT_RUBBLE:
-      rubbleAddItem(screenGetRubble(), opt1, opt2);
+      screenGetRubble()->addItem(MapPoint{.x = opt1, .y = opt2});
       break;
     case NMNT_SWAMP:
       swampAddItem(screenGetSwamp(), opt1, opt2);

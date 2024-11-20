@@ -542,7 +542,7 @@ minesExp *screenGetMinesExp() {
  *ARGUMENTS:
  *
  *********************************************************/
-rubble *screenGetRubble() {
+RubbleState *screenGetRubble() {
   if (!threadsGetContext()) {
     return clientGetRubble();
   }
