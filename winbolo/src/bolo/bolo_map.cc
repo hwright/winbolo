@@ -131,10 +131,9 @@ void mapDestroy(map *value) {
  *  fp    - Pointer to the file being read from
  *  value - Pointer to the pillbox structure
  *********************************************************/
-bool mapReadPills(FILE *fp, pillboxes *value) {
+bool mapReadPills(std::istream &input, pillboxes *value) {
   int total;        /* Total number of pills to be read in */
   int count;        /* Looping variable */
-  size_t ret;       /* Number of bytes read */
   bool returnValue; /* Value to return */
   pillbox readInto; /* The pillbox being read into */
 
@@ -143,9 +142,9 @@ bool mapReadPills(FILE *fp, pillboxes *value) {
   returnValue = true;
   readInto.inTank = false;
 
-  while (count <= total && returnValue && !feof(fp)) {
-    ret = fread(&readInto, SIZEOFBMAP_PILL_INFO, 1, fp);
-    if (ret != 1) {
+  while (count <= total && returnValue && !input.eof()) {
+    input.read((char *)&readInto, SIZEOFBMAP_PILL_INFO);
+    if (input.gcount() != SIZEOFBMAP_PILL_INFO) {
       returnValue = false;
     } else {
       readInto.justSeen = false;
@@ -170,10 +169,9 @@ bool mapReadPills(FILE *fp, pillboxes *value) {
  *  fp    - Pointer to the file being read from
  *  value - Pointer to the pillbox structure
  *********************************************************/
-bool mapReadBases(FILE *fp, bases *value) {
+bool mapReadBases(std::istream &input, bases *value) {
   int count;        /* Looping variable */
   int total;        /* Total number of bases to read */
-  size_t ret;       /* Number of bytes read */
   bool returnValue; /* Value to return */
   base readInto;    /* The base structure to read into */
 
@@ -181,9 +179,9 @@ bool mapReadBases(FILE *fp, bases *value) {
   total = basesGetNumBases(value);
   returnValue = true;
 
-  while (count <= total && returnValue && !feof(fp)) {
-    ret = fread(&readInto, SIZEOFBAMP_BASE_INFO, 1, fp);
-    if (ret != 1) {
+  while (count <= total && returnValue && !input.eof()) {
+    input.read((char *)&readInto, SIZEOFBAMP_BASE_INFO);
+    if (input.gcount() != SIZEOFBAMP_BASE_INFO) {
       returnValue = false;
     } else {
       readInto.baseTime = 0; /* Time between stock updates */
@@ -208,19 +206,18 @@ bool mapReadBases(FILE *fp, bases *value) {
  *  fp    - Pointer to the file being read from
  *  value - Pointer to the pillbox structure
  *********************************************************/
-bool mapReadStarts(FILE *fp, starts *value) {
+bool mapReadStarts(std::istream &input, starts *value) {
   int total;        /* Total number of entries to read */
   int count;        /* Looping variable */
-  size_t ret;       /* Number of bytes read */
   bool returnValue; /* Value to return */
   start readInto;   /* Item to read into */
 
   count = 1;
   total = startsGetNumStarts(value);
   returnValue = true;
-  while (count <= total && returnValue && !feof(fp)) {
-    ret = fread(&readInto, SIZEOFBMAP_START_INFO, 1, fp);
-    if (ret != 1) {
+  while (count <= total && returnValue && !input.eof()) {
+    input.read((char *)&readInto, SIZEOFBMAP_START_INFO);
+    if (input.gcount() != SIZEOFBMAP_START_INFO) {
       returnValue = false;
     } else {
       startsSetStart(value, &readInto, (BYTE)count);
@@ -248,8 +245,8 @@ bool mapReadStarts(FILE *fp, starts *value) {
  *  startX - The start x co-ordinate
  *  endX   - The end x co-ordinate
  *********************************************************/
-bool mapProcessRun(FILE *fp, map *value, BYTE elems, MAP_Y yValue, BYTE startX,
-                   BYTE endX) {
+bool mapProcessRun(std::istream &input, map *value, BYTE elems, MAP_Y yValue,
+                   BYTE startX, BYTE endX) {
   bool returnValue;  /* Value to return */
   bool needRead;     /* State variable - Do we need to read the next byte */
   mapRunState state; /* Current run state */
@@ -267,8 +264,8 @@ bool mapProcessRun(FILE *fp, map *value, BYTE elems, MAP_Y yValue, BYTE startX,
   mapPos = startX;
   len = 0;
 
-  item = (BYTE)fgetc(fp);
-  while (count < elems && !ferror(fp)) {
+  item = (BYTE)input.get();
+  while (count < elems && input.good()) {
     needRead = false;
     highNibble = lowNibble = item;
     /* Extract Nibbles */
@@ -345,12 +342,11 @@ bool mapProcessRun(FILE *fp, map *value, BYTE elems, MAP_Y yValue, BYTE startX,
       }
     }
     count++;
-    item = (BYTE)fgetc(fp);
+    item = (BYTE)input.get();
   }
-  count2 = ungetc(item, fp);
+  input.unget();
   /* Check all read correctly */
-  if (count != elems || mapPos != endX ||
-      count2 == EOF) { /*  || mapPos != endX */
+  if (count != elems || mapPos != endX) {
     returnValue = false;
   }
   return returnValue;
@@ -369,7 +365,7 @@ bool mapProcessRun(FILE *fp, map *value, BYTE elems, MAP_Y yValue, BYTE startX,
  *  fp    - Pointer to the file being read from
  *  value - Pointer to the map data structure
  *********************************************************/
-bool mapReadRuns(FILE *fp, map *value) {
+bool mapReadRuns(std::istream &input, map *value) {
   bmapRunHeader runHead; /* The header of each run */
   size_t bytesRead;      /* The number of bytes read from the header */
   bool returnValue;      /* Value to return */
@@ -379,10 +375,11 @@ bool mapReadRuns(FILE *fp, map *value) {
   returnValue = true;
   done = false;
 
-  bytesRead = fread(&runHead, SIZEOFBMAP_RUN_HEADER, 1, fp);
+  input.read((char *)&runHead, SIZEOFBMAP_RUN_HEADER);
+  bytesRead = input.gcount();
 
-  while (!feof(fp) && !done) {
-    if (bytesRead != 1) {
+  while (!input.eof() && !done) {
+    if (bytesRead != SIZEOFBMAP_RUN_HEADER) {
       /* Something bad happened reading */
       done = true;
       returnValue = false;
@@ -393,7 +390,7 @@ bool mapReadRuns(FILE *fp, map *value) {
       done = true;
       returnValue = true;
     } else {
-      ret = mapProcessRun(fp, value,
+      ret = mapProcessRun(input, value,
                           (BYTE)((runHead.datalen) - SIZEOFBMAP_RUN_HEADER),
                           runHead.y, runHead.startx, runHead.endx);
       if (!ret) {
@@ -402,7 +399,8 @@ bool mapReadRuns(FILE *fp, map *value) {
         returnValue = false;
       }
     }
-    bytesRead = fread(&runHead, SIZEOFBMAP_RUN_HEADER, 1, fp);
+    input.read((char *)&runHead, SIZEOFBMAP_RUN_HEADER);
+    bytesRead = input.gcount();
   }
 
   return returnValue;
@@ -424,61 +422,57 @@ bool mapReadRuns(FILE *fp, map *value) {
  *  bs      - Pointer to the bases structure
  *  pb      - Pointer to the pillbox structure
  *********************************************************/
-bool mapRead(char *fileName, map *value, pillboxes *pb, bases *bs, starts *ss) {
-  FILE *fp;               /* File pointer */
+bool mapRead(std::istream &input, map *value, pillboxes *pb, bases *bs,
+             starts *ss) {
+  if (!input.good()) {
+    return false;
+  }
+
   bool returnValue;       /* Value to return */
   char id[LENGTH_ID + 1]; /* The map ID Should read "BMAPBOLO" */
   BYTE mapVersion;        /* Version of the map file */
   BYTE current;           /* Item being read */
-  char *str;              /* return value of fgets */
 
   returnValue = true;
-  fp = fopen(fileName, "rb");
-  if (!fp) {
-    returnValue = false;
-  }
-  if (returnValue && fp) {
-    str = fgets(id, (LENGTH_ID + 1), fp);
-    if (str == nullptr || strcmp(id, MAP_HEADER) != 0) {
+  if (returnValue) {
+    input.get(id, LENGTH_ID + 1);
+    if (!input.good() || strcmp(id, MAP_HEADER) != 0) {
       returnValue = false;
     }
   }
-  if (returnValue && fp) {
-    mapVersion = (BYTE)fgetc(fp);
+  if (returnValue) {
+    mapVersion = input.get();
     if (mapVersion != CURRENT_MAP_VERSION) {
       returnValue = false;
     }
   }
-  if (returnValue && fp) {
-    current = (BYTE)fgetc(fp);
+  if (returnValue) {
+    current = input.get();
     pillsSetNumPills(pb, current);
-    current = (BYTE)fgetc(fp);
+    current = input.get();
     basesSetNumBases(bs, current);
-    current = (BYTE)fgetc(fp);
+    current = input.get();
     startsSetNumStarts(ss, current);
     if (pillsGetNumPills(pb) > MAX_PILLS || basesGetNumBases(bs) > MAX_BASES ||
         startsGetNumStarts(ss) > MAX_STARTS) {
       returnValue = false;
     }
   }
-  if (returnValue && fp) {
-    returnValue = mapReadPills(fp, pb);
+  if (returnValue) {
+    returnValue = mapReadPills(input, pb);
   }
-  if (returnValue && fp) {
-    returnValue = mapReadBases(fp, bs);
+  if (returnValue) {
+    returnValue = mapReadBases(input, bs);
   }
-  if (returnValue && fp) {
-    returnValue = mapReadStarts(fp, ss);
+  if (returnValue) {
+    returnValue = mapReadStarts(input, ss);
   }
-  if (returnValue && fp) {
-    returnValue = mapReadRuns(fp, value);
+  if (returnValue) {
+    returnValue = mapReadRuns(input, value);
   }
 
-  if (returnValue && fp) {
+  if (returnValue) {
     mapCenter(value, pb, bs, ss);
-  }
-  if (fp) {
-    fclose(fp);
   }
   return returnValue;
 }

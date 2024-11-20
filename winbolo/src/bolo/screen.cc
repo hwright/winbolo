@@ -38,6 +38,7 @@ Morrison <john@winbolo.com>          \0" */
 #include <string.h>
 #include <time.h>
 
+#include <fstream>
 #include <tuple>
 
 #include "../gui/netclient.h"
@@ -745,16 +746,16 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
  *                Usually true if you only want to check
  *                if a map is valid
  *********************************************************/
-bool screenLoadMap(char *fileName, gameType game, bool hiddenMines,
-                   long srtDelay, long gmeLen, char *playerName,
-                   bool wantFree) {
+bool screenLoadMap(std::istream &input, const char *name, gameType game,
+                   bool hiddenMines, long srtDelay, long gmeLen,
+                   char *playerName, bool wantFree) {
   bool returnValue; /* Value to return */
   bool doneFree;    /* If we have done the free */
 
   returnValue = false;
   doneFree = false;
   screenSetup(game, hiddenMines, srtDelay, gmeLen);
-  returnValue = mapRead(fileName, &mymp, &mypb, &mybs, &myss);
+  returnValue = mapRead(input, &mymp, &mypb, &mybs, &myss);
 
   /*
    * Used to write out linux compressed map file.
@@ -771,7 +772,7 @@ bool screenLoadMap(char *fileName, gameType game, bool hiddenMines,
     }   */
 
   if (returnValue) {
-    strncpy(mapName, bolo::utilExtractMapName(fileName).c_str(), 36);
+    strcpy(mapName, name);
     utilStripNameReplace(playerName);
     screenSetupTank(playerName);
     screenUpdateView(redraw);
@@ -3478,7 +3479,8 @@ bool screenGenerateMapPreview(char *fileName, BYTE *buff) {
   pillsCreate(&prevpb);
 
   /* Load */
-  returnValue = mapRead(fileName, &prevmp, &prevpb, &prevbs, &prevss);
+  std::ifstream input(fileName);
+  returnValue = mapRead(input, &prevmp, &prevpb, &prevbs, &prevss);
   if (returnValue) {
     /* Make preview map info */
     xValue = 0;

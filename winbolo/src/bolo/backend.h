@@ -27,6 +27,8 @@
 #ifndef _BACKEND_H
 #define _BACKEND_H
 
+#include <istream>
+
 #include "brain.h"
 #include "building.h"
 #include "explosions.h"
@@ -326,7 +328,7 @@ bool screenIsMine(screenMines *value, BYTE xValue, BYTE yValue);
  *  map or not.
  *
  *ARGUMENTS:
- * fileName - File name and path to map to open
+ *  input - A stream to read the map bytes from
  *  game - The game type-Open/tournament/strict tournament
  *  hiddenMines - Are hidden mines allowed
  *  srtDelay    - Game start delay (50th second increments)
@@ -337,8 +339,9 @@ bool screenIsMine(screenMines *value, BYTE xValue, BYTE yValue);
  *                Usually TRUE if you only want to check
  *                if a map is valid
  *********************************************************/
-bool screenLoadMap(char *fileName, gameType game, bool hiddenMines,
-                   long srtDelay, long gmeLen, char *playerName, bool wantFree);
+bool screenLoadMap(std::istream &input, const char *name, gameType game,
+                   bool hiddenMines, long srtDelay, long gmeLen,
+                   char *playerName, bool wantFree);
 
 /*********************************************************
  *NAME:          screenGameTick
