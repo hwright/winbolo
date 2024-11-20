@@ -101,6 +101,7 @@ static tkExplosion clientTankExplosions = nullptr;
 static netPnbContext clientPNB = nullptr;
 static netMntContext clientNMT = nullptr;
 static gameType myGame;
+static TreeGrowState *treeGrowState = nullptr;
 
 /* The offset from the top and left of the map */
 static BYTE xOffset;
@@ -192,7 +193,7 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   floodCreate(&clientFF);
   tkExplosionCreate(&clientTankExplosions);
   minesExpCreate(&clientMinesExp);
-  treeGrowCreate();
+  treeGrowState = new TreeGrowState();
   netPNBCreate(&clientPNB);
   netMNTCreate(&clientNMT);
   pillsCreate(&mypb);
@@ -250,7 +251,8 @@ void screenDestroy() {
   screenBrainMapDestroy();
   tkExplosionDestroy(&clientTankExplosions);
   minesExpDestroy(&clientMinesExp);
-  treeGrowDestroy();
+  delete treeGrowState;
+  treeGrowState = nullptr;
   pillsDestroy(&mypb);
   playersDestroy(&plyrs);
   if (view != nullptr) {
@@ -1037,7 +1039,7 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
   explosionsUpdate(&clientExpl);
   minesExpUpdate(&clientMinesExp, &mymp, &mypb, &mybs, (lgm **)&(test), 1);
   floodUpdate(&clientFF, &mymp, &mypb, &mybs);
-  treeGrowUpdate(&mymp, &mypb, &mybs);
+  treeGrowState->Update(&mymp, &mypb, &mybs);
   mapNetUpdate(&mymp, &mypb, &mybs);
 
   /* Update network LGM frames as the are client controlled */

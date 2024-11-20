@@ -40,234 +40,26 @@
 #include "swamp.h"
 #include "types.h"
 
-/* The tree growth structure */
-static BYTE treeGrowX;
-static BYTE treeGrowY;
-static int treeGrowTime;
-static int treeGrowScore;
-static WORD seed;
+namespace {
 
-/*********************************************************
- *NAME:          treeGrowCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- *  Sets up the treeGrow data structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void treeGrowCreate(void) {
-  //  srand((unsigned int) time(NULL));
-  seed = (WORD)rand();
-  treeGrowTime = TREEGROW_INITIAL_TIME;
-  treeGrowScore = TREEGROW_INITIAL_SCORE;
-}
-
-/*********************************************************
- *NAME:          treeGrowDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- *  Destroys and frees memory for the treeGrow data
- *  structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void treeGrowDestroy(void) { treeGrowTime = TREEGROW_INITIAL_TIME; }
-
-/*********************************************************
- *NAME:          treeGrowAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- *  Adds or updates an item in the treeGrow data structure.
- *  Replaces the score if the score is greater then the
- *  one that is already there and resets the timer to zero
- *
- *ARGUMENTS:
- *  x     - X co-ord
- *  y     - Y co-ord
- *  score - The score of the item
- *********************************************************/
-void treeGrowAddItem(BYTE x, BYTE y, int score) {
-  if (score > treeGrowScore && score > TREE_NO_GROW) {
-    treeGrowScore = score;
-    treeGrowX = x;
-    treeGrowY = y;
-    treeGrowTime = TREEGROW_TIME;
-  }
-}
-
-/*********************************************************
- *NAME:          treeGrowUpdate
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- *  Game tick has happened. Calculate the growth scores
- *  Build new trees etc.
- *
- *ARGUMENTS:
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *********************************************************/
-void treeGrowUpdate(map *mp, pillboxes *pb, bases *bs) {
-  BYTE x; /* The X and Y co-ordinates of the item to add */
-  BYTE y;
-  int i;
-  WORD old, rnd;
-
-  rnd = seed;
-  /* Get a random map square to calculate for */
-  for (i = 0; i < 16; i++) {
-    old = rnd;
-    rnd <<= 1;
-    if (old & 0x8000) rnd ^= 0x1083L;
-  }
-  seed = rnd;
-  x = (BYTE)(rnd >> 8);
-  y = (BYTE)rnd;
-
-  if (!pillsExistPos(pb, x, y) && !basesExistPos(bs, x, y) &&
-      !mapIsMine(mp, x, y) && mapGetPos(mp, x, y) != DEEP_SEA) {
-    treeGrowAddItem(x, y, treeGrowCalcScore(mp, pb, bs, x, y));
-  }
-
-  /* Update the times and grow trees etc */
-  treeGrowCheckGrowTree(mp, pb, bs);
-}
-
-/*********************************************************
- *NAME:          treeGrowCalcScore
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- * Calculates the tree growth score for the a specific
- * map location.
- *
- *ARGUMENTS:
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *  mx - Map X Position
- *  my - Map Y Position
- *********************************************************/
-int treeGrowCalcScore(map *mp, pillboxes *pb, bases *bs, BYTE mx, BYTE my) {
-  int returnValue; /* value to return */
-  BYTE pos;        /* The current Position */
-
-  returnValue = 0;
-  pos = mapGetPos(mp, mx, my);
-  if (pos >= MINE_START && pos <= MINE_END) {
-    pos -= MINE_SUBTRACT;
-  }
-  if (pos != FOREST && pos != RIVER && pos != BUILDING && pos != HALFBUILDING &&
-      !pillsExistPos(pb, mx, my) && !basesExistPos(bs, mx, my)) {
-    /* OK to do calculation */
-    returnValue += treeGrowCalcSquare(mp, pb, bs, mx, my);
-    returnValue +=
-        treeGrowCalcSquare(mp, pb, bs, (BYTE)(mx - 1), (BYTE)(my - 1));
-    returnValue += treeGrowCalcSquare(mp, pb, bs, (BYTE)(mx - 1), my);
-    returnValue +=
-        treeGrowCalcSquare(mp, pb, bs, (BYTE)(mx - 1), (BYTE)(my + 1));
-    returnValue += treeGrowCalcSquare(mp, pb, bs, mx, (BYTE)(my - 1));
-    returnValue += treeGrowCalcSquare(mp, pb, bs, mx, (BYTE)(my + 1));
-    returnValue +=
-        treeGrowCalcSquare(mp, pb, bs, (BYTE)(mx + 1), (BYTE)(my - 1));
-    returnValue += treeGrowCalcSquare(mp, pb, bs, (BYTE)(mx + 1), my);
-    returnValue +=
-        treeGrowCalcSquare(mp, pb, bs, (BYTE)(mx + 1), (BYTE)(my - 1));
-    if (returnValue < 0) {
-      returnValue = 0;
-    }
-  }
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          treeGrowCheckGrowTree
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- * Called once every tick to see if a tree should be grown
- * and removed from the data structure.
- *
- *ARGUMENTS:
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *********************************************************/
-void treeGrowCheckGrowTree(map *mp, pillboxes *pb, bases *bs) {
-  BYTE pos;    /* The map terrain at the current position */
-  BYTE newPos; /* The new position to set the terrain to */
-
-  treeGrowTime--;
-  /* Check for fill and remove from data structure */
-  if (treeGrowTime <= 0) {
-    treeGrowScore = TREEGROW_INITIAL_SCORE;
-    treeGrowTime = TREEGROW_INITIAL_TIME;
-    pos = mapGetPos(mp, treeGrowX, treeGrowY);
-    if (pos != RIVER && pos != BUILDING && pos != HALFBUILDING &&
-        !pillsExistPos(pb, treeGrowX, treeGrowY) &&
-        !basesExistPos(bs, treeGrowX, treeGrowY)) {
-      newPos = FOREST;
-      if (pos >= MINE_START && pos <= MINE_END) {
-        newPos += MINE_FOREST;
-      }
-      mapSetPos(mp, treeGrowX, treeGrowY, newPos, true, false);
-      /* Remove Items from grass/swamp/rubble data stuctures */
-      switch (pos) {
-        case GRASS:
-          grassRemovePos(screenGetGrass(), treeGrowX, treeGrowY);
-          break;
-        case SWAMP:
-          swampRemovePos(screenGetSwamp(), treeGrowX, treeGrowY);
-          break;
-        case RUBBLE:
-          rubbleRemovePos(screenGetRubble(), treeGrowX, treeGrowY);
-          break;
-        default:
-          /* Do nothing */
-          break;
-      }
-    }
-  }
-}
-
-/*********************************************************
- *NAME:          treeGrowCalcSquare
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- * Calculates the tree growth score for a specific square
- *
- *ARGUMENTS:
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *  mx - Map X position
- *  my - Map Y position
- *********************************************************/
-int treeGrowCalcSquare(map *mp, pillboxes *pb, bases *bs, BYTE mx, BYTE my) {
+// Calculates the tree growth score for a specific square
+//
+// ARGUMENTS:
+//  mp - Pointer to the map structure
+//  pb - Pointer to the pillboxes structure
+//  bs - Pointer to the bases structure
+//  pos - Map position
+int calcSquare(map *mp, pillboxes *pb, bases *bs, MapPoint pos) {
   int returnValue; /* Value to return */
   BYTE terrain;    /* The terrain at the position */
 
   returnValue = 0;  // TREE_GROW_ROAD;
-  if (pillsExistPos(pb, mx, my)) {
+  if (pillsExistPos(pb, pos.x, pos.y)) {
     returnValue = TREE_GROW_ROAD;
-  } else if (basesExistPos(bs, mx, my)) {
+  } else if (basesExistPos(bs, pos.x, pos.y)) {
     returnValue = TREE_GROW_ROAD;
   } else {
-    terrain = mapGetPos(mp, mx, my);
+    terrain = mapGetPos(mp, pos.x, pos.y);
     if (terrain >= MINE_START && terrain <= MINE_END) {
       returnValue = TREE_GROW_MINE;
       terrain -= MINE_START;
@@ -313,4 +105,102 @@ int treeGrowCalcSquare(map *mp, pillboxes *pb, bases *bs, BYTE mx, BYTE my) {
     }
   }
   return returnValue;
+}
+
+}  // namespace
+
+TreeGrowState::TreeGrowState()
+    : time_(TREEGROW_INITIAL_TIME), score_(TREEGROW_INITIAL_SCORE) {}
+
+void TreeGrowState::addItem(MapPoint point, int score) {
+  if (score > score_ && score > TREE_NO_GROW) {
+    score_ = score;
+    seedling_ = point;
+    time_ = TREEGROW_TIME;
+  }
+}
+
+void TreeGrowState::Update(map *mp, pillboxes *pb, bases *bs) {
+  // Get a random map square to calculate for
+  MapPoint candidate{
+      .x = distribution_(generator_),
+      .y = distribution_(generator_),
+  };
+
+  if (!pillsExistPos(pb, candidate.x, candidate.y) &&
+      !basesExistPos(bs, candidate.x, candidate.y) &&
+      !mapIsMine(mp, candidate.x, candidate.y) &&
+      mapGetPos(mp, candidate.x, candidate.y) != DEEP_SEA) {
+    addItem(candidate, calcScore(mp, pb, bs, candidate));
+  }
+
+  /* Update the times and grow trees etc */
+  checkGrowTree(mp, pb, bs);
+}
+
+int TreeGrowState::calcScore(map *mp, pillboxes *pb, bases *bs,
+                             MapPoint candidate) {
+  int returnValue; /* value to return */
+  BYTE pos;        /* The current Position */
+
+  returnValue = 0;
+  pos = mapGetPos(mp, candidate.x, candidate.y);
+  if (pos >= MINE_START && pos <= MINE_END) {
+    pos -= MINE_SUBTRACT;
+  }
+  if (pos != FOREST && pos != RIVER && pos != BUILDING && pos != HALFBUILDING &&
+      !pillsExistPos(pb, candidate.x, candidate.y) &&
+      !basesExistPos(bs, candidate.x, candidate.y)) {
+    /* OK to do calculation */
+    returnValue += calcSquare(mp, pb, bs, candidate);
+    returnValue += calcSquare(mp, pb, bs, candidate.NW());
+    returnValue += calcSquare(mp, pb, bs, candidate.N());
+    returnValue += calcSquare(mp, pb, bs, candidate.NE());
+    returnValue += calcSquare(mp, pb, bs, candidate.E());
+    returnValue += calcSquare(mp, pb, bs, candidate.SE());
+    returnValue += calcSquare(mp, pb, bs, candidate.S());
+    returnValue += calcSquare(mp, pb, bs, candidate.SW());
+    returnValue += calcSquare(mp, pb, bs, candidate.W());
+    if (returnValue < 0) {
+      returnValue = 0;
+    }
+  }
+  return returnValue;
+}
+
+void TreeGrowState::checkGrowTree(map *mp, pillboxes *pb, bases *bs) {
+  BYTE pos;    /* The map terrain at the current position */
+  BYTE newPos; /* The new position to set the terrain to */
+
+  time_--;
+  /* Check for fill and remove from data structure */
+  if (time_ <= 0) {
+    score_ = TREEGROW_INITIAL_SCORE;
+    time_ = TREEGROW_INITIAL_TIME;
+    pos = mapGetPos(mp, seedling_.x, seedling_.y);
+    if (pos != RIVER && pos != BUILDING && pos != HALFBUILDING &&
+        !pillsExistPos(pb, seedling_.x, seedling_.y) &&
+        !basesExistPos(bs, seedling_.x, seedling_.y)) {
+      newPos = FOREST;
+      if (pos >= MINE_START && pos <= MINE_END) {
+        newPos += MINE_FOREST;
+      }
+      mapSetPos(mp, seedling_.x, seedling_.y, newPos, true, false);
+      /* Remove Items from grass/swamp/rubble data stuctures */
+      switch (pos) {
+        case GRASS:
+          grassRemovePos(screenGetGrass(), seedling_.x, seedling_.y);
+          break;
+        case SWAMP:
+          swampRemovePos(screenGetSwamp(), seedling_.x, seedling_.y);
+          break;
+        case RUBBLE:
+          rubbleRemovePos(screenGetRubble(), seedling_.x, seedling_.y);
+          break;
+        default:
+          /* Do nothing */
+          break;
+      }
+    }
+  }
 }

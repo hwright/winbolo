@@ -27,6 +27,8 @@
 #ifndef TREEGROW_H
 #define TREEGROW_H
 
+#include <random>
+
 #include "global.h"
 #include "types.h"
 
@@ -56,117 +58,56 @@
 /* Score must be greater then 0 for it to grow */
 #define TREE_NO_GROW 0
 
-/* Prototypes */
+class TreeGrowState {
+ public:
+  TreeGrowState();
+  virtual ~TreeGrowState() = default;
 
-/*********************************************************
- *NAME:          treeGrowCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- *  Sets up the treeGrow data structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void treeGrowCreate(void);
+  //  Game tick has happened. Calculate the growth scores
+  //  Build new trees etc.
+  //
+  // ARGUMENTS:
+  //  mp - Pointer to the map structure
+  //  pb - Pointer to the pillboxes structure
+  //  bs - Pointer to the bases structure
+  void Update(map *mp, pillboxes *pb, bases *bs);
 
-/*********************************************************
- *NAME:          treeGrowDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- *  Destroys and frees memory for the treeGrow data
- *  structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void treeGrowDestroy(void);
+ private:
+  // Add or update an item in the treeGrow data structure.
+  // Replace the score if the score is greater then the
+  // one that is already there and resets the timer to zero
+  //
+  // ARGUMENTS:
+  //  x     - X co-ord
+  //  y     - Y co-ord
+  //  score - The score of the item
+  void addItem(MapPoint point, int score);
 
-/*********************************************************
- *NAME:          treeGrowAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- *  Adds or updates an item in the treeGrow data structure.
- *  Replaces the score if the score is greater then the
- *  one that is already there and resets the timer to zero
- *
- *ARGUMENTS:
- *  x     - X co-ord
- *  y     - Y co-ord
- *  score - The score of the item
- *********************************************************/
-void treeGrowAddItem(BYTE x, BYTE y, int score);
+  // Calculate the tree growth score for the a specific
+  // map location.
+  //
+  // ARGUMENTS:
+  //  mp - Pointer to the map structure
+  //  pb - Pointer to the pillboxes structure
+  //  bs - Pointer to the bases structure
+  //  map_point - Map position
+  int calcScore(map *mp, pillboxes *pb, bases *bs, MapPoint candidate);
 
-/*********************************************************
- *NAME:          treeGrowUpdate
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- *  Game tick has happened. Calculate the growth scores
- *  Build new trees etc.
- *
- *ARGUMENTS:
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *********************************************************/
-void treeGrowUpdate(map *mp, pillboxes *pb, bases *bs);
+  // Called once every tick to see if a tree should be grown
+  // and removed from the data structure.
+  //
+  // ARGUMENTS:
+  //  mp - Pointer to the map structure
+  //  pb - Pointer to the pillboxes structure
+  //  bs - Pointer to the bases structure
+  void checkGrowTree(map *mp, pillboxes *pb, bases *bs);
 
-/*********************************************************
- *NAME:          treeGrowCalcScore
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- * Calculates the tree growth score for the a specific
- * map location.
- *
- *ARGUMENTS:
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *  mx - Map X Position
- *  my - Map Y Position
- *********************************************************/
-int treeGrowCalcScore(map *mp, pillboxes *pb, bases *bs, BYTE mx, BYTE my);
+  MapPoint seedling_;
+  int time_;
+  int score_;
 
-/*********************************************************
- *NAME:          treeGrowCheckGrowTree
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- * Called once every tick to see if a tree should be grown
- * and removed from the data structure.
- *
- *ARGUMENTS:
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *********************************************************/
-void treeGrowCheckGrowTree(map *mp, pillboxes *pb, bases *bs);
-
-/*********************************************************
- *NAME:          treeGrowCalcSquare
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- * Calculates the tree growth score for a specific square
- *
- *ARGUMENTS:
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *  mx - Map X position
- *  my - Map Y position
- *********************************************************/
-int treeGrowCalcSquare(map *mp, pillboxes *pb, bases *bs, BYTE mx, BYTE my);
+  std::default_random_engine generator_;
+  std::uniform_int_distribution<uint8_t> distribution_;
+};
 
 #endif /* TREEGROW_H */
