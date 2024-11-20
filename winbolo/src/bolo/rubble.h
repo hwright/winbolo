@@ -27,6 +27,12 @@ namespace bolo {
 
 class RubbleState {
  public:
+  RubbleState() = default;
+
+  // Move-only
+  RubbleState(RubbleState &) = delete;
+  RubbleState &operator=(RubbleState &) = delete;
+
   // Add an item of rubble.
   // If one already exists at the location, return the terrain
   // type of the item and decrements its lifetime.
