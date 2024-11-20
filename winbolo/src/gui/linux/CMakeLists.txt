@@ -71,7 +71,6 @@ add_executable(linbolo
                ../../bolo/swamp.cc
                ../../bolo/tank.cc
                ../../bolo/tankexp.cc
-               ../../bolo/treegrow.cc
                ../../bolo/udppackets.cc
                ../../bolo/util.cc
                ../../server/servercore.cc
@@ -92,6 +91,7 @@ include_directories(${SDL_INCLUDE_DIRS})
 include_directories(${GTK_INCLUDE_DIRS})
 target_link_libraries(linbolo PRIVATE
                      bd
+                     bolo
                      lzw
                      SDL_ttf
                      SDL_mixer

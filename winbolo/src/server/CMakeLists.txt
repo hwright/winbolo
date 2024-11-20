@@ -40,7 +40,6 @@ add_executable(linbolods
                ../bolo/swamp.cc
                ../bolo/tank.cc
                ../bolo/tankexp.cc
-               ../bolo/treegrow.cc
                ../bolo/udppackets.cc
                ../bolo/util.cc
                ../winbolonet/http.cc
@@ -55,6 +54,7 @@ include_directories(${MINIZIP_LIBRARIES})
 include_directories(${SDL_INCLUDE_DIRS})
 target_link_libraries(linbolods PRIVATE
                       bd
+                      bolo
                       lzw
                       ${MINIZIP_LIBRARIES}
                       ${SDL_LIBRARIES}
