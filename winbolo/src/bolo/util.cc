@@ -27,6 +27,9 @@
 /* Inludes */
 #include <math.h>
 #include <string.h>
+
+#include <cmath>
+#include <filesystem>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -66,43 +69,8 @@ void utilCalcDistance(int *xAmount, int *yAmount, TURNTYPE angle, int speed) {
   /* Convert degrees to radians */
   dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
   /* Perform calculation */
-  *xAmount = (int)roundDouble((speed * cos(dbAngle)));
-  *yAmount = (int)roundDouble((speed * sin(dbAngle)));
-}
-
-/*********************************************************
- *NAME:          utilCalcTankSlide
- *AUTHOR:        Chris Lesnieski
- *CREATION DATE: 2009-01-04
- *LAST MODIFIED: 2009-01-04
- *PURPOSE:
- *  Calculates the X and Y distance a tank should move
- *  after being hit by a shell.  We do not decrement the
- *  tank slide timer here as that is handled by code in the
- *  tankUpdate() method.
- *
- *ARGUMENTS:
- *  tankSlideTimer - The number of ticks left to slide
- *  angle - The angle at which the shell was travelling
- *  xAmount - The amount to add in the X direction
- *  yAmount - The amount to add in the Y direction
- *  speed   - The speed of the tank
- *********************************************************/
-void utilCalcTankSlide(BYTE tankSlideTimer, TURNTYPE angle, int *xAmount,
-                       int *yAmount, int speed) {
-  float angleRad;
-  float ratio;
-
-  angleRad = mathConvertBradianToRadian(angle);
-
-  /* This ratio is not right as it is but it sure is fun to play with */
-  ratio = (float)tankSlideTimer / (float)speed;
-
-  /* Calculate the change in both x and y directions */
-  *xAmount = (int)roundDouble((ratio * cos(angleRad)));
-  *yAmount = (int)roundDouble((ratio * sin(angleRad)) * -1);
-
-  return;
+  *xAmount = (int)std::round((speed * cos(dbAngle)));
+  *yAmount = (int)std::round((speed * sin(dbAngle)));
 }
 
 /*********************************************************
@@ -434,129 +402,35 @@ bool utilIsTankInTrees(map *mp, pillboxes *pb, bases *bs, WORLD wx, WORLD wy) {
   return returnValue;
 }
 
-/*********************************************************
- *NAME:          utilPtoCString
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/2/99
- *LAST MODIFIED: 21/2/99
- *PURPOSE:
- * Convert Bolo's network pascal string to C strings
- *
- *ARGUMENTS:
- *  src  - Source string
- *  dest - Destination string
- *********************************************************/
-void utilPtoCString(char *src, char *dest) {
-  int count; /* Looping variable */
-  int len;   /* Length of the string */
-  len = src[0];
-  for (count = 0; count < len; count++) {
-    dest[count] = src[count + 1];
+namespace bolo {
+
+// TODO: Consider returning a string_view here, since we are really just
+// pointing at the same memory again.
+std::string utilPtoCString(std::string_view src) {
+  int len = (int)src[0];
+  return std::string(src.substr(1, len + 1));
+}
+
+std::string utilCtoPString(std::string_view src) {
+  std::string dest;
+
+  dest.push_back((char)src.size());
+  dest.append(src);
+
+  return dest;
+}
+
+std::string utilExtractMapName(std::string_view fileName) {
+  std::filesystem::path path(fileName);
+  std::string filename = path.filename();
+
+  if (filename.ends_with(".map") || filename.ends_with(".MAP")) {
+    filename = filename.substr(0, filename.size() - 4);
   }
-  dest[count] = '\0';
+  return filename;
 }
 
-/*********************************************************
- *NAME:          utilPtoCString
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/2/99
- *LAST MODIFIED: 21/2/99
- *PURPOSE:
- * Convert a C string to a Bolo's network pascal string
- *
- *ARGUMENTS:
- *  src  - Source string
- *  dest - Destination string
- *********************************************************/
-void utilCtoPString(const char *src, char *dest) {
-  int count; /* Looping variable */
-  int len;   /* Length of the string */
-
-  len = (int)strlen(src);
-  for (count = 1; count <= len; count++) {
-    dest[count] = src[count - 1];
-  }
-  dest[0] = (char)len;
-}
-
-/*********************************************************
- *NAME:          utilGetNibbles
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/2/99
- *LAST MODIFIED: 27/2/99
- *PURPOSE:
- * Extacts the high and low nibbles out of a byte
- *
- *ARGUMENTS:
- *  value - The byte the nibbles come from
- *  high - Pointer to hold high nibble
- *  low  - Pointer to hold low nibble
- *********************************************************/
-void utilGetNibbles(BYTE value, BYTE *high, BYTE *low) {
-  *high = *low = value;
-  *high >>= NIBBLE_SHIFT_SIZE;
-  *low <<= NIBBLE_SHIFT_SIZE;
-  *low >>= NIBBLE_SHIFT_SIZE;
-}
-
-/*********************************************************
- *NAME:          utilPutNibble
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/2/99
- *LAST MODIFIED: 27/2/99
- *PURPOSE:
- * Returns the high and low nibbles as a combined byte
- *
- *ARGUMENTS:
- *  high - High nibble
- *  low  - Low nibble
- *********************************************************/
-BYTE utilPutNibble(BYTE high, BYTE low) {
-  BYTE returnValue; /* Value to return */
-
-  returnValue = high;
-  returnValue <<= NIBBLE_SHIFT_SIZE;
-  returnValue += low;
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          utilExtractMapName
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/1/99
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- * Extracts the map name from a file name and path.
- *
- *ARGUMENTS:
- *  fileName - Map File name and path.
- *  mapName  - Stores the Map Name.
- *********************************************************/
-void utilExtractMapName(char *fileName, char *mapName) {
-  char *tok;                /* String Tok return value */
-  char dummy[BIG_FILENAME]; /* Dummy copy of filename */
-  int len;                  /* Length of the string */
-
-  dummy[0] = '\0';
-  strcpy(dummy, fileName);
-
-  tok = strtok(dummy, STRTOK_SEPS);
-  if (tok) {
-    strcpy(mapName, tok);
-    tok = strtok(nullptr, STRTOK_SEPS);
-    while (tok != nullptr) {
-      strcpy(mapName, tok);
-      tok = strtok(nullptr, STRTOK_SEPS);
-    }
-    len = (int)strlen(mapName);
-    if (mapName[len - END3] == END3CHRA &&
-        (mapName[len - END2] == END2CHRA || mapName[len - END2] == END2CHRB) &&
-        (mapName[len - END1] == END1CHRA || mapName[len - END1] == END1CHRB) &&
-        (mapName[len - END0] == END0CHRA || mapName[len - END0] == END0CHRB)) {
-      mapName[len - END3] = '\0';
-    }
-  }
-}
+}  // namespace bolo
 
 /*********************************************************
  *NAME:          utilStripNameReplace
@@ -619,19 +493,4 @@ void utilStripName(char *name) {
     }
     *(ptr - len) = *ptr;
   }
-}
-
-/*********************************************************
- *NAME:          roundDouble
- *AUTHOR:        Minhiriath
- *CREATION DATE: 23/02/2009
- *LAST MODIFIED: 23/02/2009
- *PURPOSE:
- * Rounds up or down the double so we can stuff it into a int
- *
- *ARGUMENTS:
- *  number - the double to round
- *********************************************************/
-int roundDouble(double number) {
-  return (number >= 0) ? (int)(number + 0.5) : (int)(number - 0.5);
 }

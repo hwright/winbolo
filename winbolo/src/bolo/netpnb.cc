@@ -27,6 +27,8 @@
 
 #include "netpnb.h"
 
+#include <tuple>
+
 #include "../server/servercore.h"
 #include "bases.h"
 #include "frontend.h"
@@ -110,7 +112,7 @@ void netPNBAdd(netPnbContext *pnbc, BYTE event, BYTE itemNum, BYTE owner,
   if (netGetType() != netSingle &&
       playersGetNumPlayers(screenGetPlayers()) > 0) {
     add1 = new netPNBObj;
-    add1->item = utilPutNibble(event, itemNum);
+    add1->item = bolo::utilPutNibble(event, itemNum);
     add1->owner = owner;
     add1->x = opt1;
     add1->y = opt2;
@@ -590,7 +592,7 @@ bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb,
   isServer = threadsGetContext();
 
   while (count < dataLen) {
-    utilGetNibbles(buff[count], &event, &itemNum);
+    std::tie(event, itemNum) = bolo::utilGetNibbles(buff[count]);
     // eventNibble = buff[count];
     count++;
     owner = buff[count];

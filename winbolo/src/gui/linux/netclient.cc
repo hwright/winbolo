@@ -917,7 +917,7 @@ void gameFinderProcessBroadcast(currentGames *cg, INFO_PACKET *info,
   bool mines;
   char address[FILENAME_MAX];
 
-  utilPtoCString(info->mapname, mapName);
+  strcpy(mapName, bolo::utilPtoCString(info->mapname).c_str());
   password = TRUE;
   if (info->has_password == 0) {
     password = FALSE;

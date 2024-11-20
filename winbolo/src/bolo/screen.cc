@@ -38,6 +38,8 @@ Morrison <john@winbolo.com>          \0" */
 #include <string.h>
 #include <time.h>
 
+#include <tuple>
+
 #include "../gui/netclient.h"
 #include "backend.h"
 #include "bases.h"
@@ -769,7 +771,7 @@ bool screenLoadMap(char *fileName, gameType game, bool hiddenMines,
     }   */
 
   if (returnValue) {
-    utilExtractMapName(fileName, mapName);
+    strncpy(mapName, bolo::utilExtractMapName(fileName).c_str(), 36);
     utilStripNameReplace(playerName);
     screenSetupTank(playerName);
     screenUpdateView(redraw);
@@ -2143,7 +2145,7 @@ BYTE screenMakePosInfo(BYTE *buff) {
   ptr = buff;
   high = playersGetSelf(screenGetPlayers());
   low = tankGetDir(&mytk);
-  *ptr = utilPutNibble(high, low);
+  *ptr = bolo::utilPutNibble(high, low);
   ptr++;
   returnValue++;
   /* Tank position */
@@ -2179,7 +2181,7 @@ BYTE screenMakePosInfo(BYTE *buff) {
   /* Lgm position */
   /*  if (lgmMX != 0 && lgmMY != 0) {
       low = lgmGetFrame(&mylgman);
-      *ptr = utilPutNibble(high, low);
+      *ptr = bolo::utilPutNibble(high, low);
       ptr++;
       returnValue++;
 
@@ -2189,11 +2191,11 @@ BYTE screenMakePosInfo(BYTE *buff) {
       *ptr = lgmGetMY(&mylgman);
       ptr++;
       returnValue++;
-      *ptr = utilPutNibble(lgmGetPX(&mylgman), lgmGetPY(&mylgman));
+      *ptr = bolo::utilPutNibble(lgmGetPX(&mylgman), lgmGetPY(&mylgman));
       ptr++;
       returnValue++;
     } else { */
-  *ptr = utilPutNibble(high, 0xF);
+  *ptr = bolo::utilPutNibble(high, 0xF);
   ptr++;
   returnValue++;
   /*  } */
@@ -2282,7 +2284,7 @@ void screenExtractPlayerData(BYTE *buff, int buffLen) {
     lgmPX = 0;
     lgmPY = 0;
     lgmFrame = 0;
-    utilGetNibbles(buff[pos], &playerNum, &options);
+    std::tie(playerNum, options) = bolo::utilGetNibbles(buff[pos]);
     pos++;
     if (options != 0xF) { /* Stale check */
       tankInView = options >> 2;
@@ -2294,9 +2296,9 @@ void screenExtractPlayerData(BYTE *buff, int buffLen) {
         pos++;
         my = buff[pos];
         pos++;
-        utilGetNibbles(buff[pos], &px, &py);
+        std::tie(px, py) = bolo::utilGetNibbles(buff[pos]);
         pos++;
-        utilGetNibbles(buff[pos], (BYTE *)&onBoat, &frame);
+        std::tie(onBoat, frame) = bolo::utilGetNibbles(buff[pos]);
         pos++;
       }
 
@@ -2306,9 +2308,9 @@ void screenExtractPlayerData(BYTE *buff, int buffLen) {
         pos++;
         lgmMY = buff[pos];
         pos++;
-        utilGetNibbles(buff[pos], &lgmPX, &lgmPY);
+        std::tie(lgmPX, lgmPY) = bolo::utilGetNibbles(buff[pos]);
         pos++;
-        utilGetNibbles(buff[pos], &lgmFrame, &lgmObstructed);
+        std::tie(lgmFrame, lgmObstructed) = bolo::utilGetNibbles(buff[pos]);
         pos++;
       }
     }
@@ -3196,7 +3198,7 @@ void screenExtractBrainInfo(BrainInfo *value) {
   /* Message Sending */
   if (value->sendmessage[0] != 0) {
     char msg[255];
-    utilPtoCString((char *)value->sendmessage, msg);
+    strcpy(msg, bolo::utilPtoCString((char *)value->sendmessage).c_str());
     if (*(value->messagedest) == 0) {
       /* Its a debug message */
       messageAdd(AIMessage, langGetText(MESSAGE_AI), msg);

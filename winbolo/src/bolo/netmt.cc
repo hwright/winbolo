@@ -27,6 +27,8 @@
 
 #include "netmt.h"
 
+#include <tuple>
+
 #include "../server/servercore.h"
 #include "../winbolonet/winbolonet.h"
 #include "bolo_map.h"
@@ -122,7 +124,7 @@ void netMNTAdd(netMntContext *nmtc, BYTE event, BYTE itemNum, BYTE owner,
       playersGetNumPlayers(screenGetPlayers()) > 0) {
     /* Check for multiplayer game */
     add1 = new netMNTObj;
-    add1->item = utilPutNibble(event, itemNum);
+    add1->item = bolo::utilPutNibble(event, itemNum);
     add1->owner = owner;
     if (threadsGetContext()) {
       add1->id = (*nmtc)->netMntUpto;
@@ -479,7 +481,7 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
   returnValue = true;
 
   while (count < dataLen) {
-    utilGetNibbles(buff[count], &event, &itemNum);
+    std::tie(event, itemNum) = bolo::utilGetNibbles(buff[count]);
     // eventNibble = buff[count];
     count++;
     owner = buff[count];

@@ -27,6 +27,8 @@
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
+
+#include <tuple>
 #ifdef _WIN32
 #include <windows.h>
 #else
@@ -156,7 +158,8 @@ void serverNetCheck(BYTE *ptr, int len) {
   BYTE frame;
   time_t t;
   memcpy(&t, ptr + len - sizeof(time_t), sizeof(time_t));
-  utilGetNibbles(*(ptr + BOLOPACKET_REQUEST_SIZE), &playerNum, &frame);
+  std::tie(playerNum, frame) =
+      bolo::utilGetNibbles(*(ptr + BOLOPACKET_REQUEST_SIZE));
   if (netPlayersCheck(&np, playerNum, t, serverMainGetTicks())) {
     serverNetPlayerLeave(playerNum, false);
   }
@@ -362,7 +365,7 @@ void serverNetUDPPacketArrive(BYTE *buff, int len, unsigned long addr,
 
               /* Reset the players address and port for routers that change them
                */
-              utilGetNibbles(*ptr, &playerNum, &dummy);
+              std::tie(playerNum, dummy) = bolo::utilGetNibbles(*ptr);
               sAddr.sin_family = AF_INET;
 #ifdef _WIN32
               sAddr.sin_addr.S_un.S_addr = addr;
@@ -408,7 +411,7 @@ void serverNetUDPPacketArrive(BYTE *buff, int len, unsigned long addr,
               PASSWORD_PACKET pp;
               BOLOHEADER h;
               memcpy(&pp, buff, sizeof(pp));
-              utilPtoCString(pp.password, (char *)info);
+              strcpy((char *)info, bolo::utilPtoCString(pp.password).c_str());
               if (strcmp((char *)info, netPassword) != 0) {
                 serverNetMakePacketHeader(&h, BOLOPACKET_PASSWORDFAIL);
                 screenServerConsoleMessage((char *)"Password Failed");
@@ -427,7 +430,7 @@ void serverNetUDPPacketArrive(BYTE *buff, int len, unsigned long addr,
               BYTE numPlayers;
 
               memcpy(&pn, buff, sizeof(pn));
-              utilPtoCString(pn.playerName, (char *)info);
+              strcpy((char *)info, bolo::utilPtoCString(pn.playerName).c_str());
               threadsWaitForMutex();
               numPlayers = playersGetNumPlayers(screenGetPlayers());
               if (serverLock || (numPlayers > 0 && netPlayersIsLocked(&np))) {
@@ -635,14 +638,15 @@ void serverNetTCPPacketArrive(BYTE *buff, int len, BYTE playerNum,
 
     playersGetPlayerName(screenGetPlayers(), playerNum, str);
     strcat(str, (char *)" is now allowing players to join.");
-    utilCtoPString(str, (char *)ptr);
+    strcpy((char *)ptr, bolo::utilCtoPString(str).c_str());
     logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
     serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
     if (netPlayersIsLocked(&np)) {
       /* Send out game is unlocked message */
-      utilCtoPString(
-          (char *)"This game is now unlocked to new players (client unlock)",
-          (char *)ptr);
+      strcpy((char *)ptr,
+             bolo::utilCtoPString(
+                 "This game is now unlocked to new players (client unlock)")
+                 .c_str());
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
       serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
       if (!serverLock) {
@@ -661,15 +665,16 @@ void serverNetTCPPacketArrive(BYTE *buff, int len, BYTE playerNum,
 
     playersGetPlayerName(screenGetPlayers(), playerNum, str);
     strcat(str, (char *)" is now not allowing players to join.");
-    utilCtoPString(str, (char *)ptr);
+    strcpy((char *)ptr, bolo::utilCtoPString(str).c_str());
     logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
     serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
     netPlayersSetLock(&np, playerNum, true);
     if (netPlayersIsLocked(&np)) {
       /* Send out game is locked message */
-      utilCtoPString(
-          (char *)"This game is now locked to new players (client lock)",
-          (char *)ptr);
+      strcpy((char *)ptr,
+             bolo::utilCtoPString(
+                 "This game is now locked to new players (client lock)")
+                 .c_str());
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
       serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
       winboloNetSendLock(true);
@@ -732,7 +737,7 @@ void serverNetMakeInfoRespsonse(INFO_PACKET *buff) {
   buff->gameid.serveraddress.s_addr = 0;
   /* Get the map name and convert to a pascal string */
   serverCoreGetMapName(dummy);
-  utilCtoPString(dummy, buff->mapname);
+  strcpy(buff->mapname, bolo::utilCtoPString(dummy).c_str());
 
   /* Make game variables */
   buff->gametype = serverCoreGetActualGameType();
@@ -817,7 +822,7 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr,
   /* Check Name not in use */
   memset(&prp, 0, sizeof(prp));
   memcpy(&prp, buff, sizeof(prp));
-  utilPtoCString(prp.password, (char *)info);
+  strcpy((char *)info, bolo::utilPtoCString(prp.password).c_str());
   if (strcmp((char *)info, netPassword) != 0) {
     /* Passwords do not match */
     return;
@@ -881,7 +886,7 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr,
     return;
   }
 
-  utilPtoCString(prp.playerName, (char *)info);
+  strcpy((char *)info, bolo::utilPtoCString(prp.playerName).c_str());
 
   if (!playersNameTaken(screenGetPlayers(), (char *)info) &&
       prp.playerName[0] != '*') {
@@ -910,9 +915,9 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr,
       if (winboloNetVerifyClientKey(prp.key, (char *)info, pnp.playerNumber)) {
         /* We could verify their key */
         info[0] = '*';
-        utilPtoCString(prp.playerName, (char *)info + 1);
+        strcpy((char *)info + 1, bolo::utilPtoCString(prp.playerName).c_str());
       } else {
-        utilPtoCString(prp.playerName, (char *)info);
+        strcpy((char *)info, bolo::utilPtoCString(prp.playerName).c_str());
       }
     }
 
@@ -945,7 +950,7 @@ void serverNetPlayerNumReq(BYTE *buff, int len, unsigned long addr,
     serverNetMakePacketHeader(&(npp.h), BOLOPACKET_PLAYERNEWPLAYER);
 
     npp.playerNumber = pnp.playerNumber;
-    utilCtoPString((char *)info, npp.playerName);
+    strcpy(npp.playerName, bolo::utilCtoPString((char *)info).c_str());
     memcpy(info, &npp, sizeof(npp));
     serverNetSendAllExceptPlayer(npp.playerNumber, info, sizeof(npp));
     winbolonetAddEvent(WINBOLO_NET_EVENT_PLAYER_JOIN, true, npp.playerNumber,
@@ -982,7 +987,7 @@ void serverNetSendPlayerLeaveGracefulMessage(BYTE playerNum) {
   strcat(str, (char *)" is quitting.");
 
   /* Send message to clients */
-  utilCtoPString(str, (char *)ptr);
+  strcpy((char *)ptr, bolo::utilCtoPString(str).c_str());
   // FIXME send to WBN  logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)
   // ptr);
   serverNetSendAllExceptPlayer(playerNum, buff,
@@ -1064,7 +1069,8 @@ void serverNetPlayerDataReq() {
     if (playersIsInUse(screenGetPlayers(), count)) {
       pdp.items[count].inUse = true;
       playersGetPlayerName(screenGetPlayers(), count, (char *)sendBuff);
-      utilCtoPString((char *)sendBuff, pdp.items[count].playerName);
+      strcpy(pdp.items[count].playerName,
+             bolo::utilCtoPString((char *)sendBuff).c_str());
       pdp.items[count].numAllies = playersMakeNetAlliences(
           screenGetPlayers(), count, pdp.items[count].allies);
       netPlayersGetPlayerDataReq(&np, count, &(pdp.items[count].addr),
@@ -1166,7 +1172,7 @@ void serverNetChangePlayerName(BYTE playerNum, BYTE *buff) {
     /* Send to everyone */
     serverNetSendAllExceptPlayer(playerNum, buff, sizeof(*pncp));
     /* Process */
-    utilPtoCString(pncp->playerName, name);
+    strcpy(name, bolo::utilPtoCString(pncp->playerName).c_str());
     playersSetPlayerName(screenGetPlayers(), pncp->playerNum, name);
   }
 }
@@ -1494,9 +1500,10 @@ void serverNetSetLock(bool lockState) {
         (char *)"This game is now locked to new players (server lock)");
     if (serverLock != lockState) {
       /* Send message to clients */
-      utilCtoPString(
-          (char *)"This game is now locked to new players (server lock)",
-          (char *)ptr);
+      strcpy((char *)ptr,
+             bolo::utilCtoPString(
+                 "This game is now locked to new players (server lock)")
+                 .c_str());
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
       serverNetSendAll(buff, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
       winboloNetSendLock(true);
@@ -1508,9 +1515,10 @@ void serverNetSetLock(bool lockState) {
         (char *)"This game is now unlocked to new players (server unlock)");
     if (serverLock != lockState) {
       /* Send message to clients */
-      utilCtoPString(
-          (char *)"This game is now unlocked to new players (server unlock)",
-          (char *)ptr);
+      strcpy((char *)ptr,
+             bolo::utilCtoPString(
+                 "This game is now unlocked to new players (server unlock)")
+                 .c_str());
       logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
       serverNetSendAll(buff, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
       winboloNetSendLock(false);
@@ -1561,7 +1569,8 @@ void serverNetSendQuitMessage() {
   ptr = buff;
   ptr += BOLOPACKET_REQUEST_TYPEPOS + 1;
   /* Send message to clients */
-  utilCtoPString((char *)"Server received quit message", (char *)ptr);
+  strcpy((char *)ptr,
+         bolo::utilCtoPString("Server received quit message").c_str());
   logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
   serverNetSendAll(buff, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
   buff[BOLOPACKET_REQUEST_TYPEPOS] = BOLOPACKET_PACKETQUIT;
@@ -1666,7 +1675,7 @@ void serverNetSendServerMessageAllPlayers(const char *msg) {
   if (msg2[len - 1] == '\n') {
     msg2[len - 1] = EMPTY_CHAR;
   }
-  utilCtoPString(msg2, (char *)ptr);
+  strcpy((char *)ptr, bolo::utilCtoPString(msg2).c_str());
   logAddEvent(log_MessageServer, 0, 0, 0, 0, 0, (char *)ptr);
   serverNetSendAll(info, BOLOPACKET_REQUEST_SIZE + (*ptr) + 1);
   free(msg2);

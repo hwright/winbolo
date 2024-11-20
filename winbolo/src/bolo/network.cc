@@ -667,7 +667,7 @@ void netTcpPacketArrive(BYTE *buff, int len) {
     char msg[FILENAME_MAX];
     ptr = buff;
     ptr += BOLOPACKET_REQUEST_TYPEPOS + 1;
-    utilPtoCString((char *)ptr, msg);
+    strcpy(msg, bolo::utilPtoCString((char *)ptr).c_str());
     screenNetStatusMessage(msg);
   } else {
     /* Packet corrupt */
@@ -701,7 +701,7 @@ void netMakeInfoRespsonse(INFO_PACKET *buff) {
                             &(buff->gameid.serverport));
   /* Get the map name and convert to a pascal string */
   screenGetMapName(dummy);
-  utilCtoPString(dummy, buff->mapname);
+  strcpy(buff->mapname, bolo::utilCtoPString(dummy).c_str());
 
   /* Make game variables */
   gt = screenGetGameType();
@@ -911,7 +911,7 @@ bool netJoinInit(const char *ip, unsigned short port, bool usCreate,
     } else {
       /* Extract map name, AI Type and hidden mines and game start and
        * originator */
-      utilPtoCString(inf.mapname, (char *)buff);
+      strcpy((char *)buff, bolo::utilPtoCString(inf.mapname).c_str());
       screenSetMapName((char *)buff);
       gameFrontSetAIType((aiType)(inf.allow_AI));
       if (inf.allow_mines == HIDDEN_MINES) {
@@ -945,7 +945,7 @@ bool netJoinInit(const char *ip, unsigned short port, bool usCreate,
         strcpy(netPassword, gamePassword);
       }
       netMakePacketHeader(&(pp.h), BOLOPACKET_PASSWORDCHECK);
-      utilCtoPString(netPassword, pp.password);
+      strcpy(pp.password, bolo::utilCtoPString(netPassword).c_str());
       packetLen = sizeof(pp);
       memcpy(sendBuff, &pp, packetLen);
       memcpy(buff, sendBuff, sizeof(pp));
@@ -1028,7 +1028,7 @@ bool netJoinInit(const char *ip, unsigned short port, bool usCreate,
     netMakePacketHeader(&(pn.h), BOLOPACKET_NAMECHECK);
     gameFrontGetPlayerName((char *)buff);
     utilStripNameReplace((char *)buff);
-    utilCtoPString((char *)buff, pn.playerName);
+    strcpy(pn.playerName, bolo::utilCtoPString((char *)buff).c_str());
     packetLen = sizeof(pn);
     memcpy(sendBuff, &pn, packetLen);
     memcpy(buff, sendBuff, packetLen);
@@ -1164,13 +1164,13 @@ bool netJoinFinalise(const char *targetip, unsigned short port, bool wantRejoin,
     netMakePacketHeader(&(prp.h), BOLOPACKET_PLAYERNUMREQUEST);
     netClientGetUs(&dummy, &(prp.port));
     gameFrontGetPlayerName((char *)buff);
-    utilCtoPString((char *)buff, prp.playerName);
+    strcpy(prp.playerName, bolo::utilCtoPString((char *)buff).c_str());
     if (useWbn == TRUE) {
       winboloNetGetMyClientKey((BYTE *)&(prp.key));
     } else {
       prp.key[0] = EMPTY_CHAR;
     }
-    utilCtoPString(netPassword, prp.password);
+    strcpy(prp.password, bolo::utilCtoPString(netPassword).c_str());
     // setup encryption, encrypt the random string we were sent earlier, and
     // send it with the player number request so it can be processed by the
     // server.
@@ -1301,7 +1301,8 @@ bool netJoinFinalise(const char *targetip, unsigned short port, bool wantRejoin,
         memcpy(&pdres, buff, sizeof(PLAYERDATA_PACKET));
         for (count = 0; count < MAX_TANKS; count++) {
           if (pdres.items[count].inUse == TRUE) {
-            utilPtoCString(pdres.items[count].playerName, (char *)buff);
+            strcpy((char *)buff,
+                   bolo::utilPtoCString(pdres.items[count].playerName).c_str());
             ip = inet_ntoa(pdres.items[count].addr);
             playersSetPlayer(screenGetPlayers(), count, (char *)buff, ip, 0, 0,
                              0, 0, 0, 0, pdres.items[count].numAllies,
@@ -1359,7 +1360,7 @@ void netPlayerJoined(BYTE *buff) {
   char *ip;                   /* New players IP */
 
   memcpy(&npp, buff, sizeof(NEWPLAYER_PACKET));
-  utilPtoCString(npp.playerName, name);
+  strcpy(name, bolo::utilPtoCString(npp.playerName).c_str());
   ip = inet_ntoa(npp.addr);
   dnsLookupsAddRequest(ip, netProcessedDnsLookup);
   playersSetPlayer(screenGetPlayers(), npp.playerNumber, name, ip, 0, 0, 0, 0,
@@ -1923,7 +1924,7 @@ void netMessagePacket(BYTE *data, int dataLen) {
 
   ptr = data;
   ptr += BOLOPACKET_MAPDDOWNLOAD_DATASTART + 1;
-  utilPtoCString((char *)ptr, message);
+  strcpy(message, bolo::utilPtoCString((char *)ptr).c_str());
   ptr -= 2;
   screenIncomingMessage(*ptr, message);
 }
@@ -1939,7 +1940,7 @@ void netMessageSendAllPlayers(BYTE playerNum, char *message) {
     ptr += BOLOPACKET_MAPDDOWNLOAD_DATASTART;
     *ptr = NEUTRAL;
     ptr++;
-    utilCtoPString(message, (char *)ptr);
+    strcpy((char *)ptr, bolo::utilCtoPString(message).c_str());
     ptr = info + BOLOPACKET_MAPDDOWNLOAD_DATASTART;
     netSend(info, (*ptr) + 11);
   }
@@ -1955,7 +1956,7 @@ void netMessageSendPlayer(BYTE playerNum, BYTE destPlayer, char *message) {
     ptr += BOLOPACKET_MAPDDOWNLOAD_DATASTART;
     *ptr = destPlayer;
     ptr++;
-    utilCtoPString(message, (char *)ptr);
+    strcpy((char *)ptr, bolo::utilCtoPString(message).c_str());
     ptr = info + BOLOPACKET_MAPDDOWNLOAD_DATASTART + 1;
     /* Send it */
     netSend(info, (*ptr) + 11);
@@ -1981,7 +1982,7 @@ void netSendChangePlayerName(BYTE playerNum, char *newName) {
 
   netMakePacketHeader(&(info.h), BOLOCHANGENAME_DATA);
   info.playerNum = playerNum;
-  utilCtoPString(newName, info.playerName);
+  strcpy(info.playerName, bolo::utilCtoPString(newName).c_str());
   memcpy(buff, &info, sizeof(info));
   netSend(buff, sizeof(info));
 }
@@ -2000,7 +2001,7 @@ void netSendChangePlayerName(BYTE playerNum, char *newName) {
 void netGetChangePlayerName(PLAYERNAMECHANGE_PACKET *info) {
   char newName[PLAYER_NAME_LEN]; /* The New Player Name */
 
-  utilPtoCString(info->playerName, newName);
+  strcpy(newName, bolo::utilPtoCString(info->playerName).c_str());
   playersSetPlayerName(screenGetPlayers(), info->playerNum, newName);
 }
 

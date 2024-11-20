@@ -30,24 +30,10 @@
 #define BRADIAN_ADD8 8
 #define NIBBLE_SHIFT_SIZE 4
 
-/* Used in extracting the map name from the filename and path */
-#define STRTOK_SEPS "\\/"
-#define END3 4
-#define END2 3
-#define END1 2
-#define END0 1
-#define END3CHRA '.'
-#define END2CHRA 'm'
-#define END1CHRA 'a'
-#define END0CHRA 'p'
-#define END2CHRB 'M'
-#define END1CHRB 'A'
-#define END0CHRB 'P'
-
-/* We allow big file names */
-#define BIG_FILENAME 1024
-
 /* Includes */
+#include <cstdint>
+#include <string>
+
 #include "global.h"
 #include "types.h"
 
@@ -67,27 +53,6 @@
  *  speed   - The speed of the tank
  *********************************************************/
 void utilCalcDistance(int *xAmount, int *yAmount, TURNTYPE angle, int speed);
-
-/*********************************************************
- *NAME:          utilCalcTankSlide
- *AUTHOR:        Chris Lesnieski
- *CREATION DATE: 2009-01-04
- *LAST MODIFIED: 2009-01-04
- *PURPOSE:
- *  Calculates the X and Y distance a tank should move
- *  after being hit by a shell.  We do not decrement the
- *  tank slide timer here as that is handled by code in the
- *  tankUpdate() method.
- *
- *ARGUMENTS:
- *  tankSlideTimer - The number of ticks left to slide
- *  angle - The angle at which the shell was travelling
- *  xAmount - The amount to add in the X direction
- *  yAmount - The amount to add in the Y direction
- *  speed   - The speed of the tank
- *********************************************************/
-void utilCalcTankSlide(BYTE tankSlideTimer, TURNTYPE angle, int *xAmount,
-                       int *yAmount, int speed);
 
 /*********************************************************
  *NAME:          utilGetDir
@@ -189,77 +154,63 @@ bool utilIsItemInRange(WORLD x, WORLD y, WORLD tankX, WORLD tankY, WORLD range,
  *********************************************************/
 bool utilIsTankInTrees(map *mp, pillboxes *pb, bases *bs, WORLD wx, WORLD wy);
 
-/*********************************************************
- *NAME:          utilPtoCString
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/2/99
- *LAST MODIFIED: 21/2/99
- *PURPOSE:
- * Convert Bolo's network pascal string to C strings
- *
- *ARGUMENTS:
- *  src  - Source string
- *  dest - Destination string
- *********************************************************/
-void utilPtoCString(char *src, char *dest);
+namespace bolo {
 
-/*********************************************************
- *NAME:          utilPtoCString
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/2/99
- *LAST MODIFIED: 21/2/99
- *PURPOSE:
- * Convert a C string to a Bolo's network pascal string
- *
- *ARGUMENTS:
- *  src  - Source string
- *  dest - Destination string
- *********************************************************/
-void utilCtoPString(const char *src, char *dest);
+// Converts Bolo's network pascal string to C strings
+//
+// ARGUMENTS:
+//  src  - Source string
+//  dest - Destination string
+//
+// RETURNS:
+//  The converted C string
+std::string utilPtoCString(std::string_view src);
 
-/*********************************************************
- *NAME:          utilGetNibbles
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/2/99
- *LAST MODIFIED: 27/2/99
- *PURPOSE:
- * Extacts the high and low nibbles out of a byte
- *
- *ARGUMENTS:
- *  value - The byte the nibbles come from
- *  high - Pointer to hold high nibble
- *  low  - Pointer to hold low nibble
- *********************************************************/
-void utilGetNibbles(BYTE value, BYTE *high, BYTE *low);
+// Converts a C string to a Bolo's network pascal string
+//
+// ARGUMENTS:
+//  src  - Source string
+//  dest - Destination string
+//
+// RETURNS:
+//  The converted Pascal string
+std::string utilCtoPString(std::string_view src);
 
-/*********************************************************
- *NAME:          utilPutNibble
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/2/99
- *LAST MODIFIED: 27/2/99
- *PURPOSE:
- * Returns the high and low nibbles as a combined byte
- *
- *ARGUMENTS:
- *  high - High nibble
- *  low  - Low nibble
- *********************************************************/
-BYTE utilPutNibble(BYTE high, BYTE low);
+// Return the high and low nibbles out of a byte
+//
+// ARGUMENTS:
+//  value - The byte the nibbles come from
+//
+// RETURNS:
+//  A tuple whose first element is the high nibble, and second element
+//  is the low nibble
+inline std::tuple<uint8_t, uint8_t> utilGetNibbles(uint8_t value) {
+  return std::make_tuple((value & 0xF0) >> 4, value & 0x0F);
+}
 
-/*********************************************************
- *NAME:          utilExtractMapName
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/1/99
- *LAST MODIFIED: 26/1/99
- *PURPOSE:
- * Extracts the map name from a file name and path.
- *
- *ARGUMENTS:
- *
- *  fileName - Map File name and path.
- *  mapName  - Stores the Map Name.
- *********************************************************/
-void utilExtractMapName(char *fileName, char *mapName);
+// Return the high and low nibbles as a combined byte.
+//
+// ARGUMENTS:
+//  high - High nibble
+//  low  - Low nibble
+//
+// RETURNS:
+//  The combined byte
+inline uint8_t utilPutNibble(uint8_t high, uint8_t low) {
+  return (high << 4) & low;
+}
+
+// Return the map name from a file name and path.
+//
+// ARGUMENTS:
+//  fileName - Map File name and path.
+//  mapName  - Stores the Map Name.
+//
+// RETURNS:
+//  The filename without path.  If the filename ends in `.map`, it is removed.
+std::string utilExtractMapName(std::string_view fileName);
+
+}  // namespace bolo
 
 /*********************************************************
  *NAME:          utilStripNameReplace
@@ -289,18 +240,5 @@ void utilStripNameReplace(char *name);
  *  name - String to remove from
  *********************************************************/
 void utilStripName(char *name);
-
-/*********************************************************
- *NAME:          roundDouble
- *AUTHOR:        Minhiriath
- *CREATION DATE: 23/02/2009
- *LAST MODIFIED: 23/02/2009
- *PURPOSE:
- * Rounds up or down the double so we can stuff it into a int
- *
- *ARGUMENTS:
- *  number - the double to round
- *********************************************************/
-int roundDouble(double number);
 
 #endif /* UTILS_H */
