@@ -48,10 +48,7 @@
 
 typedef struct rubbleObj *rubble;
 struct rubbleObj {
-  rubble next; /* Next item */
-  BYTE x;      /* X and Y positions */
-  BYTE y;
-  BYTE life; /* Life time of the rubble */
+  std::unordered_map<MapPoint, uint8_t> rubbles_;
 };
 
 /* Prototypes */
