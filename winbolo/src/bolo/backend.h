@@ -1290,7 +1290,7 @@ bolo::RubbleState *screenGetRubble();
  *ARGUMENTS:
  *
  *********************************************************/
-SwampState *screenGetSwamp();
+bolo::SwampState *screenGetSwamp();
 
 /*********************************************************
  *NAME:          screenGetTankExplosions

@@ -1173,7 +1173,7 @@ bolo::RubbleState *clientGetRubble() { return nullptr; }
  *ARGUMENTS:
  *
  *********************************************************/
-SwampState *clientGetSwamp() { return nullptr; }
+bolo::SwampState *clientGetSwamp() { return nullptr; }
 
 /*********************************************************
  *NAME:          clientGetTankExplosions

@@ -97,7 +97,7 @@ static grass clientGrass = nullptr;
 static mines clientMines = nullptr;
 static minesExp clientMinesExp = nullptr;
 static std::optional<bolo::RubbleState> clientRubble;
-static std::optional<SwampState> clientSwamp;
+static std::optional<bolo::SwampState> clientSwamp;
 static tkExplosion clientTankExplosions = nullptr;
 static netPnbContext clientPNB = nullptr;
 static netMntContext clientNMT = nullptr;
@@ -3938,7 +3938,7 @@ bolo::RubbleState *clientGetRubble() { return &*clientRubble; }
  *ARGUMENTS:
  *
  *********************************************************/
-SwampState *clientGetSwamp() { return &*clientSwamp; }
+bolo::SwampState *clientGetSwamp() { return &*clientSwamp; }
 
 /*********************************************************
  *NAME:          clientGetTankExplosions

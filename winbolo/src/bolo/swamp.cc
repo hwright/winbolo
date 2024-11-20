@@ -17,6 +17,8 @@
 
 #include "global.h"
 
+namespace bolo {
+
 namespace {
 
 // Maximum life.  Gives 4 shots to death.
@@ -45,3 +47,5 @@ BYTE SwampState::addItem(MapPoint pos) {
 }
 
 void SwampState::removePos(MapPoint pos) { swamps_.erase(pos); }
+
+}  // namespace bolo

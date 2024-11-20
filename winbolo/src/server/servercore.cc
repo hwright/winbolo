@@ -93,7 +93,7 @@ static grass serverGrass = nullptr;
 static mines serverMines = nullptr;
 static minesExp serverMinesExp = nullptr;
 static std::optional<bolo::RubbleState> serverRubble;
-static std::optional<SwampState> serverSwamp;
+static std::optional<bolo::SwampState> serverSwamp;
 static tkExplosion serverTankExp = nullptr;
 static netPnbContext serverPNB = nullptr;
 static netMntContext serverNMT = nullptr;
@@ -1793,7 +1793,7 @@ bolo::RubbleState *serverCoreGetRubble() { return &*serverRubble; }
  *ARGUMENTS:
  *
  *********************************************************/
-SwampState *serverCoreGetSwamp() { return &*serverSwamp; }
+bolo::SwampState *serverCoreGetSwamp() { return &*serverSwamp; }
 
 /*********************************************************
  *NAME:          serverCoreGetTankExplosions

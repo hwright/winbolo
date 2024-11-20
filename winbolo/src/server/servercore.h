@@ -924,7 +924,7 @@ bolo::RubbleState *serverCoreGetRubble();
  *ARGUMENTS:
  *
  *********************************************************/
-SwampState *serverCoreGetSwamp();
+bolo::SwampState *serverCoreGetSwamp();
 
 /*********************************************************
  *NAME:          serverCoreGetTankExplosions

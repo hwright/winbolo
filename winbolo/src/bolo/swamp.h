@@ -22,6 +22,8 @@
 
 #include "global.h"
 
+namespace bolo {
+
 class SwampState {
  public:
   // Add an item of swamp.
@@ -42,5 +44,7 @@ class SwampState {
  private:
   std::unordered_map<MapPoint, uint8_t> swamps_;
 };
+
+}  // namespace bolo
 
 #endif /* SWAMP_H */
