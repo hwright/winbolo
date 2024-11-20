@@ -101,7 +101,7 @@ static tkExplosion clientTankExplosions = nullptr;
 static netPnbContext clientPNB = nullptr;
 static netMntContext clientNMT = nullptr;
 static gameType myGame;
-static TreeGrowState *treeGrowState = nullptr;
+static bolo::TreeGrowState *treeGrowState = nullptr;
 
 /* The offset from the top and left of the map */
 static BYTE xOffset;
@@ -193,7 +193,7 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   floodCreate(&clientFF);
   tkExplosionCreate(&clientTankExplosions);
   minesExpCreate(&clientMinesExp);
-  treeGrowState = new TreeGrowState();
+  treeGrowState = new bolo::TreeGrowState();
   netPNBCreate(&clientPNB);
   netMNTCreate(&clientNMT);
   pillsCreate(&mypb);

@@ -24,6 +24,8 @@
 #include "global.h"
 #include "types.h"
 
+namespace bolo {
+
 // Track the state of our tree growth apparatus.
 class TreeGrowState {
  public:
@@ -76,5 +78,7 @@ class TreeGrowState {
   std::default_random_engine generator_;
   std::uniform_int_distribution<uint8_t> distribution_;
 };
+
+}  // namespace bolo
 
 #endif /* TREEGROW_H */

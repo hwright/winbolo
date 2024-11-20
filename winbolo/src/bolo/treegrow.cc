@@ -29,6 +29,8 @@
 #include "swamp.h"
 #include "types.h"
 
+namespace bolo {
+
 namespace {
 
 // The time a tree exist before growing unless we find a better spot
@@ -216,3 +218,5 @@ void TreeGrowState::checkGrowTree(map *mp, pillboxes *pb, bases *bs) {
     }
   }
 }
+
+}  // namespace bolo
