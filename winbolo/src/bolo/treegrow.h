@@ -32,6 +32,10 @@ class TreeGrowState {
   TreeGrowState();
   virtual ~TreeGrowState() = default;
 
+  // Move-only
+  TreeGrowState(TreeGrowState &) = delete;
+  TreeGrowState &operator=(TreeGrowState &) = delete;
+
   //  Game tick has happened. Calculate the growth scores
   //  Build new trees etc.
   //

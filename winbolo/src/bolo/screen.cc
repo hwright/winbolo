@@ -194,7 +194,7 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   floodCreate(&clientFF);
   tkExplosionCreate(&clientTankExplosions);
   minesExpCreate(&clientMinesExp);
-  treeGrowState = bolo::TreeGrowState();
+  treeGrowState.emplace();
   netPNBCreate(&clientPNB);
   netMNTCreate(&clientNMT);
   pillsCreate(&mypb);
