@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,16 +13,8 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Rubble
- *Filename:      rubble.h
- *Author:        John Morrison
- *Creation Date: 30/12/98
- *Last Modified: 30/12/98
- *Purpose:
- *  Responsable for tracking lifetime of rubble.
- *  buildings can be shot 5 times before being destroyed
- *********************************************************/
+//  Responsible for tracking lifetime of rubble.
+//  Buildings can be shot 5 times before being destroyed
 
 #ifndef RUBBLE_H
 #define RUBBLE_H
@@ -31,22 +22,6 @@
 #include <unordered_map>
 
 #include "global.h"
-
-/* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define RubbleHeadX(list) ((list)->x);
-#define RubbleHeadY(list) ((list)->y);
-#define RubbleHeadLength(list) ((list)->life);
-#define RubbleTail(list) ((list)->next);
-
-/* How manu shots it takes to destroy a building */
-#define RUBBLE_LIFE 4
-
-/* Shells die when there length equals */
-#define RUBBLE_DEATH 0
-
-/* Type structure */
 
 class RubbleState {
  public:
