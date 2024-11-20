@@ -29,77 +29,18 @@
 
 #include "global.h"
 
-/*********************************************************
- *NAME:          swampCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Sets up the swamp data structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void swampCreate(swamp *swmp) { *swmp = new swampObj; }
-
-/*********************************************************
- *NAME:          swampDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Destroys and frees memory for the swamp data structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void swampDestroy(swamp *swmp) { delete *swmp; }
-
-/*********************************************************
- *NAME:          swampAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 25/04/01
- *PURPOSE:
- *  Adds an item to the swamp data structure.
- *  If it already exists returns the terrain type of the
- *  item and decrements its lifetime.
- *
- *ARGUMENTS:
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-BYTE swampAddItem(swamp *swmp, BYTE x, BYTE y) {
-  MapPoint pos{.x = x, .y = y};
-
-  if (auto it = (*swmp)->swamps_.find(pos); it != (*swmp)->swamps_.end()) {
+BYTE SwampState::addItem(MapPoint pos) {
+  if (auto it = swamps_.find(pos); it != swamps_.end()) {
     it->second -= 1;
     if (it->second == SWAMP_DEATH) {
-      (*swmp)->swamps_.erase(it);
+      swamps_.erase(it);
       return SWAMP_DEATH_RETURN;
     }
   } else {
-    (*swmp)->swamps_[pos] = SWAMP_LIFE;
+    swamps_[pos] = SWAMP_LIFE;
   }
 
   return SWAMP;
 }
 
-/*********************************************************
- *NAME:          swampRemovePos
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/99
- *LAST MODIFIED: 18/1/99
- *PURPOSE:
- *  Removes an item from the swamp data structure if it
- *  exists at a specific loaction. Otherwise the function
- *  does nothing
- *
- *ARGUMENTS:
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-void swampRemovePos(swamp *swmp, BYTE x, BYTE y) {
-  MapPoint pos{.x = x, .y = y};
-  (*swmp)->swamps_.erase(pos);
-}
+void SwampState::removePos(MapPoint pos) { swamps_.erase(pos); }

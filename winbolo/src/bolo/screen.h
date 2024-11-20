@@ -1117,7 +1117,7 @@ bolo::RubbleState *clientGetRubble();
  *ARGUMENTS:
  *
  *********************************************************/
-swamp *clientGetSwamp();
+SwampState *clientGetSwamp();
 
 /*********************************************************
  *NAME:          clientGetTankExplosions

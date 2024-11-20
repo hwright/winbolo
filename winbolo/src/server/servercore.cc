@@ -93,7 +93,7 @@ static grass serverGrass = nullptr;
 static mines serverMines = nullptr;
 static minesExp serverMinesExp = nullptr;
 static std::optional<bolo::RubbleState> serverRubble;
-static swamp serverSwamp = nullptr;
+static std::optional<SwampState> serverSwamp;
 static tkExplosion serverTankExp = nullptr;
 static netPnbContext serverPNB = nullptr;
 static netMntContext serverNMT = nullptr;
@@ -162,7 +162,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines,
   serverRubble.emplace();
   buildingCreate(&serverBlds);
   grassCreate(&serverGrass);
-  swampCreate(&serverSwamp);
+  serverSwamp.emplace();
   netPNBCreate(&serverPNB);
   netMNTCreate(&serverNMT);
   logCreate();
@@ -238,7 +238,7 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn,
   serverRubble.emplace();
   buildingCreate(&serverBlds);
   grassCreate(&serverGrass);
-  swampCreate(&serverSwamp);
+  serverSwamp.emplace();
   floodCreate(&serverFF);
   tkExplosionCreate(&serverTankExp);
   netPNBCreate(&serverPNB);
@@ -292,7 +292,7 @@ void serverCoreDestroy() {
   buildingDestroy(&serverBlds);
   grassDestroy(&serverGrass);
   floodDestroy(&serverFF);
-  swampDestroy(&serverSwamp);
+  serverSwamp = std::nullopt;
   netPNBDestroy(&serverPNB);
   netNMTDestroy(&serverNMT);
   tkExplosionDestroy(&serverTankExp);
@@ -1793,7 +1793,7 @@ bolo::RubbleState *serverCoreGetRubble() { return &*serverRubble; }
  *ARGUMENTS:
  *
  *********************************************************/
-swamp *serverCoreGetSwamp() { return &serverSwamp; }
+SwampState *serverCoreGetSwamp() { return &*serverSwamp; }
 
 /*********************************************************
  *NAME:          serverCoreGetTankExplosions

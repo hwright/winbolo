@@ -560,7 +560,7 @@ bolo::RubbleState *screenGetRubble() {
  *ARGUMENTS:
  *
  *********************************************************/
-swamp *screenGetSwamp() {
+SwampState *screenGetSwamp() {
   if (!threadsGetContext()) {
     return clientGetSwamp();
   }

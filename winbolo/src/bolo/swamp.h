@@ -43,84 +43,25 @@
 /* What grass truns into when it dies */
 #define SWAMP_DEATH_RETURN RIVER
 
-/* Type structure */
+class SwampState {
+ public:
+  // Add an item of swamp.
+  // If one already exists, return the terrain type of the
+  //  item and decrements its lifetime.
+  //
+  // ARGUMENTS:
+  //  pos - The swamp position
+  BYTE addItem(MapPoint pos);
 
-typedef struct swampObj *swamp;
-struct swampObj {
+  // Remove an item of swamp if it exists at a specific
+  // location.
+  //
+  // ARGUMENTS:
+  //  pos - The swamp position
+  void removePos(MapPoint pos);
+
+ private:
   std::unordered_map<MapPoint, uint8_t> swamps_;
 };
-
-/* Prototypes */
-
-/*********************************************************
- *NAME:          swampCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Sets up the swamp data structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void swampCreate(swamp *swmp);
-
-/*********************************************************
- *NAME:          swampDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Destroys and frees memory for the swamp data structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void swampDestroy(swamp *swmp);
-
-/*********************************************************
- *NAME:          swampAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 25/04/01
- *PURPOSE:
- *  Adds an item to the swamp data structure.
- *  If it already exists returns the terrain type of the
- *  item and decrements its lifetime.
- *
- *ARGUMENTS:
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-BYTE swampAddItem(swamp *swmp, BYTE x, BYTE y);
-
-/*********************************************************
- *NAME:          swampDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  itemNum - The item number to get
- *********************************************************/
-void swampDeleteItem(swamp *swmp, int itemNum);
-
-/*********************************************************
- *NAME:          swampRemovePos
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/99
- *LAST MODIFIED: 18/1/99
- *PURPOSE:
- *  Removes an item from the swamp data structure if it
- *  exists at a specific loaction. Otherwise the function
- *  does nothing
- *
- *ARGUMENTS:
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-void swampRemovePos(swamp *swmp, BYTE x, BYTE y);
 
 #endif /* SWAMP_H */
