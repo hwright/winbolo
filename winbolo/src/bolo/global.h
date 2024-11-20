@@ -22,6 +22,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <cstdint>
+
 /* Byte type def */
 typedef unsigned char BYTE;
 typedef BYTE MAP_X, MAP_Y;
@@ -36,6 +38,33 @@ typedef unsigned char u_char;
 /* Next 2 bits represent the tanks sub-map position in pixels (0-15) */
 /* Last 2 bits sub 40 pixels */
 typedef unsigned short WORLD;
+
+// A point on the map
+struct MapPoint {
+  uint8_t x;
+  uint8_t y;
+
+  MapPoint NW() {
+    return MapPoint{.x = static_cast<uint8_t>(x - 1),
+                    .y = static_cast<uint8_t>(y - 1)};
+  }
+  MapPoint N() { return MapPoint{.x = x, .y = static_cast<uint8_t>(y - 1)}; }
+  MapPoint NE() {
+    return MapPoint{.x = static_cast<uint8_t>(x + 1),
+                    .y = static_cast<uint8_t>(y - 1)};
+  }
+  MapPoint E() { return MapPoint{.x = static_cast<uint8_t>(x + 1), .y = y}; }
+  MapPoint SE() {
+    return MapPoint{.x = static_cast<uint8_t>(x + 1),
+                    .y = static_cast<uint8_t>(y + 1)};
+  }
+  MapPoint S() { return MapPoint{.x = x, .y = static_cast<uint8_t>(y + 1)}; }
+  MapPoint SW() {
+    return MapPoint{.x = static_cast<uint8_t>(x - 1),
+                    .y = static_cast<uint8_t>(y + 1)};
+  }
+  MapPoint W() { return MapPoint{.x = static_cast<uint8_t>(x - 1), .y = y}; }
+};
 
 /* WORD data type */
 typedef unsigned short WORD;
