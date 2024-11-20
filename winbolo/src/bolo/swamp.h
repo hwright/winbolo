@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,16 +13,7 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Swamp
- *Filename:      swamp.h
- *Author:        John Morrison
- *Creation Date: 5/1/99
- *Last Modified: 18/1/99
- *Purpose:
- *  Responsable for tracking lifetime of swamp when shot
- *  from a boat
- *********************************************************/
+// Responsable for tracking lifetime of swamp when shot from a boat
 
 #ifndef SWAMP_H
 #define SWAMP_H
@@ -31,17 +21,6 @@
 #include <unordered_map>
 
 #include "global.h"
-
-/* How many shots it takes to destroy a peice of grass this is set to 3 becuase
- * for some reason that makes winbolo kill a swamp in 4 shots. 4 shots is what
- * its supposed to be */
-#define SWAMP_LIFE 3
-
-/* Shells die when there length equals */
-#define SWAMP_DEATH 0
-
-/* What grass truns into when it dies */
-#define SWAMP_DEATH_RETURN RIVER
 
 class SwampState {
  public:

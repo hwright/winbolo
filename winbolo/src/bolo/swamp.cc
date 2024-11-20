@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,30 +13,32 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Swamp
- *Filename:      swamp.c
- *Author:        John Morrison
- *Creation Date: 5/1/99
- *Last Modified: 25/04/01
- *Purpose:
- *  Responsable for tracking lifetime of swamp when shot
- *  from a boat
- *********************************************************/
-
 #include "swamp.h"
 
 #include "global.h"
 
+namespace {
+
+// Maximum life.  Gives 4 shots to death.
+const int LIFE = 3;
+
+// Shells die when there length equals
+const int DEATH = 0;
+
+/* What grass truns into when it dies */
+const BYTE DEATH_RETURN = RIVER;
+
+}  // namespace
+
 BYTE SwampState::addItem(MapPoint pos) {
   if (auto it = swamps_.find(pos); it != swamps_.end()) {
     it->second -= 1;
-    if (it->second == SWAMP_DEATH) {
+    if (it->second == DEATH) {
       swamps_.erase(it);
-      return SWAMP_DEATH_RETURN;
+      return DEATH_RETURN;
     }
   } else {
-    swamps_[pos] = SWAMP_LIFE;
+    swamps_[pos] = LIFE;
   }
 
   return SWAMP;
