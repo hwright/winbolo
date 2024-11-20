@@ -29,7 +29,6 @@ namespace bolo {
 class TreeGrowState {
  public:
   TreeGrowState();
-  virtual ~TreeGrowState() = default;
 
   // Move-only
   TreeGrowState(TreeGrowState &) = delete;
