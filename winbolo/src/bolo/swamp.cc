@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,175 +13,37 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Swamp
- *Filename:      swamp.c
- *Author:        John Morrison
- *Creation Date: 5/1/99
- *Last Modified: 25/04/01
- *Purpose:
- *  Responsable for tracking lifetime of swamp when shot
- *  from a boat
- *********************************************************/
-
 #include "swamp.h"
 
 #include "global.h"
 
-/*********************************************************
- *NAME:          swampCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Sets up the swamp data structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void swampCreate(swamp *swmp) { *swmp = nullptr; }
+namespace bolo {
 
-/*********************************************************
- *NAME:          swampDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Destroys and frees memory for the swamp data structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void swampDestroy(swamp *swmp) {
-  swamp q;
+namespace {
 
-  while (!IsEmpty(*swmp)) {
-    q = *swmp;
-    *swmp = SwampTail(q);
-    delete q;
-  }
-}
+// Maximum life.  Gives 4 shots to death.
+const int LIFE = 3;
 
-/*********************************************************
- *NAME:          swampAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 25/04/01
- *PURPOSE:
- *  Adds an item to the swamp data structure.
- *  If it already exists returns the terrain type of the
- *  item and decrements its lifetime.
- *
- *ARGUMENTS:
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-BYTE swampAddItem(swamp *swmp, BYTE x, BYTE y) {
-  BYTE returnValue; /* Value to return */
-  bool found;       /* Is the item found */
-  int count;        /* Looping Variable */
-  swamp q;
-  swamp inc;
+// Shells die when there length equals
+const int DEATH = 0;
 
-  inc = *swmp;
-  found = false;
-  returnValue = SWAMP;
-  count = 0;
+/* What grass truns into when it dies */
+const BYTE DEATH_RETURN = RIVER;
 
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-      inc->life--;
-      if (inc->life == SWAMP_DEATH) {
-        returnValue = SWAMP_DEATH_RETURN;
-        swampDeleteItem(swmp, count);
-      }
+}  // namespace
+
+BYTE SwampState::addItem(MapPoint pos) {
+  if (auto it = swamps_.find(pos); it != swamps_.end()) {
+    it->second -= 1;
+    if (it->second == DEATH) {
+      swamps_.erase(it);
+      return DEATH_RETURN;
     }
-    if (!found) {
-      inc = SwampTail(inc);
-    }
-  }
-
-  /* If not found add a new item */
-  if (!found) {
-    q = new swampObj;
-    q->x = x;
-    q->y = y;
-    q->life = SWAMP_LIFE;
-    q->next = *swmp;
-    *swmp = q;
-  }
-
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          swampDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  itemNum - The item number to get
- *********************************************************/
-void swampDeleteItem(swamp *swmp, int itemNum) {
-  swamp prev; /* The previous item to link to the delete items next */
-  swamp del;  /* The item to delete */
-  int count;  /* Looping variable */
-
-  if (itemNum == 1) {
-    del = *swmp;
-    *swmp = del->next;
-    delete del;
   } else {
-    count = 1;
-    prev = *swmp;
-    while (count < (itemNum - 1)) {
-      prev = SwampTail(prev);
-      count++;
-    }
-    del = SwampTail(prev);
-    prev->next = del->next;
-    delete del;
+    swamps_[pos] = LIFE;
   }
+
+  return SWAMP;
 }
 
-/*********************************************************
- *NAME:          swampRemovePos
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/99
- *LAST MODIFIED: 18/1/99
- *PURPOSE:
- *  Removes an item from the swamp data structure if it
- *  exists at a specific loaction. Otherwise the function
- *  does nothing
- *
- *ARGUMENTS:
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-void swampRemovePos(swamp *swmp, BYTE x, BYTE y) {
-  bool found; /* Is the item found */
-  int count;  /* Looping Variable */
-  swamp inc;
-
-  inc = *swmp;
-  found = false;
-  count = 0;
-
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-    }
-    inc = SwampTail(inc);
-  }
-
-  /* If found remove item */
-  if (found) {
-    swampDeleteItem(swmp, count);
-  }
-}
+}  // namespace bolo

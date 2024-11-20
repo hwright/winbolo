@@ -67,7 +67,6 @@ add_executable(linbolo
                ../../bolo/shells.cc
                ../../bolo/sounddist.cc
                ../../bolo/starts.cc
-               ../../bolo/swamp.cc
                ../../bolo/tank.cc
                ../../bolo/tankexp.cc
                ../../bolo/udppackets.cc

@@ -421,7 +421,7 @@ void tkExplosionCheckRemove(tkExplosion *tke, BYTE terrain, BYTE mx, BYTE my) {
       screenGetRubble()->removePos(MapPoint{.x = mx, .y = my});
       break;
     case SWAMP:
-      swampRemovePos(screenGetSwamp(), mx, my);
+      screenGetSwamp()->removePos(MapPoint{.x = mx, .y = my});
       break;
     default:
       /* Do nothing */

@@ -262,7 +262,7 @@ void minesExpCheckFill(minesExp *me, map *mp, pillboxes *pb, bases *bs,
         grassRemovePos(screenGetGrass(), mx, my);
         break;
       case SWAMP:
-        swampRemovePos(screenGetSwamp(), mx, my);
+        screenGetSwamp()->removePos(MapPoint{.x = mx, .y = my});
         break;
       case RUBBLE:
         screenGetRubble()->removePos(MapPoint{.x = mx, .y = my});

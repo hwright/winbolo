@@ -262,7 +262,7 @@ bool netMNTExtractServer(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
       screenGetRubble()->addItem(MapPoint{.x = opt1, .y = opt2});
       break;
     case NMNT_SWAMP:
-      swampAddItem(screenGetSwamp(), opt1, opt2);
+      screenGetSwamp()->addItem(MapPoint{.x = opt1, .y = opt2});
       break;
     case NMNT_BASEMIGRATE:
       basesSetOwner(bs, opt1, opt2, owner, true);
@@ -402,7 +402,7 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
       screenGetRubble()->addItem(MapPoint{.x = opt1, .y = opt2});
       break;
     case NMNT_SWAMP:
-      swampAddItem(screenGetSwamp(), opt1, opt2);
+      screenGetSwamp()->addItem(MapPoint{.x = opt1, .y = opt2});
       break;
     case NMNT_BASEMIGRATE:
       basesSetOwner(bs, opt1, opt2, owner, true);
