@@ -119,19 +119,6 @@ void treeGrowAddItem(BYTE x, BYTE y, int score);
 void treeGrowUpdate(map *mp, pillboxes *pb, bases *bs);
 
 /*********************************************************
- *NAME:          treeGrowDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/1/99
- *LAST MODIFIED: 22/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  itemNum - The item number to get
- *********************************************************/
-void treeGrowDeleteItem(int itemNum);
-
-/*********************************************************
  *NAME:          treeGrowCalcScore
  *AUTHOR:        John Morrison
  *CREATION DATE: 22/1/99
