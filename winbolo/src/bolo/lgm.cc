@@ -1600,7 +1600,7 @@ void lgmCheckRemove(BYTE terrain, BYTE mx, BYTE my) {
       grassRemovePos(screenGetGrass(), mx, my);
       break;
     case RUBBLE:
-      rubbleRemovePos(screenGetRubble(), mx, my);
+      screenGetRubble()->removePos(MapPoint{.x = mx, .y = my});
       break;
     case SWAMP:
       swampRemovePos(screenGetSwamp(), mx, my);

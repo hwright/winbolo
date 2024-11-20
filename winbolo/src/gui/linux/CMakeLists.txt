@@ -57,7 +57,6 @@ add_executable(linbolo
                ../../bolo/pillbox.cc
                ../../bolo/players.cc
                ../../bolo/playersrejoin.cc
-               ../../bolo/rubble.cc
                ../../bolo/screen.cc
                ../../bolo/screenbrainmap.cc
                ../../bolo/screenbullet.cc

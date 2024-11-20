@@ -23,6 +23,7 @@
 #include <string.h>
 
 #include <cstdint>
+#include <functional>
 
 /* Byte type def */
 typedef unsigned char BYTE;
@@ -44,6 +45,10 @@ struct MapPoint {
   uint8_t x;
   uint8_t y;
 
+  bool operator==(const MapPoint& other) const {
+    return x == other.x && y == other.y;
+  }
+
   MapPoint NW() {
     return MapPoint{.x = static_cast<uint8_t>(x - 1),
                     .y = static_cast<uint8_t>(y - 1)};
@@ -64,6 +69,18 @@ struct MapPoint {
                     .y = static_cast<uint8_t>(y + 1)};
   }
   MapPoint W() { return MapPoint{.x = static_cast<uint8_t>(x - 1), .y = y}; }
+};
+
+// Custom hash function for MapPoint
+template <>
+struct std::hash<MapPoint> {
+  std::size_t operator()(const MapPoint& point) const {
+    using std::hash;
+
+    // Compute individual hash values for x and y and
+    // combine them using XOR and bit shifting:
+    return (hash<uint8_t>()(point.x) ^ (hash<uint8_t>()(point.y) << 8));
+  }
 };
 
 /* WORD data type */

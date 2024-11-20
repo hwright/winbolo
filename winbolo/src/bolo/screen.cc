@@ -96,7 +96,7 @@ static floodFill clientFF = nullptr;
 static grass clientGrass = nullptr;
 static mines clientMines = nullptr;
 static minesExp clientMinesExp = nullptr;
-static rubble clientRubble = nullptr;
+static std::optional<bolo::RubbleState> clientRubble;
 static swamp clientSwamp = nullptr;
 static tkExplosion clientTankExplosions = nullptr;
 static netPnbContext clientPNB = nullptr;
@@ -185,7 +185,7 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   playersCreate(&plyrs);
   myshs = shellsCreate();
   explosionsCreate(&clientExpl);
-  rubbleCreate(&clientRubble);
+  clientRubble.emplace();
   buildingCreate(&clientBlds);
   messageCreate();
   grassCreate(&clientGrass);
@@ -239,7 +239,7 @@ void screenDestroy() {
   basesDestroy(&mybs);
   shellsDestroy(&myshs);
   explosionsDestroy(&clientExpl);
-  rubbleDestroy(&clientRubble);
+  clientRubble = std::nullopt;
   buildingDestroy(&clientBlds);
   messageDestroy();
   grassDestroy(&clientGrass);
@@ -3926,7 +3926,7 @@ minesExp *clientGetMinesExp() { return &clientMinesExp; }
  *ARGUMENTS:
  *
  *********************************************************/
-rubble *clientGetRubble() { return &clientRubble; }
+bolo::RubbleState *clientGetRubble() { return &*clientRubble; }
 
 /*********************************************************
  *NAME:          clientGetSwamp

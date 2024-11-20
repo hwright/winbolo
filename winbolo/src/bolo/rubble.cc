@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,178 +13,38 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Rubble
- *Filename:      rubble.c
- *Author:        John Morrison
- *Creation Date: 30/12/98
- *Last Modified: 25/04/01
- *Purpose:
- *  Responsable for tracking lifetime of rubble.
- *  buildings can be shot 5 times before being destroyed
- *********************************************************/
-
 #include "rubble.h"
 
 #include "global.h"
 
-/*********************************************************
- *NAME:          rubbleCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Sets up the rubble data structure
- *
- *ARGUMENTS:
- *  rbl - Pointer to the rubbble object
- *********************************************************/
-void rubbleCreate(rubble *rbl) { *rbl = nullptr; }
+namespace bolo {
 
-/*********************************************************
- *NAME:          rubbleDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Destroys and frees memory for the rubble data structure
- *
- *ARGUMENTS:
- *  rbl - Pointer to the rubbble object
- *********************************************************/
-void rubbleDestroy(rubble *rbl) {
-  rubble q;
+namespace {
 
-  while (!IsEmpty(*rbl)) {
-    q = *rbl;
-    *rbl = RubbleTail(q);
-    delete q;
-  }
+// How manu shots it takes to destroy a building
+const int LIFE = 4;
+
+// Shells die when there length equals
+const int DEATH = 0;
+
 }
 
-/*********************************************************
- *NAME:          rubbleAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 25/04/01
- *PURPOSE:
- *  Adds an item to the rubble data structure.
- *  If it already exists returns the terrain type of the
- *  item and decrements its lifetime.
- *
- *ARGUMENTS:
- *  rbl - Pointer to the rubbble object
- *  x   - X co-ord
- *  y   - Y co-ord
- *********************************************************/
-BYTE rubbleAddItem(rubble *rbl, BYTE x, BYTE y) {
-  BYTE returnValue; /* Value to return */
-  bool found;       /* Is the item found */
-  int count;        /* Looping Variable */
-  rubble q;
-  rubble inc;
-
-  inc = *rbl;
-  found = false;
-  returnValue = RUBBLE;
-  count = 0;
-
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-      inc->life--;
-      if (inc->life == RUBBLE_DEATH) {
-        returnValue = RIVER;
-        rubbleDeleteItem(rbl, count);
-      }
+BYTE RubbleState::addItem(MapPoint pos) {
+  if (auto it = rubbles_.find(pos); it != rubbles_.end()) {
+    // Decrement the life count and check for death.
+    it->second -= 1;
+    if (it->second == DEATH) {
+      rubbles_.erase(it);
+      return RIVER;
     }
-    if (!found) {
-      inc = RubbleTail(inc);
-    }
-  }
-
-  /* If not found add a new item */
-  if (!found) {
-    q = new rubbleObj;
-    q->x = x;
-    q->y = y;
-    q->life = RUBBLE_LIFE;
-    q->next = *rbl;
-    *rbl = q;
-  }
-
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          rubbleDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  rbl     - Pointer to the rubbble object
- *  itemNum - The item number to get
- *********************************************************/
-void rubbleDeleteItem(rubble *rbl, int itemNum) {
-  rubble prev; /* The previous item to link to the delete items next */
-  rubble del;  /* The item to delete */
-  int count;   /* Looping variable */
-
-  if (itemNum == 1) {
-    del = *rbl;
-    *rbl = del->next;
-    delete del;
   } else {
-    count = 1;
-    prev = *rbl;
-    while (count < (itemNum - 1)) {
-      prev = RubbleTail(prev);
-      count++;
-    }
-    del = RubbleTail(prev);
-    prev->next = del->next;
-    delete del;
+    // Insert a new rubble
+    rubbles_[pos] = LIFE;
   }
+
+  return RUBBLE;
 }
 
-/*********************************************************
- *NAME:          rubbleRemovePos
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/99
- *LAST MODIFIED: 18/1/99
- *PURPOSE:
- *  Removes an item from the rubble data structure if it
- *  exists at a specific loaction. Otherwise the function
- *  does nothing
- *
- *ARGUMENTS:
- *  rbl - Pointer to the rubbble object
- *  x   - X co-ord
- *  y   - Y co-ord
- *********************************************************/
-void rubbleRemovePos(rubble *rbl, BYTE x, BYTE y) {
-  bool found; /* Is the item found */
-  int count;  /* Looping Variable */
-  rubble inc;
+void RubbleState::removePos(MapPoint pos) { rubbles_.erase(pos); }
 
-  inc = *rbl;
-  found = false;
-  count = 0;
-
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-    }
-    inc = RubbleTail(inc);
-  }
-
-  /* If found remove item */
-  if (found) {
-    rubbleDeleteItem(rbl, count);
-  }
 }

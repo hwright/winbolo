@@ -209,7 +209,7 @@ void TreeGrowState::checkGrowTree(map *mp, pillboxes *pb, bases *bs) {
           swampRemovePos(screenGetSwamp(), seedling_.x, seedling_.y);
           break;
         case RUBBLE:
-          rubbleRemovePos(screenGetRubble(), seedling_.x, seedling_.y);
+          screenGetRubble()->removePos(seedling_);
           break;
         default:
           /* Do nothing */
