@@ -1277,7 +1277,7 @@ minesExp *screenGetMinesExp();
  *ARGUMENTS:
  *
  *********************************************************/
-RubbleState *screenGetRubble();
+bolo::RubbleState *screenGetRubble();
 
 /*********************************************************
  *NAME:          screenGetSwamp

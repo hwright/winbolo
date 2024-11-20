@@ -17,6 +17,8 @@
 
 #include "global.h"
 
+namespace bolo {
+
 namespace {
 
 // How manu shots it takes to destroy a building
@@ -44,3 +46,5 @@ BYTE RubbleState::addItem(MapPoint pos) {
 }
 
 void RubbleState::removePos(MapPoint pos) { rubbles_.erase(pos); }
+
+}

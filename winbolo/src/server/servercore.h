@@ -911,7 +911,7 @@ minesExp *serverGetMinesExp();
  *ARGUMENTS:
  *
  *********************************************************/
-RubbleState *serverCoreGetRubble();
+bolo::RubbleState *serverCoreGetRubble();
 
 /*********************************************************
  *NAME:          serverCoreGetSwamp

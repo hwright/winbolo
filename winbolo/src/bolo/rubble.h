@@ -23,6 +23,8 @@
 
 #include "global.h"
 
+namespace bolo {
+
 class RubbleState {
  public:
   // Add an item of rubble.
@@ -44,5 +46,7 @@ class RubbleState {
   // A map from points to their lives.
   std::unordered_map<MapPoint, uint8_t> rubbles_;
 };
+
+}
 
 #endif /* RUBBLE_H */
