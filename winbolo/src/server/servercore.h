@@ -833,7 +833,7 @@ players *serverCoreGetPlayers();
  *ARGUMENTS:
  *
  *********************************************************/
-building *serverCoreGetBuildings();
+BuildingState *serverCoreGetBuildings();
 
 /*********************************************************
  *NAME:          serverCoreGetExplosions

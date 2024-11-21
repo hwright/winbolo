@@ -1594,7 +1594,7 @@ void lgmParchutingIn(lgm *lgman) {
 void lgmCheckRemove(BYTE terrain, BYTE mx, BYTE my) {
   switch (terrain) {
     case HALFBUILDING:
-      buildingRemovePos(screenGetBuildings(), mx, my);
+      screenGetBuildings()->removePos(MapPoint{.x = mx, .y = my});
       break;
     case GRASS:
       screenGetGrass()->removePos(MapPoint{.x = mx, .y = my});

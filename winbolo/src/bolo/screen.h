@@ -1026,7 +1026,7 @@ players *screenGetPlayers();
  *ARGUMENTS:
  *
  *********************************************************/
-building *clientGetBuildings();
+BuildingState *clientGetBuildings();
 
 /*********************************************************
  *NAME:          clientGetExplosions

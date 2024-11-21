@@ -412,7 +412,7 @@ void tkExplosionCalcScreenBullets(tkExplosion *tke, screenBullets *sBullets,
 void tkExplosionCheckRemove(tkExplosion *tke, BYTE terrain, BYTE mx, BYTE my) {
   switch (terrain) {
     case BUILDING:
-      buildingRemovePos(screenGetBuildings(), mx, my);
+      screenGetBuildings()->removePos(MapPoint{.x = mx, .y = my});
       break;
     case GRASS:
       screenGetGrass()->removePos(MapPoint{.x = mx, .y = my});

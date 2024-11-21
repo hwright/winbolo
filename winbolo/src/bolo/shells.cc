@@ -630,9 +630,10 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
       /* Update the map  & Play the sound */
       switch (terrain) {
         case BUILDING:
-          mapSetPos(mp, mapX, mapY,
-                    (buildingAddItem(screenGetBuildings(), mapX, mapY)), false,
-                    false);
+          mapSetPos(
+              mp, mapX, mapY,
+              screenGetBuildings()->addItem(MapPoint{.x = mapX, .y = mapY}),
+              false, false);
           soundDist(shotBuildingNear, mapX, mapY);
           break;
         case FOREST:
@@ -648,9 +649,10 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
           soundDist(shotTreeNear, mapX, mapY);
           break;
         case HALFBUILDING:
-          mapSetPos(mp, mapX, mapY,
-                    (buildingAddItem(screenGetBuildings(), mapX, mapY)), false,
-                    false);
+          mapSetPos(
+              mp, mapX, mapY,
+              screenGetBuildings()->addItem(MapPoint{.x = mapX, .y = mapY}),
+              false, false);
           soundDist(shotBuildingNear, mapX, mapY);
           break;
         case BOAT:

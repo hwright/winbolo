@@ -29,78 +29,16 @@
 
 #include "global.h"
 
-/*********************************************************
- *NAME:          buildingCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Sets up the building data structure
- *
- *ARGUMENTS:
- * bld - Pointer to the buildings object
- *********************************************************/
-void buildingCreate(building *bld) { *bld = new buildingObj; }
-
-/*********************************************************
- *NAME:          buildingDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Destroys and frees memory for the building data structure
- *
- *ARGUMENTS:
- * bld - Pointer to the buildings object
- *********************************************************/
-void buildingDestroy(building *bld) { delete *bld; }
-
-/*********************************************************
- *NAME:          buildingeAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 25/04/01
- *PURPOSE:
- *  Adds an item to the building data structure.
- *  If it already exists returns the terrain type of the
- *  item and decrements its lifetime.
- *
- *ARGUMENTS:
- *  bld   - Pointer to the buildings object
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-BYTE buildingAddItem(building *bld, BYTE x, BYTE y) {
-  MapPoint pos{.x = x, .y = y};
-  if (auto it = (*bld)->buildings_.find(pos); it != (*bld)->buildings_.end()) {
+BYTE BuildingState::addItem(MapPoint pos) {
+  if (auto it = buildings_.find(pos); it != buildings_.end()) {
     it->second -= 1;
     if (it->second == BUILDING_DEATH) {
-      (*bld)->buildings_.erase(it);
+      buildings_.erase(it);
       return RUBBLE;
     }
   } else {
-    (*bld)->buildings_[pos] = BUILDING_LIFE;
+    buildings_[pos] = BUILDING_LIFE;
   }
 
   return HALFBUILDING;
-}
-
-/*********************************************************
- *NAME:          buildingRemovePos
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/99
- *LAST MODIFIED: 18/1/99
- *PURPOSE:
- *  Removes an item from the building data structure if it
- *  exists at a specific loaction. Otherwise the function
- *  does nothing
- *
- *ARGUMENTS:
- *  bld   - Pointer to the buildings object
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-void buildingRemovePos(building *bld, BYTE x, BYTE y) {
-  MapPoint pos{.x = x, .y = y};
-  (*bld)->buildings_.erase(pos);
 }

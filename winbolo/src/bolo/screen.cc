@@ -90,7 +90,7 @@ static tank mytk = nullptr;
 static shells myshs = nullptr;
 static lgm mylgman = nullptr;
 static players plyrs = nullptr;
-static building clientBlds = nullptr;
+static std::optional<BuildingState> clientBlds;
 static explosions clientExpl = nullptr;
 static floodFill clientFF = nullptr;
 static std::optional<bolo::GrassState> clientGrass;
@@ -186,7 +186,7 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   myshs = shellsCreate();
   explosionsCreate(&clientExpl);
   clientRubble.emplace();
-  buildingCreate(&clientBlds);
+  clientBlds.emplace();
   messageCreate();
   clientGrass.emplace();
   clientSwamp.emplace();
@@ -240,7 +240,7 @@ void screenDestroy() {
   shellsDestroy(&myshs);
   explosionsDestroy(&clientExpl);
   clientRubble = std::nullopt;
-  buildingDestroy(&clientBlds);
+  clientBlds = std::nullopt;
   messageDestroy();
   clientGrass = std::nullopt;
   netPNBDestroy(&clientPNB);
@@ -3847,7 +3847,7 @@ players *clientGetPlayers() { return &plyrs; }
  *ARGUMENTS:
  *
  *********************************************************/
-building *clientGetBuildings() { return &clientBlds; }
+BuildingState *clientGetBuildings() { return &*clientBlds; }
 
 /*********************************************************
  *NAME:          clientGetExplosions

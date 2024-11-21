@@ -417,7 +417,7 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
     case NMNT_BUILDBUILDING:
       mapSetPos(mp, opt1, opt2, BUILDING, false, false);
       soundDist(manBuildingNear, opt1, opt2);
-      buildingRemovePos(screenGetBuildings(), opt1, opt2);
+      screenGetBuildings()->removePos(MapPoint{.x = opt1, .y = opt2});
       needCalc = true;
       break;
     case NMNT_DROPBOAT:
