@@ -486,7 +486,7 @@ floodFill *screenGetFloodFill() {
  *ARGUMENTS:
  *
  *********************************************************/
-grass *screenGetGrass() {
+GrassState *screenGetGrass() {
   if (!threadsGetContext()) {
     return clientGetGrass();
   }

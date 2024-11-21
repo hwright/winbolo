@@ -93,7 +93,7 @@ static players plyrs = nullptr;
 static building clientBlds = nullptr;
 static explosions clientExpl = nullptr;
 static floodFill clientFF = nullptr;
-static grass clientGrass = nullptr;
+static std::optional<GrassState> clientGrass = std::nullopt;
 static mines clientMines = nullptr;
 static minesExp clientMinesExp = nullptr;
 static std::optional<bolo::RubbleState> clientRubble;
@@ -188,7 +188,7 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   clientRubble.emplace();
   buildingCreate(&clientBlds);
   messageCreate();
-  grassCreate(&clientGrass);
+  clientGrass.emplace();
   clientSwamp.emplace();
   mylgman = lgmCreate(0);
   floodCreate(&clientFF);
@@ -242,7 +242,7 @@ void screenDestroy() {
   clientRubble = std::nullopt;
   buildingDestroy(&clientBlds);
   messageDestroy();
-  grassDestroy(&clientGrass);
+  clientGrass = std::nullopt;
   netPNBDestroy(&clientPNB);
   netNMTDestroy(&clientNMT);
   floodDestroy(&clientFF);
@@ -3886,7 +3886,7 @@ floodFill *clientGetFloodFill() { return &clientFF; }
  *ARGUMENTS:
  *
  *********************************************************/
-grass *clientGetGrass() { return &clientGrass; }
+GrassState *clientGetGrass() { return &*clientGrass; }
 
 /*********************************************************
  *NAME:          clientGetMines

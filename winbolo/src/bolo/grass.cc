@@ -29,64 +29,16 @@
 
 #include "global.h"
 
-/*********************************************************
- *NAME:          grassCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Sets up the grass data structure
- *
- *ARGUMENTS:
- * grs - Pointer to the grass object
- *********************************************************/
-void grassCreate(grass *grs) { *grs = new grassObj; }
-
-/*********************************************************
- *NAME:          grassDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Destroys and frees memory for the grass data structure
- *
- *ARGUMENTS:
- * grs - Pointer to the grass object
- *********************************************************/
-void grassDestroy(grass *grs) { delete *grs; }
-
-/*********************************************************
- *NAME:          grassAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 25/04/01
- *PURPOSE:
- *  Adds an item to the grass data structure.
- *  If it already exists returns the terrain type of the
- *  item and decrements its lifetime.
- *
- *ARGUMENTS:
- *  grs   - Pointer to the grass object
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-BYTE grassAddItem(grass *grs, BYTE x, BYTE y) {
-  MapPoint pos{.x = x, .y = y};
-
-  if (auto it = (*grs)->grasses_.find(pos); it != (*grs)->grasses_.end()) {
+BYTE GrassState::addItem(MapPoint pos) {
+  if (auto it = grasses_.find(pos); it != grasses_.end()) {
     it->second -= 1;
     if (it->second == GRASS_DEATH) {
-      (*grs)->grasses_.erase(it);
+      grasses_.erase(it);
       return GRASS_DEATH_RETURN;
     }
   } else {
-    (*grs)->grasses_[pos] = GRASS_LIFE;
+    grasses_[pos] = GRASS_LIFE;
   }
 
   return GRASS;
-}
-
-void grassRemovePos(grass *grs, BYTE x, BYTE y) {
-  MapPoint pos{.x = x, .y = y};
-  (*grs)->grasses_.erase(pos);
 }

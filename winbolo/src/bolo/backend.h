@@ -1238,7 +1238,7 @@ floodFill *screenGetFloodFill();
  *ARGUMENTS:
  *
  *********************************************************/
-grass *screenGetGrass();
+GrassState *screenGetGrass();
 
 /*********************************************************
  *NAME:          screenGetMines

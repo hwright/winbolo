@@ -415,7 +415,7 @@ void tkExplosionCheckRemove(tkExplosion *tke, BYTE terrain, BYTE mx, BYTE my) {
       buildingRemovePos(screenGetBuildings(), mx, my);
       break;
     case GRASS:
-      grassRemovePos(screenGetGrass(), mx, my);
+      screenGetGrass()->removePos(MapPoint{.x = mx, .y = my});
       break;
     case RUBBLE:
       screenGetRubble()->removePos(MapPoint{.x = mx, .y = my});

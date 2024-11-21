@@ -1065,7 +1065,7 @@ floodFill *clientGetFloodFill();
  *ARGUMENTS:
  *
  *********************************************************/
-grass *clientGetGrass();
+GrassState *clientGetGrass();
 
 /*********************************************************
  *NAME:          clientGetMines

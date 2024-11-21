@@ -1121,7 +1121,7 @@ floodFill *clientGetFloodFill() { return nullptr; }
  *ARGUMENTS:
  *
  *********************************************************/
-grass *clientGetGrass() { return nullptr; }
+GrassState *clientGetGrass() { return nullptr; }
 
 /*********************************************************
  *NAME:          clientGetMines

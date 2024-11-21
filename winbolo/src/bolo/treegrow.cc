@@ -203,7 +203,7 @@ void TreeGrowState::checkGrowTree(map *mp, pillboxes *pb, bases *bs) {
       /* Remove Items from grass/swamp/rubble data stuctures */
       switch (pos) {
         case GRASS:
-          grassRemovePos(screenGetGrass(), seedling_.x, seedling_.y);
+          screenGetGrass()->removePos(seedling_);
           break;
         case SWAMP:
           screenGetSwamp()->removePos(seedling_);

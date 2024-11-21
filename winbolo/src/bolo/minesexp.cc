@@ -259,7 +259,7 @@ void minesExpCheckFill(minesExp *me, map *mp, pillboxes *pb, bases *bs,
     /* Remove Items from grass/swamp/rubble data stuctures */
     switch (pos - MINE_SUBTRACT) {
       case GRASS:
-        grassRemovePos(screenGetGrass(), mx, my);
+        screenGetGrass()->removePos(MapPoint{.x = mx, .y = my});
         break;
       case SWAMP:
         screenGetSwamp()->removePos(MapPoint{.x = mx, .y = my});
