@@ -377,11 +377,11 @@ gint windowGetFocus(GtkWidget *widget, gpointer data) {
     doneInitTutorial = TRUE;
     windowStartTutorial();
   }
-  clientMutexWaitFor();
   frameMutexWaitFor();
+  clientMutexWaitFor();
   drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, BsLinuxCurrent, FALSE, FALSE);
-  frameMutexRelease();
   clientMutexRelease();
+  frameMutexRelease();
   gdk_key_repeat_disable();
   return 0;
 }
@@ -427,8 +427,8 @@ Uint32 windowGameTimer(Uint32 interval, void *param) {
           } else {
             inputScroll(FALSE);
           }
-          clientMutexWaitFor();
           frameMutexWaitFor();
+          clientMutexWaitFor();
           if (llf.used == TRUE) {
             screenManMove((buildSelect)llf.bs);
             llf.used = FALSE;
@@ -439,8 +439,8 @@ Uint32 windowGameTimer(Uint32 interval, void *param) {
             llf.changeUsed = FALSE;
           }
           screenGameTick(tb, isShoot, brainRunning);
-          frameMutexRelease();
           clientMutexRelease();
+          frameMutexRelease();
           justKeys = TRUE;
           used = TRUE;
         }
