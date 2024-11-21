@@ -29,15 +29,25 @@
 
 #include "global.h"
 
+namespace {
+
+/* How manu shots it takes to destroy a building */
+const int LIFE = 4;
+
+/* Shells die when there length equals */
+const int DEATH = 0;
+
+}  // namespace
+
 BYTE BuildingState::addItem(MapPoint pos) {
   if (auto it = buildings_.find(pos); it != buildings_.end()) {
     it->second -= 1;
-    if (it->second == BUILDING_DEATH) {
+    if (it->second == DEATH) {
       buildings_.erase(it);
       return RUBBLE;
     }
   } else {
-    buildings_[pos] = BUILDING_LIFE;
+    buildings_[pos] = LIFE;
   }
 
   return HALFBUILDING;

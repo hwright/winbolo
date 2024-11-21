@@ -32,12 +32,6 @@
 
 #include "global.h"
 
-/* How manu shots it takes to destroy a building */
-#define BUILDING_LIFE 4
-
-/* Shells die when there length equals */
-#define BUILDING_DEATH 0
-
 class BuildingState {
  public:
   BuildingState() = default;
