@@ -32,15 +32,6 @@
 
 #include "global.h"
 
-/* How manu shots it takes to destroy a peice of grass */
-#define GRASS_LIFE 4
-
-/* Shells die when there length equals */
-#define GRASS_DEATH 0
-
-/* What grass truns into when it dies */
-#define GRASS_DEATH_RETURN SWAMP
-
 class GrassState {
  public:
   GrassState() = default;

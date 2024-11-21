@@ -29,15 +29,28 @@
 
 #include "global.h"
 
+namespace {
+
+// How manu shots it takes to destroy a piece of grass
+const int LIFE = 4;
+
+// Shells die when there length equals
+const int DEATH = 0;
+
+// What grass truns into when it dies
+const BYTE DEATH_RETURN = SWAMP;
+
+}
+
 BYTE GrassState::addItem(MapPoint pos) {
   if (auto it = grasses_.find(pos); it != grasses_.end()) {
     it->second -= 1;
-    if (it->second == GRASS_DEATH) {
+    if (it->second == DEATH) {
       grasses_.erase(it);
-      return GRASS_DEATH_RETURN;
+      return DEATH_RETURN;
     }
   } else {
-    grasses_[pos] = GRASS_LIFE;
+    grasses_[pos] = LIFE;
   }
 
   return GRASS;
