@@ -872,7 +872,7 @@ floodFill *serverCoreGetFloodFill();
  *ARGUMENTS:
  *
  *********************************************************/
-GrassState *serverCoreGetGrass();
+bolo::GrassState *serverCoreGetGrass();
 
 /*********************************************************
  *NAME:          serverCoreGetMines

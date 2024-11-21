@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,20 +13,11 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Grass
- *Filename:      grass.c
- *Author:        John Morrison
- *Creation Date: 5/1/99
- *Last Modified: 25/04/01
- *Purpose:
- *  Responsable for tracking lifetime of grass when shot
- *  from a boat
- *********************************************************/
-
 #include "grass.h"
 
 #include "global.h"
+
+namespace bolo {
 
 namespace {
 
@@ -40,7 +30,7 @@ const int DEATH = 0;
 // What grass truns into when it dies
 const BYTE DEATH_RETURN = SWAMP;
 
-}
+}  // namespace
 
 BYTE GrassState::addItem(MapPoint pos) {
   if (auto it = grasses_.find(pos); it != grasses_.end()) {
@@ -55,3 +45,5 @@ BYTE GrassState::addItem(MapPoint pos) {
 
   return GRASS;
 }
+
+}  // namespace bolo

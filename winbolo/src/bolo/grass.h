@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,16 +13,8 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Grass
- *Filename:      grass.h
- *Author:        John Morrison
- *Creation Date: 5/1/99
- *Last Modified: 18/1/99
- *Purpose:
- *  Responsable for tracking lifetime of grass when shot
- *  from a boat
- *********************************************************/
+// Responsable for tracking lifetime of grass when shot
+// from a boat
 
 #ifndef GRASS_H
 #define GRASS_H
@@ -31,6 +22,8 @@
 #include <unordered_map>
 
 #include "global.h"
+
+namespace bolo {
 
 class GrassState {
  public:
@@ -59,5 +52,7 @@ class GrassState {
  private:
   std::unordered_map<MapPoint, uint8_t> grasses_;
 };
+
+}  // namespace bolo
 
 #endif /* GRASS_H */
