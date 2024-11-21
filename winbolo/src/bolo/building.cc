@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,20 +13,11 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Building
- *Filename:      building.h
- *Author:        John Morrison
- *Creation Date: 30/12/98
- *Last Modified: 04/10/03
- *Purpose:
- *  Responsable for tracking lifetime of buildings.
- *  buildings can be shot 5 times before being destroyed
- *********************************************************/
-
 #include "building.h"
 
 #include "global.h"
+
+namespace bolo {
 
 namespace {
 
@@ -52,3 +42,5 @@ BYTE BuildingState::addItem(MapPoint pos) {
 
   return HALFBUILDING;
 }
+
+}  // namespace bolo

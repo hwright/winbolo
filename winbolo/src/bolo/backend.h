@@ -1199,7 +1199,7 @@ bool screenGetGameRunning();
  *ARGUMENTS:
  *
  *********************************************************/
-BuildingState *screenGetBuildings();
+bolo::BuildingState *screenGetBuildings();
 
 /*********************************************************
  *NAME:          screenGetExplosions

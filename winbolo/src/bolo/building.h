@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,16 +13,8 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Building
- *Filename:      building.h
- *Author:        John Morrison
- *Creation Date: 30/12/98
- *Last Modified: 04/10/03
- *Purpose:
- *  Responsable for tracking lifetime of Buildings.
- *  buildings can be shot 5 times before being destroyed
- *********************************************************/
+//  Responsible for tracking lifetime of Buildings.
+//  buildings can be shot 5 times before being destroyed
 
 #ifndef BUILDING_H
 #define BUILDING_H
@@ -31,6 +22,8 @@
 #include <unordered_map>
 
 #include "global.h"
+
+namespace bolo {
 
 class BuildingState {
  public:
@@ -57,5 +50,7 @@ class BuildingState {
  private:
   std::unordered_map<MapPoint, uint8_t> buildings_;
 };
+
+}  // namespace bolo
 
 #endif /* BUILDING_H */

@@ -1082,7 +1082,7 @@ void frontEndRedrawAll(void) {
  *ARGUMENTS:
  *
  *********************************************************/
-BuildingState *clientGetBuildings() { return nullptr; }
+bolo::BuildingState *clientGetBuildings() { return nullptr; }
 
 /*********************************************************
  *NAME:          clientGetExplosions

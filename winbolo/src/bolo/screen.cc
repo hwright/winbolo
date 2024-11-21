@@ -90,7 +90,7 @@ static tank mytk = nullptr;
 static shells myshs = nullptr;
 static lgm mylgman = nullptr;
 static players plyrs = nullptr;
-static std::optional<BuildingState> clientBlds;
+static std::optional<bolo::BuildingState> clientBlds;
 static explosions clientExpl = nullptr;
 static floodFill clientFF = nullptr;
 static std::optional<bolo::GrassState> clientGrass;
@@ -3847,7 +3847,7 @@ players *clientGetPlayers() { return &plyrs; }
  *ARGUMENTS:
  *
  *********************************************************/
-BuildingState *clientGetBuildings() { return &*clientBlds; }
+bolo::BuildingState *clientGetBuildings() { return &*clientBlds; }
 
 /*********************************************************
  *NAME:          clientGetExplosions

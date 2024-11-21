@@ -86,7 +86,7 @@ static tank tk[MAX_TANKS];
 static lgm lgman[MAX_TANKS];
 static shells shs;
 static players splrs;
-static std::optional<BuildingState> serverBlds;
+static std::optional<bolo::BuildingState> serverBlds;
 static explosions serverExpl = nullptr;
 static floodFill serverFF = nullptr;
 static std::optional<bolo::GrassState> serverGrass;
@@ -1702,7 +1702,7 @@ players *serverCoreGetPlayers() { return &splrs; }
  *ARGUMENTS:
  *
  *********************************************************/
-BuildingState *serverCoreGetBuildings() { return &*serverBlds; }
+bolo::BuildingState *serverCoreGetBuildings() { return &*serverBlds; }
 
 /*********************************************************
  *NAME:          serverCoreGetExplosions

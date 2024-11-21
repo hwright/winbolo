@@ -1026,7 +1026,7 @@ players *screenGetPlayers();
  *ARGUMENTS:
  *
  *********************************************************/
-BuildingState *clientGetBuildings();
+bolo::BuildingState *clientGetBuildings();
 
 /*********************************************************
  *NAME:          clientGetExplosions
