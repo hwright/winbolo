@@ -665,7 +665,8 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
                         screenGetTankPlayer(tk), mapX, mapY);
             }
           } else {
-            newTerrain = grassAddItem(screenGetGrass(), mapX, mapY);
+            newTerrain =
+                screenGetGrass()->addItem(MapPoint{.x = mapX, .y = mapY});
             mapSetPos(mp, mapX, mapY, newTerrain, false, false);
             if (newTerrain == RIVER) {
               floodAddItem(screenGetFloodFill(), mapX, mapY);

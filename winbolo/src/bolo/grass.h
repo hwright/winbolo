@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,123 +13,46 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Grass
- *Filename:      grass.h
- *Author:        John Morrison
- *Creation Date: 5/1/99
- *Last Modified: 18/1/99
- *Purpose:
- *  Responsable for tracking lifetime of grass when shot
- *  from a boat
- *********************************************************/
+// Responsable for tracking lifetime of grass when shot
+// from a boat
 
 #ifndef GRASS_H
 #define GRASS_H
 
+#include <unordered_map>
+
 #include "global.h"
 
-/* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define GrassHeadX(list) ((list)->x);
-#define GrassHeadY(list) ((list)->y);
-#define GrassHeadLength(list) ((list)->life);
-#define GrassTail(list) ((list)->next);
+namespace bolo {
 
-/* How manu shots it takes to destroy a peice of grass */
-#define GRASS_LIFE 4
+class GrassState {
+ public:
+  GrassState() = default;
 
-/* Shells die when there length equals */
-#define GRASS_DEATH 0
+  // Move-only
+  GrassState(GrassState &) = delete;
+  GrassState &operator=(GrassState &) = delete;
 
-/* What grass truns into when it dies */
-#define GRASS_DEATH_RETURN SWAMP
+  // Add an item to the grass data structure.
+  // If it already exists returns the terrain type of the
+  // item and decrements its lifetime.
+  //
+  // ARGUMENTS:
+  //  pos - The position of the object.
+  BYTE addItem(MapPoint pos);
 
-/* Type structure */
+  // Remove an item from the grass data structure if it
+  // exists at a specific loaction. Otherwise the function
+  // does nothing.
+  //
+  // ARGUMENTS:
+  //  pos - The position of the object.
+  void removePos(MapPoint pos) { grasses_.erase(pos); }
 
-typedef struct grassObj *grass;
-struct grassObj {
-  grass next; /* Next item */
-  BYTE x;     /* X and Y positions */
-  BYTE y;
-  BYTE life; /* Life time of the Grass */
+ private:
+  std::unordered_map<MapPoint, uint8_t> grasses_;
 };
 
-/* Prototypes */
-
-/*********************************************************
- *NAME:          grassCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Sets up the grass data structure
- *
- *ARGUMENTS:
- * grs - Pointer to the grass object
- *********************************************************/
-void grassCreate(grass *grs);
-
-/*********************************************************
- *NAME:          grassDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Destroys and frees memory for the grass data structure
- *
- *ARGUMENTS:
- * grs - Pointer to the grass object
- *********************************************************/
-void grassDestroy(grass *grs);
-
-/*********************************************************
- *NAME:          grassAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 25/04/01
- *PURPOSE:
- *  Adds an item to the grass data structure.
- *  If it already exists returns the terrain type of the
- *  item and decrements its lifetime.
- *
- *ARGUMENTS:
- *  grs   - Pointer to the grass object
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-BYTE grassAddItem(grass *grs, BYTE x, BYTE y);
-
-/*********************************************************
- *NAME:          grassDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 5/1/99
- *LAST MODIFIED: 5/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  grs     - Pointer to the grass object
- *  itemNum - The item number to get
- *********************************************************/
-void grassDeleteItem(grass *grs, int itemNum);
-
-/*********************************************************
- *NAME:          grassRemovePos
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/99
- *LAST MODIFIED: 18/1/99
- *PURPOSE:
- *  Removes an item from the grass data structure if it
- *  exists at a specific loaction. Otherwise the function
- *  does nothing
- *
- *ARGUMENTS:
- *  grs - Pointer to the grass object
- *  x   - X co-ord
- *  y   - Y co-ord
- *********************************************************/
-void grassRemovePos(grass *grs, BYTE x, BYTE y);
+}  // namespace bolo
 
 #endif /* GRASS_H */

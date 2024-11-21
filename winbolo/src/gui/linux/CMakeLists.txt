@@ -42,7 +42,6 @@ add_executable(linbolo
                ../../bolo/explosions.cc
                ../../bolo/floodfill.cc
                ../../bolo/gametype.cc
-               ../../bolo/grass.cc
                ../../bolo/labels.cc
                ../../bolo/lgm.cc
                ../../bolo/log.cc

@@ -486,7 +486,7 @@ floodFill *screenGetFloodFill() {
  *ARGUMENTS:
  *
  *********************************************************/
-grass *screenGetGrass() {
+bolo::GrassState *screenGetGrass() {
   if (!threadsGetContext()) {
     return clientGetGrass();
   }
