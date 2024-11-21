@@ -429,7 +429,7 @@ void soundDist(sndEffects value, BYTE mx, BYTE my) {
  *ARGUMENTS:
  *
  *********************************************************/
-building *screenGetBuildings() {
+bolo::BuildingState *screenGetBuildings() {
   if (!threadsGetContext()) {
     return clientGetBuildings();
   }

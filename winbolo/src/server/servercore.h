@@ -833,7 +833,7 @@ players *serverCoreGetPlayers();
  *ARGUMENTS:
  *
  *********************************************************/
-building *serverCoreGetBuildings();
+bolo::BuildingState *serverCoreGetBuildings();
 
 /*********************************************************
  *NAME:          serverCoreGetExplosions

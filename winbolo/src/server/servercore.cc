@@ -86,7 +86,7 @@ static tank tk[MAX_TANKS];
 static lgm lgman[MAX_TANKS];
 static shells shs;
 static players splrs;
-static building serverBlds = nullptr;
+static std::optional<bolo::BuildingState> serverBlds;
 static explosions serverExpl = nullptr;
 static floodFill serverFF = nullptr;
 static std::optional<bolo::GrassState> serverGrass;
@@ -160,7 +160,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines,
   shs = shellsCreate();
   explosionsCreate(&serverExpl);
   serverRubble.emplace();
-  buildingCreate(&serverBlds);
+  serverBlds.emplace();
   serverGrass.emplace();
   serverSwamp.emplace();
   netPNBCreate(&serverPNB);
@@ -236,7 +236,7 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn,
   shs = shellsCreate();
   explosionsCreate(&serverExpl);
   serverRubble.emplace();
-  buildingCreate(&serverBlds);
+  serverBlds.emplace();
   serverGrass.emplace();
   serverSwamp.emplace();
   floodCreate(&serverFF);
@@ -289,7 +289,7 @@ void serverCoreDestroy() {
   explosionsDestroy(&serverExpl);
   playersRejoinDestroy();
   serverRubble = std::nullopt;
-  buildingDestroy(&serverBlds);
+  serverBlds = std::nullopt;
   serverGrass = std::nullopt;
   floodDestroy(&serverFF);
   serverSwamp = std::nullopt;
@@ -1702,7 +1702,7 @@ players *serverCoreGetPlayers() { return &splrs; }
  *ARGUMENTS:
  *
  *********************************************************/
-building *serverCoreGetBuildings() { return &serverBlds; }
+bolo::BuildingState *serverCoreGetBuildings() { return &*serverBlds; }
 
 /*********************************************************
  *NAME:          serverCoreGetExplosions

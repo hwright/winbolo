@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,178 +13,34 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Building
- *Filename:      building.h
- *Author:        John Morrison
- *Creation Date: 30/12/98
- *Last Modified: 04/10/03
- *Purpose:
- *  Responsable for tracking lifetime of buildings.
- *  buildings can be shot 5 times before being destroyed
- *********************************************************/
-
 #include "building.h"
 
 #include "global.h"
 
-/*********************************************************
- *NAME:          buildingCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Sets up the building data structure
- *
- *ARGUMENTS:
- * bld - Pointer to the buildings object
- *********************************************************/
-void buildingCreate(building *bld) { *bld = nullptr; }
+namespace bolo {
 
-/*********************************************************
- *NAME:          buildingDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Destroys and frees memory for the building data structure
- *
- *ARGUMENTS:
- * bld - Pointer to the buildings object
- *********************************************************/
-void buildingDestroy(building *bld) {
-  building q;
+namespace {
 
-  while (!IsEmpty(*bld)) {
-    q = *bld;
-    *bld = BuildingTail(q);
-    delete q;
-  }
-}
+/* How manu shots it takes to destroy a building */
+const int LIFE = 4;
 
-/*********************************************************
- *NAME:          buildingeAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 25/04/01
- *PURPOSE:
- *  Adds an item to the building data structure.
- *  If it already exists returns the terrain type of the
- *  item and decrements its lifetime.
- *
- *ARGUMENTS:
- *  bld   - Pointer to the buildings object
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-BYTE buildingAddItem(building *bld, BYTE x, BYTE y) {
-  BYTE returnValue; /* Value to return */
-  bool found;       /* Is the item found */
-  int count;        /* Looping Variable */
-  building q;
-  building inc;
+/* Shells die when there length equals */
+const int DEATH = 0;
 
-  inc = *bld;
-  found = false;
-  returnValue = HALFBUILDING;
-  count = 0;
+}  // namespace
 
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-      inc->life--;
-      if (inc->life == BUILDING_DEATH) {
-        returnValue = RUBBLE;
-        buildingDeleteItem(bld, count);
-      }
+BYTE BuildingState::addItem(MapPoint pos) {
+  if (auto it = buildings_.find(pos); it != buildings_.end()) {
+    it->second -= 1;
+    if (it->second == DEATH) {
+      buildings_.erase(it);
+      return RUBBLE;
     }
-    if (!found) {
-      inc = BuildingTail(inc);
-    }
-  }
-
-  /* If not found add a new item */
-  if (!found) {
-    q = new buildingObj;
-    q->x = x;
-    q->y = y;
-    q->life = BUILDING_LIFE;
-    q->next = *bld;
-    *bld = q;
-  }
-
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          buildingDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  bld     - Pointer to the buildings object
- *  itemNum - The item number to get
- *********************************************************/
-void buildingDeleteItem(building *bld, int itemNum) {
-  building prev; /* The previous item to link to the delete items next */
-  building del;  /* The item to delete */
-  int count;     /* Looping variable */
-
-  if (itemNum == 1) {
-    del = *bld;
-    *bld = del->next;
-    delete del;
   } else {
-    count = 1;
-    prev = *bld;
-    while (count < (itemNum - 1)) {
-      prev = BuildingTail(prev);
-      count++;
-    }
-    del = BuildingTail(prev);
-    prev->next = del->next;
-    delete del;
+    buildings_[pos] = LIFE;
   }
+
+  return HALFBUILDING;
 }
 
-/*********************************************************
- *NAME:          buildingRemovePos
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/99
- *LAST MODIFIED: 18/1/99
- *PURPOSE:
- *  Removes an item from the building data structure if it
- *  exists at a specific loaction. Otherwise the function
- *  does nothing
- *
- *ARGUMENTS:
- *  bld   - Pointer to the buildings object
- *  x     - X co-ord
- *  y     - Y co-ord
- *********************************************************/
-void buildingRemovePos(building *bld, BYTE x, BYTE y) {
-  bool found; /* Is the item found */
-  int count;  /* Looping Variable */
-  building inc;
-
-  inc = *bld;
-  found = false;
-  count = 0;
-
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-    }
-    inc = BuildingTail(inc);
-  }
-
-  /* If found remove item */
-  if (found) {
-    buildingDeleteItem(bld, count);
-  }
-}
+}  // namespace bolo
