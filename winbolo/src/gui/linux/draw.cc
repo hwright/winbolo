@@ -1937,7 +1937,7 @@ void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
         } */
   }
   SDL_UpdateRects(lpBasesStatus, 1, &dest);
-  gdk_threads_leave();
+  // gdk_threads_leave();
 }
 
 /*********************************************************

@@ -26,6 +26,9 @@
 
 #include "input.h"
 
+#include <mutex>
+#include <shared_mutex>
+
 #include "../../bolo/backend.h"
 #include "../../bolo/global.h"
 #include "SDL.h"
@@ -33,6 +36,7 @@
 static tankButton tb;
 static BYTE scrollKeyCount = 0; /* Used for screen scrolling */
 static keyItems heldKeys;
+static std::shared_mutex keysMutex;
 
 /*********************************************************
  *NAME:          inputSetup
@@ -48,6 +52,7 @@ static keyItems heldKeys;
  * appWnd  - Main Window Handle
  *********************************************************/
 bool inputSetup() {
+  std::unique_lock l(keysMutex);
   scrollKeyCount = 0;
   /* These are DIK_??? defines */
   heldKeys.kiForward = false;     /* Tank accelerate */
@@ -97,6 +102,7 @@ void inputCleanup(void) { return; }
  *********************************************************/
 tankButton inputGetKeys(bool isMenu) {
   static BYTE gunsightKeyCount = 0; /* Used for gunsight movement */
+  std::shared_lock l(keysMutex);
 
   /* FIXME: Check message window doesn't have focus *
   if (GetForegroundWindow() != hWnd || isMenu == true) {
@@ -180,6 +186,7 @@ tankButton inputGetKeys(bool isMenu) {
  *  isMenu  - True if we are in a menu
  *********************************************************/
 void inputScroll(bool isMenu) {
+  std::shared_lock l(keysMutex);
   scrollKeyCount++;
   if (scrollKeyCount >= INPUT_SCROLL_WAIT_TIME && !isMenu) {
     scrollKeyCount = 0;
@@ -216,6 +223,7 @@ void inputScroll(bool isMenu) {
  *   isMenu - true if we are in a menu
  *********************************************************/
 bool inputIsFireKeyPressed(bool isMenu) {
+  std::shared_lock l(keysMutex);
   bool returnValue; /* Value to return */
 
   returnValue = false;
@@ -228,6 +236,7 @@ bool inputIsFireKeyPressed(bool isMenu) {
 }
 
 void inputButtonInput(keyItems *setKeys, int key, bool newState) {
+  std::unique_lock l(keysMutex);
   if ((setKeys->kiForward) == key) {
     heldKeys.kiForward = newState;
   }

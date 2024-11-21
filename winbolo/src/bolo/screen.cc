@@ -39,8 +39,10 @@ Morrison <john@winbolo.com>          \0" */
 #include <time.h>
 
 #include <fstream>
-#include <tuple>
+#include <mutex>
 #include <optional>
+#include <shared_mutex>
+#include <tuple>
 
 #include "../gui/netclient.h"
 #include "backend.h"
@@ -149,6 +151,7 @@ void moveMousePointer(updateType value);
 
 /* Cursor Positions */
 static int cursorPosX, cursorPosY;
+static std::shared_mutex cursorMutex;
 
 /*********************************************************
  *NAME:          screenSetup
@@ -350,6 +353,7 @@ void screenUpdate(updateType value) {
           //        screenTankScroll();
           moveMousePointer(left);
           if (xOffset != oldXOffset) {
+            std::unique_lock l(cursorMutex);
             cursorPosX++;
           }
           // messageAdd(globalMessage, "l", "l");
@@ -368,6 +372,7 @@ void screenUpdate(updateType value) {
           xOffset++;
           //        screenTankScroll();
           moveMousePointer(right);
+          std::unique_lock l(cursorMutex);
           if (xOffset != oldXOffset) {
             cursorPosX--;
           }
@@ -387,6 +392,7 @@ void screenUpdate(updateType value) {
           //      screenTankScroll();
           moveMousePointer(up);
           if (yOffset != oldYOffset) {
+            std::unique_lock l(cursorMutex);
             cursorPosY++;
           }
           // messageAdd(globalMessage, "up", "up");
@@ -405,6 +411,7 @@ void screenUpdate(updateType value) {
           //    screenTankScroll();
           moveMousePointer(down);
           if (yOffset != oldYOffset) {
+            std::unique_lock l(cursorMutex);
             cursorPosY--;
           }
 
@@ -998,19 +1005,22 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
                        (tankGetScreenMY(&mytk)), true, tmx, tmy,
                        (tankGetSpeed(&mytk)), (tankGetArmour(&mytk)),
                        (TURNTYPE)(tankGetTravelAngel(&mytk)), false)) {
-        if (oldXOffset < xOffset) {
-          cursorPosX--;
-          moveMousePointer(right);
-        } else if (oldXOffset > xOffset) {
-          cursorPosX++;
-          moveMousePointer(left);
-        }
-        if (oldYOffset < yOffset) {
-          cursorPosY--;
-          moveMousePointer(down);
-        } else if (oldYOffset > yOffset) {
-          cursorPosY++;
-          moveMousePointer(up);
+        {
+          std::unique_lock l(cursorMutex);
+          if (oldXOffset < xOffset) {
+            cursorPosX--;
+            moveMousePointer(right);
+          } else if (oldXOffset > xOffset) {
+            cursorPosX++;
+            moveMousePointer(left);
+          }
+          if (oldYOffset < yOffset) {
+            cursorPosY--;
+            moveMousePointer(down);
+          } else if (oldYOffset > yOffset) {
+            cursorPosY++;
+            moveMousePointer(up);
+          }
         }
 
         screenReCalc();
@@ -1348,6 +1358,7 @@ void screenShowMessages(BYTE msgType, bool isShown) {
 void screenManMove(buildSelect buildS) {
   if (tankGetArmour(&mytk) <= TANK_FULL_ARMOUR && netGetStatus() != netFailed) {
     /* If not dead */
+    std::shared_lock l(cursorMutex);
     lgmAddRequest(&mylgman, &mymp, &mypb, &mybs, &mytk,
                   (BYTE)(cursorPosX + xOffset), (BYTE)(cursorPosY + yOffset),
                   (BYTE)buildS);
@@ -3374,6 +3385,7 @@ void screenSetCursorPos(BYTE posX, BYTE posY) {
     /*    if (posX >15  || posY > 15) {
           strcat(str, " bad");
         } */
+    std::unique_lock l(cursorMutex);
     cursorPosX = posX;
     cursorPosY = posY;
     /*    if (oldCursorXPos != cursorPosX || oldCursorYPos != cursorPosY) {
@@ -3402,6 +3414,7 @@ bool screenGetCursorPos(BYTE *posX, BYTE *posY) {
   bool returnValue; /* Value to return */
 
   returnValue = false;
+  std::shared_lock l(cursorMutex);
   if (cursorPosX >= 0 && cursorPosX <= MAIN_SCREEN_SIZE_X && cursorPosY >= 0 &&
       cursorPosY <= MAIN_SCREEN_SIZE_Y) {
     returnValue = true;

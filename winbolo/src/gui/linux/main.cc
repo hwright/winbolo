@@ -24,7 +24,9 @@
 
 #include <format>
 #include <fstream>
+#include <mutex>
 #include <optional>
+#include <shared_mutex>
 #include <sstream>
 
 #include "../../bolo/backend.h"
@@ -70,6 +72,7 @@ typedef struct {
 } linuxLgmFix;
 
 static linuxLgmFix llf;
+static std::shared_mutex llfMutex;
 
 #define DIALOG_BOX_TITLE "LinBolo"
 
@@ -377,11 +380,11 @@ gint windowGetFocus(GtkWidget *widget, gpointer data) {
     doneInitTutorial = TRUE;
     windowStartTutorial();
   }
-  clientMutexWaitFor();
   frameMutexWaitFor();
+  clientMutexWaitFor();
   drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, BsLinuxCurrent, FALSE, FALSE);
-  frameMutexRelease();
   clientMutexRelease();
+  frameMutexRelease();
   gdk_key_repeat_disable();
   return 0;
 }
@@ -427,8 +430,9 @@ Uint32 windowGameTimer(Uint32 interval, void *param) {
           } else {
             inputScroll(FALSE);
           }
-          clientMutexWaitFor();
           frameMutexWaitFor();
+          clientMutexWaitFor();
+          llfMutex.lock();
           if (llf.used == TRUE) {
             screenManMove((buildSelect)llf.bs);
             llf.used = FALSE;
@@ -439,8 +443,9 @@ Uint32 windowGameTimer(Uint32 interval, void *param) {
             llf.changeUsed = FALSE;
           }
           screenGameTick(tb, isShoot, brainRunning);
-          frameMutexRelease();
+          llfMutex.unlock();
           clientMutexRelease();
+          frameMutexRelease();
           justKeys = TRUE;
           used = TRUE;
         }
@@ -604,6 +609,7 @@ gboolean windowMouseClick(GtkWidget *widget, GdkEventButton *event,
   yPos = event->y;
   yPos -= req.height;
   if (cursorPos(xPos, yPos, &xValue, &yValue) == TRUE) {
+    std::unique_lock l(llfMutex);
     llf.bs = BsLinuxCurrent;
     llf.used = TRUE;
   } else {
@@ -645,6 +651,7 @@ gboolean windowMouseClick(GtkWidget *widget, GdkEventButton *event,
     }
 
     if (newSelect.has_value() && newSelect != BsLinuxCurrent) {
+      std::unique_lock l(llfMutex);
       llf.changeUsed = TRUE;
       llf.old_val = BsLinuxCurrent;
       llf.new_val = newSelect.value();
