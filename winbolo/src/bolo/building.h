@@ -28,15 +28,9 @@
 #ifndef BUILDING_H
 #define BUILDING_H
 
-#include "global.h"
+#include <unordered_map>
 
-/* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define BuildingHeadX(list) ((list)->x);
-#define BuildingHeadY(list) ((list)->y);
-#define BuildingHeadLength(list) ((list)->life);
-#define BuildingTail(list) ((list)->next);
+#include "global.h"
 
 /* How manu shots it takes to destroy a building */
 #define BUILDING_LIFE 4
@@ -48,10 +42,7 @@
 
 typedef struct buildingObj *building;
 struct buildingObj {
-  building next; /* Next item */
-  BYTE x;        /* X and Y positions */
-  BYTE y;
-  BYTE life; /* Life time of the rubble */
+  std::unordered_map<MapPoint, uint8_t> buildings_;
 };
 
 /* Prototypes */

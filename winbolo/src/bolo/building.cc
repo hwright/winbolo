@@ -40,7 +40,7 @@
  *ARGUMENTS:
  * bld - Pointer to the buildings object
  *********************************************************/
-void buildingCreate(building *bld) { *bld = nullptr; }
+void buildingCreate(building *bld) { *bld = new buildingObj; }
 
 /*********************************************************
  *NAME:          buildingDestroy
@@ -53,15 +53,7 @@ void buildingCreate(building *bld) { *bld = nullptr; }
  *ARGUMENTS:
  * bld - Pointer to the buildings object
  *********************************************************/
-void buildingDestroy(building *bld) {
-  building q;
-
-  while (!IsEmpty(*bld)) {
-    q = *bld;
-    *bld = BuildingTail(q);
-    delete q;
-  }
-}
+void buildingDestroy(building *bld) { delete *bld; }
 
 /*********************************************************
  *NAME:          buildingeAddItem
@@ -79,77 +71,18 @@ void buildingDestroy(building *bld) {
  *  y     - Y co-ord
  *********************************************************/
 BYTE buildingAddItem(building *bld, BYTE x, BYTE y) {
-  BYTE returnValue; /* Value to return */
-  bool found;       /* Is the item found */
-  int count;        /* Looping Variable */
-  building q;
-  building inc;
-
-  inc = *bld;
-  found = false;
-  returnValue = HALFBUILDING;
-  count = 0;
-
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-      inc->life--;
-      if (inc->life == BUILDING_DEATH) {
-        returnValue = RUBBLE;
-        buildingDeleteItem(bld, count);
-      }
+  MapPoint pos{.x = x, .y = y};
+  if (auto it = (*bld)->buildings_.find(pos); it != (*bld)->buildings_.end()) {
+    it->second -= 1;
+    if (it->second == BUILDING_DEATH) {
+      (*bld)->buildings_.erase(it);
+      return RUBBLE;
     }
-    if (!found) {
-      inc = BuildingTail(inc);
-    }
-  }
-
-  /* If not found add a new item */
-  if (!found) {
-    q = new buildingObj;
-    q->x = x;
-    q->y = y;
-    q->life = BUILDING_LIFE;
-    q->next = *bld;
-    *bld = q;
-  }
-
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          buildingDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  bld     - Pointer to the buildings object
- *  itemNum - The item number to get
- *********************************************************/
-void buildingDeleteItem(building *bld, int itemNum) {
-  building prev; /* The previous item to link to the delete items next */
-  building del;  /* The item to delete */
-  int count;     /* Looping variable */
-
-  if (itemNum == 1) {
-    del = *bld;
-    *bld = del->next;
-    delete del;
   } else {
-    count = 1;
-    prev = *bld;
-    while (count < (itemNum - 1)) {
-      prev = BuildingTail(prev);
-      count++;
-    }
-    del = BuildingTail(prev);
-    prev->next = del->next;
-    delete del;
+    (*bld)->buildings_[pos] = BUILDING_LIFE;
   }
+
+  return HALFBUILDING;
 }
 
 /*********************************************************
@@ -168,24 +101,6 @@ void buildingDeleteItem(building *bld, int itemNum) {
  *  y     - Y co-ord
  *********************************************************/
 void buildingRemovePos(building *bld, BYTE x, BYTE y) {
-  bool found; /* Is the item found */
-  int count;  /* Looping Variable */
-  building inc;
-
-  inc = *bld;
-  found = false;
-  count = 0;
-
-  while (!found && NonEmpty(inc)) {
-    count++;
-    if (inc->x == x && inc->y == y) {
-      found = true;
-    }
-    inc = BuildingTail(inc);
-  }
-
-  /* If found remove item */
-  if (found) {
-    buildingDeleteItem(bld, count);
-  }
+  MapPoint pos{.x = x, .y = y};
+  (*bld)->buildings_.erase(pos);
 }

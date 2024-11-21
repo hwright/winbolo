@@ -36,7 +36,6 @@ add_executable(linbolo
                ../../bolo/backend.cc
                ../../bolo/bases.cc
                ../../bolo/bolo_map.cc
-               ../../bolo/building.cc
                ../../bolo/crc.cc
                ../../bolo/debug_file_output.cc
                ../../bolo/explosions.cc
