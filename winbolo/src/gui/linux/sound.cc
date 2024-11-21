@@ -192,7 +192,7 @@ bool soundSetup() {
     //    windowDisableSound();
   }
   unlink(fileName);
-  delete buff;
+  delete[] buff;
   return returnValue;
 }
 

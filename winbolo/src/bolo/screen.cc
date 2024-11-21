@@ -255,13 +255,13 @@ void screenDestroy() {
   pillsDestroy(&mypb);
   playersDestroy(&plyrs);
   if (view != nullptr) {
-    free(view);
+    delete view;
   }
   if (mineView != nullptr) {
-    free(mineView);
+    delete mineView;
   }
   if (brainBuildInfo != nullptr) {
-    free(brainBuildInfo);
+    delete brainBuildInfo;
     brainBuildInfo = nullptr;
   }
   view = nullptr;
