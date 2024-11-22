@@ -28,13 +28,10 @@
 #ifndef FLOOD_H
 #define FLOOD_H
 
+#include <unordered_map>
+
 #include "global.h"
 #include "types.h"
-
-/* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define FloodFillTail(list) ((list)->next);
 
 /* Time between glood fill removal checks */
 #define FLOOD_FILL_WAIT 16
@@ -43,10 +40,7 @@
 
 typedef struct floodFillObj *floodFill;
 struct floodFillObj {
-  floodFill next; /* Next item */
-  BYTE x;         /* X and Y positions */
-  BYTE y;
-  BYTE time; /* Time remaing before it fills and checks next spot */
+  std::unordered_map<MapPoint, uint8_t> floods_;
 };
 
 /* Prototypes */
@@ -108,20 +102,6 @@ void floodAddItem(floodFill *ff, BYTE x, BYTE y);
  *  bs - Pointer to the bases structure
  *********************************************************/
 void floodUpdate(floodFill *ff, map *mp, pillboxes *pb, bases *bs);
-
-/*********************************************************
- *NAME:          floodDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  ff      - Pointer to the floodFill item
- *  itemNum - The item number to get
- *********************************************************/
-void floodDeleteItem(floodFill *ff, int itemNum);
 
 /*********************************************************
  *NAME:          floodCheckFill

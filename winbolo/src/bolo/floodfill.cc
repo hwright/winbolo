@@ -46,7 +46,7 @@
  *ARGUMENTS:
  *  ff - Pointer to the floodFill item
  *********************************************************/
-void floodCreate(floodFill *ff) { *ff = nullptr; }
+void floodCreate(floodFill *ff) { *ff = new floodFillObj; }
 
 /*********************************************************
  *NAME:          floodDestroy
@@ -61,13 +61,8 @@ void floodCreate(floodFill *ff) { *ff = nullptr; }
  *  ff - Pointer to the floodFill item
  *********************************************************/
 void floodDestroy(floodFill *ff) {
-  floodFill q;
-
-  while (!IsEmpty(*ff)) {
-    q = *ff;
-    *ff = FloodFillTail(q);
-    delete q;
-  }
+  delete *ff;
+  *ff = nullptr;
 }
 
 /*********************************************************
@@ -84,37 +79,10 @@ void floodDestroy(floodFill *ff) {
  *  y  - Y co-ord
  *********************************************************/
 void floodAddItem(floodFill *ff, BYTE x, BYTE y) {
-  floodFill q;
-  floodFill inc;
-  floodFill prev;
-  bool found; /* Is the item found */
+  MapPoint pos{.x = x, .y = y};
 
-  prev = inc = *ff;
-  found = false;
-
-  while (!found && NonEmpty(inc)) {
-    if (inc->x == x && inc->y == y) {
-      found = true;
-    }
-    prev = inc;
-    inc = FloodFillTail(inc);
-  }
-
-  /* If not found add a new item */
-  if (!found && IsEmpty(*ff)) {
-    q = new floodFillObj;
-    q->x = x;
-    q->y = y;
-    q->time = FLOOD_FILL_WAIT;
-    q->next = *ff;
-    *ff = q;
-  } else if (!found) {
-    q = new floodFillObj;
-    q->x = x;
-    q->y = y;
-    q->time = FLOOD_FILL_WAIT;
-    q->next = nullptr;
-    prev->next = q;
+  if (!(*ff)->floods_.contains(pos)) {
+    (*ff)->floods_[pos] = FLOOD_FILL_WAIT;
   }
 }
 
@@ -133,67 +101,24 @@ void floodAddItem(floodFill *ff, BYTE x, BYTE y) {
  *  bs - Pointer to the bases structure
  *********************************************************/
 void floodUpdate(floodFill *ff, map *mp, pillboxes *pb, bases *bs) {
-  floodFill position; /* Position throught the items */
-  int itemCount;      /* Counts the number of items */
-  bool needUpdate;    /* Whether an update is needed or not */
+  if (*ff == nullptr) return;
 
-  position = *ff;
-  itemCount = 0;
+  std::vector<MapPoint> removed;
 
-  while (NonEmpty(position)) {
-    needUpdate = true;
-    itemCount++;
-    if (position->time > 0) {
-      position->time--;
+  for (auto &[pos, time] : (*ff)->floods_) {
+    if (time > 0) {
+      time -= 1;
     } else {
-      /* Check for fill and remove from data structure */
-      needUpdate = false;
-      floodCheckFill(ff, mp, pb, bs, position->x, position->y);
-      position = FloodFillTail(position);
-      floodDeleteItem(ff, itemCount);
-      itemCount--;
-    }
-
-    /* Get the next Item */
-    if (*ff != nullptr && needUpdate) {
-      position = FloodFillTail(position);
-    } else {
-      position = nullptr;
+      floodCheckFill(ff, mp, pb, bs, pos.x, pos.y);
+      // `erase` invalidates our iterator, so we have to clean things up
+      // separately.
+      removed.push_back(pos);
     }
   }
-}
 
-/*********************************************************
- *NAME:          floodDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  ff      - Pointer to the floodFill item
- *  itemNum - The item number to get
- *********************************************************/
-void floodDeleteItem(floodFill *ff, int itemNum) {
-  floodFill prev; /* The previous item to link to the delete items next */
-  floodFill del;  /* The item to delete */
-  int count;      /* Looping variable */
-
-  if (itemNum == 1) {
-    del = *ff;
-    *ff = del->next;
-    delete del;
-  } else {
-    count = 1;
-    prev = *ff;
-    while (count < (itemNum - 1)) {
-      prev = FloodFillTail(prev);
-      count++;
-    }
-    del = FloodFillTail(prev);
-    prev->next = del->next;
-    delete del;
+  // Remove our deleted elements
+  for (auto pos : removed) {
+    (*ff)->floods_.erase(pos);
   }
 }
 
