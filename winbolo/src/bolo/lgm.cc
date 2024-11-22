@@ -1159,7 +1159,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
           if (isMine) {
             netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, 0, bmx, bmy);
             minesExpAddItem(screenGetMinesExp(), mp, bmx, bmy);
-            floodAddItem(screenGetFloodFill(), bmx, bmy);
+            screenGetFloodFill()->addItem(MapPoint{.x = bmx, .y = bmy});
             lgmDeathCheck(lgman, mp, pb, bs,
                           (WORLD)((bmx << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE),
                           (WORLD)((bmy << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE),

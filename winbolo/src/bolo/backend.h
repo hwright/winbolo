@@ -1225,7 +1225,7 @@ explosions *screenGetExplosions();
  *ARGUMENTS:
  *
  *********************************************************/
-floodFill *screenGetFloodFill();
+FloodState *screenGetFloodFill();
 
 /*********************************************************
  *NAME:          screenGetGrass

@@ -35,81 +35,20 @@
 #include "pillbox.h"
 #include "screen.h"
 
-/*********************************************************
- *NAME:          floodCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Sets up the flood fill data structure
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *********************************************************/
-void floodCreate(floodFill *ff) { *ff = new floodFillObj; }
-
-/*********************************************************
- *NAME:          floodDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Destroys and frees memory for the flood fill data
- *  structure
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *********************************************************/
-void floodDestroy(floodFill *ff) {
-  delete *ff;
-  *ff = nullptr;
-}
-
-/*********************************************************
- *NAME:          floodAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Adds an item to the flood data structure.
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *  x  - X co-ord
- *  y  - Y co-ord
- *********************************************************/
-void floodAddItem(floodFill *ff, BYTE x, BYTE y) {
-  MapPoint pos{.x = x, .y = y};
-
-  if (!(*ff)->floods_.contains(pos)) {
-    (*ff)->floods_[pos] = FLOOD_FILL_WAIT;
+void FloodState::addItem(MapPoint pos) {
+  if (!floods_.contains(pos)) {
+    floods_[pos] = FLOOD_FILL_WAIT;
   }
 }
 
-/*********************************************************
- *NAME:          floodUpdate
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 21/1/99
- *PURPOSE:
- *  Game tick has happened. Update flooding
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *********************************************************/
-void floodUpdate(floodFill *ff, map *mp, pillboxes *pb, bases *bs) {
-  if (*ff == nullptr) return;
-
+void FloodState::Update(map *mp, pillboxes *pb, bases *bs) {
   std::vector<MapPoint> removed;
 
-  for (auto &[pos, time] : (*ff)->floods_) {
+  for (auto &[pos, time] : floods_) {
     if (time > 0) {
       time -= 1;
     } else {
-      floodCheckFill(ff, mp, pb, bs, pos.x, pos.y);
+      checkFill(mp, pb, bs, pos);
       // `erase` invalidates our iterator, so we have to clean things up
       // separately.
       removed.push_back(pos);
@@ -118,61 +57,44 @@ void floodUpdate(floodFill *ff, map *mp, pillboxes *pb, bases *bs) {
 
   // Remove our deleted elements
   for (auto pos : removed) {
-    (*ff)->floods_.erase(pos);
+    floods_.erase(pos);
   }
 }
 
-/*********************************************************
- *NAME:          floodCheckFill
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 21/3/99
- *PURPOSE:
- *  Time to fill if required. Also if it does adds
- *  surrounding items to flood Data Structure.
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *  mx - Map X Position
- *  my - Map Y Position
- *********************************************************/
-void floodCheckFill(floodFill *ff, map *mp, pillboxes *pb, bases *bs, BYTE mx,
-                    BYTE my) {
-  BYTE above; /* Squares around */
+void FloodState::checkFill(map *mp, pillboxes *pb, bases *bs, MapPoint pos) {
+  // Squares around
+  BYTE above;
   BYTE below;
   BYTE leftPos;
   BYTE rightPos;
 
-  above = mapGetPos(mp, mx, (BYTE)(my - 1));
-  below = mapGetPos(mp, mx, (BYTE)(my + 1));
-  leftPos = mapGetPos(mp, (BYTE)(mx - 1), my);
-  rightPos = mapGetPos(mp, (BYTE)(mx + 1), my);
+  above = mapGetPos(mp, pos.N());
+  below = mapGetPos(mp, pos.S());
+  leftPos = mapGetPos(mp, pos.W());
+  rightPos = mapGetPos(mp, pos.E());
 
-  /* Check for pills, bases etc. If found change to non crater / water */
-  if (pillsExistPos(pb, mx, (BYTE)(my - 1))) {
+  // Check for pills, bases etc. If found change to non crater / water */
+  if (pillsExistPos(pb, pos.N())) {
     above = ROAD;
-  } else if (basesExistPos(bs, mx, (BYTE)(my - 1))) {
+  } else if (basesExistPos(bs, pos.N())) {
     above = ROAD;
   }
 
-  if (pillsExistPos(pb, mx, (BYTE)(my + 1))) {
+  if (pillsExistPos(pb, pos.S())) {
     below = ROAD;
-  } else if (basesExistPos(bs, mx, (BYTE)(my + 1))) {
+  } else if (basesExistPos(bs, pos.S())) {
     below = ROAD;
   }
 
-  if (pillsExistPos(pb, (BYTE)(mx - 1), my)) {
+  if (pillsExistPos(pb, pos.W())) {
     leftPos = ROAD;
-  } else if (basesExistPos(bs, (BYTE)(mx - 1), my)) {
+  } else if (basesExistPos(bs, pos.W())) {
     leftPos = ROAD;
   }
 
-  if (pillsExistPos(pb, (BYTE)(mx + 1), my)) {
+  if (pillsExistPos(pb, pos.E())) {
     rightPos = ROAD;
-  } else if (basesExistPos(bs, (BYTE)(mx - 1), my)) {
+  } else if (basesExistPos(bs, pos.E())) {
     rightPos = ROAD;
   }
 
@@ -181,21 +103,21 @@ void floodCheckFill(floodFill *ff, map *mp, pillboxes *pb, bases *bs, BYTE mx,
       above == DEEP_SEA || above == RIVER || above == BOAT ||
       below == DEEP_SEA || below == BOAT || below == RIVER) {
     /* Do fill */
-    mapSetPos(mp, mx, my, RIVER, false, false);
-    minesRemoveItem(screenGetMines(), mx, my);
+    mapSetPos(mp, pos, RIVER, false, false);
+    minesRemoveItem(screenGetMines(), pos.x, pos.y);
 
     /* Add items if craters */
     if (leftPos == CRATER || leftPos == MINE_CRATER) {
-      floodAddItem(ff, (BYTE)(mx - 1), my);
+      addItem(pos.W());
     }
     if (rightPos == CRATER || rightPos == MINE_CRATER) {
-      floodAddItem(ff, (BYTE)(mx + 1), my);
+      addItem(pos.E());
     }
     if (above == CRATER || above == MINE_CRATER) {
-      floodAddItem(ff, mx, (BYTE)(my - 1));
+      addItem(pos.N());
     }
     if (below == CRATER || below == MINE_CRATER) {
-      floodAddItem(ff, mx, (BYTE)(my + 1));
+      addItem(pos.S());
     }
     screenReCalc();
   }

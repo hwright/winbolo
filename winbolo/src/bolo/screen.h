@@ -1052,7 +1052,7 @@ explosions *clientGetExplosions();
  *ARGUMENTS:
  *
  *********************************************************/
-floodFill *clientGetFloodFill();
+FloodState *clientGetFloodFill();
 
 /*********************************************************
  *NAME:          clientGetGrass

@@ -1649,7 +1649,7 @@ void mapNetPacket(map *value, BYTE mx, BYTE my, BYTE terrain) {
       /* Play the building sound */
       soundDist(manBuildingNear, mx, my);
     } else if (terrain == CRATER) {
-      floodAddItem(screenGetFloodFill(), mx, my);
+      screenGetFloodFill()->addItem(MapPoint{.x = mx, .y = my});
     }
   }
 }

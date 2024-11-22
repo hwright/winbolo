@@ -255,7 +255,7 @@ void minesExpCheckFill(minesExp *me, map *mp, pillboxes *pb, bases *bs,
     }
     screenCheckTankMineDamage(mx, my);
     explosionsAddItem(screenGetExplosions(), mx, my, 0, 0, EXPLOSION_START);
-    floodAddItem(screenGetFloodFill(), mx, my);
+    screenGetFloodFill()->addItem(MapPoint{.x = mx, .y = my});
     /* Remove Items from grass/swamp/rubble data stuctures */
     switch (pos - MINE_SUBTRACT) {
       case GRASS:

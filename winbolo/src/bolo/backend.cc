@@ -467,7 +467,7 @@ explosions *screenGetExplosions() {
  *ARGUMENTS:
  *
  *********************************************************/
-floodFill *screenGetFloodFill() {
+FloodState *screenGetFloodFill() {
   if (!threadsGetContext()) {
     return clientGetFloodFill();
   }

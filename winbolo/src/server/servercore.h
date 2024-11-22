@@ -859,7 +859,7 @@ explosions *serverCoreGetExplosions();
  *ARGUMENTS:
  *
  *********************************************************/
-floodFill *serverCoreGetFloodFill();
+FloodState *serverCoreGetFloodFill();
 
 /*********************************************************
  *NAME:          serverCoreGetGrass

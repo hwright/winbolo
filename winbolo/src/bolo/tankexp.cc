@@ -285,7 +285,7 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs,
         if (currentPos != RIVER && currentPos != DEEP_SEA) {
           //          if (position->own == true) {
           mapSetPos(mp, mx, my, CRATER, false, false);
-          floodAddItem(screenGetFloodFill(), mx, my);
+          screenGetFloodFill()->addItem(MapPoint({.x = mx, .y = my}));
           screenReCalc();
           //        }
         }
@@ -478,7 +478,8 @@ void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb,
              currentPos != DEEP_SEA) {
     //    if (own == true) {
     mapSetPos(mp, (BYTE)(mx + moveX), (BYTE)(my + moveY), CRATER, false, false);
-    floodAddItem(screenGetFloodFill(), (BYTE)(mx + moveX), (BYTE)(my + moveY));
+    screenGetFloodFill()->addItem(
+        MapPoint{.x = (BYTE)(mx + moveX), .y = (BYTE)(my + moveY)});
     //    }
   }
 
@@ -503,7 +504,7 @@ void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb,
     //  if (own == true) {
     mapSetPos(mp, (BYTE)(mx + moveX), my, CRATER, false, false);
     //    }
-    floodAddItem(screenGetFloodFill(), (BYTE)(mx + moveX), my);
+    screenGetFloodFill()->addItem(MapPoint{.x = (BYTE)(mx + moveX), .y = my});
   }
   count = 1;
   while (count <= numLgm) {
@@ -525,7 +526,7 @@ void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb,
     //    if (own == true) {
     mapSetPos(mp, mx, (BYTE)(my + moveY), CRATER, false, false);
     //  }
-    floodAddItem(screenGetFloodFill(), mx, (BYTE)(my + moveY));
+    screenGetFloodFill()->addItem(MapPoint{.x = mx, .y = (BYTE)(my + moveY)});
   }
 
   count = 1;
@@ -556,7 +557,7 @@ void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb,
     //    if (own == true) {
     mapSetPos(mp, mx, my, CRATER, false, false);
     //  }
-    floodAddItem(screenGetFloodFill(), mx, my);
+    screenGetFloodFill()->addItem(MapPoint{.x = mx, .y = my});
   }
   soundDist(bigExplosionNear, mx, my);
   screenReCalc();

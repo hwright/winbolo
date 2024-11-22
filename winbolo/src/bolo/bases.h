@@ -196,6 +196,9 @@ void basesGetBase(bases *value, base *item, BYTE baseNum);
  *  yValue - Y Location
  *********************************************************/
 bool basesExistPos(bases *value, BYTE xValue, BYTE yValue);
+inline bool basesExistPos(bases *value, MapPoint pos) {
+  return basesExistPos(value, pos.x, pos.y);
+}
 
 /*********************************************************
  *NAME:          basesGetAlliancePos
