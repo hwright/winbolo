@@ -24,14 +24,9 @@
  *  WinBolo Server Thread manager
  *********************************************************/
 
-#include "../clientmutex.h"
-
-#include <string.h>
-#include <time.h>
+#include "clientmutex.h"
 
 #include <mutex>
-
-#include "../../bolo/global.h"
 
 static std::recursive_mutex hClientMutexHandle;
 

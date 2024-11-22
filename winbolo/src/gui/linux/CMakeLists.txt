@@ -5,7 +5,6 @@ add_subdirectory(../../server/BigDigits bd)
 
 add_executable(linbolo 
                brainshandler.cc
-               clientmutex.cc
                cursor.cc
                dialogabout.cc
                dialogalliance.cc
@@ -32,6 +31,7 @@ add_executable(linbolo
                preferences.cc
                netclient.cc
                sound.cc
+               ../clientmutex.cc
                ../../bolo/allience.cc
                ../../bolo/backend.cc
                ../../bolo/bases.cc

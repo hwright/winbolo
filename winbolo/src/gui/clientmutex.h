@@ -27,15 +27,6 @@
 #ifndef _CLIENT_MUTEX_H
 #define _CLIENT_MUTEX_H
 
-#ifdef _WIN32
-/* Windows */
-#include <windows.h>
-#else
-/* Linux */
-#endif
-
-#include "../bolo/global.h"
-
 /*********************************************************
  *NAME:          clientMutexWaitFor
  *AUTHOR:        John Morrison
