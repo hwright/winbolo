@@ -33,11 +33,6 @@
 #include "global.h"
 #include "types.h"
 
-/* Time between glood fill removal checks */
-#define FLOOD_FILL_WAIT 16
-
-/* Type structure */
-
 class FloodState {
  public:
   FloodState() = default;

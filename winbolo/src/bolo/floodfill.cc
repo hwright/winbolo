@@ -35,9 +35,16 @@
 #include "pillbox.h"
 #include "screen.h"
 
+namespace {
+
+// Time between flood fill removal checks
+const int FILL_WAIT = 16;
+
+}  // namespace
+
 void FloodState::addItem(MapPoint pos) {
   if (!floods_.contains(pos)) {
-    floods_[pos] = FLOOD_FILL_WAIT;
+    floods_[pos] = FILL_WAIT;
   }
 }
 
