@@ -1407,9 +1407,6 @@ int main(int argc, char **argv) {
   if (isQuiting == TRUE) {
     isQuiting = clientMutexCreate();
   }
-  if (isQuiting == TRUE) {
-    isQuiting = frameMutexCreate();
-  }
 
   if (isQuiting == TRUE) {
     isQuiting = cursorSetup();
@@ -1434,7 +1431,6 @@ int main(int argc, char **argv) {
     gameFrontPutPrefs(&keys);
     screenDestroy();
     clientMutexDestroy();
-    frameMutexDestroy();
   }
   drawCleanup();
   soundCleanup();

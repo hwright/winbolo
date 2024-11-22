@@ -24,75 +24,16 @@
  *  WinBolo Server Thread manager
  *********************************************************/
 
-#ifdef _WIN32
-#include <winbase.h>
-#include <windows.h>
-#else
-#include "SDL.h"
-typedef SDL_mutex *HANDLE;
-#endif
+#include "framemutex.h"
+
 #include <string.h>
 #include <time.h>
 
+#include <mutex>
+
 #include "../../bolo/global.h"
-#include "framemutex.h"
 
-static HANDLE hFrameMutexHandle = nullptr;
-
-/*********************************************************
- *NAME:          frameMutexCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/5/00
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- *  Creates the frame Mutex. Returns success
- *
- *ARGUMENTS:
- *
- *********************************************************/
-bool frameMutexCreate(void) {
-  bool returnValue; /* Value to return */
-
-  returnValue = true;
-#ifdef _WIN32
-  sprintf(name, "%s%d", DIALOG_BOX_TITLE, GetTickCount());
-  hFrameMutexHandle = CreateMutex(NULL, false, name);
-  if (hFrameMutexHandle == NULL) {
-    DWORD d = GetLastError();
-    if (d == ERROR_ALREADY_EXISTS) {
-      d = 1;
-    }
-    returnValue = false;
-  }
-#else
-  hFrameMutexHandle = SDL_CreateMutex();
-  if (hFrameMutexHandle == nullptr) {
-    returnValue = false;
-  }
-#endif
-
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          frameMutexCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/5/00
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- *  Destroys the frame Mutex.
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void frameMutexDestroy(void) {
-#ifdef _WIN32
-  CloseHandle(hFrameMutexHandle);
-#else
-  SDL_DestroyMutex(hFrameMutexHandle);
-#endif
-  hFrameMutexHandle = nullptr;
-}
+static std::recursive_mutex hFrameMutexHandle;
 
 /*********************************************************
  *NAME:          frameMutexWaitFor
@@ -105,13 +46,7 @@ void frameMutexDestroy(void) {
  *ARGUMENTS:
  *
  *********************************************************/
-void frameMutexWaitFor(void) {
-#ifdef _WIN32
-  WaitForSingleObject(hFrameMutexHandle, INFINITE);
-#else
-  SDL_mutexP(hFrameMutexHandle);
-#endif
-}
+void frameMutexWaitFor(void) { hFrameMutexHandle.lock(); }
 
 /*********************************************************
  *NAME:          frameMutexRelease
@@ -125,10 +60,4 @@ void frameMutexWaitFor(void) {
  *ARGUMENTS:
  *
  *********************************************************/
-void frameMutexRelease(void) {
-#ifdef _WIN32
-  ReleaseMutex(hFrameMutexHandle);
-#else
-  SDL_mutexV(hFrameMutexHandle);
-#endif
-}
+void frameMutexRelease(void) { hFrameMutexHandle.unlock(); }

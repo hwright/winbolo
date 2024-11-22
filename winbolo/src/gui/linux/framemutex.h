@@ -27,40 +27,7 @@
 #ifndef _FRAME_MUTEX_H
 #define _FRAME_MUTEX_H
 
-#ifdef _WIN32
-/* Windows */
-#include <windows.h>
-#else
-/* Linux */
-#endif
-
 #include "../../bolo/global.h"
-
-/*********************************************************
- *NAME:          frameMutexCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/5/00
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- *  Creates the frame Mutex. Returns success
- *
- *ARGUMENTS:
- *
- *********************************************************/
-bool frameMutexCreate(void);
-
-/*********************************************************
- *NAME:          frameMutexCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/5/00
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- *  Destroys the frame Mutex.
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void frameMutexDestroy(void);
 
 /*********************************************************
  *NAME:          frameMutexWaitFor
