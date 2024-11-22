@@ -37,32 +37,6 @@
 #include "../bolo/global.h"
 
 /*********************************************************
- *NAME:          clientMutexCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/5/00
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- *  Creates the client Mutex. Returns success
- *
- *ARGUMENTS:
- *
- *********************************************************/
-bool clientMutexCreate(void);
-
-/*********************************************************
- *NAME:          clientMutexCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/5/00
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- *  Destroys the client Mutex.
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void clientMutexDestroy(void);
-
-/*********************************************************
  *NAME:          clientMutexWaitFor
  *AUTHOR:        John Morrison
  *CREATION DATE: 27/5/00

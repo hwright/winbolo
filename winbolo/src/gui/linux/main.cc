@@ -216,8 +216,6 @@ void clientMutexRelease(void);
 bool brainHandlerIsBrainRunning();
 void brainHandlerRun(GtkWidget *hWnd);
 void brainsHandlerSet(GtkWidget *hWnd, bool enabled);
-bool clientMutexCreate(void);
-void clientMutexDestroy(void);
 void drawSetManClear(void);
 
 void gameFrontCloseServer();
@@ -1404,9 +1402,6 @@ int main(int argc, char **argv) {
   if (isQuiting == TRUE) {
     isQuiting = inputSetup();
   }
-  if (isQuiting == TRUE) {
-    isQuiting = clientMutexCreate();
-  }
 
   if (isQuiting == TRUE) {
     isQuiting = cursorSetup();
@@ -1430,7 +1425,6 @@ int main(int argc, char **argv) {
     netDestroy();
     gameFrontPutPrefs(&keys);
     screenDestroy();
-    clientMutexDestroy();
   }
   drawCleanup();
   soundCleanup();

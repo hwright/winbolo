@@ -24,75 +24,16 @@
  *  WinBolo Server Thread manager
  *********************************************************/
 
-#ifdef _WIN32
-#include <winbase.h>
-#include <windows.h>
-#else
-#include "SDL.h"
-typedef SDL_mutex *HANDLE;
-#endif
+#include "../clientmutex.h"
+
 #include <string.h>
 #include <time.h>
 
+#include <mutex>
+
 #include "../../bolo/global.h"
-#include "../clientmutex.h"
 
-static HANDLE hClientMutexHandle = nullptr;
-
-/*********************************************************
- *NAME:          clientMutexCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/5/00
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- *  Creates the client Mutex. Returns success
- *
- *ARGUMENTS:
- *
- *********************************************************/
-bool clientMutexCreate(void) {
-  bool returnValue; /* Value to return */
-
-  returnValue = true;
-#ifdef _WIN32
-  sprintf(name, "%s%d", DIALOG_BOX_TITLE, GetTickCount());
-  hClientMutexHandle = CreateMutex(NULL, false, name);
-  if (hClientMutexHandle == NULL) {
-    DWORD d = GetLastError();
-    if (d == ERROR_ALREADY_EXISTS) {
-      d = 1;
-    }
-    returnValue = false;
-  }
-#else
-  hClientMutexHandle = SDL_CreateMutex();
-  if (hClientMutexHandle == nullptr) {
-    returnValue = false;
-  }
-#endif
-
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          clientMutexCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/5/00
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- *  Destroys the client Mutex.
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void clientMutexDestroy(void) {
-#ifdef _WIN32
-  CloseHandle(hClientMutexHandle);
-#else
-  SDL_DestroyMutex(hClientMutexHandle);
-#endif
-  hClientMutexHandle = nullptr;
-}
+static std::recursive_mutex hClientMutexHandle;
 
 /*********************************************************
  *NAME:          clientMutexWaitFor
@@ -105,13 +46,7 @@ void clientMutexDestroy(void) {
  *ARGUMENTS:
  *
  *********************************************************/
-void clientMutexWaitFor(void) {
-#ifdef _WIN32
-  WaitForSingleObject(hClientMutexHandle, INFINITE);
-#else
-  SDL_mutexP(hClientMutexHandle);
-#endif
-}
+void clientMutexWaitFor(void) { hClientMutexHandle.lock(); }
 
 /*********************************************************
  *NAME:          clientMutexRelease
@@ -125,10 +60,4 @@ void clientMutexWaitFor(void) {
  *ARGUMENTS:
  *
  *********************************************************/
-void clientMutexRelease(void) {
-#ifdef _WIN32
-  ReleaseMutex(hClientMutexHandle);
-#else
-  SDL_mutexV(hClientMutexHandle);
-#endif
-}
+void clientMutexRelease(void) { hClientMutexHandle.unlock(); }
