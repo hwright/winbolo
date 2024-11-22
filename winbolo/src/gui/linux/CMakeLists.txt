@@ -46,7 +46,6 @@ add_executable(linbolo
                ../../bolo/mathWinbolo.cc
                ../../bolo/messages.cc
                ../../bolo/mines.cc
-               ../../bolo/minesexp.cc
                ../../bolo/netmt.cc
                ../../bolo/netplayers.cc
                ../../bolo/netpnb.cc
