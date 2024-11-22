@@ -31,18 +31,18 @@
 #else
 #include "SDL.h"
 #include "SDL_thread.h"
-typedef SDL_mutex *HANDLE;
 typedef int DWORD; /* Not used by required by windows code */
 #endif
-#include "winbolonetthread.h"
-
 #include <string.h>
 #include <unistd.h>
 
+#include <mutex>
+
 #include "../bolo/global.h"
 #include "http.h"
+#include "winbolonetthread.h"
 
-HANDLE hWbnMutexHandle = nullptr;
+static std::recursive_mutex hWbnMutexHandle;
 #ifdef _WIN32
 HANDLE hWbnThread;
 DWORD wbnThreadID;
@@ -75,17 +75,6 @@ bool winbolonetThreadCreate(void) {
   wbnShouldRun = true;
   wbnFinished = false;
 
-#ifdef _WIN32
-  char name[FILENAME_MAX]; /* Used in Mutex creation */
-  sprintf(name, "%s%d", "WBNUPDATE", GetTickCount());
-  hWbnMutexHandle = CreateMutex(NULL, false, (LPCTSTR)name);
-#else
-  hWbnMutexHandle = SDL_CreateMutex();
-#endif
-  if (hWbnMutexHandle == nullptr) {
-    returnValue = false;
-  }
-
   /* create thread and run */
 #ifdef _WIN32
   if (returnValue == true) {
@@ -102,8 +91,6 @@ bool winbolonetThreadCreate(void) {
   if (returnValue) {
     hWbnThread = SDL_CreateThread(winbolonetThreadRun, nullptr);
     if (hWbnThread == nullptr) {
-      SDL_DestroyMutex(hWbnMutexHandle);
-      hWbnMutexHandle = nullptr;
       returnValue = false;
     }
   }
@@ -126,8 +113,6 @@ bool winbolonetThreadCreate(void) {
 void winbolonetThreadDestroy(void) {
   wbnList del; /* Use to delete our queues */
 
-  if (hWbnMutexHandle != nullptr) { /* FIXME: Will be non null if we started it
-                                       OK. Is there a better way? (threadid?) */
     /* Wait for all events to be sent... */
     while (wbnProcessing != nullptr || wbnWaiting != nullptr) {
 #ifdef _WIN32
@@ -166,7 +151,7 @@ void winbolonetThreadDestroy(void) {
 #ifdef _WIN32
     WaitForSingleObject(hWbnMutexHandle, INFINITE);
 #else
-    SDL_mutexP(hWbnMutexHandle);
+    hWbnMutexHandle.lock();
 #endif
 
     while (NonEmpty(wbnProcessing)) {
@@ -180,16 +165,7 @@ void winbolonetThreadDestroy(void) {
       delete del;
     }
 
-#ifdef _WIN32
-    ReleaseMutex(hWbnMutexHandle);
-    CloseHandle(hWbnMutexHandle);
-#else
-    SDL_mutexV(hWbnMutexHandle);
-    SDL_DestroyMutex(hWbnMutexHandle);
-#endif
-
-    hWbnMutexHandle = nullptr;
-  }
+    hWbnMutexHandle.unlock();
 }
 
 /*********************************************************
@@ -211,17 +187,10 @@ void winbolonetThreadAddRequest(BYTE *data, int len) {
     add = new wbnListObj;
     memcpy(add->data, data, len);
     add->len = len;
-#ifdef _WIN32
-    WaitForSingleObject(hWbnMutexHandle, INFINITE);
+    hWbnMutexHandle.lock();
     add->next = wbnWaiting;
     wbnWaiting = add;
-    ReleaseMutex(hWbnMutexHandle);
-#else
-    SDL_mutexP(hWbnMutexHandle);
-    add->next = wbnWaiting;
-    wbnWaiting = add;
-    SDL_mutexV(hWbnMutexHandle);
-#endif
+    hWbnMutexHandle.unlock();
   }
 }
 
@@ -242,17 +211,10 @@ int winbolonetThreadRun(void *) {
   wbnList prev;   /* Used to iterate through the list */
 
   while (wbnShouldRun) {
-#ifdef _WIN32
-    WaitForSingleObject(hWbnMutexHandle, INFINITE);
-    wbnProcessing = wbnWaiting;
-    wbnWaiting = NULL;
-    ReleaseMutex(hWbnMutexHandle);
-#else
-    SDL_mutexP(hWbnMutexHandle);
+    hWbnMutexHandle.lock();
     wbnProcessing = wbnWaiting;
     wbnWaiting = nullptr;
-    SDL_mutexV(hWbnMutexHandle);
-#endif
+    hWbnMutexHandle.unlock();
 
     while (NonEmpty(wbnProcessing) && wbnShouldRun) {
       /* Get last entry */
