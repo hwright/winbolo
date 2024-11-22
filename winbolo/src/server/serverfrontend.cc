@@ -1108,7 +1108,7 @@ explosions *clientGetExplosions() { return nullptr; }
  *ARGUMENTS:
  *
  *********************************************************/
-FloodState *clientGetFloodFill() { return nullptr; }
+bolo::FloodFill *clientGetFloodFill() { return nullptr; }
 
 /*********************************************************
  *NAME:          clientGetGrass

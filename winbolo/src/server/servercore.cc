@@ -88,7 +88,7 @@ static shells shs;
 static players splrs;
 static std::optional<bolo::BuildingState> serverBlds;
 static explosions serverExpl = nullptr;
-static std::optional<FloodState> serverFF;
+static std::optional<bolo::FloodFill> serverFF;
 static std::optional<bolo::GrassState> serverGrass;
 static mines serverMines = nullptr;
 static minesExp serverMinesExp = nullptr;
@@ -1728,7 +1728,7 @@ explosions *serverCoreGetExplosions() { return &serverExpl; }
  *ARGUMENTS:
  *
  *********************************************************/
-FloodState *serverCoreGetFloodFill() { return &*serverFF; }
+bolo::FloodFill *serverCoreGetFloodFill() { return &*serverFF; }
 
 /*********************************************************
  *NAME:          serverCoreGetGrass

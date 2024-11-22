@@ -35,6 +35,8 @@
 #include "pillbox.h"
 #include "screen.h"
 
+namespace bolo {
+
 namespace {
 
 // Time between flood fill removal checks
@@ -42,13 +44,13 @@ const int FILL_WAIT = 16;
 
 }  // namespace
 
-void FloodState::addItem(MapPoint pos) {
+void FloodFill::addItem(MapPoint pos) {
   if (!floods_.contains(pos)) {
     floods_[pos] = FILL_WAIT;
   }
 }
 
-void FloodState::Update(map *mp, pillboxes *pb, bases *bs) {
+void FloodFill::Update(map *mp, pillboxes *pb, bases *bs) {
   std::vector<MapPoint> removed;
 
   for (auto &[pos, time] : floods_) {
@@ -68,7 +70,7 @@ void FloodState::Update(map *mp, pillboxes *pb, bases *bs) {
   }
 }
 
-void FloodState::checkFill(map *mp, pillboxes *pb, bases *bs, MapPoint pos) {
+void FloodFill::checkFill(map *mp, pillboxes *pb, bases *bs, MapPoint pos) {
   // Squares around
   BYTE above;
   BYTE below;
@@ -129,3 +131,5 @@ void FloodState::checkFill(map *mp, pillboxes *pb, bases *bs, MapPoint pos) {
     screenReCalc();
   }
 }
+
+}  // namespace bolo

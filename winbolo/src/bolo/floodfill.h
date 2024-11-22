@@ -33,13 +33,15 @@
 #include "global.h"
 #include "types.h"
 
-class FloodState {
+namespace bolo {
+
+class FloodFill {
  public:
-  FloodState() = default;
+  FloodFill() = default;
 
   // Move-only
-  FloodState(FloodState &) = delete;
-  FloodState &operator=(FloodState &) = delete;
+  FloodFill(FloodFill &) = delete;
+  FloodFill &operator=(FloodFill &) = delete;
 
   // Add a flood item.
   //
@@ -68,5 +70,7 @@ class FloodState {
 
   std::unordered_map<MapPoint, uint8_t> floods_;
 };
+
+}  // namespace bolo
 
 #endif /* FLOOD_H */

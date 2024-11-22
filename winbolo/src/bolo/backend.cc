@@ -467,7 +467,7 @@ explosions *screenGetExplosions() {
  *ARGUMENTS:
  *
  *********************************************************/
-FloodState *screenGetFloodFill() {
+bolo::FloodFill *screenGetFloodFill() {
   if (!threadsGetContext()) {
     return clientGetFloodFill();
   }

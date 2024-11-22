@@ -94,7 +94,7 @@ static lgm mylgman = nullptr;
 static players plyrs = nullptr;
 static std::optional<bolo::BuildingState> clientBlds;
 static explosions clientExpl = nullptr;
-static std::optional<FloodState> clientFF;
+static std::optional<bolo::FloodFill> clientFF;
 static std::optional<bolo::GrassState> clientGrass;
 static mines clientMines = nullptr;
 static minesExp clientMinesExp = nullptr;
@@ -3886,7 +3886,7 @@ explosions *clientGetExplosions() { return &clientExpl; }
  *ARGUMENTS:
  *
  *********************************************************/
-FloodState *clientGetFloodFill() { return &*clientFF; }
+bolo::FloodFill *clientGetFloodFill() { return &*clientFF; }
 
 /*********************************************************
  *NAME:          clientGetGrass
