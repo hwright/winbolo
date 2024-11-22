@@ -15,8 +15,8 @@
  */
 
 /*********************************************************
- *Name:          frameMutex
- *Filename:      frameMutex.h
+ *Name:          clientMutex
+ *Filename:      clientMutex.c
  *Author:        John Morrison
  *Creation Date: 27/5/00
  *Last Modified: 27/5/00
@@ -24,36 +24,35 @@
  *  WinBolo Server Thread manager
  *********************************************************/
 
-#ifndef _FRAME_MUTEX_H
-#define _FRAME_MUTEX_H
+#include "clientmutex.h"
 
-#include "../../bolo/global.h"
+#include <mutex>
+
+static std::recursive_mutex hClientMutexHandle;
 
 /*********************************************************
- *NAME:          frameMutexWaitFor
+ *NAME:          clientMutexWaitFor
  *AUTHOR:        John Morrison
  *CREATION DATE: 27/5/00
  *LAST MODIFIED: 27/5/00
  *PURPOSE:
- *  Destroys the frame Mutex.
+ *  Destroys the client Mutex.
  *
  *ARGUMENTS:
  *
  *********************************************************/
-void frameMutexWaitFor(void);
+void clientMutexWaitFor(void) { hClientMutexHandle.lock(); }
 
 /*********************************************************
- *NAME:          frameMutexRelease
+ *NAME:          clientMutexRelease
  *AUTHOR:        John Morrison
  *CREATION DATE: 27/5/00
  *LAST MODIFIED: 27/5/00
  *PURPOSE:
- *  Frees the lock on the frame Mutex so other waiting
+ *  Frees the lock on the client Mutex so other waiting
  *  subsystems can aquire it.
  *
  *ARGUMENTS:
  *
  *********************************************************/
-void frameMutexRelease(void);
-
-#endif /* _CLIENT_MUTEX_H */
+void clientMutexRelease(void) { hClientMutexHandle.unlock(); }

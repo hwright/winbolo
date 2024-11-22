@@ -25,6 +25,8 @@
  *********************************************************/
 
 #include <stdio.h>
+
+#include <mutex>
 #ifdef _WIN32
 #include <windows.h>
 #include <winsock2.h>
@@ -34,14 +36,13 @@
 #include <sys/socket.h>
 
 #include "SDL.h"
-typedef SDL_mutex *HANDLE;
 #endif
 #include "../bolo/global.h"
 #include "servercore.h"
 #include "servertransport.h"
 #include "threads.h"
 
-static HANDLE hMutexHandle = nullptr;
+static std::mutex hMutexHandle;
 static bool threadServerContext = false;
 static bool threadStarted = false;
 
@@ -66,15 +67,6 @@ bool threadsCreate(bool context) {
   }
   threadServerContext = context;
   screenServerConsoleMessage("Thread Manager Startup");
-#ifdef _WIN32
-  hMutexHandle = CreateMutex(NULL, false, "WinBoloDS");
-#else
-  hMutexHandle = SDL_CreateMutex();
-#endif
-  if (hMutexHandle == nullptr) {
-    returnValue = false;
-    fprintf(stderr, "Error Creating Mutex\n");
-  }
 
   threadStarted = returnValue;
   return returnValue;
@@ -95,12 +87,6 @@ void threadsDestroy(void) {
   threadStarted = false;
   screenServerConsoleMessage("Thread Manager Shutdown");
   /* TCP Listener */
-#ifdef _WIN32
-  CloseHandle(hMutexHandle);
-#else
-  SDL_DestroyMutex(hMutexHandle);
-#endif
-  hMutexHandle = nullptr;
 }
 
 /*********************************************************
@@ -114,13 +100,7 @@ void threadsDestroy(void) {
  *ARGUMENTS:
  *
  *********************************************************/
-void threadsWaitForMutex(void) {
-#ifdef _WIN32
-  WaitForSingleObject(hMutexHandle, INFINITE);
-#else
-  SDL_mutexP(hMutexHandle);
-#endif
-}
+void threadsWaitForMutex(void) { hMutexHandle.lock(); }
 
 /*********************************************************
  *NAME:          threadsRelease
@@ -133,13 +113,7 @@ void threadsWaitForMutex(void) {
  *ARGUMENTS:
  *
  *********************************************************/
-void threadsReleaseMutex(void) {
-#ifdef _WIN32
-  ReleaseMutex(hMutexHandle);
-#else
-  SDL_mutexV(hMutexHandle);
-#endif
-}
+void threadsReleaseMutex(void) { hMutexHandle.unlock(); }
 
 /*********************************************************
  *NAME:          threadsGetContext

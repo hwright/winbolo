@@ -30,17 +30,17 @@
 #else
 #include "SDL.h"
 #include "SDL_thread.h"
-typedef SDL_mutex *HANDLE;
 #endif
-#include "../dnsLookups.h"
-
 #include <string.h>
 #include <unistd.h>
 
+#include <mutex>
+
 #include "../../bolo/global.h"
+#include "../dnsLookups.h"
 #include "../netclient.h"
 
-static HANDLE hDnsMutexHandle = nullptr;
+static std::recursive_mutex hDnsMutexHandle;
 static SDL_Thread *hDnsThread;
 static dnsList dnsProcessing;
 static dnsList dnsWaiting;
@@ -67,17 +67,10 @@ bool dnsLookupsCreate(void) {
   dnsShouldRun = true;
   dnsFinished = false;
 
-  hDnsMutexHandle = SDL_CreateMutex();
-  if (hDnsMutexHandle == nullptr) {
-    returnValue = false;
-  }
-
   /* create thread and run */
   if (returnValue) {
     hDnsThread = SDL_CreateThread(dnsLookupsRun, nullptr);
     if (hDnsThread == nullptr) {
-      SDL_DestroyMutex(hDnsMutexHandle);
-      hDnsMutexHandle = nullptr;
       returnValue = false;
     }
   }
@@ -98,8 +91,6 @@ bool dnsLookupsCreate(void) {
 void dnsLookupsDestroy(void) {
   dnsList del; /* Use to delete our queues */
 
-  if (hDnsMutexHandle != nullptr) { /* FIXME: Will be non null if we started it
-                                       OK. Is there a better way? (threadid?) */
     /* Wait for current to finish */
     dnsShouldRun = false;
     while (!dnsFinished) {
@@ -109,7 +100,7 @@ void dnsLookupsDestroy(void) {
     SDL_WaitThread(hDnsThread, nullptr);
 
     /* Free our list queues */
-    SDL_mutexP(hDnsMutexHandle);
+    hDnsMutexHandle.lock();
     while (NonEmpty(dnsProcessing)) {
       del = dnsProcessing;
       dnsProcessing = dnsProcessing->next;
@@ -120,12 +111,7 @@ void dnsLookupsDestroy(void) {
       dnsWaiting = dnsWaiting->next;
       delete del;
     }
-    SDL_mutexV(hDnsMutexHandle);
-
-    /* Remove the locking mutex */
-    SDL_DestroyMutex(hDnsMutexHandle);
-    hDnsMutexHandle = nullptr;
-  }
+    hDnsMutexHandle.unlock();
 }
 
 /*********************************************************
@@ -148,10 +134,10 @@ void dnsLookupsAddRequest(char *ip, void (*func)(char *, char *)) {
     add = new dnsListObj;
     strcpy(add->ip, ip);
     add->func = func;
-    SDL_mutexP(hDnsMutexHandle);
+    hDnsMutexHandle.lock();
     add->next = dnsWaiting;
     dnsWaiting = add;
-    SDL_mutexV(hDnsMutexHandle);
+    hDnsMutexHandle.unlock();
   }
 }
 
@@ -171,10 +157,10 @@ int dnsLookupsRun(void *) {
   dnsList q;      /* Used to iterate through the list */
 
   while (dnsShouldRun) {
-    SDL_mutexP(hDnsMutexHandle);
+    hDnsMutexHandle.lock();
     dnsProcessing = dnsWaiting;
     dnsWaiting = nullptr;
-    SDL_mutexV(hDnsMutexHandle);
+    hDnsMutexHandle.unlock();
 
     while (NonEmpty(dnsProcessing) && dnsShouldRun) {
       q = dnsProcessing;
