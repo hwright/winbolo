@@ -301,6 +301,9 @@ bool mapRead(std::istream &input, map *value, pillboxes *pb, bases *bs,
  *  yValue - The y co-ordinate
  *********************************************************/
 BYTE mapGetPos(map *value, BYTE xValue, BYTE yValue);
+inline BYTE mapGetPos(map *value, MapPoint pos) {
+  return mapGetPos(value, pos.x, pos.y);
+}
 
 /*********************************************************
  *NAME:          mapGetSpeed
@@ -400,6 +403,10 @@ bool mapIsPassable(map *value, BYTE xValue, BYTE yValue, bool onBoat);
  *********************************************************/
 void mapSetPos(map *value, BYTE xValue, BYTE yValue, BYTE terrain,
                bool needSend, bool mineClear);
+inline void mapSetPos(map *value, MapPoint pos, BYTE terrain, bool needSend,
+                      bool mineClear) {
+  mapSetPos(value, pos.x, pos.y, terrain, needSend, mineClear);
+}
 
 /*********************************************************
  *NAME:          mapIsLand

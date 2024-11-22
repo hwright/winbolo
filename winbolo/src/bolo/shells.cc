@@ -671,7 +671,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
                 screenGetGrass()->addItem(MapPoint{.x = mapX, .y = mapY});
             mapSetPos(mp, mapX, mapY, newTerrain, false, false);
             if (newTerrain == RIVER) {
-              floodAddItem(screenGetFloodFill(), mapX, mapY);
+              screenGetFloodFill()->addItem(MapPoint{.x = mapX, .y = mapY});
             }
           }
           break;
@@ -687,7 +687,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
                 screenGetSwamp()->addItem(MapPoint{.x = mapX, .y = mapY});
             mapSetPos(mp, mapX, mapY, newTerrain, false, false);
             if (newTerrain == RIVER) {
-              floodAddItem(screenGetFloodFill(), mapX, mapY);
+              screenGetFloodFill()->addItem(MapPoint{.x = mapX, .y = mapY});
             }
           }
           break;
@@ -703,7 +703,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
                 screenGetRubble()->addItem(MapPoint{.x = mapX, .y = mapY});
             mapSetPos(mp, mapX, mapY, newTerrain, false, false);
             if (newTerrain == RIVER) {
-              floodAddItem(screenGetFloodFill(), mapX, mapY);
+              screenGetFloodFill()->addItem(MapPoint{.x = mapX, .y = mapY});
             }
           }
           break;

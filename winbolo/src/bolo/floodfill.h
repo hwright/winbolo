@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,133 +13,55 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Flood Fill
- *Filename:      floodfill.h
- *Author:        John Morrison
- *Creation Date: 19/1/99
- *Last Modified: 21/1/99
- *Purpose:
- *  Responsible for tracking flood fills caused by craters
- *  next to water.
- *********************************************************/
+//  Responsible for tracking flood fills caused by craters
+//  next to water.
 
 #ifndef FLOOD_H
 #define FLOOD_H
 
+#include <unordered_map>
+
 #include "global.h"
 #include "types.h"
 
-/* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define FloodFillTail(list) ((list)->next);
+namespace bolo {
 
-/* Time between glood fill removal checks */
-#define FLOOD_FILL_WAIT 16
+class FloodFill {
+ public:
+  FloodFill() = default;
 
-/* Type structure */
+  // Move-only
+  FloodFill(FloodFill &) = delete;
+  FloodFill &operator=(FloodFill &) = delete;
 
-typedef struct floodFillObj *floodFill;
-struct floodFillObj {
-  floodFill next; /* Next item */
-  BYTE x;         /* X and Y positions */
-  BYTE y;
-  BYTE time; /* Time remaing before it fills and checks next spot */
+  // Add a flood item.
+  //
+  // ARGUMENTS:
+  //  pos - the flood position
+  void addItem(MapPoint pos);
+
+  // Game tick has happened. Update flooding
+  //
+  // ARGUMENTS:
+  //  mp - Pointer to the map structure
+  //  pb - Pointer to the pillboxes structure
+  //  bs - Pointer to the bases structure
+  void Update(map *mp, pillboxes *pb, bases *bs);
+
+ private:
+  // Time to fill if required. Also if it does adds
+  // surrounding items to flood Data Structure.
+  //
+  // ARGUMENTS:
+  //  mp - Pointer to the map structure
+  //  pb - Pointer to the pillboxes structure
+  //  bs - Pointer to the bases structure
+  //  pos - The flood position.
+  void checkFill(map *mp, pillboxes *pb, bases *bs, MapPoint pos);
+
+  std::unordered_map<MapPoint, uint8_t> floods_;
 };
 
-/* Prototypes */
-
-/*********************************************************
- *NAME:          floodCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Sets up the flood fill data structure
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *********************************************************/
-void floodCreate(floodFill *ff);
-
-/*********************************************************
- *NAME:          floodDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Destroys and frees memory for the flood fill data
- *  structure
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *********************************************************/
-void floodDestroy(floodFill *ff);
-
-/*********************************************************
- *NAME:          floodAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Adds an item to the flood data structure.
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *  x  - X co-ord
- *  y  - Y co-ord
- *********************************************************/
-void floodAddItem(floodFill *ff, BYTE x, BYTE y);
-
-/*********************************************************
- *NAME:          floodUpdate
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 21/1/99
- *PURPOSE:
- *  Game tick has happened. Update flooding
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *********************************************************/
-void floodUpdate(floodFill *ff, map *mp, pillboxes *pb, bases *bs);
-
-/*********************************************************
- *NAME:          floodDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  ff      - Pointer to the floodFill item
- *  itemNum - The item number to get
- *********************************************************/
-void floodDeleteItem(floodFill *ff, int itemNum);
-
-/*********************************************************
- *NAME:          floodCheckFill
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 21/1/99
- *PURPOSE:
- *  Time to fill if required. Also if it does adds
- *  surrounding items to flood Data Structure.
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *  mx - Map X Position
- *  my - Map Y Position
- *********************************************************/
-void floodCheckFill(floodFill *ff, map *mp, pillboxes *pb, bases *bs, BYTE mx,
-                    BYTE my);
+}  // namespace bolo
 
 #endif /* FLOOD_H */

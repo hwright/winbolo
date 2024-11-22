@@ -187,6 +187,9 @@ void pillsGetPill(pillboxes *value, pillbox *item, BYTE pillNum);
  *  yValue - Y Location
  *********************************************************/
 bool pillsExistPos(pillboxes *value, BYTE xValue, BYTE yValue);
+inline bool pillsExistPos(pillboxes *value, MapPoint pos) {
+  return pillsExistPos(value, pos.x, pos.y);
+}
 
 /*********************************************************
  *NAME:          pillsGetAllianceNum

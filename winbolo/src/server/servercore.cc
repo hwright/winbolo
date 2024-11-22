@@ -88,7 +88,7 @@ static shells shs;
 static players splrs;
 static std::optional<bolo::BuildingState> serverBlds;
 static explosions serverExpl = nullptr;
-static floodFill serverFF = nullptr;
+static std::optional<bolo::FloodFill> serverFF;
 static std::optional<bolo::GrassState> serverGrass;
 static mines serverMines = nullptr;
 static minesExp serverMinesExp = nullptr;
@@ -166,7 +166,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines,
   netPNBCreate(&serverPNB);
   netMNTCreate(&serverNMT);
   logCreate();
-  floodCreate(&serverFF);
+  serverFF.emplace();
   tkExplosionCreate(&serverTankExp);
   minesCreate(&serverMines, hiddenMines);
   minesExpCreate(&serverMinesExp);
@@ -239,7 +239,7 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn,
   serverBlds.emplace();
   serverGrass.emplace();
   serverSwamp.emplace();
-  floodCreate(&serverFF);
+  serverFF.emplace();
   tkExplosionCreate(&serverTankExp);
   netPNBCreate(&serverPNB);
   netMNTCreate(&serverNMT);
@@ -291,7 +291,7 @@ void serverCoreDestroy() {
   serverRubble = std::nullopt;
   serverBlds = std::nullopt;
   serverGrass = std::nullopt;
-  floodDestroy(&serverFF);
+  serverFF = std::nullopt;
   serverSwamp = std::nullopt;
   netPNBDestroy(&serverPNB);
   netNMTDestroy(&serverNMT);
@@ -406,7 +406,7 @@ void serverCoreGameTick() {
   shellsUpdate(&shs, &mp, &pb, &bs, ta, numTanks, true);
   explosionsUpdate(&serverExpl);
   minesExpUpdate(&serverMinesExp, &mp, &pb, &bs, (lgm **)lgms, numTanks);
-  floodUpdate(&serverFF, &mp, &pb, &bs);
+  serverFF->Update(&mp, &pb, &bs);
   playersRejoinUpdate();
 
   /* Prepare log entries if required */
@@ -1728,7 +1728,7 @@ explosions *serverCoreGetExplosions() { return &serverExpl; }
  *ARGUMENTS:
  *
  *********************************************************/
-floodFill *serverCoreGetFloodFill() { return &serverFF; }
+bolo::FloodFill *serverCoreGetFloodFill() { return &*serverFF; }
 
 /*********************************************************
  *NAME:          serverCoreGetGrass

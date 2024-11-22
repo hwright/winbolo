@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,17 +13,6 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Flood Fill
- *Filename:      floodfill.c
- *Author:        John Morrison
- *Creation Date: 19/1/99
- *Last Modified: 19/1/99
- *Purpose:
- *  Responsible for tracking flood fills caused by craters
- *  next to water.
- *********************************************************/
-
 #include "floodfill.h"
 
 #include "backend.h"
@@ -35,219 +23,75 @@
 #include "pillbox.h"
 #include "screen.h"
 
-/*********************************************************
- *NAME:          floodCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Sets up the flood fill data structure
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *********************************************************/
-void floodCreate(floodFill *ff) { *ff = nullptr; }
+namespace bolo {
 
-/*********************************************************
- *NAME:          floodDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Destroys and frees memory for the flood fill data
- *  structure
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *********************************************************/
-void floodDestroy(floodFill *ff) {
-  floodFill q;
+namespace {
 
-  while (!IsEmpty(*ff)) {
-    q = *ff;
-    *ff = FloodFillTail(q);
-    delete q;
+// Time between flood fill removal checks
+const int FILL_WAIT = 16;
+
+}  // namespace
+
+void FloodFill::addItem(MapPoint pos) {
+  if (!floods_.contains(pos)) {
+    floods_[pos] = FILL_WAIT;
   }
 }
 
-/*********************************************************
- *NAME:          floodAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Adds an item to the flood data structure.
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *  x  - X co-ord
- *  y  - Y co-ord
- *********************************************************/
-void floodAddItem(floodFill *ff, BYTE x, BYTE y) {
-  floodFill q;
-  floodFill inc;
-  floodFill prev;
-  bool found; /* Is the item found */
+void FloodFill::Update(map *mp, pillboxes *pb, bases *bs) {
+  std::vector<MapPoint> removed;
 
-  prev = inc = *ff;
-  found = false;
-
-  while (!found && NonEmpty(inc)) {
-    if (inc->x == x && inc->y == y) {
-      found = true;
-    }
-    prev = inc;
-    inc = FloodFillTail(inc);
-  }
-
-  /* If not found add a new item */
-  if (!found && IsEmpty(*ff)) {
-    q = new floodFillObj;
-    q->x = x;
-    q->y = y;
-    q->time = FLOOD_FILL_WAIT;
-    q->next = *ff;
-    *ff = q;
-  } else if (!found) {
-    q = new floodFillObj;
-    q->x = x;
-    q->y = y;
-    q->time = FLOOD_FILL_WAIT;
-    q->next = nullptr;
-    prev->next = q;
-  }
-}
-
-/*********************************************************
- *NAME:          floodUpdate
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 21/1/99
- *PURPOSE:
- *  Game tick has happened. Update flooding
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *********************************************************/
-void floodUpdate(floodFill *ff, map *mp, pillboxes *pb, bases *bs) {
-  floodFill position; /* Position throught the items */
-  int itemCount;      /* Counts the number of items */
-  bool needUpdate;    /* Whether an update is needed or not */
-
-  position = *ff;
-  itemCount = 0;
-
-  while (NonEmpty(position)) {
-    needUpdate = true;
-    itemCount++;
-    if (position->time > 0) {
-      position->time--;
+  for (auto &[pos, time] : floods_) {
+    if (time > 0) {
+      time -= 1;
     } else {
-      /* Check for fill and remove from data structure */
-      needUpdate = false;
-      floodCheckFill(ff, mp, pb, bs, position->x, position->y);
-      position = FloodFillTail(position);
-      floodDeleteItem(ff, itemCount);
-      itemCount--;
+      checkFill(mp, pb, bs, pos);
+      // `erase` invalidates our iterator, so we have to clean things up
+      // separately.
+      removed.push_back(pos);
     }
+  }
 
-    /* Get the next Item */
-    if (*ff != nullptr && needUpdate) {
-      position = FloodFillTail(position);
-    } else {
-      position = nullptr;
-    }
+  // Remove our deleted elements
+  for (auto pos : removed) {
+    floods_.erase(pos);
   }
 }
 
-/*********************************************************
- *NAME:          floodDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 19/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  ff      - Pointer to the floodFill item
- *  itemNum - The item number to get
- *********************************************************/
-void floodDeleteItem(floodFill *ff, int itemNum) {
-  floodFill prev; /* The previous item to link to the delete items next */
-  floodFill del;  /* The item to delete */
-  int count;      /* Looping variable */
-
-  if (itemNum == 1) {
-    del = *ff;
-    *ff = del->next;
-    delete del;
-  } else {
-    count = 1;
-    prev = *ff;
-    while (count < (itemNum - 1)) {
-      prev = FloodFillTail(prev);
-      count++;
-    }
-    del = FloodFillTail(prev);
-    prev->next = del->next;
-    delete del;
-  }
-}
-
-/*********************************************************
- *NAME:          floodCheckFill
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/1/99
- *LAST MODIFIED: 21/3/99
- *PURPOSE:
- *  Time to fill if required. Also if it does adds
- *  surrounding items to flood Data Structure.
- *
- *ARGUMENTS:
- *  ff - Pointer to the floodFill item
- *  mp - Pointer to the map structure
- *  pb - Pointer to the pillboxes structure
- *  bs - Pointer to the bases structure
- *  mx - Map X Position
- *  my - Map Y Position
- *********************************************************/
-void floodCheckFill(floodFill *ff, map *mp, pillboxes *pb, bases *bs, BYTE mx,
-                    BYTE my) {
-  BYTE above; /* Squares around */
+void FloodFill::checkFill(map *mp, pillboxes *pb, bases *bs, MapPoint pos) {
+  // Squares around
+  BYTE above;
   BYTE below;
   BYTE leftPos;
   BYTE rightPos;
 
-  above = mapGetPos(mp, mx, (BYTE)(my - 1));
-  below = mapGetPos(mp, mx, (BYTE)(my + 1));
-  leftPos = mapGetPos(mp, (BYTE)(mx - 1), my);
-  rightPos = mapGetPos(mp, (BYTE)(mx + 1), my);
+  above = mapGetPos(mp, pos.N());
+  below = mapGetPos(mp, pos.S());
+  leftPos = mapGetPos(mp, pos.W());
+  rightPos = mapGetPos(mp, pos.E());
 
-  /* Check for pills, bases etc. If found change to non crater / water */
-  if (pillsExistPos(pb, mx, (BYTE)(my - 1))) {
+  // Check for pills, bases etc. If found change to non crater / water */
+  if (pillsExistPos(pb, pos.N())) {
     above = ROAD;
-  } else if (basesExistPos(bs, mx, (BYTE)(my - 1))) {
+  } else if (basesExistPos(bs, pos.N())) {
     above = ROAD;
   }
 
-  if (pillsExistPos(pb, mx, (BYTE)(my + 1))) {
+  if (pillsExistPos(pb, pos.S())) {
     below = ROAD;
-  } else if (basesExistPos(bs, mx, (BYTE)(my + 1))) {
+  } else if (basesExistPos(bs, pos.S())) {
     below = ROAD;
   }
 
-  if (pillsExistPos(pb, (BYTE)(mx - 1), my)) {
+  if (pillsExistPos(pb, pos.W())) {
     leftPos = ROAD;
-  } else if (basesExistPos(bs, (BYTE)(mx - 1), my)) {
+  } else if (basesExistPos(bs, pos.W())) {
     leftPos = ROAD;
   }
 
-  if (pillsExistPos(pb, (BYTE)(mx + 1), my)) {
+  if (pillsExistPos(pb, pos.E())) {
     rightPos = ROAD;
-  } else if (basesExistPos(bs, (BYTE)(mx - 1), my)) {
+  } else if (basesExistPos(bs, pos.E())) {
     rightPos = ROAD;
   }
 
@@ -256,22 +100,24 @@ void floodCheckFill(floodFill *ff, map *mp, pillboxes *pb, bases *bs, BYTE mx,
       above == DEEP_SEA || above == RIVER || above == BOAT ||
       below == DEEP_SEA || below == BOAT || below == RIVER) {
     /* Do fill */
-    mapSetPos(mp, mx, my, RIVER, false, false);
-    minesRemoveItem(screenGetMines(), mx, my);
+    mapSetPos(mp, pos, RIVER, false, false);
+    minesRemoveItem(screenGetMines(), pos.x, pos.y);
 
     /* Add items if craters */
     if (leftPos == CRATER || leftPos == MINE_CRATER) {
-      floodAddItem(ff, (BYTE)(mx - 1), my);
+      addItem(pos.W());
     }
     if (rightPos == CRATER || rightPos == MINE_CRATER) {
-      floodAddItem(ff, (BYTE)(mx + 1), my);
+      addItem(pos.E());
     }
     if (above == CRATER || above == MINE_CRATER) {
-      floodAddItem(ff, mx, (BYTE)(my - 1));
+      addItem(pos.N());
     }
     if (below == CRATER || below == MINE_CRATER) {
-      floodAddItem(ff, mx, (BYTE)(my + 1));
+      addItem(pos.S());
     }
     screenReCalc();
   }
 }
+
+}  // namespace bolo

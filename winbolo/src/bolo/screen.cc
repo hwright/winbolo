@@ -94,7 +94,7 @@ static lgm mylgman = nullptr;
 static players plyrs = nullptr;
 static std::optional<bolo::BuildingState> clientBlds;
 static explosions clientExpl = nullptr;
-static floodFill clientFF = nullptr;
+static std::optional<bolo::FloodFill> clientFF;
 static std::optional<bolo::GrassState> clientGrass;
 static mines clientMines = nullptr;
 static minesExp clientMinesExp = nullptr;
@@ -194,7 +194,7 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   clientGrass.emplace();
   clientSwamp.emplace();
   mylgman = lgmCreate(0);
-  floodCreate(&clientFF);
+  clientFF.emplace();
   tkExplosionCreate(&clientTankExplosions);
   minesExpCreate(&clientMinesExp);
   treeGrowState.emplace();
@@ -248,7 +248,7 @@ void screenDestroy() {
   clientGrass = std::nullopt;
   netPNBDestroy(&clientPNB);
   netNMTDestroy(&clientNMT);
-  floodDestroy(&clientFF);
+  clientFF = std::nullopt;
   lgmDestroy(&mylgman);
   clientSwamp = std::nullopt;
   screenBrainMapDestroy();
@@ -1047,7 +1047,7 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
                     1, &mytk);
   explosionsUpdate(&clientExpl);
   minesExpUpdate(&clientMinesExp, &mymp, &mypb, &mybs, (lgm **)&(test), 1);
-  floodUpdate(&clientFF, &mymp, &mypb, &mybs);
+  clientFF->Update(&mymp, &mypb, &mybs);
   treeGrowState->Update(&mymp, &mypb, &mybs);
   mapNetUpdate(&mymp, &mypb, &mybs);
 
@@ -3886,7 +3886,7 @@ explosions *clientGetExplosions() { return &clientExpl; }
  *ARGUMENTS:
  *
  *********************************************************/
-floodFill *clientGetFloodFill() { return &clientFF; }
+bolo::FloodFill *clientGetFloodFill() { return &*clientFF; }
 
 /*********************************************************
  *NAME:          clientGetGrass
