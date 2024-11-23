@@ -29,18 +29,12 @@
 
 #include "../bolo/gametype.h"
 #include "../bolo/global.h"
+#include "../bolo/types.h"
 
 /* Empty / Non Empty / Head / Tail Macros */
 #define IsEmpty(list) ((list) == NULL)
 #define NonEmpty(list) (!IsEmpty(list))
 #define CurrentTail(list) ((list)->next);
-
-#ifndef _AITYPE_ENUM
-#define _AITYPE_ENUM
-
-typedef enum { aiNone, aiYes, aiYesAdvantage } aiType;
-
-#endif
 
 /*
 

@@ -33,6 +33,7 @@
 #include "building.h"
 #include "explosions.h"
 #include "floodfill.h"
+#include "gametype.h"
 #include "global.h"
 #include "grass.h"
 #include "mines.h"
@@ -75,35 +76,6 @@ typedef unsigned long DWORD;
 /* Number of squares a tank must be in to see it in the forests */
 #define MIN_SIGHT_DISTANCE_LEFT -1
 #define MIN_SIGHT_DISTANCE_RIGHT 1
-
-/* The different types of games there are */
-
-#ifndef _LABELLEN_ENUM
-#define _LABELLEN_ENUM
-
-typedef enum { lblNone, lblShort, lblLong } labelLen;
-
-#endif
-
-#ifndef _UPDATETYPE_ENUM
-#define _UPDATETYPE_ENUM
-typedef enum { left, right, up, down, redraw } updateType;
-
-#endif
-
-#ifndef _AITYPE_ENUM
-#define _AITYPE_ENUM
-
-typedef enum { aiNone, aiYes, aiYesAdvantage } aiType;
-
-#endif
-
-#ifndef _GAMETYPE_ENUM
-#define _GAMETYPE_ENUM
-
-typedef enum { gameOpen = 1, gameTournament, gameStrictTournament } gameType;
-
-#endif
 
 #ifndef _TANK_H
 typedef enum {
@@ -163,14 +135,6 @@ typedef struct {
   BYTE pixelX;
   BYTE pixelY;
 } screenGunsight;
-
-/* Button Pressed - These are the valid items
-   that should be passed to this module*/
-#ifndef _UPDATETYPE_ENUM
-#define _UPDATETYPE_ENUM
-typedef enum { left, right, up, down, redraw } updateType;
-
-#endif
 
 #ifndef _BUILDSELECT_ENUM
 #define _BUILDSELECT_ENUM
