@@ -37,7 +37,7 @@ BYTE BuildingState::addItem(MapPoint pos) {
       return RUBBLE;
     }
   } else {
-    buildings_[pos] = LIFE;
+    buildings_.insert({pos, LIFE});
   }
 
   return HALFBUILDING;

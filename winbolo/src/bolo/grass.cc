@@ -40,7 +40,7 @@ BYTE GrassState::addItem(MapPoint pos) {
       return DEATH_RETURN;
     }
   } else {
-    grasses_[pos] = LIFE;
+    grasses_.insert({pos, LIFE});
   }
 
   return GRASS;

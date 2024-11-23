@@ -46,7 +46,7 @@ class RubbleState {
   //
   // ARGUMENTS:
   //  pos - The rubble position
-  void removePos(MapPoint pos);
+  void removePos(MapPoint pos) { rubbles_.erase(pos); }
 
  private:
   // A map from points to their lives.
