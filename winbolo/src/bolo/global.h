@@ -270,6 +270,14 @@ typedef char ShortStringBuf[SHORTSTRINGSIZE];
 /* Used to bitmask with a key code to see if it's pressed or not */
 #define PRESSED 0x80
 
+/* Defines the screen sizes */
+#define MAIN_SCREEN_SIZE_X 15 /*16 is bolo window size  times 16 pixels */
+#define MAIN_SCREEN_SIZE_Y 15 /*18 is bolo window size  times 16 pixels */
+
+/* Size of the back buffer */
+#define MAIN_BACK_BUFFER_SIZE_X (MAIN_SCREEN_SIZE_X + 2)
+#define MAIN_BACK_BUFFER_SIZE_Y (MAIN_SCREEN_SIZE_Y + 2)
+
 #include "../server/threads.h"
 
 #endif /* GLOBAL_H */

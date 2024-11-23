@@ -33,6 +33,7 @@
 #include "building.h"
 #include "explosions.h"
 #include "floodfill.h"
+#include "frontend.h"
 #include "gametype.h"
 #include "global.h"
 #include "grass.h"
@@ -50,13 +51,6 @@
 /* Defines */
 typedef unsigned long DWORD;
 
-/* Defines the screen sizes */
-#define MAIN_SCREEN_SIZE_X 15 /*16 is bolo window size  times 16 pixels */
-#define MAIN_SCREEN_SIZE_Y 15 /*18 is bolo window size  times 16 pixels */
-
-/* Size of the back buffer */
-#define MAIN_BACK_BUFFER_SIZE_X (MAIN_SCREEN_SIZE_X + 2)
-#define MAIN_BACK_BUFFER_SIZE_Y (MAIN_SCREEN_SIZE_Y + 2)
 /* The game timer is 20 milliseconds between events the game_tick_length is half
  * this, this is to give more resolution for tank movement and aiming*/
 #define GAME_TICK_LENGTH 10 /* 20 */
@@ -78,56 +72,12 @@ typedef unsigned long DWORD;
 #define MIN_SIGHT_DISTANCE_RIGHT 1
 
 /* Type definitions */
-/* The screen object - Details what tiles are on the screen*/
-typedef struct screenObj *screen;
-struct screenObj {
-  BYTE screenItem[MAIN_BACK_BUFFER_SIZE_X][MAIN_BACK_BUFFER_SIZE_Y];
-};
-/* Screen Mines - Array of boolean values that report whether
-a tile on the screen whold have a mine on it*/
-typedef struct screenMineObj *screenMines;
-struct screenMineObj {
-  bool mineItem[MAIN_BACK_BUFFER_SIZE_X][MAIN_BACK_BUFFER_SIZE_Y];
-};
-
-/* Defines the gunsight position on the screen */
-/* If turned off mapX is set to NO_GUNSIGHT */
-typedef struct {
-  int mapX;
-  BYTE mapY;
-  BYTE pixelX;
-  BYTE pixelY;
-} screenGunsight;
 
 #ifndef _BUILDSELECT_ENUM
 #define _BUILDSELECT_ENUM
 
 /* The type of building operation currently being selected */
 typedef enum { BsTrees, BsRoad, BsBuilding, BsPillbox, BsMine } buildSelect;
-#endif
-
-#ifndef _PLAYERNUMBERS_ENUM
-#define _PLAYERNUMBERS_ENUM
-/* Player Numbers */
-typedef enum {
-  player01,
-  player02,
-  player03,
-  player04,
-  player05,
-  player06,
-  player07,
-  player08,
-  player09,
-  player10,
-  player11,
-  player12,
-  player13,
-  player14,
-  player15,
-  player16
-} playerNumbers;
-
 #endif
 
 #ifdef __cplusplus
