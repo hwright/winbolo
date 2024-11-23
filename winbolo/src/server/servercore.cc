@@ -90,7 +90,7 @@ static std::optional<bolo::BuildingState> serverBlds;
 static explosions serverExpl = nullptr;
 static std::optional<bolo::FloodFill> serverFF;
 static std::optional<bolo::GrassState> serverGrass;
-static mines serverMines = nullptr;
+static std::optional<bolo::MineTracker> serverMines;
 static std::optional<bolo::MineExplosionTracker> serverMinesExp;
 static std::optional<bolo::RubbleState> serverRubble;
 static std::optional<bolo::SwampState> serverSwamp;
@@ -168,7 +168,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines,
   logCreate();
   serverFF.emplace();
   tkExplosionCreate(&serverTankExp);
-  minesCreate(&serverMines, hiddenMines);
+  serverMines.emplace(hiddenMines);
   serverMinesExp.emplace();
   playersRejoinCreate();
 
@@ -243,7 +243,7 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn,
   tkExplosionCreate(&serverTankExp);
   netPNBCreate(&serverPNB);
   netMNTCreate(&serverNMT);
-  minesCreate(&serverMines, hiddenMines);
+  serverMines.emplace(hiddenMines);
   serverMinesExp.emplace();
   logCreate();
 
@@ -296,7 +296,7 @@ void serverCoreDestroy() {
   netPNBDestroy(&serverPNB);
   netNMTDestroy(&serverNMT);
   tkExplosionDestroy(&serverTankExp);
-  minesDestroy(&serverMines);
+  serverMines = std::nullopt;
   serverMinesExp = std::nullopt;
   logDestroy();
   playersDestroy(&splrs);
@@ -488,9 +488,7 @@ gameType serverCoreGetActualGameType() { return gameTypeGet(&sGame); }
  *ARGUMENTS:
  *
  *********************************************************/
-bool serverCoreGetAllowHiddenMines() {
-  return minesGetAllowHiddenMines(&serverMines);
-}
+bool serverCoreGetAllowHiddenMines() { return serverMines->allowHidden(); }
 
 /*********************************************************
  *NAME:          serverCoreGetGameStartDelay
@@ -1754,7 +1752,7 @@ bolo::GrassState *serverCoreGetGrass() { return &*serverGrass; }
  *ARGUMENTS:
  *
  *********************************************************/
-mines *serverCoreGetMines() { return &serverMines; }
+bolo::MineTracker *serverCoreGetMines() { return &*serverMines; }
 
 /*********************************************************
  *NAME:          serverGetMinesExp

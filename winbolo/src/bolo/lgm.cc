@@ -520,7 +520,7 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
 
   if (proceed) {
     /* Check for a visible mine */
-    if (minesExistPos(screenGetMines(), mapX, mapY)) {
+    if (screenGetMines()->existPos(MapPoint{.x = mapX, .y = mapY})) {
       *isMine = true;
       proceed = false;
       messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT),
@@ -1133,7 +1133,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
                     bmx, bmy);
           mapSetPos(mp, bmx, bmy, (BYTE)(terrain + MINE_SUBTRACT), false,
                     false);
-          minesAddItem(screenGetMines(), bmx, bmy);
+          screenGetMines()->addItem(MapPoint{.x = bmx, .y = bmy});
           (*lgman)->numMines = 0;
           soundDist(manLayingMineNear, bmx, bmy);
         }
@@ -1153,7 +1153,8 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
           soundDist(manBuildingNear, bmx, bmy);
         }
       } else {
-        if (!isPill && !isBase && !minesExistPos(screenGetMines(), bmx, bmy) &&
+        if (!isPill && !isBase &&
+            !screenGetMines()->existPos(MapPoint{.x = bmx, .y = bmy}) &&
             terrain != BUILDING && terrain != HALFBUILDING &&
             terrain != RIVER && terrain != BOAT && terrain != DEEP_SEA) {
           if (isMine) {

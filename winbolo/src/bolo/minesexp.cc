@@ -57,7 +57,7 @@ void MineExplosionTracker::Update(map *mp, pillboxes *pb, bases *bs, lgm **lgms,
       time -= 1;
     } else {
       checkFill(mp, pb, bs, lgms, numLgm, pos);
-      minesRemoveItem(screenGetMines(), pos.x, pos.y);
+      screenGetMines()->removeItem(pos);
       removals.push_back(pos);
     }
   }
@@ -73,7 +73,7 @@ void MineExplosionTracker::checkFill(map *mp, pillboxes *pb, bases *bs,
   BYTE count;    /* Looping variable */
 
   terrain = mapGetPos(mp, pos);
-  minesRemoveItem(screenGetMines(), pos.x, pos.y);
+  screenGetMines()->removeItem(pos);
   if (terrain >= MINE_START && terrain <= MINE_END) {
     mapSetPos(mp, pos, CRATER, false, false);
     soundDist(mineExplosionNear, pos.x, pos.y);
