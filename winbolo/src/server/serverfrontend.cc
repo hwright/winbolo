@@ -1134,7 +1134,7 @@ bolo::GrassState *clientGetGrass() { return nullptr; }
  *ARGUMENTS:
  *
  *********************************************************/
-mines *clientGetMines() { return nullptr; }
+MineTracker *clientGetMines() { return nullptr; }
 
 /*********************************************************
  *NAME:          clientGetMinesExp

@@ -362,14 +362,14 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
       if (playersIsAllie(screenGetPlayers(), playersGetSelf(screenGetPlayers()),
                          owner)) {
         needCalc = true;
-        minesAddItem(screenGetMines(), opt1, opt2);
+        screenGetMines()->addItem(MapPoint{.x = opt1, .y = opt2});
       }
       /* Play the sound */
       soundDist(manLayingMineNear, opt1, opt2);
       break;
     case NMNT_MINETANKPLACE:
       needCalc = true;
-      minesAddItem(screenGetMines(), opt1, opt2);
+      screenGetMines()->addItem(MapPoint{.x = opt1, .y = opt2});
       pos = mapGetPos(mp, opt1, opt2);
       if (pos < MINE_START) {
         mapSetPos(mp, opt1, opt2, (BYTE)(pos + MINE_SUBTRACT), false, false);

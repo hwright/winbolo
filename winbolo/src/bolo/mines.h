@@ -35,100 +35,43 @@
 
 #define MINES_ARRAY_SIZE 256 /* maps are 256x256 units square */
 
-/* Type definitions */
+class MineTracker {
+ public:
+  explicit MineTracker(bool allowHidden) : allowHidden_(allowHidden) {}
 
-typedef struct minesObj *mines;
+  // Move-only
+  MineTracker(MineTracker &) = delete;
+  MineTracker &operator=(MineTracker &) = delete;
 
-struct minesObj {
+  // Returns whether hidden mines are allowed or not
+  bool allowHidden() { return allowHidden_; }
+
+  // Add a mine. Returns whether a mine already existed
+  // at that position.
+  //
+  // ARGUMENTS:
+  //  pos - The mine position.
+  bool addItem(MapPoint pos);
+
+  // Remove a mine.
+  //
+  // ARGUMENTS:
+  //  pos - The mine position.
+  void removeItem(MapPoint pos);
+
+  // Return whether a mine can be seen at that position.
+  // Only called if a mine does exist at the map square
+  // but checking here to see if the player knows about it
+  //
+  // ARGUMENTS:
+  //  pos - The mine position.
+  bool existPos(MapPoint pos);
+
+ private:
   std::array<std::bitset<MINES_ARRAY_SIZE>, MINES_ARRAY_SIZE> mines_;
+
   // Are hidden mines allowed?
-  bool minesHiddenMines;
+  bool allowHidden_;
 };
-
-/* Prototypes */
-
-/*********************************************************
- *NAME:          minesCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/1/98
- *LAST MODIFIED: 29/1/98
- *PURPOSE:
- *  Creates and initilises the mines structure.
- *
- *ARGUMENTS:
- *  value - Pointer to the map file
- *********************************************************/
-void minesCreate(mines *visMines, bool allowHiddenMines);
-
-/*********************************************************
- *NAME:          mapDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/10/98
- *LAST MODIFIED: 29/10/98
- *PURPOSE:
- *  Destroys the mines data structure. Also frees memory.
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void minesDestroy(mines *visMines);
-
-/*********************************************************
- *NAME:          minesGetAllowHiddenMines
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/1/99
- *LAST MODIFIED: 29/1/99
- *PURPOSE:
- *  Returns whether hidden mines are allowed or not
- *
- *ARGUMENTS:
- *
- *********************************************************/
-bool minesGetAllowHiddenMines(mines *visMines);
-
-/*********************************************************
- *NAME:          minesAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/1/99
- *LAST MODIFIED:  3/2/99
- *PURPOSE:
- * Adds a mine to the structure. Returns whether a mine
- * already existed at that position.
- *
- *ARGUMENTS:
- *  xValue   - X Map Coordinate
- *  yValue   - Y Map Coordinate
- *********************************************************/
-bool minesAddItem(mines *visMines, BYTE xValue, BYTE yValue);
-
-/*********************************************************
- *NAME:          minesRemoveItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 8/1/99
- *LAST MODIFIED: 8/2/99
- *PURPOSE:
- * Removes a mine to the structure.
- *
- *ARGUMENTS:
- *  xValue   - X Map Coordinate
- *  yValue   - Y Map Coordinate
- *********************************************************/
-void minesRemoveItem(mines *visMines, BYTE xValue, BYTE yValue);
-
-/*********************************************************
- *NAME:          minesExistPos
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/1/99
- *LAST MODIFIED: 29/1/99
- *PURPOSE:
- * Returns whether a mine can be seen at that position.
- * Only called if a mine does exist at the map square
- * but checking here to see if the player knows about it
- *
- *ARGUMENTS:
- *  xValue   - X Map Coordinate
- *  yValue   - Y Map Coordinate
- *********************************************************/
-bool minesExistPos(mines *visMines, BYTE xValue, BYTE yValue);
 
 #endif /* MINES_H */

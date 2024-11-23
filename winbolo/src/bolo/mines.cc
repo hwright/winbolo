@@ -30,112 +30,25 @@
 #include "global.h"
 #include "screen.h"
 
-/* Prototypes */
-
-/*********************************************************
- *NAME:          minesCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/1/98
- *LAST MODIFIED: 29/1/98
- *PURPOSE:
- *  Creates and initilises the mines structure.
- *
- *ARGUMENTS:
- *  value - Pointer to the map file
- *********************************************************/
-void minesCreate(mines *visMines, bool allowHiddenMines) {
-  *visMines = new minesObj;
-  (*visMines)->minesHiddenMines = allowHiddenMines;
-}
-
-/*********************************************************
- *NAME:          mapDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/10/98
- *LAST MODIFIED: 29/10/98
- *PURPOSE:
- *  Destroys the mines data structure. Also frees memory.
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void minesDestroy(mines *visMines) { delete *visMines; }
-
-/*********************************************************
- *NAME:          minesGetAllowHiddenMines
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/1/99
- *LAST MODIFIED: 29/1/99
- *PURPOSE:
- *  Returns whether hidden mines are allowed or not
- *
- *ARGUMENTS:
- *
- *********************************************************/
-bool minesGetAllowHiddenMines(mines *visMines) {
-  return (*visMines)->minesHiddenMines;
-}
-
-/*********************************************************
- *NAME:          minesAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/1/99
- *LAST MODIFIED:  3/2/99
- *PURPOSE:
- * Adds a mine to the structure. Returns whether a mine
- * already existed at that position.
- *
- *ARGUMENTS:
- *  xValue   - X Map Coordinate
- *  yValue   - Y Map Coordinate
- *********************************************************/
-bool minesAddItem(mines *visMines, BYTE xValue, BYTE yValue) {
+bool MineTracker::addItem(MapPoint pos) {
   // bitset doesn't play nicely with std::exchange.
-  bool returnValue = (*visMines)->mines_[xValue][yValue];
-  (*visMines)->mines_[xValue][yValue] = true;
+  bool returnValue = mines_[pos.x][pos.y];
+  mines_[pos.x][pos.y] = true;
   return returnValue;
 }
 
-/*********************************************************
- *NAME:          minesRemoveItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 8/1/99
- *LAST MODIFIED: 8/2/99
- *PURPOSE:
- * Removes a mine to the structure.
- *
- *ARGUMENTS:
- *  xValue   - X Map Coordinate
- *  yValue   - Y Map Coordinate
- *********************************************************/
-void minesRemoveItem(mines *visMines, BYTE xValue, BYTE yValue) {
-  (*visMines)->mines_[xValue][yValue] = false;
-}
+void MineTracker::removeItem(MapPoint pos) { mines_[pos.x][pos.y] = false; }
 
-/*********************************************************
- *NAME:          minesExistPos
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/1/99
- *LAST MODIFIED: 29/1/99
- *PURPOSE:
- * Returns whether a mine can be seen at that position.
- * Only called if a mine does exist at the map square
- * but checking here to see if the player knows about it
- *
- *ARGUMENTS:
- *  xValue   - X Map Coordinate
- *  yValue   - Y Map Coordinate
- *********************************************************/
-bool minesExistPos(mines *visMines, BYTE xValue, BYTE yValue) {
+bool MineTracker::existPos(MapPoint pos) {
   bool returnValue = true; /* Value to return */
 
-  if (xValue <= MAP_MINE_EDGE_LEFT || xValue >= MAP_MINE_EDGE_RIGHT ||
-      yValue <= MAP_MINE_EDGE_TOP || yValue >= MAP_MINE_EDGE_BOTTOM) {
+  if (pos.x <= MAP_MINE_EDGE_LEFT || pos.x >= MAP_MINE_EDGE_RIGHT ||
+      pos.y <= MAP_MINE_EDGE_TOP || pos.y >= MAP_MINE_EDGE_BOTTOM) {
     returnValue = true;
-  } else if ((*visMines)->minesHiddenMines) {
-    returnValue = (*visMines)->mines_[xValue][yValue];
+  } else if (allowHidden_) {
+    returnValue = mines_[pos.x][pos.y];
   } else {
-    returnValue = screenMapIsMine(xValue, yValue);
+    returnValue = screenMapIsMine(pos.x, pos.y);
   }
   return returnValue;
 }

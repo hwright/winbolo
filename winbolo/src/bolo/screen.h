@@ -1078,7 +1078,7 @@ bolo::GrassState *clientGetGrass();
  *ARGUMENTS:
  *
  *********************************************************/
-mines *clientGetMines();
+MineTracker *clientGetMines();
 
 /*********************************************************
  *NAME:          clientGetMinesExp

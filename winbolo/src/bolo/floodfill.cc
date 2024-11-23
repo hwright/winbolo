@@ -101,7 +101,7 @@ void FloodFill::checkFill(map *mp, pillboxes *pb, bases *bs, MapPoint pos) {
       below == DEEP_SEA || below == BOAT || below == RIVER) {
     /* Do fill */
     mapSetPos(mp, pos, RIVER, false, false);
-    minesRemoveItem(screenGetMines(), pos.x, pos.y);
+    screenGetMines()->removeItem(pos);
 
     /* Add items if craters */
     if (leftPos == CRATER || leftPos == MINE_CRATER) {

@@ -864,8 +864,9 @@ void mapSetPos(map *value, BYTE xValue, BYTE yValue, BYTE terrain,
   if (netGetType() == netSingle || mineClear) {
     /* Single player game */
     (*value)->mapItem[xValue][yValue] = terrain;
-    screenBrainMapSetPos(xValue, yValue, terrain,
-                         minesExistPos(screenGetMines(), xValue, yValue));
+    screenBrainMapSetPos(
+        xValue, yValue, terrain,
+        screenGetMines()->existPos(MapPoint{.x = xValue, .y = yValue}));
   } else {
     /* Multiplayer game */
     mapNetAdd(value, xValue, yValue, terrain, needSend);
@@ -1358,8 +1359,9 @@ void mapNetAdd(map *value, BYTE mx, BYTE my, BYTE terrain, bool needSend) {
       if (q->mx == mx && q->my == my && q->terrain == terrain) {
         /* Exists */
         (*value)->mapItem[mx][my] = terrain;
-        screenBrainMapSetPos(mx, my, terrain,
-                             minesExistPos(screenGetMines(), mx, my));
+        screenBrainMapSetPos(
+            mx, my, terrain,
+            screenGetMines()->existPos(MapPoint{.x = mx, .y = my}));
         if (q->prev != nullptr) {
           q->prev->next = q->next;
         } else {
@@ -1414,8 +1416,9 @@ void mapNetAdd(map *value, BYTE mx, BYTE my, BYTE terrain, bool needSend) {
       (*value)->mn = q;
     }
     (*value)->mapItem[mx][my] = terrain;
-    screenBrainMapSetPos(mx, my, terrain,
-                         minesExistPos(screenGetMines(), mx, my));
+    screenBrainMapSetPos(
+        mx, my, terrain,
+        screenGetMines()->existPos(MapPoint{.x = mx, .y = my}));
   }
 }
 
@@ -1451,8 +1454,9 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
       }
       (*value)->mapItem[q->mx][q->my] = q->oldTerrain;
       mapNetCheckWater(value, pb, bs, q->mx, q->my);
-      screenBrainMapSetPos(q->mx, q->my, (*value)->mapItem[q->mx][q->my],
-                           minesExistPos(screenGetMines(), q->mx, q->my));
+      screenBrainMapSetPos(
+          q->mx, q->my, (*value)->mapItem[q->mx][q->my],
+          screenGetMines()->existPos(MapPoint{.x = q->mx, .y = q->my}));
       //        if (q->oldTerrain == CRATER) {
       //          floodAddItem(q->mx, q->my);
       //        }
@@ -1483,8 +1487,9 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
       messageAdd(networkMessage, (char *)"\0", (char *)"pt");
       (*value)->mapItem[q->mx][q->my] = q->terrain;
       mapNetCheckWater(value, pb, bs, q->mx, q->my);
-      screenBrainMapSetPos(q->mx, q->my, (*value)->mapItem[q->mx][q->my],
-                           minesExistPos(screenGetMines(), q->mx, q->my));
+      screenBrainMapSetPos(
+          q->mx, q->my, (*value)->mapItem[q->mx][q->my],
+          screenGetMines()->existPos(MapPoint{.x = q->mx, .y = q->my}));
       needRedraw = true;
       if (q->prev != nullptr) {
         q->prev->next = q->next;
@@ -1552,7 +1557,7 @@ void mapNetIncomingItem(map *value, BYTE mx, BYTE my, BYTE terrain) {
       done = true;
       if ((*value)->mapItem[mx][my] == RIVER ||
           (*value)->mapItem[mx][my] == BOAT) {
-        minesRemoveItem(screenGetMines(), mx, my);
+        screenGetMines()->removeItem(MapPoint{.x = mx, .y = my});
         screenBrainMapSetPos(q->mx, q->my, (*value)->mapItem[mx][my], false);
       }
       del = q;
@@ -1619,8 +1624,9 @@ void mapNetPacket(map *value, BYTE mx, BYTE my, BYTE terrain) {
   while (NonEmpty(q) && !done) {
     if (q->mx == mx && q->my == my && q->terrain == terrain) {
       (*value)->mapItem[mx][my] = terrain;
-      screenBrainMapSetPos(mx, my, (*value)->mapItem[mx][my],
-                           minesExistPos(screenGetMines(), mx, my));
+      screenBrainMapSetPos(
+          mx, my, (*value)->mapItem[mx][my],
+          screenGetMines()->existPos(MapPoint{.x = mx, .y = my}));
       if (q->prev != nullptr) {
         q->prev->next = q->next;
       } else {
@@ -1643,8 +1649,9 @@ void mapNetPacket(map *value, BYTE mx, BYTE my, BYTE terrain) {
 
   if (!done) {
     (*value)->mapItem[mx][my] = terrain;
-    screenBrainMapSetPos(mx, my, (*value)->mapItem[mx][my],
-                         minesExistPos(screenGetMines(), mx, my));
+    screenBrainMapSetPos(
+        mx, my, (*value)->mapItem[mx][my],
+        screenGetMines()->existPos(MapPoint{.x = mx, .y = my}));
     if (terrain == BUILDING || terrain == ROAD) {
       /* Play the building sound */
       soundDist(manBuildingNear, mx, my);
@@ -1855,7 +1862,7 @@ void mapNetCheckWater(map *value, pillboxes *pb, bases *bs, BYTE xValue,
         below == DEEP_SEA || below == BOAT || below == RIVER) {
       /* Do fill */
       (*value)->mapItem[xValue][yValue] = RIVER;
-      minesRemoveItem(screenGetMines(), xValue, yValue);
+      screenGetMines()->removeItem(MapPoint{.x = xValue, .y = yValue});
     }
   }
 }

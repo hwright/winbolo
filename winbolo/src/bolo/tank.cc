@@ -2388,50 +2388,51 @@ void tankMineDamage(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE mx,
  *********************************************************/
 void tankNearMines(map *mp, BYTE mx, BYTE my) {
   bool needRecalc; /* Is a screen recalc required */
+  MapPoint pos = MapPoint{.x = mx, .y = my};
 
   needRecalc = false;
   if (mapIsMine(mp, mx, my)) {
-    if (!minesAddItem(screenGetMines(), mx, my)) {
+    if (!screenGetMines()->addItem(pos)) {
       needRecalc = true;
     }
   }
   if (mapIsMine(mp, (BYTE)(mx - 1), (BYTE)(my - 1))) {
-    if (!minesAddItem(screenGetMines(), (BYTE)(mx - 1), (BYTE)(my - 1))) {
+    if (!screenGetMines()->addItem(pos.NW())) {
       needRecalc = true;
     }
   }
   if (mapIsMine(mp, (BYTE)(mx - 1), my)) {
-    if (!minesAddItem(screenGetMines(), (BYTE)(mx - 1), my)) {
+    if (!screenGetMines()->addItem(pos.W())) {
       needRecalc = true;
     }
   }
   if (mapIsMine(mp, (BYTE)(mx - 1), (BYTE)(my + 1))) {
-    if (!minesAddItem(screenGetMines(), (BYTE)(mx - 1), (BYTE)(my + 1))) {
+    if (!screenGetMines()->addItem(pos.SW())) {
       needRecalc = true;
     }
   }
   if (mapIsMine(mp, mx, (BYTE)(my - 1))) {
-    if (!minesAddItem(screenGetMines(), mx, (BYTE)(my - 1))) {
+    if (!screenGetMines()->addItem(pos.S())) {
       needRecalc = true;
     }
   }
   if (mapIsMine(mp, mx, (BYTE)(my + 1))) {
-    if (!minesAddItem(screenGetMines(), mx, (BYTE)(my + 1))) {
+    if (!screenGetMines()->addItem(pos.S())) {
       needRecalc = true;
     }
   }
   if (mapIsMine(mp, (BYTE)(mx + 1), (BYTE)(my - 1))) {
-    if (!minesAddItem(screenGetMines(), (BYTE)(mx + 1), (BYTE)(my - 1))) {
+    if (!screenGetMines()->addItem(pos.NE())) {
       needRecalc = true;
     }
   }
   if (mapIsMine(mp, (BYTE)(mx + 1), my)) {
-    if (!minesAddItem(screenGetMines(), (BYTE)(mx + 1), my)) {
+    if (!screenGetMines()->addItem(pos.E())) {
       needRecalc = true;
     }
   }
   if (mapIsMine(mp, (BYTE)(mx + 1), (BYTE)(my + 1))) {
-    if (!minesAddItem(screenGetMines(), (BYTE)(mx + 1), (BYTE)(my + 1))) {
+    if (!screenGetMines()->addItem(pos.SE())) {
       needRecalc = true;
     }
   }

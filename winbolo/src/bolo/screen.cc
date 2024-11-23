@@ -96,7 +96,7 @@ static std::optional<bolo::BuildingState> clientBlds;
 static explosions clientExpl = nullptr;
 static std::optional<bolo::FloodFill> clientFF;
 static std::optional<bolo::GrassState> clientGrass;
-static mines clientMines = nullptr;
+static std::optional<MineTracker> clientMines;
 static std::optional<bolo::MineExplosionTracker> clientMinesExp;
 static std::optional<bolo::RubbleState> clientRubble;
 static std::optional<bolo::SwampState> clientSwamp;
@@ -174,7 +174,7 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   xOffset = 0;
   yOffset = 0;
   mapName[0] = '\0';
-  minesCreate(&clientMines, hiddenMines);
+  clientMines.emplace(hiddenMines);
   gmeStartDelay = srtDelay;
   gmeLength = gmeLen;
   needScreenReCalc = false;
@@ -541,8 +541,8 @@ void screenUpdateView(updateType value) {
       screenBrainMapSetPos(
           (BYTE)(count + xOffset), (BYTE)(count2 + yOffset),
           mapGetPos(&mymp, (BYTE)(count + xOffset), (BYTE)(count2 + yOffset)),
-          minesExistPos(&clientMines, (BYTE)(count + xOffset),
-                        (BYTE)(count2 + yOffset)));
+          clientMines->existPos(MapPoint{.x = (BYTE)(count + xOffset),
+                                         .y = (BYTE)(count2 + yOffset)}));
     }
   }
 }
@@ -607,13 +607,13 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
     // its a building, thats impossible, so, remove the mine and reset the
     // terrain back to its correct value.
     if (currentPos >= HALFBUILDING + MINE_SUBTRACT && currentPos != DEEP_SEA) {
-      minesRemoveItem(screenGetMines(), xValue, yValue);
+      screenGetMines()->removeItem(MapPoint{.x = xValue, .y = yValue});
       (*mineView).mineItem[scrX][scrY] = false;
       currentPos = currentPos - MINE_SUBTRACT;
       mapSetPos(&mymp, xValue, yValue, currentPos, true, true);
     }
     if (mapIsMine(&mymp, xValue, yValue)) {
-      if (minesExistPos(&clientMines, xValue, yValue)) {
+      if (clientMines->existPos(MapPoint{.x = xValue, .y = yValue})) {
         (*mineView).mineItem[scrX][scrY] = true;
       }
       if (currentPos != DEEP_SEA) {
@@ -1564,9 +1564,7 @@ BYTE screenGetNumPlayers() { return playersGetNumPlayers(screenGetPlayers()); }
  *ARGUMENTS:
  *
  *********************************************************/
-bool screenGetAllowHiddenMines() {
-  return minesGetAllowHiddenMines(&clientMines);
-}
+bool screenGetAllowHiddenMines() { return clientMines->allowHidden(); }
 
 /*********************************************************
  *NAME:          screenSetAllowHiddenMines
@@ -1580,8 +1578,8 @@ bool screenGetAllowHiddenMines() {
  *  hidden - true if hidden mines are allowed
  *********************************************************/
 void screenSetAllowHiddenMines(bool hidden) {
-  minesDestroy(&clientMines);
-  minesCreate(&clientMines, hidden);
+  // TODO: This flushes all existing mines.
+  clientMines.emplace(hidden);
 }
 
 /*********************************************************
@@ -2926,7 +2924,7 @@ void screenMakeBrainViewData(BYTE *buff, BYTE leftPos, BYTE rightPos,
         } else if (buff[pos] >= MINE_START && buff[pos] <= MINE_END) {
           buff[pos] = buff[pos] - MINE_SUBTRACT;
         }
-        if (minesExistPos(&clientMines, count2, count1)) {
+        if (clientMines->existPos(MapPoint{.x = count2, .y = count1})) {
           buff[pos] |= TERRAIN_MINE;
         }
       }
@@ -3134,7 +3132,7 @@ void screenMakeBrainInfo(BrainInfo *value, bool first) {
   value->gameinfo.start_delay = gmeStartDelay;
   value->gameinfo.time_limit = gmeLength;
 
-  if (minesGetAllowHiddenMines(&clientMines)) {
+  if (clientMines->allowHidden()) {
     value->gameinfo.hidden_mines = GAMEINFO_HIDDENMINES;
   } else {
     value->gameinfo.hidden_mines = GAMEINFO_ALLMINES_VISIBLE;
@@ -3912,7 +3910,7 @@ bolo::GrassState *clientGetGrass() { return &*clientGrass; }
  *ARGUMENTS:
  *
  *********************************************************/
-mines *clientGetMines() { return &clientMines; }
+MineTracker *clientGetMines() { return &*clientMines; }
 
 /*********************************************************
  *NAME:          clientGetMinesExp
