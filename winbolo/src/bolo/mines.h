@@ -18,13 +18,10 @@
 #ifndef MINES_H
 #define MINES_H
 
-/* Defines */
 #include <array>
 #include <bitset>
 
 #include "global.h"
-
-#define MINES_ARRAY_SIZE 256 /* maps are 256x256 units square */
 
 class MineTracker {
  public:
@@ -59,8 +56,11 @@ class MineTracker {
   bool existPos(MapPoint pos);
 
  private:
+  // maps are 256x256 units square
+  static constexpr int ARRAY_SIZE = 256;
+
   // TODO: Consider using a set here.  It depends on how sparse the mines are.
-  std::array<std::bitset<MINES_ARRAY_SIZE>, MINES_ARRAY_SIZE> mines_;
+  std::array<std::bitset<ARRAY_SIZE>, ARRAY_SIZE> mines_;
 
   // Are hidden mines allowed?
   bool allowHidden_;
