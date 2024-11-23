@@ -77,43 +77,6 @@ typedef unsigned long DWORD;
 #define MIN_SIGHT_DISTANCE_LEFT -1
 #define MIN_SIGHT_DISTANCE_RIGHT 1
 
-#ifndef _TANK_H
-typedef enum {
-  TNONE,       /* No Buttons being pressed */
-  TLEFT,       /* Left button is being pressed */
-  TRIGHT,      /* Right button is being pressed */
-  TACCEL,      /* Acellerate Button */
-  TDECEL,      /* Decellerate Button is being pressed */
-  TLEFTACCEL,  /* Left + Accelerate */
-  TRIGHTACCEL, /* Right + Acellerate */
-  TLEFTDECEL,  /* Left + Decellerate */
-  TRIGHTDECEL  /* Right + Decellearate */
-} tankButton;
-#endif
-
-#ifndef BASES_H
-typedef enum {
-  baseDead,
-  baseOwnGood,
-  baseAllieGood,
-  baseNeutral,
-  baseEvil
-} baseAlliance;
-#endif
-
-#ifndef PILLBOX_H
-typedef enum {
-  pillDead,
-  pillAllie,
-  pillGood,
-  pillNeutral,
-  pillEvil,
-  pillTankGood,
-  pillTankAllie,
-  pillTankEvil
-} pillAlliance;
-#endif
-
 /* Type definitions */
 /* The screen object - Details what tiles are on the screen*/
 typedef struct screenObj *screen;
