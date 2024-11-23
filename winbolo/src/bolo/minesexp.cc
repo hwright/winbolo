@@ -45,111 +45,34 @@
 #include "swamp.h"
 #include "types.h"
 
-/*********************************************************
- *NAME:          minesExpCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/1/99
- *LAST MODIFIED: 20/1/99
- *PURPOSE:
- *  Sets up the MinesExp data structure
- *
- *ARGUMENTS:
- * me - Pointer to the mines object
- *********************************************************/
-void minesExpCreate(minesExp *me) { *me = new minesExpObj; }
-
-/*********************************************************
- *NAME:          minesExpAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/1/99
- *LAST MODIFIED: 2/11/99
- *PURPOSE:
- *  Adds an item to the minesExp data structure.
- *
- *ARGUMENTS:
- *  me - Pointer to the mines object
- *  mp - Map Structure
- *  x  - X co-ord
- *  y  - Y co-ord
- *********************************************************/
-void minesExpAddItem(minesExp *me, map *mp, BYTE x, BYTE y) {
-  MapPoint pos{.x = x, .y = y};
-  if (!(*me)->explosions_.contains(pos)) {
-    (*me)->explosions_.insert({pos, MINES_EXPLOSION_WAIT});
+void MineExplosionTracker::addItem(map *mp, MapPoint pos) {
+  if (!explosions_.contains(pos)) {
+    explosions_.insert({pos, MINES_EXPLOSION_WAIT});
   }
 }
 
-/*********************************************************
- *NAME:          minesExpDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/1/99
- *LAST MODIFIED: 20/1/99
- *PURPOSE:
- *  Destroys and frees memory for the minesExp data
- *  structure
- *
- *ARGUMENTS:
- *  me - Pointer to the mines object
- *********************************************************/
-void minesExpDestroy(minesExp *me) { delete *me; }
-
-/*********************************************************
- *NAME:          minesExpUpdate
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/1/99
- *LAST MODIFIED: 3/10/00
- *PURPOSE:
- *  Game tick has happened. Update flooding
- *
- *ARGUMENTS:
- *  me     - Pointer to the mines object
- *  mp     - Pointer to the map structure
- *  pb     - Pointer to the pillboxes structure
- *  bs     - Pointer to the bases structure
- *  lgms   - Array of lgms
- *  numLgm - Number of lgms in the array
- *********************************************************/
-void minesExpUpdate(minesExp *me, map *mp, pillboxes *pb, bases *bs, lgm **lgms,
-                    BYTE numLgm) {
+void MineExplosionTracker::Update(map *mp, pillboxes *pb, bases *bs, lgm **lgms,
+                                  BYTE numLgm) {
   std::vector<MapPoint> removals;
 
-  for (auto &[pos, time] : (*me)->explosions_) {
+  for (auto &[pos, time] : explosions_) {
     if (time > 0) {
       time -= 1;
     } else {
-      minesExpCheckFill(me, mp, pb, bs, lgms, numLgm, pos.x, pos.y);
+      checkFill(mp, pb, bs, lgms, numLgm, pos);
       minesRemoveItem(screenGetMines(), pos.x, pos.y);
       removals.push_back(pos);
     }
   }
 
   for (auto pos : removals) {
-    (*me)->explosions_.erase(pos);
+    explosions_.erase(pos);
   }
 }
 
-/*********************************************************
- *NAME:          minesExpCheckFill
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/01/99
- *LAST MODIFIED: 04/04/02
- *PURPOSE:
- *  Time to fill if required. Also if it does adds
- *  surrounding items to minesExp Data Structure.
- *
- *ARGUMENTS:
- *  me     - Pointer to the mines object
- *  mp     - Pointer to the map structure
- *  pb     - Pointer to the pillboxes structure
- *  bs     - Pointer to the bases structure
- *  lgms   - Array of lgms
- *  numLgm - Number of lgms in the array
- *  mx     - Map X Position
- *  my     - Map Y Position
- *********************************************************/
-void minesExpCheckFill(minesExp *me, map *mp, pillboxes *pb, bases *bs,
-                       lgm **lgms, BYTE numLgm, BYTE mx, BYTE my) {
-  BYTE pos;      /* Map pos being worked on */
+void MineExplosionTracker::checkFill(map *mp, pillboxes *pb, bases *bs,
+                                     lgm **lgms, BYTE numLgm, MapPoint pos) {
+  BYTE terrain;  /* Map pos being worked on */
   BYTE count;    /* Looping variable */
   bool abovePos; /* Are squares around mines? */
   bool belowPos;
@@ -160,63 +83,64 @@ void minesExpCheckFill(minesExp *me, map *mp, pillboxes *pb, bases *bs,
   belowPos = false;
   leftPos = false;
   rightPos = false;
-  pos = mapGetPos(mp, mx, my);
-  minesRemoveItem(screenGetMines(), mx, my);
-  if (pos >= MINE_START && pos <= MINE_END) {
-    mapSetPos(mp, mx, my, CRATER, false, false);
-    soundDist(mineExplosionNear, mx, my);
+  terrain = mapGetPos(mp, pos);
+  minesRemoveItem(screenGetMines(), pos.x, pos.y);
+  if (terrain >= MINE_START && terrain <= MINE_END) {
+    mapSetPos(mp, pos, CRATER, false, false);
+    soundDist(mineExplosionNear, pos.x, pos.y);
     count = 1;
     while (count <= numLgm) {
       lgmDeathCheck(lgms[count - 1], mp, pb, bs,
-                    (WORLD)((mx << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE),
-                    (WORLD)((my << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE),
+                    (WORLD)((pos.x << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE),
+                    (WORLD)((pos.y << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE),
                     NEUTRAL);
       count++;
     }
-    screenCheckTankMineDamage(mx, my);
-    explosionsAddItem(screenGetExplosions(), mx, my, 0, 0, EXPLOSION_START);
-    screenGetFloodFill()->addItem(MapPoint{.x = mx, .y = my});
+    screenCheckTankMineDamage(pos.x, pos.y);
+    explosionsAddItem(screenGetExplosions(), pos.x, pos.y, 0, 0,
+                      EXPLOSION_START);
+    screenGetFloodFill()->addItem(pos);
     /* Remove Items from grass/swamp/rubble data stuctures */
-    switch (pos - MINE_SUBTRACT) {
+    switch (terrain - MINE_SUBTRACT) {
       case GRASS:
-        screenGetGrass()->removePos(MapPoint{.x = mx, .y = my});
+        screenGetGrass()->removePos(pos);
         break;
       case SWAMP:
-        screenGetSwamp()->removePos(MapPoint{.x = mx, .y = my});
+        screenGetSwamp()->removePos(pos);
         break;
       case RUBBLE:
-        screenGetRubble()->removePos(MapPoint{.x = mx, .y = my});
+        screenGetRubble()->removePos(pos);
         break;
     }
-    pos = mapGetPos(mp, mx, (BYTE)(my - 1));
-    if (pos >= MINE_START && pos <= MINE_END) {
+    terrain = mapGetPos(mp, pos.N());
+    if (terrain >= MINE_START && terrain <= MINE_END) {
       abovePos = true;
     }
-    pos = mapGetPos(mp, mx, (BYTE)(my + 1));
-    if (pos >= MINE_START && pos <= MINE_END) {
+    terrain = mapGetPos(mp, pos.S());
+    if (terrain >= MINE_START && terrain <= MINE_END) {
       belowPos = true;
     }
-    pos = mapGetPos(mp, (BYTE)(mx - 1), my);
-    if (pos >= MINE_START && pos <= MINE_END) {
+    terrain = mapGetPos(mp, pos.W());
+    if (terrain >= MINE_START && terrain <= MINE_END) {
       leftPos = true;
     }
-    pos = mapGetPos(mp, (BYTE)(mx + 1), my);
-    if (pos >= MINE_START && pos <= MINE_END) {
+    terrain = mapGetPos(mp, pos.E());
+    if (terrain >= MINE_START && terrain <= MINE_END) {
       rightPos = true;
     }
 
     /* Add items if craters */
     if (leftPos) {
-      minesExpAddItem(me, mp, (BYTE)(mx - 1), my);
+      addItem(mp, pos.W());
     }
     if (rightPos) {
-      minesExpAddItem(me, mp, (BYTE)(mx + 1), my);
+      addItem(mp, pos.E());
     }
     if (abovePos) {
-      minesExpAddItem(me, mp, mx, (BYTE)(my - 1));
+      addItem(mp, pos.N());
     }
     if (belowPos) {
-      minesExpAddItem(me, mp, mx, (BYTE)(my + 1));
+      addItem(mp, pos.S());
     }
     screenReCalc();
   }

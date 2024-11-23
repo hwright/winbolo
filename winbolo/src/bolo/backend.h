@@ -1264,7 +1264,7 @@ mines *screenGetMines();
  *ARGUMENTS:
  *
  *********************************************************/
-minesExp *screenGetMinesExp();
+MineExplosionTracker *screenGetMinesExp();
 
 /*********************************************************
  *NAME:          screenGetRubble

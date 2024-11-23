@@ -524,7 +524,7 @@ mines *screenGetMines() {
  *ARGUMENTS:
  *
  *********************************************************/
-minesExp *screenGetMinesExp() {
+MineExplosionTracker *screenGetMinesExp() {
   if (!threadsGetContext()) {
     return clientGetMinesExp();
   }

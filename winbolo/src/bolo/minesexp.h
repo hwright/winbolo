@@ -35,97 +35,46 @@
 /* Time between mine explosion and add removal checks */
 #define MINES_EXPLOSION_WAIT 10
 
-/* Type structure */
+class MineExplosionTracker {
+ public:
+  MineExplosionTracker() = default;
 
-typedef struct minesExpObj *minesExp;
-struct minesExpObj {
+  // Move-only
+  MineExplosionTracker(MineExplosionTracker &) = delete;
+  MineExplosionTracker &operator=(MineExplosionTracker &) = delete;
+
+  // Adds an item to the minesExp data structure.
+  //
+  // ARGUMENTS:
+  //  mp -  Map Structure
+  //  pos - The mine position
+  void addItem(map *mp, MapPoint pos);
+
+  // Game tick has happened. Update mine explosions.
+  //
+  // ARGUMENTS:
+  //  mp     - Pointer to the map structure
+  //  pb     - Pointer to the pillboxes structure
+  //  bs     - Pointer to the bases structure
+  //  lgms   - Array of lgms
+  //  numLgm - Number of lgms in the array
+  void Update(map *mp, pillboxes *pb, bases *bs, lgm **lgms, BYTE numLgm);
+
+ private:
+  // Time to fill if required. Also if it does adds
+  // surrounding items to minesExp Data Structure.
+  //
+  // ARGUMENTS:
+  //  mp     - Pointer to the map structure
+  //  pb     - Pointer to the pillboxes structure
+  //  bs     - Pointer to the bases structure
+  //  lgms   - Array of lgms
+  //  numLgm - Number of lgms in the array
+  //  pos    - The mine position
+  void checkFill(map *mp, pillboxes *pb, bases *bs, lgm **lgms, BYTE numLgm,
+                 MapPoint pos);
+
   std::unordered_map<MapPoint, uint8_t> explosions_;
 };
-
-/* Prototypes */
-
-/*********************************************************
- *NAME:          minesExpCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/1/99
- *LAST MODIFIED: 20/1/99
- *PURPOSE:
- *  Sets up the MinesExp data structure
- *
- *ARGUMENTS:
- * me - Pointer to the mines object
- *********************************************************/
-void minesExpCreate(minesExp *me);
-
-/*********************************************************
- *NAME:          minesExpAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/1/99
- *LAST MODIFIED: 2/11/99
- *PURPOSE:
- *  Adds an item to the minesExp data structure.
- *
- *ARGUMENTS:
- *  me - Pointer to the mines object
- *  mp - Map Structure
- *  x  - X co-ord
- *  y  - Y co-ord
- *********************************************************/
-void minesExpAddItem(minesExp *me, map *mp, BYTE x, BYTE y);
-
-/*********************************************************
- *NAME:          minesExpDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/1/99
- *LAST MODIFIED: 20/1/99
- *PURPOSE:
- *  Destroys and frees memory for the minesExp data
- *  structure
- *
- *ARGUMENTS:
- *  me - Pointer to the mines object
- *********************************************************/
-void minesExpDestroy(minesExp *me);
-
-/*********************************************************
- *NAME:          minesExpUpdate
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/1/99
- *LAST MODIFIED: 3/10/00
- *PURPOSE:
- *  Game tick has happened. Update flooding
- *
- *ARGUMENTS:
- *  me     - Pointer to the mines object
- *  mp     - Pointer to the map structure
- *  pb     - Pointer to the pillboxes structure
- *  bs     - Pointer to the bases structure
- *  lgms   - Array of lgms
- *  numLgm - Number of lgms in the array
- *********************************************************/
-void minesExpUpdate(minesExp *me, map *mp, pillboxes *pb, bases *bs, lgm **lgms,
-                    BYTE numLgm);
-
-/*********************************************************
- *NAME:          minesExpCheckFill
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/01/99
- *LAST MODIFIED: 04/04/02
- *PURPOSE:
- *  Time to fill if required. Also if it does adds
- *  surrounding items to minesExp Data Structure.
- *
- *ARGUMENTS:
- *  me     - Pointer to the mines object
- *  mp     - Pointer to the map structure
- *  pb     - Pointer to the pillboxes structure
- *  bs     - Pointer to the bases structure
- *  lgms   - Array of lgms
- *  numLgm - Number of lgms in the array
- *  mx     - Map X Position
- *  my     - Map Y Position
- *********************************************************/
-void minesExpCheckFill(minesExp *me, map *mp, pillboxes *pb, bases *bs,
-                       lgm **lgms, BYTE numLgm, BYTE mx, BYTE my);
 
 #endif /* MINEEXP_H */

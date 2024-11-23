@@ -898,7 +898,7 @@ mines *serverCoreGetMines();
  *ARGUMENTS:
  *
  *********************************************************/
-minesExp *serverGetMinesExp();
+MineExplosionTracker *serverGetMinesExp();
 
 /*********************************************************
  *NAME:          serverCoreGetRubble
