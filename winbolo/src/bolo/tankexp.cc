@@ -252,7 +252,7 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs,
         needUpdate = false;
         if (position->own) {
           if (!isServer) {
-            soundDist(tankSinkNear, mx, my);
+            soundDist(bolo::sndEffects::tankSinkNear, mx, my);
             tankSetLastTankDeath(
                 tank, LAST_DEATH_BY_DEEPSEA); /* Override LAST_DEATH_BY_SHELL */
             messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT),
@@ -263,11 +263,11 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs,
       } else if (currentPos == FOREST) {
         /* Check for destroy trees */
         mapSetPos(mp, mx, my, GRASS, false, false);
-        soundDist(shotTreeNear, mx, my);
+        soundDist(bolo::sndEffects::shotTreeNear, mx, my);
       } else if (currentPos == BOAT) {
         /* Check for destroy boat */
         mapSetPos(mp, mx, my, RIVER, false, false);
-        soundDist(shotBuildingNear, mx, my);
+        soundDist(bolo::sndEffects::shotBuildingNear, mx, my);
       }
       screenReCalc();
     } else {
@@ -295,7 +295,7 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs,
                         NEUTRAL);
           count++;
         }
-        soundDist(mineExplosionNear, mx, my);
+        soundDist(bolo::sndEffects::mineExplosionNear, mx, my);
       } else {
         tkExplosionBigExplosion(tke, mp, pb, bs, mx, my, moveX, moveY,
                                 position->own, lgms, numLgm);
@@ -559,7 +559,7 @@ void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb,
     //  }
     screenGetFloodFill()->addItem(MapPoint{.x = mx, .y = my});
   }
-  soundDist(bigExplosionNear, mx, my);
+  soundDist(bolo::sndEffects::bigExplosionNear, mx, my);
   screenReCalc();
 }
 

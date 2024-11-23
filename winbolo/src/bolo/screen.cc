@@ -3770,61 +3770,61 @@ bool clientTankInView(BYTE playerNum, BYTE checkX, BYTE checkY) { return true; }
  *  mx    - Map X co-ordinatate for the sound origin
  *  my    - Map Y co-ordinatate for the sound origin
  *********************************************************/
-void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my) {
+void serverCoreSoundDist(bolo::sndEffects value, BYTE mx, BYTE my) {
   BYTE logMessageType; /* Log item type */
   bool wantLog;        /* Do we want to log this? */
 
   wantLog = true;
   switch (value) {
-    case shootSelf:
-    case shootNear:
-    case shootFar:
+    case bolo::sndEffects::shootSelf:
+    case bolo::sndEffects::shootNear:
+    case bolo::sndEffects::shootFar:
       logMessageType = log_SoundShoot;
       break;
 
-    case shotTreeNear:
-    case shotTreeFar:
+    case bolo::sndEffects::shotTreeNear:
+    case bolo::sndEffects::shotTreeFar:
       logMessageType = log_SoundHitTree;
       break;
 
-    case shotBuildingNear:
-    case shotBuildingFar:
+    case bolo::sndEffects::shotBuildingNear:
+    case bolo::sndEffects::shotBuildingFar:
       logMessageType = log_SoundHitWall;
       break;
 
-    case hitTankNear:
-    case hitTankFar:
-    case hitTankSelf:
+    case bolo::sndEffects::hitTankNear:
+    case bolo::sndEffects::hitTankFar:
+    case bolo::sndEffects::hitTankSelf:
       logMessageType = log_SoundHitTank;
       break;
-    case bubbles:
-    case tankSinkNear:
-    case tankSinkFar:
+    case bolo::sndEffects::bubbles:
+    case bolo::sndEffects::tankSinkNear:
+    case bolo::sndEffects::tankSinkFar:
       wantLog = false;
       break;
-    case bigExplosionNear:
+    case bolo::sndEffects::bigExplosionNear:
       logMessageType = log_SoundBigExplosion;
       break;
-    case bigExplosionFar:
+    case bolo::sndEffects::bigExplosionFar:
       logMessageType = log_SoundExplosion;
       break;
-    case farmingTreeNear:
-    case farmingTreeFar:
+    case bolo::sndEffects::farmingTreeNear:
+    case bolo::sndEffects::farmingTreeFar:
       logMessageType = log_SoundFarm;
       break;
-    case manBuildingNear:
-    case manBuildingFar:
+    case bolo::sndEffects::manBuildingNear:
+    case bolo::sndEffects::manBuildingFar:
       logMessageType = log_SoundBuild;
       break;
-    case manDyingNear:
-    case manDyingFar:
+    case bolo::sndEffects::manDyingNear:
+    case bolo::sndEffects::manDyingFar:
       logMessageType = log_SoundManDie;
       break;
-    case manLayingMineNear:
+    case bolo::sndEffects::manLayingMineNear:
       logMessageType = log_SoundMineLay;
       break;
-    case mineExplosionNear:
-    case mineExplosionFar:
+    case bolo::sndEffects::mineExplosionNear:
+    case bolo::sndEffects::mineExplosionFar:
       logMessageType = log_SoundMineExplode;
       break;
   }

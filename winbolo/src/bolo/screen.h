@@ -71,37 +71,6 @@ typedef enum { left, right, up, down, redraw } updateType;
 
 #endif
 
-#ifndef _SNDEFFECTS_ENUM
-#define _SNDEFFECTS_ENUM
-typedef enum {
-  shootSelf,
-  shootNear,
-  shotTreeNear,
-  shotTreeFar,
-  shotBuildingNear,
-  shotBuildingFar,
-  hitTankNear,
-  hitTankFar,
-  hitTankSelf,
-  bubbles,
-  tankSinkNear,
-  tankSinkFar,
-  bigExplosionNear,
-  bigExplosionFar,
-  farmingTreeNear,
-  farmingTreeFar,
-  manBuildingNear,
-  manBuildingFar,
-  manDyingNear,
-  manDyingFar,
-  manLayingMineNear,
-  mineExplosionNear,
-  mineExplosionFar,
-  shootFar
-} sndEffects;
-
-#endif
-
 #ifndef _AITYPE_ENUM
 #define _AITYPE_ENUM
 

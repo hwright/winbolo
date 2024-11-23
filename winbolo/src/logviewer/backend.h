@@ -28,10 +28,11 @@
 #ifndef _BACKEND_H
 #define _BACKEND_H
 
+#include "../bolo/sound_effects.h"
 #include "global.h"
-#include "screenlgm.h"
-#include "screenbullet.h"
 #include "pillbox.h"
+#include "screenbullet.h"
+#include "screenlgm.h"
 #include "screentank.h"
 
 /* Defines */
@@ -76,37 +77,6 @@ typedef enum {
   down,
   redraw
 } updateType;
-
-#endif
-
-#ifndef _SNDEFFECTS_ENUM
-#define _SNDEFFECTS_ENUM
-typedef enum {
-  shootSelf,
-  shootNear,
-  shotTreeNear,
-  shotTreeFar,
-  shotBuildingNear,
-  shotBuildingFar,
-  hitTankNear,
-  hitTankFar,
-  hitTankSelf,
-  bubbles,
-  tankSinkNear,
-  tankSinkFar,
-  bigExplosionNear,
-  bigExplosionFar,
-  farmingTreeNear,
-  farmingTreeFar,
-  manBuildingNear,
-  manBuildingFar,
-  manDyingNear,
-  manDyingFar,
-  manLayingMineNear,
-  mineExplosionNear,
-  mineExplosionFar,
-  shootFar
-} sndEffects;
 
 #endif
 

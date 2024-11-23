@@ -25,6 +25,8 @@
  *  (Uses Direct Sound)
  *********************************************************/
 
+#include "sound.h"
+
 #include <glib.h>
 #include <stdio.h>
 #include <unistd.h>
@@ -350,79 +352,78 @@ void soundPlaySound(Mix_Chunk *value, const char *name, int channel) {
  *ARGUMENTS:
  *  value       - The sound file number to play
  *********************************************************/
-void soundPlayEffect(sndEffects value) {
+void soundPlayEffect(bolo::sndEffects value) {
   switch (value) {
-    case shootSelf:
+    case bolo::sndEffects::shootSelf:
       soundPlaySound(lpDSShootSelf, IDW_SHOOTING_SELF, -1);
       break;
-    case shootNear:
+    case bolo::sndEffects::shootNear:
       soundPlaySound(lpDSShootNear, IDW_SHOOTING_NEAR, -1);
       break;
-    case shotTreeNear:
+    case bolo::sndEffects::shotTreeNear:
       soundPlaySound(lpDSShotTreeNear, IDW_SHOT_TREE_NEAR, -1);
       break;
-    case shotTreeFar:
+    case bolo::sndEffects::shotTreeFar:
       soundPlaySound(lpDSShotTreeFar, IDW_SHOT_TREE_FAR, -1);
       break;
-    case shotBuildingNear:
+    case bolo::sndEffects::shotBuildingNear:
       soundPlaySound(lpDSShotBuildingNear, IDW_SHOT_BUILDING_NEAR, -1);
       break;
-    case shotBuildingFar:
+    case bolo::sndEffects::shotBuildingFar:
       soundPlaySound(lpDSShotBuildingFar, IDW_SHOT_BUILDING_FAR, -1);
       break;
-    case hitTankFar:
+    case bolo::sndEffects::hitTankFar:
       soundPlaySound(lpDSHitTankFar, IDW_HIT_TANK_FAR, -1);
       break;
-    case hitTankNear:
+    case bolo::sndEffects::hitTankNear:
       soundPlaySound(lpDSHitTankNear, IDW_HIT_TANK_NEAR, -1);
       break;
-    case hitTankSelf:
+    case bolo::sndEffects::hitTankSelf:
       soundPlaySound(lpDSHitTankSelf, IDW_HIT_TANK_SELF, -1);
       break;
-    case bubbles:
+    case bolo::sndEffects::bubbles:
       soundPlaySound(lpDSBubbles, IDW_BUBBLES, -1);
       break;
-    case tankSinkNear:
+    case bolo::sndEffects::tankSinkNear:
       soundPlaySound(lpDSTankSinkingNear, IDW_TANK_SINKING_NEAR, -1);
       break;
-    case tankSinkFar:
+    case bolo::sndEffects::tankSinkFar:
       soundPlaySound(lpDSTankSinkingFar, IDW_TANK_SINKING_FAR, -1);
       break;
-    case bigExplosionNear:
+    case bolo::sndEffects::bigExplosionNear:
       soundPlaySound(lpDSBigExplosionNear, IDW_BIG_EXPLOSION_NEAR, -1);
       break;
-    case bigExplosionFar:
+    case bolo::sndEffects::bigExplosionFar:
       soundPlaySound(lpDSBigExplosionFar, IDW_BIG_EXPLOSION_FAR, -1);
       break;
-    case farmingTreeNear:
+    case bolo::sndEffects::farmingTreeNear:
       soundPlaySound(lpDSFarmingTreeNear, IDW_FARMING_TREE_NEAR, -1);
       break;
-    case farmingTreeFar:
+    case bolo::sndEffects::farmingTreeFar:
       soundPlaySound(lpDSFarmingTreeFar, IDW_FARMING_TREE_FAR, -1);
       break;
-    case manBuildingNear:
+    case bolo::sndEffects::manBuildingNear:
       soundPlaySound(lpDSManBuildingNear, IDW_MAN_BUILDING_NEAR, -1);
       break;
-    case manBuildingFar:
+    case bolo::sndEffects::manBuildingFar:
       soundPlaySound(lpDSManBuildingFar, IDW_MAN_BUILDING_FAR, -1);
       break;
-    case manDyingNear:
+    case bolo::sndEffects::manDyingNear:
       soundPlaySound(lpDSManDyingNear, IDW_MAN_DYING_NEAR, -1);
       break;
-    case manDyingFar:
+    case bolo::sndEffects::manDyingFar:
       soundPlaySound(lpDSManDyingFar, IDW_MAN_DYING_FAR, -1);
       break;
-    case manLayingMineNear:
+    case bolo::sndEffects::manLayingMineNear:
       soundPlaySound(lpDSManLayingMineNear, IDW_MAN_LAYING_MINE_NEAR, -1);
       break;
-    case mineExplosionNear:
+    case bolo::sndEffects::mineExplosionNear:
       soundPlaySound(lpDSMineExplosionNear, IDW_MINE_EXPLOSION_NEAR, -1);
       break;
-    case mineExplosionFar:
+    case bolo::sndEffects::mineExplosionFar:
       soundPlaySound(lpDSMineExplosionFar, IDW_MINE_EXPLOSION_FAR, -1);
       break;
-    default:
-      /* shootFar */
+    case bolo::sndEffects::shootFar:
       soundPlaySound(lpDSShootFar, IDW_SHOOTING_FAR, -1);
       break;
   }

@@ -468,7 +468,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
     } else if (owner == screenGetTankPlayer(tk)) {
       pillsDamagePos(pb, mapX, mapY, false, true);
     }
-    soundDist(shotBuildingNear, mapX, mapY);
+    soundDist(bolo::sndEffects::shotBuildingNear, mapX, mapY);
   }
 
   /* Shell did not hit pillbox */
@@ -482,7 +482,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
           case TH_HIT:
             returnValue = true;
             if (!threadsGetContext()) {
-              frontEndPlaySound(hitTankSelf);
+              frontEndPlaySound(bolo::sndEffects::hitTankSelf);
             }
             if (!isServer) {
               if ((mapGetPos(mp, tankGetMX(&(tk[count])),
@@ -519,7 +519,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
               /*							} */
             }
             if (!threadsGetContext()) {
-              frontEndPlaySound(hitTankSelf);
+              frontEndPlaySound(bolo::sndEffects::hitTankSelf);
             }
             break;
           case TH_KILL_BIG:
@@ -540,7 +540,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
               /*							} */
             }
             if (!threadsGetContext()) {
-              frontEndPlaySound(hitTankSelf);
+              frontEndPlaySound(bolo::sndEffects::hitTankSelf);
             }
             break;
           case TH_MISSED:
@@ -558,7 +558,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
         playersIsTankHit(screenGetPlayers(), *xValue, *yValue, angle, owner);
     if (playerHit != NEUTRAL) {
       returnValue = true;
-      soundDist(hitTankNear, mapX, mapY);
+      soundDist(bolo::sndEffects::hitTankNear, mapX, mapY);
     }
   }
 
@@ -583,7 +583,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
           }
           pillsBaseHit(pb, mapX, mapY, (basesGetOwnerPos(bs, mapX, mapY)));
         }
-        soundDist(shotBuildingNear, mapX, mapY);
+        soundDist(bolo::sndEffects::shotBuildingNear, mapX, mapY);
       } else if (basesCanHit(bs, mapX, mapY, owner)) { /* Huh? */
         returnValue = true;
         *xValue = mapX;
@@ -600,7 +600,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
         }
         pillsBaseHit(pb, mapX, mapY, (basesGetOwnerPos(bs, mapX, mapY)));
         /* Play sound */
-        soundDist(shotBuildingNear, mapX, mapY);
+        soundDist(bolo::sndEffects::shotBuildingNear, mapX, mapY);
       } /*end huh?*/
     }
   }
@@ -634,7 +634,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
               mp, mapX, mapY,
               screenGetBuildings()->addItem(MapPoint{.x = mapX, .y = mapY}),
               false, false);
-          soundDist(shotBuildingNear, mapX, mapY);
+          soundDist(bolo::sndEffects::shotBuildingNear, mapX, mapY);
           break;
         case FOREST:
           if (isMine) {
@@ -646,18 +646,18 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
           } else {
             mapSetPos(mp, mapX, mapY, GRASS, false, false);
           }
-          soundDist(shotTreeNear, mapX, mapY);
+          soundDist(bolo::sndEffects::shotTreeNear, mapX, mapY);
           break;
         case HALFBUILDING:
           mapSetPos(
               mp, mapX, mapY,
               screenGetBuildings()->addItem(MapPoint{.x = mapX, .y = mapY}),
               false, false);
-          soundDist(shotBuildingNear, mapX, mapY);
+          soundDist(bolo::sndEffects::shotBuildingNear, mapX, mapY);
           break;
         case BOAT:
           mapSetPos(mp, mapX, mapY, RIVER, false, false);
-          soundDist(shotBuildingNear, mapX, mapY);
+          soundDist(bolo::sndEffects::shotBuildingNear, mapX, mapY);
           break;
         case GRASS:
           if (isMine) {
@@ -776,7 +776,7 @@ BYTE shellsCheckRoad(map *mp, pillboxes *pb, bases *bs, BYTE mapX, BYTE mapY,
 
   /* Play the sound if required */
   if (returnValue == RIVER) {
-    soundDist(shotBuildingNear, mapX, mapY);
+    soundDist(bolo::sndEffects::shotBuildingNear, mapX, mapY);
   }
 
   return returnValue;
@@ -1008,7 +1008,7 @@ void shellsNetExtract(shells *value, pillboxes *pb, BYTE *buff, BYTE dataLen,
     conv = q->y;
     conv >>= TANK_SHIFT_MAPSIZE;
     my = (BYTE)conv;
-    soundDist(shootNear, mx, my);
+    soundDist(bolo::sndEffects::shootNear, mx, my);
   }
 }
 

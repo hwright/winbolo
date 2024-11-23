@@ -365,7 +365,7 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
         screenGetMines()->addItem(MapPoint{.x = opt1, .y = opt2});
       }
       /* Play the sound */
-      soundDist(manLayingMineNear, opt1, opt2);
+      soundDist(bolo::sndEffects::manLayingMineNear, opt1, opt2);
       break;
     case NMNT_MINETANKPLACE:
       needCalc = true;
@@ -376,14 +376,14 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
       }
       if (owner != playersGetSelf(screenGetPlayers())) {
         /* Play the sound */
-        soundDist(manLayingMineNear, opt1, opt2);
+        soundDist(bolo::sndEffects::manLayingMineNear, opt1, opt2);
       }
       break;
     case NMNT_MINEEXPLOSION:
       if (owner != playersGetSelf(screenGetPlayers())) {
         explosionsAddItem(screenGetExplosions(), opt1, opt2, 0, 0,
                           EXPLOSION_START);
-        soundDist(mineExplosionNear, opt1, opt2);
+        soundDist(bolo::sndEffects::mineExplosionNear, opt1, opt2);
         lgmDeathCheck(
             screenGetLgmFromPlayerNum(playersGetSelf(screenGetPlayers())), mp,
             pb, bs, (WORLD)((opt1 << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE),
@@ -391,7 +391,7 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
         screenCheckTankMineDamage(opt1, opt2);
         screenGetMinesExp()->addItem(MapPoint{.x = opt1, .y = opt2});
         /* Play the sound */
-        soundDist(mineExplosionNear, opt1, opt2);
+        soundDist(bolo::sndEffects::mineExplosionNear, opt1, opt2);
       }
       break;
     case NMNT_MANRETURN:
@@ -416,7 +416,7 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
       break;
     case NMNT_BUILDBUILDING:
       mapSetPos(mp, opt1, opt2, BUILDING, false, false);
-      soundDist(manBuildingNear, opt1, opt2);
+      soundDist(bolo::sndEffects::manBuildingNear, opt1, opt2);
       screenGetBuildings()->removePos(MapPoint{.x = opt1, .y = opt2});
       needCalc = true;
       break;
@@ -429,7 +429,7 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
       if (owner != playersGetSelf(screenGetPlayers())) {
         explosionsAddItem(screenGetExplosions(), opt1, opt2, 0, 0,
                           EXPLOSION_START);
-        soundDist(shotBuildingNear, opt1, opt2);
+        soundDist(bolo::sndEffects::shotBuildingNear, opt1, opt2);
       }
       break;
     case NMNT_TANKHIT:

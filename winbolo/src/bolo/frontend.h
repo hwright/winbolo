@@ -31,6 +31,7 @@
 #include "screenbullet.h"
 #include "screenlgm.h"
 #include "screentank.h"
+#include "sound_effects.h"
 #include "types.h"
 #ifdef _WIN32
 #include "../gui/resource.h"
@@ -85,7 +86,7 @@ void frontEndUpdateBaseStatusBars(BYTE shells, BYTE mines, BYTE armour);
  *ARGUMENTS:
  *  value - The sound effect to play
  *********************************************************/
-void frontEndPlaySound(sndEffects value);
+void frontEndPlaySound(bolo::sndEffects value);
 
 /*********************************************************
  *NAME:          frontEndDrawMainScreen

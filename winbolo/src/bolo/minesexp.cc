@@ -76,7 +76,7 @@ void MineExplosionTracker::checkFill(map *mp, pillboxes *pb, bases *bs,
   screenGetMines()->removeItem(pos);
   if (terrain >= MINE_START && terrain <= MINE_END) {
     mapSetPos(mp, pos, CRATER, false, false);
-    soundDist(mineExplosionNear, pos.x, pos.y);
+    soundDist(bolo::sndEffects::mineExplosionNear, pos.x, pos.y);
     count = 1;
     while (count <= numLgm) {
       lgmDeathCheck(lgms[count - 1], mp, pb, bs,
