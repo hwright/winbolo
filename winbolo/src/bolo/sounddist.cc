@@ -46,7 +46,7 @@
  *  mx    - Map X co-ordinatate for the sound origin
  *  my    - Map Y co-ordinatate for the sound origin
  *********************************************************/
-void clientSoundDist(sndEffects value, BYTE mx, BYTE my) {
+void clientSoundDist(bolo::sndEffects value, BYTE mx, BYTE my) {
   BYTE tankX; /* Tank X Map Co-ordinate */
   BYTE tankY; /* Tank Y Map Co-ordinate */
   BYTE gapX;  /* Distance from tank to sound */
@@ -55,7 +55,7 @@ void clientSoundDist(sndEffects value, BYTE mx, BYTE my) {
   if (logIsRecording()) {
     soundDistLog(value, mx, my);
   }
-  if (mineExplosionNear == value) {
+  if (bolo::sndEffects::mineExplosionNear == value) {
     gapY = 0;
   }
   screenGetTankMapCoord(&tankX, &tankY);
@@ -75,95 +75,94 @@ void clientSoundDist(sndEffects value, BYTE mx, BYTE my) {
   if (gapY < SDIST_NONE && gapX < SDIST_NONE) {
     /* Determine whether loud/soft sound should be played */
     switch (value) {
-      case shootNear:
+      case bolo::sndEffects::shootNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(shootFar);
+          frontEndPlaySound(bolo::sndEffects::shootFar);
         } else {
-          frontEndPlaySound(shootNear);
+          frontEndPlaySound(bolo::sndEffects::shootNear);
         }
         break;
-      case shotTreeNear:
+      case bolo::sndEffects::shotTreeNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(shotTreeFar);
+          frontEndPlaySound(bolo::sndEffects::shotTreeFar);
         } else {
-          frontEndPlaySound(shotTreeNear);
+          frontEndPlaySound(bolo::sndEffects::shotTreeNear);
         }
         break;
-      case shotBuildingNear:
+      case bolo::sndEffects::shotBuildingNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(shotBuildingFar);
+          frontEndPlaySound(bolo::sndEffects::shotBuildingFar);
         } else {
-          frontEndPlaySound(shotBuildingNear);
+          frontEndPlaySound(bolo::sndEffects::shotBuildingNear);
         }
         break;
-      case hitTankNear:
+      case bolo::sndEffects::hitTankNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(hitTankFar);
+          frontEndPlaySound(bolo::sndEffects::hitTankFar);
         } else {
-          frontEndPlaySound(hitTankNear);
+          frontEndPlaySound(bolo::sndEffects::hitTankNear);
         }
         break;
-      case tankSinkNear:
+      case bolo::sndEffects::tankSinkNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(tankSinkFar);
+          frontEndPlaySound(bolo::sndEffects::tankSinkFar);
         } else {
-          frontEndPlaySound(tankSinkNear);
+          frontEndPlaySound(bolo::sndEffects::tankSinkNear);
         }
         break;
-      case bigExplosionNear:
+      case bolo::sndEffects::bigExplosionNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(bigExplosionFar);
+          frontEndPlaySound(bolo::sndEffects::bigExplosionFar);
         } else {
-          frontEndPlaySound(bigExplosionNear);
+          frontEndPlaySound(bolo::sndEffects::bigExplosionNear);
         }
         break;
-      case farmingTreeNear:
+      case bolo::sndEffects::farmingTreeNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(farmingTreeFar);
+          frontEndPlaySound(bolo::sndEffects::farmingTreeFar);
         } else {
-          frontEndPlaySound(farmingTreeNear);
+          frontEndPlaySound(bolo::sndEffects::farmingTreeNear);
         }
         break;
-      case manBuildingNear:
+      case bolo::sndEffects::manBuildingNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(manBuildingFar);
+          frontEndPlaySound(bolo::sndEffects::manBuildingFar);
         } else {
-          frontEndPlaySound(manBuildingNear);
+          frontEndPlaySound(bolo::sndEffects::manBuildingNear);
         }
         break;
-      case manDyingNear:
+      case bolo::sndEffects::manDyingNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(manDyingFar);
+          frontEndPlaySound(bolo::sndEffects::manDyingFar);
         } else {
-          frontEndPlaySound(manDyingNear);
+          frontEndPlaySound(bolo::sndEffects::manDyingNear);
         }
         break;
-      case mineExplosionNear:
+      case bolo::sndEffects::mineExplosionNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(mineExplosionFar);
+          frontEndPlaySound(bolo::sndEffects::mineExplosionFar);
         } else {
-          frontEndPlaySound(mineExplosionNear);
+          frontEndPlaySound(bolo::sndEffects::mineExplosionNear);
         }
         break;
-      case manLayingMineNear:
+      case bolo::sndEffects::manLayingMineNear:
         if (gapX <= SDIST_SOFT || gapY <= SDIST_SOFT) {
-          frontEndPlaySound(manLayingMineNear);
+          frontEndPlaySound(bolo::sndEffects::manLayingMineNear);
         }
         break;
-      case shootSelf:
-      case shotTreeFar:
-      case shotBuildingFar:
-      case hitTankFar:
-      case hitTankSelf:
-      case manDyingFar:
-      case mineExplosionFar:
-      case bubbles:
-      case tankSinkFar:
-      case bigExplosionFar:
-      case farmingTreeFar:
-      case manBuildingFar:
-      case shootFar:
-      default:
+      case bolo::sndEffects::shootSelf:
+      case bolo::sndEffects::shotTreeFar:
+      case bolo::sndEffects::shotBuildingFar:
+      case bolo::sndEffects::hitTankFar:
+      case bolo::sndEffects::hitTankSelf:
+      case bolo::sndEffects::manDyingFar:
+      case bolo::sndEffects::mineExplosionFar:
+      case bolo::sndEffects::bubbles:
+      case bolo::sndEffects::tankSinkFar:
+      case bolo::sndEffects::bigExplosionFar:
+      case bolo::sndEffects::farmingTreeFar:
+      case bolo::sndEffects::manBuildingFar:
+      case bolo::sndEffects::shootFar:
         break;
     }
   }
@@ -182,63 +181,63 @@ void clientSoundDist(sndEffects value, BYTE mx, BYTE my) {
  *  mx    - Map X co-ordinatate for the sound origin
  *  my    - Map Y co-ordinatate for the sound origin
  *********************************************************/
-void soundDistLog(sndEffects value, BYTE mx, BYTE my) {
+void soundDistLog(bolo::sndEffects value, BYTE mx, BYTE my) {
   BYTE logMessageType; /* Log item type */
   bool wantLog;        /* Do we want to log this? */
 
   wantLog = true;
   switch (value) {
-    case shootSelf:
-    case shootNear:
-    case shootFar:
+    case bolo::sndEffects::shootSelf:
+    case bolo::sndEffects::shootNear:
+    case bolo::sndEffects::shootFar:
       logMessageType = log_SoundShoot;
       break;
 
-    case shotTreeNear:
-    case shotTreeFar:
+    case bolo::sndEffects::shotTreeNear:
+    case bolo::sndEffects::shotTreeFar:
       logMessageType = log_SoundFarm;
       break;
 
-    case shotBuildingNear:
-    case shotBuildingFar:
+    case bolo::sndEffects::shotBuildingNear:
+    case bolo::sndEffects::shotBuildingFar:
       //    logMessageType = log_SoundHit;
       break;
 
-    case hitTankNear:
-    case hitTankFar:
-    case hitTankSelf:
+    case bolo::sndEffects::hitTankNear:
+    case bolo::sndEffects::hitTankFar:
+    case bolo::sndEffects::hitTankSelf:
       wantLog = false;
       break;
-    case bubbles:
-    case tankSinkNear:
-    case tankSinkFar:
+    case bolo::sndEffects::bubbles:
+    case bolo::sndEffects::tankSinkNear:
+    case bolo::sndEffects::tankSinkFar:
       wantLog = false;
       break;
-    case bigExplosionNear:
+    case bolo::sndEffects::bigExplosionNear:
       logMessageType = log_SoundExplosion;
       break;
-    case bigExplosionFar:
+    case bolo::sndEffects::bigExplosionFar:
       logMessageType = log_SoundExplosion;
       break;
-    case farmingTreeNear:
-    case farmingTreeFar:
+    case bolo::sndEffects::farmingTreeNear:
+    case bolo::sndEffects::farmingTreeFar:
       logMessageType = log_SoundFarm;
       break;
-    case manBuildingNear:
-    case manBuildingFar:
+    case bolo::sndEffects::manBuildingNear:
+    case bolo::sndEffects::manBuildingFar:
       logMessageType = log_SoundBuild;
       break;
-    case manDyingNear:
-    case manDyingFar:
+    case bolo::sndEffects::manDyingNear:
+    case bolo::sndEffects::manDyingFar:
       logMessageType = log_SoundManDie;
       break;
 
-    case manLayingMineNear:
+    case bolo::sndEffects::manLayingMineNear:
       logMessageType = log_SoundMineLay;
       break;
 
-    case mineExplosionNear:
-    case mineExplosionFar:
+    case bolo::sndEffects::mineExplosionNear:
+    case bolo::sndEffects::mineExplosionFar:
       logMessageType = log_SoundMineExplode;
       break;
   }

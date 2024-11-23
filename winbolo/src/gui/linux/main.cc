@@ -1593,7 +1593,7 @@ void frontEndUpdateTankStatusBars(BYTE shells, BYTE mines, BYTE armour,
  *ARGUMENTS:
  *  value - The sound effect to play
  *********************************************************/
-void frontEndPlaySound(sndEffects value) {
+void frontEndPlaySound(bolo::sndEffects value) {
   if (soundEffects == TRUE) {
     soundPlayEffect(value);
   }

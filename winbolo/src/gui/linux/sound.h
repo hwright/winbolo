@@ -28,8 +28,8 @@
 #ifndef _SOUND_H
 #define _SOUND_H
 
-#include "../../bolo/backend.h"
 #include "../../bolo/global.h"
+#include "../../bolo/sound_effects.h"
 #include "SDL.h"
 #include "SDL_mixer.h"
 #include "bolosounds.h"
@@ -89,7 +89,7 @@ void soundPlaySound(Mix_Chunk *value, char *name);
  *ARGUMENTS:
  *  value       - The sound file number to play
  *********************************************************/
-void soundPlayEffect(sndEffects value);
+void soundPlayEffect(bolo::sndEffects value);
 
 /*********************************************************
  *NAME:          soundIsPlayable

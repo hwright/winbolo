@@ -24,6 +24,7 @@
 #include "lgm.h"
 #include "messages.h"
 #include "screen.h"
+#include "sound_effects.h"
 #include "types.h"
 
 #ifdef _WIN32
@@ -37,8 +38,8 @@ static struct timeval start_time;
 
 bool threadsGetContext();
 void serverCoreCenterTank();
-void clientSoundDist(sndEffects value, BYTE mx, BYTE my);
-void serverCoreSoundDist(sndEffects value, BYTE mx, BYTE my);
+void clientSoundDist(bolo::sndEffects value, BYTE mx, BYTE my);
+void serverCoreSoundDist(bolo::sndEffects value, BYTE mx, BYTE my);
 
 /* Current building item selected */
 static buildSelect BsCurrent = BsTrees;
@@ -410,7 +411,7 @@ void screenCenterTank() {
  *  mx    - Map X co-ordinatate for the sound origin
  *  my    - Map Y co-ordinatate for the sound origin
  *********************************************************/
-void soundDist(sndEffects value, BYTE mx, BYTE my) {
+void soundDist(bolo::sndEffects value, BYTE mx, BYTE my) {
   if (!threadsGetContext()) {
     clientSoundDist(value, mx, my);
   } else {

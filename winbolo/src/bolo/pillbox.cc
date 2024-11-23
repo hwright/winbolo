@@ -379,7 +379,7 @@ void pillsUpdate(pillboxes *value, map *mp, bases *bs, tank *tnk, shells *shs) {
                 shellsAddItem(shs, x, y, dir, (float)(PILLBOX_FIRE_DISTANCE),
                               NEUTRAL, false);
                 (*value)->item[count].reload = 0;
-                soundDist(shootNear, (*value)->item[count].x,
+                soundDist(bolo::sndEffects::shootNear, (*value)->item[count].x,
                           (*value)->item[count].y);
               } else {
                 /* They were just seen */

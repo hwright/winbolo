@@ -41,12 +41,7 @@
 /* Typedefs */
 
 /* The different types of games there are */
-#ifndef _GAMETYPE_ENUM
-#define _GAMETYPE_ENUM
-
 typedef enum { gameOpen = 1, gameTournament, gameStrictTournament } gameType;
-
-#endif
 
 /* Prototypes */
 

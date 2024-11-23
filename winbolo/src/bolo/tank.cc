@@ -234,7 +234,7 @@ void tankUpdate(tank *value, map *mp, bases *bs, pillboxes *pb, shells *shs,
     tankRegisterChangeByte(value, CRC_SHELLS_OFFSET, (*value)->shells);
 
     if (!threadsGetContext()) {
-      frontEndPlaySound(shootSelf);
+      frontEndPlaySound(bolo::sndEffects::shootSelf);
       frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
                                    (*value)->armour, (*value)->trees);
     }
@@ -259,7 +259,7 @@ void tankUpdate(tank *value, map *mp, bases *bs, pillboxes *pb, shells *shs,
              !threadsGetContext()) {
     /* Check for death by drowning - client instance */
     tankSetLastTankDeath(value, LAST_DEATH_BY_DEEPSEA);
-    soundDist(tankSinkNear, bmx, bmy);
+    soundDist(bolo::sndEffects::tankSinkNear, bmx, bmy);
     messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT),
                langGetText2(MESSAGE_TANKSUNK));
     netMNTAdd(screenGetNetMnt(), NMNT_KILLME, 0, screenGetTankPlayer(value),
@@ -273,7 +273,7 @@ void tankUpdate(tank *value, map *mp, bases *bs, pillboxes *pb, shells *shs,
              threadsGetContext()) {
     /* Check for death by drowning - server instance */
     tankSetLastTankDeath(value, LAST_DEATH_BY_DEEPSEA);
-    soundDist(tankSinkNear, bmx, bmy);
+    soundDist(bolo::sndEffects::tankSinkNear, bmx, bmy);
     (*value)->armour = TANK_FULL_ARMOUR + 1;
     tankRegisterChangeByte(value, CRC_ARMOUR_OFFSET, (*value)->armour);
     (*value)->deathWait = TANK_DEATH_WAIT;
@@ -1033,7 +1033,7 @@ void tankInWater(tank *value) {
     if (!threadsGetContext()) {
       frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
                                    (*value)->armour, (*value)->trees);
-      frontEndPlaySound(bubbles);
+      frontEndPlaySound(bolo::sndEffects::bubbles);
     }
   }
 }
@@ -1369,7 +1369,7 @@ void tankMoveOnBoat(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
         explosionsAddItem(screenGetExplosions(), newbmx, newbmy, 0, 0,
                           EXPLOSION_START);
 
-        soundDist(shotBuildingNear, newbmx, newbmy);
+        soundDist(bolo::sndEffects::shotBuildingNear, newbmx, newbmy);
         screenReCalc();
       } else if (boatExitSquare != BUILDING && boatExitSquare != HALFBUILDING) {
         if (mapGetPos(mp, bmx, bmy) == RIVER) {
@@ -1396,7 +1396,7 @@ void tankMoveOnBoat(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
 
     /* Check for hit mine on outer map edges */
     if (mapIsMine(mp, bmx, bmy)) {
-      soundDist(mineExplosionNear, bmx, bmy);
+      soundDist(bolo::sndEffects::mineExplosionNear, bmx, bmy);
       explosionsAddItem(screenGetExplosions(), bmx, bmy, 0, 0, EXPLOSION_START);
       (*value)->onBoat = false;
       tankRegisterChangeByte(value, CRC_ONBOAT_OFFSET, false);
@@ -2270,7 +2270,7 @@ void tankLayMine(tank *value, map *mp, pillboxes *pb, bases *bs) {
       mapSetPos(mp, bmx, bmy, (BYTE)(terrain + MINE_SUBTRACT), false, false);
       netMNTAdd(screenGetNetMnt(), NMNT_MINETANKPLACE, 0,
                 screenGetTankPlayer(value), bmx, bmy);
-      soundDist(manLayingMineNear, bmx, bmy);
+      soundDist(bolo::sndEffects::manLayingMineNear, bmx, bmy);
       if ((*value)->armour <= TANK_FULL_ARMOUR) {
         if (!threadsGetContext()) {
           frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,

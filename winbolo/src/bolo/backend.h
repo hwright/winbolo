@@ -33,6 +33,7 @@
 #include "building.h"
 #include "explosions.h"
 #include "floodfill.h"
+#include "gametype.h"
 #include "global.h"
 #include "grass.h"
 #include "mines.h"
@@ -76,103 +77,6 @@ typedef unsigned long DWORD;
 #define MIN_SIGHT_DISTANCE_LEFT -1
 #define MIN_SIGHT_DISTANCE_RIGHT 1
 
-/* The different types of games there are */
-
-#ifndef _LABELLEN_ENUM
-#define _LABELLEN_ENUM
-
-typedef enum { lblNone, lblShort, lblLong } labelLen;
-
-#endif
-
-#ifndef _UPDATETYPE_ENUM
-#define _UPDATETYPE_ENUM
-typedef enum { left, right, up, down, redraw } updateType;
-
-#endif
-
-#ifndef _SNDEFFECTS_ENUM
-#define _SNDEFFECTS_ENUM
-typedef enum {
-  shootSelf,
-  shootNear,
-  shotTreeNear,
-  shotTreeFar,
-  shotBuildingNear,
-  shotBuildingFar,
-  hitTankNear,
-  hitTankFar,
-  hitTankSelf,
-  bubbles,
-  tankSinkNear,
-  tankSinkFar,
-  bigExplosionNear,
-  bigExplosionFar,
-  farmingTreeNear,
-  farmingTreeFar,
-  manBuildingNear,
-  manBuildingFar,
-  manDyingNear,
-  manDyingFar,
-  manLayingMineNear,
-  mineExplosionNear,
-  mineExplosionFar,
-  shootFar
-} sndEffects;
-
-#endif
-
-#ifndef _AITYPE_ENUM
-#define _AITYPE_ENUM
-
-typedef enum { aiNone, aiYes, aiYesAdvantage } aiType;
-
-#endif
-
-#ifndef _GAMETYPE_ENUM
-#define _GAMETYPE_ENUM
-
-typedef enum { gameOpen = 1, gameTournament, gameStrictTournament } gameType;
-
-#endif
-
-#ifndef _TANK_H
-typedef enum {
-  TNONE,       /* No Buttons being pressed */
-  TLEFT,       /* Left button is being pressed */
-  TRIGHT,      /* Right button is being pressed */
-  TACCEL,      /* Acellerate Button */
-  TDECEL,      /* Decellerate Button is being pressed */
-  TLEFTACCEL,  /* Left + Accelerate */
-  TRIGHTACCEL, /* Right + Acellerate */
-  TLEFTDECEL,  /* Left + Decellerate */
-  TRIGHTDECEL  /* Right + Decellearate */
-} tankButton;
-#endif
-
-#ifndef BASES_H
-typedef enum {
-  baseDead,
-  baseOwnGood,
-  baseAllieGood,
-  baseNeutral,
-  baseEvil
-} baseAlliance;
-#endif
-
-#ifndef PILLBOX_H
-typedef enum {
-  pillDead,
-  pillAllie,
-  pillGood,
-  pillNeutral,
-  pillEvil,
-  pillTankGood,
-  pillTankAllie,
-  pillTankEvil
-} pillAlliance;
-#endif
-
 /* Type definitions */
 /* The screen object - Details what tiles are on the screen*/
 typedef struct screenObj *screen;
@@ -194,14 +98,6 @@ typedef struct {
   BYTE pixelX;
   BYTE pixelY;
 } screenGunsight;
-
-/* Button Pressed - These are the valid items
-   that should be passed to this module*/
-#ifndef _UPDATETYPE_ENUM
-#define _UPDATETYPE_ENUM
-typedef enum { left, right, up, down, redraw } updateType;
-
-#endif
 
 #ifndef _BUILDSELECT_ENUM
 #define _BUILDSELECT_ENUM

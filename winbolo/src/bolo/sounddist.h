@@ -30,6 +30,7 @@
 
 #include "global.h"
 #include "screen.h"
+#include "sound_effects.h"
 
 /* If the distance from the tank to the event is greater then */
 /* 15 map squares play the soft sound */
@@ -55,7 +56,7 @@
  *  mx    - Map X co-ordinatate for the sound origin
  *  my    - Map Y co-ordinatate for the sound origin
  *********************************************************/
-void soundDist(sndEffects value, BYTE mx, BYTE my);
+void soundDist(bolo::sndEffects value, BYTE mx, BYTE my);
 
 /*********************************************************
  *NAME:          soundDistLog
@@ -70,6 +71,6 @@ void soundDist(sndEffects value, BYTE mx, BYTE my);
  *  mx    - Map X co-ordinatate for the sound origin
  *  my    - Map Y co-ordinatate for the sound origin
  *********************************************************/
-void soundDistLog(sndEffects value, BYTE mx, BYTE my);
+void soundDistLog(bolo::sndEffects value, BYTE mx, BYTE my);
 
 #endif /* _SOUNDDIST_H */

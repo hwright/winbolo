@@ -48,67 +48,6 @@
 #include "swamp.h"
 #include "tankexp.h"
 
-/* Button Pressed - These are the valid items
-   that should be passed to this module*/
-
-#ifndef _GAMETYPE_ENUM
-#define _GAMETYPE_ENUM
-
-typedef enum { gameOpen = 1, gameTournament, gameStrictTournament } gameType;
-
-#endif
-
-#ifndef _LABELLEN_ENUM
-#define _LABELLEN_ENUM
-
-typedef enum { lblNone, lblShort, lblLong } labelLen;
-
-#endif
-
-#ifndef _UPDATETYPE_ENUM
-#define _UPDATETYPE_ENUM
-typedef enum { left, right, up, down, redraw } updateType;
-
-#endif
-
-#ifndef _SNDEFFECTS_ENUM
-#define _SNDEFFECTS_ENUM
-typedef enum {
-  shootSelf,
-  shootNear,
-  shotTreeNear,
-  shotTreeFar,
-  shotBuildingNear,
-  shotBuildingFar,
-  hitTankNear,
-  hitTankFar,
-  hitTankSelf,
-  bubbles,
-  tankSinkNear,
-  tankSinkFar,
-  bigExplosionNear,
-  bigExplosionFar,
-  farmingTreeNear,
-  farmingTreeFar,
-  manBuildingNear,
-  manBuildingFar,
-  manDyingNear,
-  manDyingFar,
-  manLayingMineNear,
-  mineExplosionNear,
-  mineExplosionFar,
-  shootFar
-} sndEffects;
-
-#endif
-
-#ifndef _AITYPE_ENUM
-#define _AITYPE_ENUM
-
-typedef enum { aiNone, aiYes, aiYesAdvantage } aiType;
-
-#endif
-
 /* Prototypes */
 
 /*********************************************************

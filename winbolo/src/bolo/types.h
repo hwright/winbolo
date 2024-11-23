@@ -216,4 +216,10 @@ struct startsObj {
   BYTE numStarts;
 };
 
+typedef enum { lblNone, lblShort, lblLong } labelLen;
+
+typedef enum { left, right, up, down, redraw } updateType;
+
+typedef enum { aiNone, aiYes, aiYesAdvantage } aiType;
+
 #endif

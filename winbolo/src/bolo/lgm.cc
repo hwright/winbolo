@@ -1072,7 +1072,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
         (*lgman)->numTrees = LGM_GATHER_TREE;
         netPNBAdd(screenGetNetPnb(), NPNB_LGM_FARMTREE, 0, (*lgman)->playerNum,
                   bmx, bmy, 0);
-        soundDist(farmingTreeNear, bmx, bmy);
+        soundDist(bolo::sndEffects::farmingTreeNear, bmx, bmy);
       }
       screenReCalc();
       break;
@@ -1089,7 +1089,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
         (*lgman)->numTrees = 0;
         netPNBAdd(screenGetNetPnb(), NPNB_LGM_BUILDROAD, 0, (*lgman)->playerNum,
                   bmx, bmy, 0);
-        soundDist(manBuildingNear, bmx, bmy);
+        soundDist(bolo::sndEffects::manBuildingNear, bmx, bmy);
 
         lgmCheckRemove(terrain, bmx, bmy);
         screenReCalc();
@@ -1105,7 +1105,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
           screenGetMinesExp()->addItem(MapPoint{.x = bmx, .y = bmy});
         }
         (*lgman)->numTrees = 0;
-        soundDist(manBuildingNear, bmx, bmy);
+        soundDist(bolo::sndEffects::manBuildingNear, bmx, bmy);
         netMNTAdd(screenGetNetMnt(), NMNT_BUILDBUILDING, 0, (*lgman)->playerNum,
                   bmx, bmy);
         lgmCheckRemove(terrain, bmx, bmy);
@@ -1135,7 +1135,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
                     false);
           screenGetMines()->addItem(MapPoint{.x = bmx, .y = bmy});
           (*lgman)->numMines = 0;
-          soundDist(manLayingMineNear, bmx, bmy);
+          soundDist(bolo::sndEffects::manLayingMineNear, bmx, bmy);
         }
         screenReCalc();
       }
@@ -1150,7 +1150,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
           netPNBAdd(screenGetNetPnb(), NPNB_PILL_REPAIR, 0, (*lgman)->playerNum,
                     bmx, bmy, (*lgman)->numTrees);
           (*lgman)->numTrees = 0;
-          soundDist(manBuildingNear, bmx, bmy);
+          soundDist(bolo::sndEffects::manBuildingNear, bmx, bmy);
         }
       } else {
         if (!isPill && !isBase &&
@@ -1165,7 +1165,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
                           (WORLD)((bmx << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE),
                           (WORLD)((bmy << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE),
                           NEUTRAL);
-            soundDist(mineExplosionNear, bmx, bmy);
+            soundDist(bolo::sndEffects::mineExplosionNear, bmx, bmy);
             mapSetPos(mp, bmx, bmy, CRATER, true, false);
           } else {
             (*lgman)->numTrees = 0;
@@ -1179,7 +1179,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
             netPNBAdd(screenGetNetPnb(), NPNB_PILL_DROP,
                       (BYTE)((*lgman)->numPills - 1), (*lgman)->playerNum,
                       addPill.x, addPill.y, 0);
-            soundDist(manBuildingNear, bmx, bmy);
+            soundDist(bolo::sndEffects::manBuildingNear, bmx, bmy);
             if (!threadsGetContext()) {
               frontEndStatusPillbox(
                   (*lgman)->numPills,
@@ -1195,7 +1195,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
         floodAddItem(bmx, bmy);
         lgmDeathCheck(mp, pb, bs, (WORLD) ((bmx << M_W_SHIFT_SIZE)
       +MAP_SQUARE_MIDDLE), (WORLD) ((bmy<< M_W_SHIFT_SIZE)+MAP_SQUARE_MIDDLE));
-        soundDist(mineExplosionNear, bmx, bmy);
+        soundDist(bolo::sndEffects::mineExplosionNear, bmx, bmy);
         mapSetPos(mp, bmx, bmy, CRATER, true, false);
       } else {
   */
@@ -1444,7 +1444,7 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx,
     if (dead) {
       netPNBAdd(screenGetNetPnb(), NPNB_LGM_DEAD, false, (*lgman)->playerNum,
                 lgmX, lgmY, 0);
-      soundDist(manDyingNear, lgmX, lgmY);
+      soundDist(bolo::sndEffects::manDyingNear, lgmX, lgmY);
       (*lgman)->isDead = true;
       (*lgman)->frame = LGM_HELICOPTER_FRAME;
       (*lgman)->numTrees = 0;

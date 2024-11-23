@@ -1654,7 +1654,7 @@ void mapNetPacket(map *value, BYTE mx, BYTE my, BYTE terrain) {
         screenGetMines()->existPos(MapPoint{.x = mx, .y = my}));
     if (terrain == BUILDING || terrain == ROAD) {
       /* Play the building sound */
-      soundDist(manBuildingNear, mx, my);
+      soundDist(bolo::sndEffects::manBuildingNear, mx, my);
     } else if (terrain == CRATER) {
       screenGetFloodFill()->addItem(MapPoint{.x = mx, .y = my});
     }

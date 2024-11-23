@@ -401,7 +401,8 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
       basesDamagePos(bs, opt1, opt2);
       if (owner != playerNum) {
         pillsBaseHit(pb, opt1, opt2, (basesGetOwnerPos(bs, opt1, opt2)));
-        soundDist(shotBuildingNear, opt1, opt2); /* Play sound */
+        soundDist(bolo::sndEffects::shotBuildingNear, opt1,
+                  opt2); /* Play sound */
       }
       break;
     case NPNB_PILL_HIT:
@@ -411,7 +412,8 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
         pillsDamagePos(pb, opt1, opt2, true, true);
       }
       needCalc = true;
-      soundDist(shotBuildingNear, opt1, opt2); /* Play sound */
+      soundDist(bolo::sndEffects::shotBuildingNear, opt1,
+                opt2); /* Play sound */
       break;
     case NPNB_PILL_CAPTURE:
       /* Some other player captured a pill */
@@ -483,7 +485,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
         frontEndStatusPillbox((BYTE)(itemNum + 1),
                               (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
       }
-      soundDist(manBuildingNear, opt1, opt2);
+      soundDist(bolo::sndEffects::manBuildingNear, opt1, opt2);
       needCalc = true;
       break;
     case NPNB_PILL_DEAD:
@@ -507,7 +509,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
     case NPNB_PILL_REPAIR:
       /* Pill repair */
       pillsRepairPos(pb, opt1, opt2, opt3);
-      soundDist(manBuildingNear, opt1, opt2);
+      soundDist(bolo::sndEffects::manBuildingNear, opt1, opt2);
       if (!threadsGetContext()) {
         frontEndStatusPillbox((BYTE)(itemNum + 1),
                               (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
@@ -520,7 +522,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
       /* LGM Died */
       if (!static_cast<bool>(itemNum)) {
         netPNBMessage(owner, langGetText(MESSAGE_LGM_DEAD));
-        soundDist(manDyingNear, opt1, opt2);
+        soundDist(bolo::sndEffects::manDyingNear, opt1, opt2);
         if (owner == playerNum) {
           lgmSetIsDead(screenGetLgmFromPlayerNum(playerNum), true);
         }
@@ -534,12 +536,12 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
         mapSetPos(mp, opt1, opt2, GRASS, false, false);
       }
       needCalc = true;
-      soundDist(farmingTreeNear, opt1, opt2);
+      soundDist(bolo::sndEffects::farmingTreeNear, opt1, opt2);
       break;
     case NPNB_LGM_BUILDROAD:
       /* LGM Built a road */
       mapSetPos(mp, opt1, opt2, ROAD, false, false);
-      soundDist(manBuildingNear, opt1, opt2);
+      soundDist(bolo::sndEffects::manBuildingNear, opt1, opt2);
       needCalc = true;
       break;
     case NPNB_SAVEMAP:
