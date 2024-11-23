@@ -45,6 +45,8 @@
 #include "swamp.h"
 #include "types.h"
 
+namespace bolo {
+
 namespace {
 
 // Time between mine explosion and add removal checks
@@ -131,3 +133,5 @@ void MineExplosionTracker::checkFill(map *mp, pillboxes *pb, bases *bs,
     screenReCalc();
   }
 }
+
+}  // namespace bolo

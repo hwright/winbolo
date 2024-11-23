@@ -1091,7 +1091,7 @@ mines *clientGetMines();
  *ARGUMENTS:
  *
  *********************************************************/
-MineExplosionTracker *clientGetMinesExp();
+bolo::MineExplosionTracker *clientGetMinesExp();
 
 /*********************************************************
  *NAME:          clientGetRubble

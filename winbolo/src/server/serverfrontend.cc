@@ -1147,7 +1147,7 @@ mines *clientGetMines() { return nullptr; }
  *ARGUMENTS:
  *
  *********************************************************/
-MineExplosionTracker *clientGetMinesExp() { return nullptr; }
+bolo::MineExplosionTracker *clientGetMinesExp() { return nullptr; }
 
 /*********************************************************
  *NAME:          clientGetRubble

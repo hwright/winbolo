@@ -1264,7 +1264,7 @@ mines *screenGetMines();
  *ARGUMENTS:
  *
  *********************************************************/
-MineExplosionTracker *screenGetMinesExp();
+bolo::MineExplosionTracker *screenGetMinesExp();
 
 /*********************************************************
  *NAME:          screenGetRubble

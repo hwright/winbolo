@@ -32,6 +32,8 @@
 #include "lgm.h"
 #include "types.h"
 
+namespace bolo {
+
 class MineExplosionTracker {
  public:
   MineExplosionTracker() = default;
@@ -73,5 +75,7 @@ class MineExplosionTracker {
 
   std::unordered_map<MapPoint, uint8_t> explosions_;
 };
+
+}  // namespace bolo
 
 #endif /* MINEEXP_H */
