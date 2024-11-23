@@ -45,9 +45,16 @@
 #include "swamp.h"
 #include "types.h"
 
+namespace {
+
+// Time between mine explosion and add removal checks
+const int WAIT_TIME = 10;
+
+}  // namespace
+
 void MineExplosionTracker::addItem(MapPoint pos) {
   if (!explosions_.contains(pos)) {
-    explosions_.insert({pos, MINES_EXPLOSION_WAIT});
+    explosions_.insert({pos, WAIT_TIME});
   }
 }
 

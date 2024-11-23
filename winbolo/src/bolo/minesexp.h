@@ -32,9 +32,6 @@
 #include "lgm.h"
 #include "types.h"
 
-/* Time between mine explosion and add removal checks */
-#define MINES_EXPLOSION_WAIT 10
-
 class MineExplosionTracker {
  public:
   MineExplosionTracker() = default;
