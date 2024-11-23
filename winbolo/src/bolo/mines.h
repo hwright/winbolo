@@ -28,6 +28,9 @@
 #define MINES_H
 
 /* Defines */
+#include <array>
+#include <bitset>
+
 #include "global.h"
 
 #define MINES_ARRAY_SIZE 256 /* maps are 256x256 units square */
@@ -37,8 +40,9 @@
 typedef struct minesObj *mines;
 
 struct minesObj {
-  bool pos[MINES_ARRAY_SIZE][MINES_ARRAY_SIZE];
-  bool minesHiddenMines; /* Are hidden mines allowed */
+  std::array<std::bitset<MINES_ARRAY_SIZE>, MINES_ARRAY_SIZE> mines_;
+  // Are hidden mines allowed?
+  bool minesHiddenMines;
 };
 
 /* Prototypes */

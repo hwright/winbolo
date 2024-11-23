@@ -20,7 +20,6 @@ add_executable(linbolods
                ../bolo/lgm.cc
                ../bolo/log.cc
                ../bolo/mathWinbolo.cc
-               ../bolo/mines.cc
                ../bolo/netmt.cc
                ../bolo/netplayers.cc
                ../bolo/netpnb.cc

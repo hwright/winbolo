@@ -44,15 +44,7 @@
  *  value - Pointer to the map file
  *********************************************************/
 void minesCreate(mines *visMines, bool allowHiddenMines) {
-  int count1; /* Looping Variables */
-  int count2;
-
   *visMines = new minesObj;
-  for (count1 = 0; count1 < MINES_ARRAY_SIZE; count1++) {
-    for (count2 = 0; count2 < MINES_ARRAY_SIZE; count2++) {
-      (*visMines)->pos[count1][count2] = false;
-    }
-  }
   (*visMines)->minesHiddenMines = allowHiddenMines;
 }
 
@@ -98,10 +90,9 @@ bool minesGetAllowHiddenMines(mines *visMines) {
  *  yValue   - Y Map Coordinate
  *********************************************************/
 bool minesAddItem(mines *visMines, BYTE xValue, BYTE yValue) {
-  bool returnValue = false; /* Value to return */
-
-  returnValue = (*visMines)->pos[xValue][yValue];
-  (*visMines)->pos[xValue][yValue] = true;
+  // bitset doesn't play nicely with std::exchange.
+  bool returnValue = (*visMines)->mines_[xValue][yValue];
+  (*visMines)->mines_[xValue][yValue] = true;
   return returnValue;
 }
 
@@ -118,7 +109,7 @@ bool minesAddItem(mines *visMines, BYTE xValue, BYTE yValue) {
  *  yValue   - Y Map Coordinate
  *********************************************************/
 void minesRemoveItem(mines *visMines, BYTE xValue, BYTE yValue) {
-  (*visMines)->pos[xValue][yValue] = false;
+  (*visMines)->mines_[xValue][yValue] = false;
 }
 
 /*********************************************************
@@ -142,7 +133,7 @@ bool minesExistPos(mines *visMines, BYTE xValue, BYTE yValue) {
       yValue <= MAP_MINE_EDGE_TOP || yValue >= MAP_MINE_EDGE_BOTTOM) {
     returnValue = true;
   } else if ((*visMines)->minesHiddenMines) {
-    returnValue = (*visMines)->pos[xValue][yValue];
+    returnValue = (*visMines)->mines_[xValue][yValue];
   } else {
     returnValue = screenMapIsMine(xValue, yValue);
   }
