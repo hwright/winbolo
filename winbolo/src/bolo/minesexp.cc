@@ -45,7 +45,7 @@
 #include "swamp.h"
 #include "types.h"
 
-void MineExplosionTracker::addItem(map *mp, MapPoint pos) {
+void MineExplosionTracker::addItem(MapPoint pos) {
   if (!explosions_.contains(pos)) {
     explosions_.insert({pos, MINES_EXPLOSION_WAIT});
   }
@@ -131,16 +131,16 @@ void MineExplosionTracker::checkFill(map *mp, pillboxes *pb, bases *bs,
 
     /* Add items if craters */
     if (leftPos) {
-      addItem(mp, pos.W());
+      addItem(pos.W());
     }
     if (rightPos) {
-      addItem(mp, pos.E());
+      addItem(pos.E());
     }
     if (abovePos) {
-      addItem(mp, pos.N());
+      addItem(pos.N());
     }
     if (belowPos) {
-      addItem(mp, pos.S());
+      addItem(pos.S());
     }
     screenReCalc();
   }

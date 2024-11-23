@@ -1389,7 +1389,7 @@ void tankMoveOnBoat(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
         if (mapIsMine(mp, newbmx, newbmy)) {
           netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0,
                     screenGetTankPlayer(value), newbmx, newbmy);
-          screenGetMinesExp()->addItem(mp, MapPoint{.x = newbmx, .y = newbmy});
+          screenGetMinesExp()->addItem(MapPoint{.x = newbmx, .y = newbmy});
         }
       }
     }
@@ -1571,7 +1571,7 @@ void tankMoveOnLand(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
       if (mapIsMine(mp, newbmx, newbmy)) {
         netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0,
                   screenGetTankPlayer(value), newbmx, newbmy);
-        screenGetMinesExp()->addItem(mp, MapPoint{.x = newbmx, .y = newbmy});
+        screenGetMinesExp()->addItem(MapPoint{.x = newbmx, .y = newbmy});
       }
     }
   }

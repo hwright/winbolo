@@ -48,7 +48,7 @@ class MineExplosionTracker {
   // ARGUMENTS:
   //  mp -  Map Structure
   //  pos - The mine position
-  void addItem(map *mp, MapPoint pos);
+  void addItem(MapPoint pos);
 
   // Game tick has happened. Update mine explosions.
   //

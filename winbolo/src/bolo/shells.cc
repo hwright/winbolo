@@ -230,7 +230,7 @@ void shellsUpdate(shells *value, map *mp, pillboxes *pb, bases *bs, tank *tk,
         spy = (BYTE)conv;
         explosionsAddItem(screenGetExplosions(), sx, sy, spx, spy,
                           EXPLOSION_START);
-        screenGetMinesExp()->addItem(mp, MapPoint{.x = bmx, .y = bmy});
+        screenGetMinesExp()->addItem(MapPoint{.x = bmx, .y = bmy});
         count = 0;
         while (count < numTanks) {
           lgmDeathCheck(
@@ -277,7 +277,7 @@ void shellsUpdate(shells *value, map *mp, pillboxes *pb, bases *bs, tank *tk,
       spy = (BYTE)conv;
       explosionsAddItem(screenGetExplosions(), sx, sy, spx, spy,
                         EXPLOSION_START);
-      screenGetMinesExp()->addItem(mp, MapPoint{.x = bmx, .y = bmy});
+      screenGetMinesExp()->addItem(MapPoint{.x = bmx, .y = bmy});
       testPos = mapGetPos(mp, bmx, bmy);
       if (isServer && testPos >= MINE_START && testPos <= MINE_END) {
         netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0,

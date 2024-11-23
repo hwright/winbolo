@@ -1061,7 +1061,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
 
   switch ((*lgman)->action) {
     case LGM_TREE_REQUEST:
-      screenGetMinesExp()->addItem(mp, MapPoint{.x = bmx, .y = bmy});
+      screenGetMinesExp()->addItem(MapPoint{.x = bmx, .y = bmy});
       if (terrain == FOREST && !isBase && !isPill) {
         if (isMine) {
           mapSetPos(mp, bmx, bmy, (BYTE)(GRASS + MINE_SUBTRACT), true, false);
@@ -1102,7 +1102,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
           mapSetPos(mp, bmx, bmy, BUILDING, true, false);
         } else {
           netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, 0, bmx, bmy);
-          screenGetMinesExp()->addItem(mp, MapPoint{.x = bmx, .y = bmy});
+          screenGetMinesExp()->addItem(MapPoint{.x = bmx, .y = bmy});
         }
         (*lgman)->numTrees = 0;
         soundDist(manBuildingNear, bmx, bmy);
@@ -1126,7 +1126,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
           (terrain == SWAMP || terrain == CRATER || terrain == ROAD ||
            terrain == FOREST || terrain == RUBBLE || terrain == GRASS)) {
         if (isMine) {
-          screenGetMinesExp()->addItem(mp, MapPoint{.x = bmx, .y = bmy});
+          screenGetMinesExp()->addItem(MapPoint{.x = bmx, .y = bmy});
           netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, 0, bmx, bmy);
         } else {
           netMNTAdd(screenGetNetMnt(), NMNT_MINEPLACE, 0, (*lgman)->playerNum,
@@ -1158,7 +1158,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
             terrain != RIVER && terrain != BOAT && terrain != DEEP_SEA) {
           if (isMine) {
             netMNTAdd(screenGetNetMnt(), NMNT_MINEEXPLOSION, 0, 0, bmx, bmy);
-            screenGetMinesExp()->addItem(mp, MapPoint{.x = bmx, .y = bmy});
+            screenGetMinesExp()->addItem(MapPoint{.x = bmx, .y = bmy});
             screenGetFloodFill()->addItem(MapPoint{.x = bmx, .y = bmy});
             lgmDeathCheck(lgman, mp, pb, bs,
                           (WORLD)((bmx << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE),
