@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024      Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,16 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-
-/*********************************************************
- *Name:          Mines
- *Filename:      mines.c
- *Author:        John Morrison
- *Creation Date: 29/1/99
- *Last Modified: 2/11/99
- *Purpose:
- *  Handles what mines are visible to the user
- *********************************************************/
 
 #include "mines.h"
 
@@ -36,8 +25,6 @@ bool MineTracker::addItem(MapPoint pos) {
   mines_[pos.x][pos.y] = true;
   return returnValue;
 }
-
-void MineTracker::removeItem(MapPoint pos) { mines_[pos.x][pos.y] = false; }
 
 bool MineTracker::existPos(MapPoint pos) {
   bool returnValue = true; /* Value to return */

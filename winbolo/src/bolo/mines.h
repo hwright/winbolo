@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,15 +13,7 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Mines
- *Filename:      mines.h
- *Author:        John Morrison
- *Creation Date: 29/1/99
- *Last Modified:  8/2/99
- *Purpose:
- *  Handles what mines are visible to the user
- *********************************************************/
+//  Handles what mines are visible to the user
 
 #ifndef MINES_H
 #define MINES_H
@@ -57,7 +48,7 @@ class MineTracker {
   //
   // ARGUMENTS:
   //  pos - The mine position.
-  void removeItem(MapPoint pos);
+  void removeItem(MapPoint pos) { mines_[pos.x][pos.y] = false; }
 
   // Return whether a mine can be seen at that position.
   // Only called if a mine does exist at the map square
@@ -68,6 +59,7 @@ class MineTracker {
   bool existPos(MapPoint pos);
 
  private:
+  // TODO: Consider using a set here.  It depends on how sparse the mines are.
   std::array<std::bitset<MINES_ARRAY_SIZE>, MINES_ARRAY_SIZE> mines_;
 
   // Are hidden mines allowed?
