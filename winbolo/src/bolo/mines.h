@@ -23,6 +23,8 @@
 
 #include "global.h"
 
+namespace bolo {
+
 class MineTracker {
  public:
   explicit MineTracker(bool allowHidden) : allowHidden_(allowHidden) {}
@@ -65,5 +67,7 @@ class MineTracker {
   // Are hidden mines allowed?
   bool allowHidden_;
 };
+
+}  // namespace bolo
 
 #endif /* MINES_H */

@@ -90,7 +90,7 @@ static std::optional<bolo::BuildingState> serverBlds;
 static explosions serverExpl = nullptr;
 static std::optional<bolo::FloodFill> serverFF;
 static std::optional<bolo::GrassState> serverGrass;
-static std::optional<MineTracker> serverMines;
+static std::optional<bolo::MineTracker> serverMines;
 static std::optional<bolo::MineExplosionTracker> serverMinesExp;
 static std::optional<bolo::RubbleState> serverRubble;
 static std::optional<bolo::SwampState> serverSwamp;
@@ -1752,7 +1752,7 @@ bolo::GrassState *serverCoreGetGrass() { return &*serverGrass; }
  *ARGUMENTS:
  *
  *********************************************************/
-MineTracker *serverCoreGetMines() { return &*serverMines; }
+bolo::MineTracker *serverCoreGetMines() { return &*serverMines; }
 
 /*********************************************************
  *NAME:          serverGetMinesExp

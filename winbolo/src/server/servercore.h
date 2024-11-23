@@ -885,7 +885,7 @@ bolo::GrassState *serverCoreGetGrass();
  *ARGUMENTS:
  *
  *********************************************************/
-MineTracker *serverCoreGetMines();
+bolo::MineTracker *serverCoreGetMines();
 
 /*********************************************************
  *NAME:          serverGetMinesExp

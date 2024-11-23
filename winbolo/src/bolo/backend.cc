@@ -505,7 +505,7 @@ bolo::GrassState *screenGetGrass() {
  *ARGUMENTS:
  *
  *********************************************************/
-MineTracker *screenGetMines() {
+bolo::MineTracker *screenGetMines() {
   if (!threadsGetContext()) {
     return clientGetMines();
   }

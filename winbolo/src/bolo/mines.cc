@@ -19,6 +19,8 @@
 #include "global.h"
 #include "screen.h"
 
+namespace bolo {
+
 bool MineTracker::addItem(MapPoint pos) {
   // bitset doesn't play nicely with std::exchange.
   bool returnValue = mines_[pos.x][pos.y];
@@ -39,3 +41,5 @@ bool MineTracker::existPos(MapPoint pos) {
   }
   return returnValue;
 }
+
+}  // namespace bolo

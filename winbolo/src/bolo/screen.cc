@@ -96,7 +96,7 @@ static std::optional<bolo::BuildingState> clientBlds;
 static explosions clientExpl = nullptr;
 static std::optional<bolo::FloodFill> clientFF;
 static std::optional<bolo::GrassState> clientGrass;
-static std::optional<MineTracker> clientMines;
+static std::optional<bolo::MineTracker> clientMines;
 static std::optional<bolo::MineExplosionTracker> clientMinesExp;
 static std::optional<bolo::RubbleState> clientRubble;
 static std::optional<bolo::SwampState> clientSwamp;
@@ -3910,7 +3910,7 @@ bolo::GrassState *clientGetGrass() { return &*clientGrass; }
  *ARGUMENTS:
  *
  *********************************************************/
-MineTracker *clientGetMines() { return &*clientMines; }
+bolo::MineTracker *clientGetMines() { return &*clientMines; }
 
 /*********************************************************
  *NAME:          clientGetMinesExp

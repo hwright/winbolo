@@ -1251,7 +1251,7 @@ bolo::GrassState *screenGetGrass();
  *ARGUMENTS:
  *
  *********************************************************/
-MineTracker *screenGetMines();
+bolo::MineTracker *screenGetMines();
 
 /*********************************************************
  *NAME:          screenGetMinesExp
