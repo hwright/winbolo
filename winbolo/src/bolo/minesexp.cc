@@ -27,6 +27,8 @@
 
 #include "minesexp.h"
 
+#include <vector>
+
 #include "backend.h"
 #include "explosions.h"
 #include "floodfill.h"
@@ -54,7 +56,7 @@
  *ARGUMENTS:
  * me - Pointer to the mines object
  *********************************************************/
-void minesExpCreate(minesExp *me) { *me = nullptr; }
+void minesExpCreate(minesExp *me) { *me = new minesExpObj; }
 
 /*********************************************************
  *NAME:          minesExpAddItem
@@ -71,41 +73,10 @@ void minesExpCreate(minesExp *me) { *me = nullptr; }
  *  y  - Y co-ord
  *********************************************************/
 void minesExpAddItem(minesExp *me, map *mp, BYTE x, BYTE y) {
-  minesExp q;
-  minesExp inc;
-  bool found; /* Is the item found */
-
-  inc = *me;
-  found = false;
-
-  while (!found && NonEmpty(inc)) {
-    if (inc->x == x && inc->y == y) {
-      found = true;
-    }
-    inc = MinesExpTail(inc);
+  MapPoint pos{.x = x, .y = y};
+  if (!(*me)->explosions_.contains(pos)) {
+    (*me)->explosions_.insert({pos, MINES_EXPLOSION_WAIT});
   }
-
-  /* If not found add a new item */
-  if (!found) {
-    q = new minesExpObj;
-    q->x = x;
-    q->y = y;
-    q->time = MINES_EXPLOSION_WAIT;
-    q->next = *me;
-    q->prev = nullptr;
-    if (NonEmpty(*me)) {
-      (*me)->prev = q;
-    }
-    *me = q;
-  }
-
-  //  testPos = mapGetPos(mp, x, y);
-  //  if (netGetType() != netSingle && threadsGetContext() == false && testPos
-  //  >= MINE_START && testPos <= MINE_END) {
-  //    mapSetPos(mp, x, y, CRATER, false);
-  //    explosionsAddItem(x, y, 0, 0, EXPLOSION_START);
-  //    soundDist(mineExplosionNear, x, y);
-  //  }
 }
 
 /*********************************************************
@@ -120,15 +91,7 @@ void minesExpAddItem(minesExp *me, map *mp, BYTE x, BYTE y) {
  *ARGUMENTS:
  *  me - Pointer to the mines object
  *********************************************************/
-void minesExpDestroy(minesExp *me) {
-  minesExp q;
-
-  while (!IsEmpty(*me)) {
-    q = *me;
-    *me = MinesExpTail(q);
-    delete q;
-  }
-}
+void minesExpDestroy(minesExp *me) { delete *me; }
 
 /*********************************************************
  *NAME:          minesExpUpdate
@@ -148,64 +111,21 @@ void minesExpDestroy(minesExp *me) {
  *********************************************************/
 void minesExpUpdate(minesExp *me, map *mp, pillboxes *pb, bases *bs, lgm **lgms,
                     BYTE numLgm) {
-  minesExp position; /* Position throught the items */
-  bool needUpdate;   /* Whether an update is needed or not */
+  std::vector<MapPoint> removals;
 
-  position = *me;
-
-  while (NonEmpty(position)) {
-    needUpdate = true;
-    if (position->time > 0) {
-      position->time--;
+  for (auto &[pos, time] : (*me)->explosions_) {
+    if (time > 0) {
+      time -= 1;
     } else {
-      /* Check for fill and remove from data structure */
-      needUpdate = false;
-      minesExpCheckFill(me, mp, pb, bs, lgms, numLgm, position->x, position->y);
-      minesRemoveItem(screenGetMines(), position->x, position->y);
-      minesExpDeleteItem(me, &position);
-    }
-
-    /* Get the next Item */
-    if (*me != nullptr && needUpdate) {
-      position = MinesExpTail(position);
-    } else {
-      position = nullptr;
-    }
-  }
-}
-
-/*********************************************************
- *NAME:          minesExpDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/1/99
- *LAST MODIFIED: 12/1/99
- *PURPOSE:
- *  Deletes the value from the master list
- *
- *ARGUMENTS:
- *  me      - Pointer to the mines object
- *  value   - Pointer to the shells to delete. Also puts
- *            next shell its position
- *********************************************************/
-void minesExpDeleteItem(minesExp *me, minesExp *value) {
-  minesExp del; /* The item to delete */
-
-  del = *value;
-  (*value) = MinesExpTail(del);
-  if (del->prev != nullptr) {
-    del->prev->next = del->next;
-  } else {
-    /* Must be the first item - Move the master position along one */
-    *me = ShellsTail(*me);
-    if (NonEmpty(*me)) {
-      (*me)->prev = nullptr;
+      minesExpCheckFill(me, mp, pb, bs, lgms, numLgm, pos.x, pos.y);
+      minesRemoveItem(screenGetMines(), pos.x, pos.y);
+      removals.push_back(pos);
     }
   }
 
-  if (del->next != nullptr) {
-    del->next->prev = del->prev;
+  for (auto pos : removals) {
+    (*me)->explosions_.erase(pos);
   }
-  delete del;
 }
 
 /*********************************************************

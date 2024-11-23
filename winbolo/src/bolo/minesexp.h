@@ -32,11 +32,6 @@
 #include "lgm.h"
 #include "types.h"
 
-/* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define MinesExpTail(list) ((list)->next);
-
 /* Time between mine explosion and add removal checks */
 #define MINES_EXPLOSION_WAIT 10
 
@@ -44,11 +39,7 @@
 
 typedef struct minesExpObj *minesExp;
 struct minesExpObj {
-  minesExp next; /* Next item */
-  minesExp prev; /* Previous Item */
-  BYTE x;        /* X and Y positions */
-  BYTE y;
-  BYTE time; /* Time remaing before it explodes and checks next spot */
+  std::unordered_map<MapPoint, uint8_t> explosions_;
 };
 
 /* Prototypes */
@@ -114,21 +105,6 @@ void minesExpDestroy(minesExp *me);
  *********************************************************/
 void minesExpUpdate(minesExp *me, map *mp, pillboxes *pb, bases *bs, lgm **lgms,
                     BYTE numLgm);
-
-/*********************************************************
- *NAME:          minesExpDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/1/99
- *LAST MODIFIED: 12/1/99
- *PURPOSE:
- *  Deletes the value from the master list
- *
- *ARGUMENTS:
- *  me      - Pointer to the mines object
- *  value   - Pointer to the shells to delete. Also puts
- *            next shell its position
- *********************************************************/
-void minesExpDeleteItem(minesExp *me, minesExp *value);
 
 /*********************************************************
  *NAME:          minesExpCheckFill
