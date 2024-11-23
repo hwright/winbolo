@@ -74,15 +74,7 @@ void MineExplosionTracker::checkFill(map *mp, pillboxes *pb, bases *bs,
                                      lgm **lgms, BYTE numLgm, MapPoint pos) {
   BYTE terrain;  /* Map pos being worked on */
   BYTE count;    /* Looping variable */
-  bool abovePos; /* Are squares around mines? */
-  bool belowPos;
-  bool leftPos;
-  bool rightPos;
 
-  abovePos = false;
-  belowPos = false;
-  leftPos = false;
-  rightPos = false;
   terrain = mapGetPos(mp, pos);
   minesRemoveItem(screenGetMines(), pos.x, pos.y);
   if (terrain >= MINE_START && terrain <= MINE_END) {
@@ -114,34 +106,21 @@ void MineExplosionTracker::checkFill(map *mp, pillboxes *pb, bases *bs,
     }
     terrain = mapGetPos(mp, pos.N());
     if (terrain >= MINE_START && terrain <= MINE_END) {
-      abovePos = true;
+      addItem(pos.N());
     }
     terrain = mapGetPos(mp, pos.S());
     if (terrain >= MINE_START && terrain <= MINE_END) {
-      belowPos = true;
+      addItem(pos.S());
     }
     terrain = mapGetPos(mp, pos.W());
     if (terrain >= MINE_START && terrain <= MINE_END) {
-      leftPos = true;
+      addItem(pos.W());
     }
     terrain = mapGetPos(mp, pos.E());
     if (terrain >= MINE_START && terrain <= MINE_END) {
-      rightPos = true;
-    }
-
-    /* Add items if craters */
-    if (leftPos) {
-      addItem(pos.W());
-    }
-    if (rightPos) {
       addItem(pos.E());
     }
-    if (abovePos) {
-      addItem(pos.N());
-    }
-    if (belowPos) {
-      addItem(pos.S());
-    }
+
     screenReCalc();
   }
 }
