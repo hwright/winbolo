@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,17 +12,6 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  */
-
-/*********************************************************
- *Name:          Mines Explosions
- *Filename:      minesexp.c
- *Author:        John Morrison
- *Creation Date: 20/01/99
- *Last Modified: 04/04/02
- *Purpose:
- *  Responsible for tracking mine explosions, chain
- *  reactions and damage to tank from them.
- *********************************************************/
 
 #include "minesexp.h"
 
