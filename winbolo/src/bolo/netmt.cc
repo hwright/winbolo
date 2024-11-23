@@ -250,7 +250,7 @@ bool netMNTExtractServer(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
       logAddEvent(log_SoundMineLay, opt1, opt2, 0, 0, 0, nullptr);
       break;
     case NMNT_MINEEXPLOSION:
-      minesExpAddItem(screenGetMinesExp(), mp, opt1, opt2);
+      screenGetMinesExp()->addItem(MapPoint{.x = opt1, .y = opt2});
       break;
     case NMNT_MANRETURN:
       break;
@@ -389,7 +389,7 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
             pb, bs, (WORLD)((opt1 << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE),
             (WORLD)((opt2 << M_W_SHIFT_SIZE) + MAP_SQUARE_MIDDLE), NEUTRAL);
         screenCheckTankMineDamage(opt1, opt2);
-        minesExpAddItem(screenGetMinesExp(), mp, opt1, opt2);
+        screenGetMinesExp()->addItem(MapPoint{.x = opt1, .y = opt2});
         /* Play the sound */
         soundDist(mineExplosionNear, opt1, opt2);
       }

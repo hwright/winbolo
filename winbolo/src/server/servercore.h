@@ -898,7 +898,7 @@ mines *serverCoreGetMines();
  *ARGUMENTS:
  *
  *********************************************************/
-minesExp *serverGetMinesExp();
+bolo::MineExplosionTracker *serverGetMinesExp();
 
 /*********************************************************
  *NAME:          serverCoreGetRubble

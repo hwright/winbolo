@@ -40,7 +40,7 @@ BYTE SwampState::addItem(MapPoint pos) {
       return DEATH_RETURN;
     }
   } else {
-    swamps_[pos] = LIFE;
+    swamps_.insert({pos, LIFE});
   }
 
   return SWAMP;

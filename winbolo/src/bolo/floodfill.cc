@@ -34,7 +34,7 @@ const int FILL_WAIT = 16;
 
 void FloodFill::addItem(MapPoint pos) {
   if (!floods_.contains(pos)) {
-    floods_[pos] = FILL_WAIT;
+    floods_.insert({pos, FILL_WAIT});
   }
 }
 

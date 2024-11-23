@@ -524,7 +524,7 @@ mines *screenGetMines() {
  *ARGUMENTS:
  *
  *********************************************************/
-minesExp *screenGetMinesExp() {
+bolo::MineExplosionTracker *screenGetMinesExp() {
   if (!threadsGetContext()) {
     return clientGetMinesExp();
   }

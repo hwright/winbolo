@@ -91,7 +91,7 @@ static explosions serverExpl = nullptr;
 static std::optional<bolo::FloodFill> serverFF;
 static std::optional<bolo::GrassState> serverGrass;
 static mines serverMines = nullptr;
-static minesExp serverMinesExp = nullptr;
+static std::optional<bolo::MineExplosionTracker> serverMinesExp;
 static std::optional<bolo::RubbleState> serverRubble;
 static std::optional<bolo::SwampState> serverSwamp;
 static tkExplosion serverTankExp = nullptr;
@@ -169,7 +169,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines,
   serverFF.emplace();
   tkExplosionCreate(&serverTankExp);
   minesCreate(&serverMines, hiddenMines);
-  minesExpCreate(&serverMinesExp);
+  serverMinesExp.emplace();
   playersRejoinCreate();
 
   std::ifstream input(fileName);
@@ -244,7 +244,7 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn,
   netPNBCreate(&serverPNB);
   netMNTCreate(&serverNMT);
   minesCreate(&serverMines, hiddenMines);
-  minesExpCreate(&serverMinesExp);
+  serverMinesExp.emplace();
   logCreate();
 
   returnValue = mapLoadCompressedMap(&mp, &pb, &bs, &ss, buff, buffLen);
@@ -297,7 +297,7 @@ void serverCoreDestroy() {
   netNMTDestroy(&serverNMT);
   tkExplosionDestroy(&serverTankExp);
   minesDestroy(&serverMines);
-  minesExpDestroy(&serverMinesExp);
+  serverMinesExp = std::nullopt;
   logDestroy();
   playersDestroy(&splrs);
 }
@@ -405,7 +405,7 @@ void serverCoreGameTick() {
                                 structure if its the server calling it.*/
   shellsUpdate(&shs, &mp, &pb, &bs, ta, numTanks, true);
   explosionsUpdate(&serverExpl);
-  minesExpUpdate(&serverMinesExp, &mp, &pb, &bs, (lgm **)lgms, numTanks);
+  serverMinesExp->Update(&mp, &pb, &bs, (lgm **)lgms, numTanks);
   serverFF->Update(&mp, &pb, &bs);
   playersRejoinUpdate();
 
@@ -1767,7 +1767,7 @@ mines *serverCoreGetMines() { return &serverMines; }
  *ARGUMENTS:
  *
  *********************************************************/
-minesExp *serverGetMinesExp() { return &serverMinesExp; }
+bolo::MineExplosionTracker *serverGetMinesExp() { return &*serverMinesExp; }
 
 /*********************************************************
  *NAME:          serverCoreGetRubble

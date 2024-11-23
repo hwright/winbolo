@@ -39,12 +39,9 @@ BYTE RubbleState::addItem(MapPoint pos) {
     }
   } else {
     // Insert a new rubble
-    rubbles_[pos] = LIFE;
+    rubbles_.insert({pos, LIFE});
   }
 
   return RUBBLE;
 }
-
-void RubbleState::removePos(MapPoint pos) { rubbles_.erase(pos); }
-
 }
