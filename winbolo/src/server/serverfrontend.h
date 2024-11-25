@@ -35,6 +35,7 @@ class ServerFrontend : public Frontend {
                       tank *tank, int edgeX, int edgeY) override {}
 
   void statusPillbox(uint8_t pillNum, pillAlliance pb) override {}
+  void statusTank(uint8_t tankNum, tankAlliance ts) override {}
 };
 
 }  // namespace bolo

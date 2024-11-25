@@ -34,6 +34,7 @@ class LinuxFrontend : public Frontend {
                       screenLgm *lgms, long srtDelay, bool isPillView,
                       tank *tank, int edgeX, int edgeY) override;
   void statusPillbox(uint8_t pillNum, pillAlliance pb) override;
+  void statusTank(BYTE tankNum, tankAlliance ts) override;
 };
 
 }  // namespace bolo

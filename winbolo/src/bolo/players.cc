@@ -323,8 +323,8 @@ void playersSetPlayer(players *plrs, BYTE playerNum, char *playerName,
     }
     if (!threadsGetContext()) {
       frontEndSetPlayer((playerNumbers)playerNum, str);
-      frontEndStatusTank((BYTE)(playerNum + 1),
-                         playersScreenAllience(plrs, playerNum));
+      screenGetFrontend()->statusTank((BYTE)(playerNum + 1),
+                                      playersScreenAllience(plrs, playerNum));
       frontEndRedrawAll();
     }
   }
@@ -1134,7 +1134,7 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
     (*plrs)->playerBrainNames[playerNum][0] = '\0';
     if (!threadsGetContext()) {
       frontEndClearPlayer((playerNumbers)playerNum);
-      frontEndStatusTank((BYTE)(playerNum + 1), tankNone);
+      screenGetFrontend()->statusTank((BYTE)(playerNum + 1), tankNone);
       frontEndSetPlayerCheckState((playerNumbers)playerNum, false);
     }
     /* Make a message about it */
@@ -1722,7 +1722,8 @@ void playersLeaveAlliance(players *plrs, BYTE playerNum) {
     }
     total = screenGetNumPlayers();
     for (count = 1; count <= total; count++) {
-      frontEndStatusTank(count, playersScreenAllience(plrs, (BYTE)(count - 1)));
+      screenGetFrontend()->statusTank(
+          count, playersScreenAllience(plrs, (BYTE)(count - 1)));
     }
     playersSetAllieMenu(plrs);
   }
@@ -1798,7 +1799,8 @@ void playersAcceptAlliance(players *plrs, BYTE acceptedBy, BYTE newMember) {
     }
     total = screenGetNumPlayers();
     for (count = 1; count <= total; count++) {
-      frontEndStatusTank(count, playersScreenAllience(plrs, (BYTE)(count - 1)));
+      screenGetFrontend()->statusTank(
+          count, playersScreenAllience(plrs, (BYTE)(count - 1)));
     }
     playersSetAllieMenu(plrs);
   }

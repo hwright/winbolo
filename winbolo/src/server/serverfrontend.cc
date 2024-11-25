@@ -46,20 +46,6 @@ void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
 }
 
 /*********************************************************
- *NAME:          frontEndStatusTank
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/1/99
- *LAST MODIFIED: 26/1/99
- *PURPOSE:
- *  Sets the tank status for a particular tank
- *
- *ARGUMENTS:
- *  tankNum - The tank number to draw (1-16)
- *  ts      - The allience of the tank
- *********************************************************/
-void frontEndStatusTank(BYTE tankNum, tankAlliance ts) { return; }
-
-/*********************************************************
  *NAME:          frontEndStatusBase
  *AUTHOR:        John Morrison
  *CREATION DATE: 10/1/99

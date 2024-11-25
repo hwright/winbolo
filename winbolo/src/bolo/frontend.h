@@ -87,29 +87,22 @@ class Frontend {
                               long srtDelay, bool isPillView, tank *tank,
                               int edgeX, int edgeY) = 0;
 
-  // Sets the pillbox status for a particular pillbox
+  // Set the pillbox status for a particular pillbox
   //
   // ARGUMENTS:
   //  pillNum - The base number to draw (1-16)
   //  pa      - The allience of the pillbox
   virtual void statusPillbox(uint8_t pillNum, pillAlliance pb) = 0;
+
+  // Set the tank status for a particular tank
+  //
+  // ARGUMENTS:
+  //  tankNum - The tank number to draw (1-16)
+  //  ts      - The allience of the tank
+  virtual void statusTank(uint8_t tankNum, tankAlliance ts) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndStatusTank
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/1/99
- *LAST MODIFIED: 26/1/99
- *PURPOSE:
- *  Sets the tank status for a particular tank
- *
- *ARGUMENTS:
- *  tankNum - The tank number to draw (1-16)
- *  ts      - The allience of the tank
- *********************************************************/
-void frontEndStatusTank(BYTE tankNum, tankAlliance ts);
 
 /*********************************************************
  *NAME:          frontEndStatusBase

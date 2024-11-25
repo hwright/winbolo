@@ -38,9 +38,7 @@ void LinuxFrontend::updateTankStatusBars(uint8_t shells, uint8_t mines,
 
 void LinuxFrontend::updateBaseStatusBars(uint8_t shells, uint8_t mines,
                                          uint8_t armour) {
-  uint64_t tick;
-
-  tick = SDL_GetTicks();
+  uint64_t tick = SDL_GetTicks();
   drawStatusBaseBars(0, 0, shells, mines, armour, FALSE);
   dwSysFrame += (SDL_GetTicks() - tick);
 }
@@ -67,11 +65,16 @@ void LinuxFrontend::drawMainScreen(screen *value, screenMines *mineView,
 }
 
 void LinuxFrontend::statusPillbox(BYTE pillNum, pillAlliance pb) {
-  DWORD tick;
-
-  tick = SDL_GetTicks();
+  uint64_t tick = SDL_GetTicks();
   drawStatusPillbox(pillNum, pb, showPillLabels);
   drawCopyPillsStatus();
+  dwSysFrame += (SDL_GetTicks() - tick);
+}
+
+void LinuxFrontend::statusTank(BYTE tankNum, tankAlliance ts) {
+  uint64_t tick = SDL_GetTicks();
+  drawStatusTank(tankNum, ts);
+  drawCopyTanksStatus();
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 

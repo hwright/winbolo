@@ -1528,27 +1528,6 @@ int windowGetAiTime(void) { return dwSysBrainTotal; }
 int windowGetSimTime(void) { return dwSysGameTotal; }
 
 /*********************************************************
- *NAME:          frontEndStatusTank
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/1/99
- *LAST MODIFIED: 26/1/99
- *PURPOSE:
- *  Sets the tank status for a particular tank
- *
- *ARGUMENTS:
- *  tankNum - The tank number to draw (1-16)
- *  ts      - The allience of the tank
- *********************************************************/
-void frontEndStatusTank(BYTE tankNum, tankAlliance ts) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawStatusTank(tankNum, ts);
-  drawCopyTanksStatus();
-  dwSysFrame += (timeGetTime() - tick);
-}
-
-/*********************************************************
  *NAME:          frontEndMessages
  *AUTHOR:        John Morrison
  *CREATION DATE:  3/1/99
