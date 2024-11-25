@@ -324,20 +324,6 @@ void netMessageSendPlayer(BYTE playerNum, BYTE destPlayer, char *message) {
 }
 
 /*********************************************************
- *NAME:          frontEndEnableRequestAllyMenu
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/11/99
- *LAST MODIFIED: 1/11/99
- *PURPOSE:
- * Request to enable/disable the request alliance menu
- * item
- *
- *ARGUMENTS:
- *  enabled - true for enabled/false for diabled
- *********************************************************/
-void frontEndEnableRequestAllyMenu(bool enabled) { return; }
-
-/*********************************************************
  *NAME:          frontEndEnableRequestMenu
  *AUTHOR:        John Morrison
  *CREATION DATE: 1/11/99

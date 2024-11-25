@@ -1510,22 +1510,6 @@ int windowGetAiTime(void) { return dwSysBrainTotal; }
 int windowGetSimTime(void) { return dwSysGameTotal; }
 
 /*********************************************************
- *NAME:          frontEndEnableRequestAllyMenu
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/11/99
- *LAST MODIFIED: 1/11/99
- *PURPOSE:
- * Request to enable/disable the request alliance menu
- * item
- *
- *ARGUMENTS:
- *  enabled - TRUE for enabled/FALSE for diabled
- *********************************************************/
-void frontEndEnableRequestAllyMenu(bool enabled) {
-  gtk_widget_set_sensitive(request_alliance1, enabled);
-}
-
-/*********************************************************
  *NAME:          frontEndEnableRequestMenu
  *AUTHOR:        John Morrison
  *CREATION DATE: 1/11/99

@@ -46,6 +46,7 @@ class ServerFrontend : public Frontend {
   void setPlayer(playerNumbers value, std::string_view str) override {}
   void drawDownload(bool justBlack) override {}
   void setPlayerCheckState(playerNumbers value, bool isChecked) override {}
+  void enableRequestAllyMenu(bool enabled) override {}
 };
 
 }  // namespace bolo

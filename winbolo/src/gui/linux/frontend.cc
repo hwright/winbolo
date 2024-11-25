@@ -50,6 +50,7 @@ extern GtkWidget *idc_player13;
 extern GtkWidget *idc_player14;
 extern GtkWidget *idc_player15;
 extern GtkWidget *idc_player16;
+extern GtkWidget *request_alliance1;
 
 namespace bolo {
 
@@ -419,6 +420,10 @@ void LinuxFrontend::setPlayerCheckState(playerNumbers value, bool isChecked) {
       break;
   }
   isInMenu = false;
+}
+
+void LinuxFrontend::enableRequestAllyMenu(bool enabled) {
+  gtk_widget_set_sensitive(request_alliance1, enabled);
 }
 
 }  // namespace bolo

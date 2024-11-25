@@ -161,23 +161,15 @@ class Frontend {
   //  value     - The player number
   //  isChecked - Is the item checked
   virtual void setPlayerCheckState(playerNumbers value, bool isChecked) = 0;
+
+  // Request to enable/disable the request alliance menu item
+  //
+  // ARGUMENTS:
+  //  enabled - TRUE for enabled/FALSE for diabled
+  virtual void enableRequestAllyMenu(bool enabled) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndEnableRequestAllyMenu
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/11/99
- *LAST MODIFIED: 1/11/99
- *PURPOSE:
- * Request to enable/disable the request alliance menu
- * item
- *
- *ARGUMENTS:
- *  enabled - TRUE for enabled/FALSE for diabled
- *********************************************************/
-void frontEndEnableRequestAllyMenu(bool enabled);
 
 /*********************************************************
  *NAME:          frontEndEnableRequestMenu
