@@ -128,22 +128,12 @@ class Frontend {
   //  isDead - Is the man dead
   //  angle  - The angle the man is facing
   virtual void manStatus(bool isDead, TURNTYPE angle) = 0;
+
+  // Clears the man status (ie man is in tank)
+  virtual void manClear(void) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndManClear
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/99
- *LAST MODIFIED: 18/1/99
- *PURPOSE:
- *  Clears the man status (ie man is in tank)
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void frontEndManClear(void);
 
 /*********************************************************
  *NAME:          frontEndGameOver

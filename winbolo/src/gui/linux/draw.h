@@ -414,5 +414,6 @@ void drawSetupArrays(BYTE zoomFactor);
 
 void drawDownloadScreen(bool justBlack);
 void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking);
+void drawSetManClear();
 
 #endif

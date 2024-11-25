@@ -1013,7 +1013,7 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
         } */
     lgmBackInTank(lgman, mp, pb, bs, tnk, true);
     if (!threadsGetContext()) {
-      frontEndManClear();
+      screenGetFrontend()->manClear();
     }
   }
 }
@@ -1981,7 +1981,7 @@ void lgmNetBackInTank(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk,
   lgmBackInTank(lgman, mp, pb, bs, tnk, true);
 
   if (!threadsGetContext()) {
-    frontEndManClear();
+    screenGetFrontend()->manClear();
   }
 }
 
@@ -2066,7 +2066,7 @@ void lgmSetIsDead(lgm *lgman, bool isDead) {
     }
   } else {
     if (!threadsGetContext()) {
-      frontEndManClear();
+      screenGetFrontend()->manClear();
     }
   }
 }

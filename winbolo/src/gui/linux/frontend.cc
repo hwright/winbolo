@@ -108,4 +108,6 @@ void LinuxFrontend::manStatus(bool isDead, TURNTYPE angle) {
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 
+void LinuxFrontend::manClear(void) { drawSetManClear(); }
+
 }  // namespace bolo

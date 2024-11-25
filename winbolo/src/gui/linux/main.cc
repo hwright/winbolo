@@ -217,7 +217,6 @@ void clientMutexRelease(void);
 bool brainHandlerIsBrainRunning();
 void brainHandlerRun(GtkWidget *hWnd);
 void brainsHandlerSet(GtkWidget *hWnd, bool enabled);
-void drawSetManClear(void);
 
 void gameFrontCloseServer();
 int frameRateTime = (int)(MILLISECONDS / FRAME_RATE_30) - 1;
@@ -1562,7 +1561,6 @@ void frontEndDrawDownload(bool justBlack) {
  *ARGUMENTS:
  *
  *********************************************************/
-void frontEndManClear(void) { drawSetManClear(); }
 
 /*********************************************************
  *NAME:          frontEndGameOver

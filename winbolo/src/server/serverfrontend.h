@@ -40,6 +40,7 @@ class ServerFrontend : public Frontend {
   void messages(std::string_view top, std::string_view bottom) override {}
   void killsDeaths(int kills, int deaths) override {}
   void manStatus(bool isDead, TURNTYPE angle) override {}
+  void manClear(void) override {}
 };
 
 }  // namespace bolo
