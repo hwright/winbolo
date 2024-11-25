@@ -140,23 +140,16 @@ class Frontend {
   // ARGUMENTS:
   //  value - The player number to clear
   virtual void clearPlayer(playerNumbers value) = 0;
+
+  // Sets a player name in the menu and enables it.
+  //
+  // ARGUMENTS:
+  //  value - The player number to set
+  //  str   - String identifier of the name
+  virtual void setPlayer(playerNumbers value, std::string_view str) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndSetPlayer
- *AUTHOR:        John Morrison
- *CREATION DATE: 4/2/99
- *LAST MODIFIED: 4/2/99
- *PURPOSE:
- * Sets a player name in the menu and enables it.
- *
- *ARGUMENTS:
- *  value - The player number to set
- *  str   - String identifier of the name
- *********************************************************/
-void frontEndSetPlayer(playerNumbers value, char *str);
 
 /*********************************************************
  *NAME:          frontEndDrawDownload

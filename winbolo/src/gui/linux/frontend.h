@@ -42,6 +42,7 @@ class LinuxFrontend : public Frontend {
   void manClear(void) override;
   void gameOver(void) override;
   void clearPlayer(playerNumbers value) override;
+  void setPlayer(playerNumbers value, std::string_view str) override;
 };
 
 }  // namespace bolo

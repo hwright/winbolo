@@ -147,7 +147,7 @@ bool playersSetSelf(players *plrs, BYTE playerNum, char *playerName) {
       strcpy((char *)(*plrs)->playerBrainNames[playerNum],
              bolo::utilCtoPString(playerName).c_str());
       if (!threadsGetContext()) {
-        frontEndSetPlayer((playerNumbers)playerNum, playerName);
+        screenGetFrontend()->setPlayer((playerNumbers)playerNum, playerName);
       }
       if (!backendGetContext()) {
         strcpy(myLastPlayerName, playerName);
@@ -212,7 +212,7 @@ bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
         strcpy(myLastPlayerName, playerName);
       }
       if (!threadsGetContext()) {
-        frontEndSetPlayer((playerNumbers)playerNum, temp);
+        screenGetFrontend()->setPlayer((playerNumbers)playerNum, temp);
       }
       /* Log it */
       logAddEvent(log_ChangeName, playerNum, 0, 0, 0, 0,
@@ -246,7 +246,7 @@ void playersSetPlayersMenu(players *plrs) {
         strcat(temp, (*plrs)->item[count].location);
       }
       if (!threadsGetContext()) {
-        frontEndSetPlayer((playerNumbers)count, temp);
+        screenGetFrontend()->setPlayer((playerNumbers)count, temp);
       }
     }
     count++;
@@ -322,7 +322,7 @@ void playersSetPlayer(players *plrs, BYTE playerNum, char *playerName,
       strcat(str, (*plrs)->item[playerNum].location);
     }
     if (!threadsGetContext()) {
-      frontEndSetPlayer((playerNumbers)playerNum, str);
+      screenGetFrontend()->setPlayer((playerNumbers)playerNum, str);
       screenGetFrontend()->statusTank((BYTE)(playerNum + 1),
                                       playersScreenAllience(plrs, playerNum));
       frontEndRedrawAll();
@@ -369,7 +369,7 @@ void playerSetLocation(players *plrs, char *ip, char *host) {
         strcat(str, (*plrs)->item[found].location);
       }
       if (!threadsGetContext()) {
-        frontEndSetPlayer((playerNumbers)found, str);
+        screenGetFrontend()->setPlayer((playerNumbers)found, str);
         frontEndSetPlayerCheckState((playerNumbers)found,
                                     (*plrs)->item[found].isChecked);
       }
@@ -1169,7 +1169,7 @@ void playersSetMenuItems(players *plrs) {
         strcat(str, (*plrs)->item[count].location);
       }
       if (!threadsGetContext()) {
-        frontEndSetPlayer((playerNumbers)count, str);
+        screenGetFrontend()->setPlayer((playerNumbers)count, str);
       }
     }
   }

@@ -242,14 +242,100 @@ void LinuxFrontend::clearPlayer(playerNumbers value) {
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player15), FALSE);
       gtk_widget_set_sensitive(idc_player15, FALSE);
       break;
-    default:
-      /* case player16: */
+    case player16:
       gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player16)->child)), STR_16);
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player16), FALSE);
       gtk_widget_set_sensitive(idc_player16, FALSE);
       break;
   }
   isInMenu = false;
+}
+
+void LinuxFrontend::setPlayer(playerNumbers value, std::string_view str) {
+  isInMenu = TRUE;
+  switch (value) {
+    case player01:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player1)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player1, TRUE);
+      break;
+    case player02:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player2)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player2, TRUE);
+      break;
+    case player03:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player3)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player3, TRUE);
+      break;
+    case player04:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player4)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player4, TRUE);
+      break;
+    case player05:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player5)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player5, TRUE);
+      break;
+    case player06:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player6)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player6, TRUE);
+      break;
+    case player07:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player7)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player7, TRUE);
+      break;
+    case player08:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player8)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player8, TRUE);
+      break;
+    case player09:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player9)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player9, TRUE);
+      break;
+    case player10:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player10)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player10, TRUE);
+      break;
+    case player11:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player11)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player11, TRUE);
+      break;
+    case player12:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player12)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player12, TRUE);
+      break;
+    case player13:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player13)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player13, TRUE);
+      break;
+    case player14:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player14)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player14, TRUE);
+      break;
+    case player15:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player15)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player15, TRUE);
+      break;
+    case player16:
+      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player16)->child)),
+                         std::string(str).c_str());
+      gtk_widget_set_sensitive(idc_player16, TRUE);
+      break;
+  }
+  isInMenu = FALSE;
 }
 
 }  // namespace bolo

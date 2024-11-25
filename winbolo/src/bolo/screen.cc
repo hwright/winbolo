@@ -1299,8 +1299,8 @@ void screenSetupTank(char *playerName) {
   }
   tankCreate(&mytk, &myss);
   playersSetSelf(screenGetPlayers(), (playerNumbers)0, playerName);
-  frontEndSetPlayer((playerNumbers)playersGetSelf(screenGetPlayers()),
-                    playerName);
+  screenGetFrontend()->setPlayer(
+      (playerNumbers)playersGetSelf(screenGetPlayers()), playerName);
 }
 
 /*********************************************************
@@ -2089,7 +2089,7 @@ void screenSetBaseNetData(BYTE *buff, int length) {
   /* Set our player name in the menu */
   max = playersGetSelf(screenGetPlayers());
   playersGetPlayerName(screenGetPlayers(), max, pn);
-  frontEndSetPlayer((playerNumbers)max, pn);
+  screenGetFrontend()->setPlayer((playerNumbers)max, pn);
   /* Set The other players in the menu */
   playersSetMenuItems(screenGetPlayers());
 }

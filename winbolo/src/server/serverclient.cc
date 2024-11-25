@@ -44,20 +44,6 @@ void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
 }
 
 /*********************************************************
- *NAME:          frontEndSetPlayer
- *AUTHOR:        John Morrison
- *CREATION DATE: 4/2/99
- *LAST MODIFIED: 4/2/99
- *PURPOSE:
- * Sets a player name in the menu and enables it.
- *
- *ARGUMENTS:
- *  value - The player number to set
- *  str   - String identifier of the name
- *********************************************************/
-void frontEndSetPlayer(playerNumbers value, char *str) { return; }
-
-/*********************************************************
  *NAME:          frontEndDrawDownload
  *AUTHOR:        John Morrison
  *CREATION DATE: 27/3/99
