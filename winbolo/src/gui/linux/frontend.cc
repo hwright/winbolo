@@ -17,6 +17,7 @@
 
 #include <SDL.h>
 
+#include "../clientmutex.h"
 #include "draw.h"
 #include "framemutex.h"
 #include "sound.h"
@@ -29,10 +30,17 @@ extern SDL_TimerID timerGameID;
 extern SDL_TimerID timerFrameID;
 extern char messageBody[16 * 1024];
 extern char messageTitle[256];
+extern char messageBody2[16 * 1024];
+extern char messageTitle2[256];
+extern char messageBody3[16 * 1024];
+extern char messageTitle3[256];
 extern int frameRateTime;
 extern uint8_t numMessages;
 extern bool isInMenu;
 extern bool hideMainView;
+extern bool isTutorial;
+extern BYTE upTo;
+extern bool doingTutorial;
 
 extern GtkWidget *idc_player1;
 extern GtkWidget *idc_player2;
@@ -74,6 +82,8 @@ const char *STR_13 = "13";
 const char *STR_14 = "14";
 const char *STR_15 = "15";
 const char *STR_16 = "16";
+
+const char *DIALOG_BOX_TITLE = "LinBolo";
 
 }  // namespace
 
@@ -436,6 +446,262 @@ void LinuxFrontend::showGunsight(bool isShown) {
   isInMenu = true;
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(show_gunsight1), isShown);
   isInMenu = false;
+}
+
+bool LinuxFrontend::tutorial(BYTE pos) {
+  bool returnValue; /* Value to return */
+
+  // gdk_threads_enter();
+  returnValue = false;
+  if (isTutorial) {
+    switch (upTo) {
+      case 0:
+        if (pos == 208) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL01));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+        }
+        break;
+      case 1:
+        if (pos == 197) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL02));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+        }
+        break;
+      case 2:
+        if (pos == 192) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL03));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+        }
+        break;
+      case 3:
+        if (pos == 186) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL04));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+        }
+        break;
+      case 4:
+        if (pos == 181) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL05));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+        }
+        break;
+      case 5:
+        if (pos == 175) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, "LinBolo");
+          strcpy(messageBody, langGetText(STR_TUTORIAL06));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+        }
+        break;
+      case 6:
+        if (pos == 166) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL07));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+        }
+        break;
+      case 7:
+        if (pos == 159) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL09));
+          strcpy(messageTitle2, DIALOG_BOX_TITLE);
+          strcpy(messageBody2, langGetText(STR_TUTORIAL08));
+          numMessages = 2;
+          returnValue = true;
+          upTo++;
+          upTo++;
+        }
+        break;
+      case 8:
+        upTo++;
+        break;
+      case 9:
+        if (pos == 142) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL11));
+          strcpy(messageTitle2, DIALOG_BOX_TITLE);
+          strcpy(messageBody2, langGetText(STR_TUTORIAL10));
+          numMessages = 2;
+          returnValue = true;
+          upTo++;
+          upTo++;
+        }
+        break;
+      case 10:
+        upTo++;
+        break;
+      case 11:
+        if (pos == 122) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL12));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+        }
+        break;
+      case 12:
+        if (pos == 120) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL14));
+          strcpy(messageTitle2, DIALOG_BOX_TITLE);
+          strcpy(messageBody2, langGetText(STR_TUTORIAL13));
+          numMessages = 2;
+          returnValue = true;
+          upTo++;
+          upTo++;
+        }
+        break;
+      case 13:
+        upTo++;
+        break;
+      case 14:
+        if (pos == 110) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL15));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+        }
+        break;
+      case 15:
+        if (pos == 103) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL16));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+        }
+        break;
+      case 16:
+        if (pos == 98) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL17));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+        }
+        break;
+      case 17:
+        if (pos == 84) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL19));
+          strcpy(messageTitle2, DIALOG_BOX_TITLE);
+          strcpy(messageBody2, langGetText(STR_TUTORIAL18));
+          numMessages = 2;
+          returnValue = true;
+          upTo++;
+          upTo++;
+        }
+        break;
+      case 18:
+        upTo++;
+        break;
+      case 19:
+        if (pos == 66) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL21));
+          strcpy(messageTitle2, DIALOG_BOX_TITLE);
+          strcpy(messageBody2, langGetText(STR_TUTORIAL20));
+          numMessages = 2;
+          returnValue = true;
+          upTo++;
+          upTo++;
+        }
+        break;
+      case 20:
+        upTo++;
+        break;
+      case 21:
+        if (pos == 47) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle3, DIALOG_BOX_TITLE);
+          strcpy(messageBody3, langGetText(STR_TUTORIAL22));
+          strcpy(messageTitle2, DIALOG_BOX_TITLE);
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody2, langGetText(STR_TUTORIAL23));
+          strcpy(messageBody, langGetText(STR_TUTORIAL24));
+          numMessages = 3;
+          returnValue = true;
+          upTo++;
+          upTo++;
+        }
+        break;
+      case 22:
+        upTo++;
+        break;
+      case 23:
+        upTo++;
+        break;
+      case 24:
+        if (pos == 21) {
+          doingTutorial = true;
+          clientMutexRelease();
+          strcpy(messageTitle, DIALOG_BOX_TITLE);
+          strcpy(messageBody, langGetText(STR_TUTORIAL25));
+          numMessages = 1;
+          returnValue = true;
+          upTo++;
+          frameRateTime = 0;
+          SDL_RemoveTimer(timerGameID);
+        }
+        break;
+      default:
+        break;
+    }
+  }
+
+  return returnValue;
 }
 
 }  // namespace bolo

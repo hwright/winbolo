@@ -183,21 +183,14 @@ class Frontend {
 
   // Force a complete window redraw.
   virtual void redrawAll(void) = 0;
+
+  // Set the front end that we have reached a new position
+  //
+  // ARGUMENTS:
+  //  pos - Y Position on the map
+  virtual bool tutorial(BYTE pos) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndTutorial
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/5/00
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- * Set the front end that we have reached a new position
- *
- *ARGUMENTS:
- *  pos - Y Position on the map
- *********************************************************/
-bool frontEndTutorial(BYTE pos);
 
 #endif /* _FRONT_END_H */

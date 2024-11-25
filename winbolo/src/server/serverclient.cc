@@ -476,19 +476,6 @@ bool clientGetInStartFind() { return false; }
 void netErrorOccured() {}
 
 /*********************************************************
- *NAME:          frontEndTutorial
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/5/00
- *LAST MODIFIED: 27/5/00
- *PURPOSE:
- * Set the front end that we have reached a new position
- *
- *ARGUMENTS:
- *  pos - Y Position on the map
- *********************************************************/
-bool frontEndTutorial(BYTE pos) { return false; }
-
-/*********************************************************
  *NAME:          screenTankStopCarryingPill
  *AUTHOR:        John Morrison
  *CREATION DATE: 21/6/00

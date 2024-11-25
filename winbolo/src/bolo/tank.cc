@@ -1349,7 +1349,7 @@ void tankMoveOnBoat(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
 
     if (newbmy < bmy) {
       if (!threadsGetContext()) {
-        if (frontEndTutorial(newbmy)) {
+        if (screenGetFrontend()->tutorial(newbmy)) {
           (*value)->speed = 0;
         }
       }
@@ -1550,7 +1550,7 @@ void tankMoveOnLand(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
     newbmy = (BYTE)newmy;
     if (newbmy < bmy) {
       if (!threadsGetContext()) {
-        if (frontEndTutorial(newbmy)) {
+        if (screenGetFrontend()->tutorial(newbmy)) {
           (*value)->speed = 0;
         }
       }

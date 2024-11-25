@@ -49,6 +49,7 @@ class LinuxFrontend : public Frontend {
   void enableLeaveAllyMenu(bool enabled) override;
   void showGunsight(bool isShown) override;
   void redrawAll(void) override {}
+  bool tutorial(BYTE pos) override;
 };
 
 }  // namespace bolo
