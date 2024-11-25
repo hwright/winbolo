@@ -1714,7 +1714,7 @@ void playersLeaveAlliance(players *plrs, BYTE playerNum) {
   if (!threadsGetContext()) {
     total = screenNumBases();
     for (count = 1; count <= total; count++) {
-      frontEndStatusBase(count, screenBaseAlliance(count));
+      screenGetFrontend()->statusBase(count, screenBaseAlliance(count));
     }
     total = screenNumPills();
     for (count = 1; count <= total; count++) {
@@ -1791,7 +1791,7 @@ void playersAcceptAlliance(players *plrs, BYTE acceptedBy, BYTE newMember) {
   if (!threadsGetContext()) {
     total = screenNumBases();
     for (count = 1; count <= total; count++) {
-      frontEndStatusBase(count, screenBaseAlliance(count));
+      screenGetFrontend()->statusBase(count, screenBaseAlliance(count));
     }
     total = screenNumPills();
     for (count = 1; count <= total; count++) {

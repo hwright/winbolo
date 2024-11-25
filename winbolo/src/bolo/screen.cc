@@ -2083,7 +2083,7 @@ void screenSetBaseNetData(BYTE *buff, int length) {
   count = 1;
   max = basesGetNumBases(&mybs);
   while (count <= max) {
-    frontEndStatusBase(count, basesGetStatusNum(&mybs, count));
+    frontend->statusBase(count, basesGetStatusNum(&mybs, count));
     count++;
   }
   /* Set our player name in the menu */

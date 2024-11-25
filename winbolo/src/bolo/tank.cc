@@ -1646,7 +1646,8 @@ void tankMoveOnLand(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
           netPNBAdd(screenGetNetPnb(), NPNB_BASE_CAPTURE, (BYTE)(baseNum - 1),
                     screenGetTankPlayer(value), bmx, bmy, 0);
           if (!threadsGetContext()) {
-            frontEndStatusBase(baseNum, (basesGetStatusNum(bs, baseNum)));
+            screenGetFrontend()->statusBase(baseNum,
+                                            (basesGetStatusNum(bs, baseNum)));
           }
           screenReCalc();
         }

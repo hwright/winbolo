@@ -1568,27 +1568,6 @@ void frontEndKillsDeaths(int kills, int deaths) {
   dwSysFrame += (timeGetTime() - tick);
 }
 
-/*********************************************************
- *NAME:          frontEndStatusBase
- *AUTHOR:        John Morrison
- *CREATION DATE: 10/1/99
- *LAST MODIFIED: 10/1/99
- *PURPOSE:
- *  Sets the base status for a particular base
- *
- *ARGUMENTS:
- *  pillNum - The base number to draw (1-16)
- *  bs      - The allience of the pillbox
- *********************************************************/
-void frontEndStatusBase(BYTE baseNum, baseAlliance bs) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawStatusBase(baseNum, bs, showBaseLabels);
-  drawCopyBasesStatus();
-  dwSysFrame += (timeGetTime() - tick);
-}
-
 void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking);
 
 /*********************************************************

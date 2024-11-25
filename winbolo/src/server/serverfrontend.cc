@@ -46,20 +46,6 @@ void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
 }
 
 /*********************************************************
- *NAME:          frontEndStatusBase
- *AUTHOR:        John Morrison
- *CREATION DATE: 10/1/99
- *LAST MODIFIED: 10/1/99
- *PURPOSE:
- *  Sets the base status for a particular base
- *
- *ARGUMENTS:
- *  pillNum - The base number to draw (1-16)
- *  bs      - The allience of the pillbox
- *********************************************************/
-void frontEndStatusBase(BYTE baseNum, baseAlliance bs) { return; }
-
-/*********************************************************
  *NAME:          frontEndMessages
  *AUTHOR:        John Morrison
  *CREATION DATE:  3/1/99

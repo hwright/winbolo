@@ -379,8 +379,8 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
       basesSetOwner(bs, opt1, opt2, owner, false);
       /* Client context */
       if (!threadsGetContext()) {
-        frontEndStatusBase((BYTE)(itemNum + 1),
-                           (basesGetStatusNum(bs, (BYTE)(itemNum + 1))));
+        screenGetFrontend()->statusBase(
+            (BYTE)(itemNum + 1), (basesGetStatusNum(bs, (BYTE)(itemNum + 1))));
       }
       needCalc = true;
       break;

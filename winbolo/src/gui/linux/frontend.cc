@@ -64,17 +64,24 @@ void LinuxFrontend::drawMainScreen(screen *value, screenMines *mineView,
                    showCursor, cursorX, cursorY);
 }
 
-void LinuxFrontend::statusPillbox(BYTE pillNum, pillAlliance pb) {
+void LinuxFrontend::statusPillbox(uint8_t pillNum, pillAlliance pb) {
   uint64_t tick = SDL_GetTicks();
   drawStatusPillbox(pillNum, pb, showPillLabels);
   drawCopyPillsStatus();
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 
-void LinuxFrontend::statusTank(BYTE tankNum, tankAlliance ts) {
+void LinuxFrontend::statusTank(uint8_t tankNum, tankAlliance ts) {
   uint64_t tick = SDL_GetTicks();
   drawStatusTank(tankNum, ts);
   drawCopyTanksStatus();
+  dwSysFrame += (SDL_GetTicks() - tick);
+}
+
+void LinuxFrontend::statusBase(uint8_t baseNum, baseAlliance bs) {
+  uint64_t tick = SDL_GetTicks();
+  drawStatusBase(baseNum, bs, showBaseLabels);
+  drawCopyBasesStatus();
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 

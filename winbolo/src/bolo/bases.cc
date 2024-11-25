@@ -450,8 +450,9 @@ void basesUpdateStock(bases *value, BYTE baseNum) {
           (*value)->item[baseNum].armour >
               BASE_DEAD) { /* FIXME: Changed to hardcoded value */
         if (!threadsGetContext()) {
-          frontEndStatusBase((BYTE)(baseNum + 1),
-                             (basesGetStatusNum(value, (BYTE)(baseNum + 1))));
+          screenGetFrontend()->statusBase(
+              (BYTE)(baseNum + 1),
+              (basesGetStatusNum(value, (BYTE)(baseNum + 1))));
         }
       }
     }
@@ -902,7 +903,7 @@ void basesDamagePos(bases *value, BYTE xValue, BYTE yValue) {
       }
       if ((*value)->item[count].armour <= BASE_DISPLAY_X) {
         if (!threadsGetContext()) {
-          frontEndStatusBase((BYTE)(count + 1), baseDead);
+          screenGetFrontend()->statusBase((BYTE)(count + 1), baseDead);
         }
       }
       done = true;
@@ -1331,8 +1332,9 @@ void basesServerRefuel(bases *value, BYTE baseNum, BYTE addAmount) {
       if (oldArmour == BASE_DEAD &&
           (*value)->item[baseNum].armour > BASE_DEAD) {
         if (!threadsGetContext()) {
-          frontEndStatusBase((BYTE)(baseNum + 1),
-                             (basesGetStatusNum(value, (BYTE)(baseNum + 1))));
+          screenGetFrontend()->statusBase(
+              (BYTE)(baseNum + 1),
+              (basesGetStatusNum(value, (BYTE)(baseNum + 1))));
         }
       }
     }
