@@ -1510,24 +1510,6 @@ int windowGetAiTime(void) { return dwSysBrainTotal; }
 int windowGetSimTime(void) { return dwSysGameTotal; }
 
 /*********************************************************
- *NAME:          frontEndShowGunsight
- *AUTHOR:        John Morrison
- *CREATION DATE: 4/1/99
- *LAST MODIFIED: 4/1/99
- *PURPOSE:
- * Set the front end whether the gunsight is visible or not
- * (Called by auto show/hide gunsight being triggered)
- *
- *ARGUMENTS:
- *  isShown - Is the gunsight shown or not
- *********************************************************/
-void frontEndShowGunsight(bool isShown) {
-  isInMenu = TRUE;
-  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(show_gunsight1), isShown);
-  isInMenu = FALSE;
-}
-
-/*********************************************************
  *NAME:          gameFrontGetPrefs
  *AUTHOR:        John Morrison
  *CREATION DATE: 19/4/99

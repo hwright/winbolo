@@ -472,7 +472,6 @@ void screenAddBrainObject(unsigned short object, WORLD wx, WORLD wy,
 void clientSetInStartFind(bool entering) {}
 
 bool clientGetInStartFind() { return false; }
-void frontEndShowGunsight(bool isShown) {}
 
 void netErrorOccured() {}
 

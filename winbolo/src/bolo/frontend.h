@@ -173,23 +173,16 @@ class Frontend {
   // ARGUMENTS:
   //  enabled - TRUE for enabled/FALSE for diabled
   virtual void enableLeaveAllyMenu(bool enabled) = 0;
+
+  // Set the front end whether the gunsight is visible or not
+  // (Called by auto show/hide gunsight being triggered)
+  //
+  // ARGUMENTS:
+  //  isShown - Is the gunsight shown or not
+  virtual void showGunsight(bool isShown) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndShowGunsight
- *AUTHOR:        John Morrison
- *CREATION DATE: 4/1/00
- *LAST MODIFIED: 4/1/00
- *PURPOSE:
- * Set the front end whether the gunsight is visible or not
- * (Called by auto show/hide gunsight being triggered)
- *
- *ARGUMENTS:
- *  isShown - Is the gunsight shown or not
- *********************************************************/
-void frontEndShowGunsight(bool isShown);
 
 /*********************************************************
  *NAME:          frontEndRedrawAll

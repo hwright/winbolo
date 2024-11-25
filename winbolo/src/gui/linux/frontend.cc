@@ -52,6 +52,7 @@ extern GtkWidget *idc_player15;
 extern GtkWidget *idc_player16;
 extern GtkWidget *request_alliance1;
 extern GtkWidget *leave_alliance1;
+extern GtkWidget *show_gunsight1;
 
 namespace bolo {
 
@@ -429,6 +430,12 @@ void LinuxFrontend::enableRequestAllyMenu(bool enabled) {
 
 void LinuxFrontend::enableLeaveAllyMenu(bool enabled) {
   gtk_widget_set_sensitive(leave_alliance1, enabled);
+}
+
+void LinuxFrontend::showGunsight(bool isShown) {
+  isInMenu = true;
+  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(show_gunsight1), isShown);
+  isInMenu = false;
 }
 
 }  // namespace bolo

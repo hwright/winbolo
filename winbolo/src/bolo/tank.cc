@@ -723,7 +723,7 @@ void tankGunsightIncrease(tank *value) {
     (*value)->showSight = false;
     tankRegisterChangeByte(value, CRC_SHOWSIGHT_OFFSET, false);
     if (!threadsGetContext()) {
-      frontEndShowGunsight(false);
+      screenGetFrontend()->showGunsight(false);
     }
   }
 }
@@ -748,7 +748,7 @@ void tankGunsightDecrease(tank *value) {
     (*value)->showSight = true;
     tankRegisterChangeByte(value, CRC_SHOWSIGHT_OFFSET, true);
     if (!threadsGetContext()) {
-      frontEndShowGunsight(true);
+      screenGetFrontend()->showGunsight(true);
     }
   }
 }

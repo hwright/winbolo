@@ -48,6 +48,7 @@ class ServerFrontend : public Frontend {
   void setPlayerCheckState(playerNumbers value, bool isChecked) override {}
   void enableRequestAllyMenu(bool enabled) override {}
   void enableLeaveAllyMenu(bool enabled) override {}
+  void showGunsight(bool isShown) override {}
 };
 
 }  // namespace bolo
