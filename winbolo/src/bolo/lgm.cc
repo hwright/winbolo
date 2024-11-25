@@ -56,6 +56,12 @@
 #include "tank.h"
 #include "types.h"
 #include "util.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 static char streamText[2048];
 
@@ -212,8 +218,8 @@ void lgmUpdate(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
       tankGetWorld(tnk, &wx, &wy);
       /* Multiplayer game but just a client */
       if (!threadsGetContext()) {
-        frontEndManStatus(false,
-                          utilCalcAngle((*lgman)->x, (*lgman)->y, wx, wy));
+        screenGetFrontend()->manStatus(
+            false, utilCalcAngle((*lgman)->x, (*lgman)->y, wx, wy));
       }
     }
   }
@@ -722,7 +728,7 @@ void lgmMoveAway(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
       utilCalcAngle((*lgman)->x, (*lgman)->y, (*lgman)->destX, (*lgman)->destY);
   frontAngle = utilCalcAngle((*lgman)->x, (*lgman)->y, newmx, newmy);
   if (!threadsGetContext()) {
-    frontEndManStatus(false, frontAngle);
+    screenGetFrontend()->manStatus(false, frontAngle);
   }
   conv = (*lgman)->x;
   conv >>= TANK_SHIFT_MAPSIZE;
@@ -842,7 +848,7 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   angle = utilCalcAngle((*lgman)->x, (*lgman)->y, newmx, newmy);
 
   if (!threadsGetContext()) {
-    frontEndManStatus(false, angle);
+    screenGetFrontend()->manStatus(false, angle);
   }
 
   conv = (*lgman)->x;
@@ -1013,7 +1019,7 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
         } */
     lgmBackInTank(lgman, mp, pb, bs, tnk, true);
     if (!threadsGetContext()) {
-      frontEndManClear();
+      screenGetFrontend()->manClear();
     }
   }
 }
@@ -1181,7 +1187,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
                       addPill.x, addPill.y, 0);
             soundDist(bolo::sndEffects::manBuildingNear, bmx, bmy);
             if (!threadsGetContext()) {
-              frontEndStatusPillbox(
+              screenGetFrontend()->statusPillbox(
                   (*lgman)->numPills,
                   (pillsGetAllianceNum(pb, (*lgman)->numPills)));
             }
@@ -1488,7 +1494,7 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx,
                     (BYTE)((*lgman)->numPills - 1), (*lgman)->playerNum, item.x,
                     item.y, 0);
           if (!threadsGetContext()) {
-            frontEndStatusPillbox(
+            screenGetFrontend()->statusPillbox(
                 (*lgman)->numPills,
                 (pillsGetAllianceNum(pb, (*lgman)->numPills)));
           }
@@ -1516,7 +1522,7 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx,
       (*lgman)->y <<= TANK_SHIFT_MAPSIZE;
       (*lgman)->y += MAP_SQUARE_MIDDLE;
       if (!threadsGetContext()) {
-        frontEndManStatus(true, 0.0f);
+        screenGetFrontend()->manStatus(true, 0.0f);
       }
 
       /* Log it */
@@ -1981,7 +1987,7 @@ void lgmNetBackInTank(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk,
   lgmBackInTank(lgman, mp, pb, bs, tnk, true);
 
   if (!threadsGetContext()) {
-    frontEndManClear();
+    screenGetFrontend()->manClear();
   }
 }
 
@@ -2062,11 +2068,11 @@ void lgmSetIsDead(lgm *lgman, bool isDead) {
     (*lgman)->x = 0;
     (*lgman)->y = 0;
     if (!threadsGetContext()) {
-      frontEndManStatus(true, 0.0f);
+      screenGetFrontend()->manStatus(true, 0.0f);
     }
   } else {
     if (!threadsGetContext()) {
-      frontEndManClear();
+      screenGetFrontend()->manClear();
     }
   }
 }

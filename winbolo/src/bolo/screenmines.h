@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 1998-2008 John Morrison.
- * Copyright (c) 2024-     Hyrum Wright
+ * Copyright (c) 2024      Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -13,16 +13,9 @@
  * GNU General Public License for more details.
  */
 
-#include "serverfrontend.h"
-
-#include "../bolo/messages.h"
-
-namespace bolo {
-
-void ServerFrontend::gameOver(void) {
-  messageAdd(globalMessage, "Game Timelimit has expired. Shutting down\n",
-             ""); /* FIXME - message localisation */
-  return;
-}
-
-}  // namespace bolo
+// Screen Mines - Array of boolean values that report whether
+// a tile on the screen whold have a mine on it
+typedef struct screenMineObj *screenMines;
+struct screenMineObj {
+  bool mineItem[MAIN_BACK_BUFFER_SIZE_X][MAIN_BACK_BUFFER_SIZE_Y];
+};

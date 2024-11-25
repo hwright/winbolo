@@ -31,6 +31,7 @@
 #include <memory.h>
 
 #include "../winbolonet/winbolonet.h"
+#include "backend.h"
 #include "frontend.h"
 #include "global.h"
 #include "log.h"
@@ -41,6 +42,12 @@
 #include "players.h"
 #include "screen.h"
 #include "tank.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 static int baseTimer[MAX_TANKS];
 
@@ -449,8 +456,9 @@ void basesUpdateStock(bases *value, BYTE baseNum) {
           (*value)->item[baseNum].armour >
               BASE_DEAD) { /* FIXME: Changed to hardcoded value */
         if (!threadsGetContext()) {
-          frontEndStatusBase((BYTE)(baseNum + 1),
-                             (basesGetStatusNum(value, (BYTE)(baseNum + 1))));
+          screenGetFrontend()->statusBase(
+              (BYTE)(baseNum + 1),
+              (basesGetStatusNum(value, (BYTE)(baseNum + 1))));
         }
       }
     }
@@ -736,9 +744,9 @@ void basesRefueling(bases *value, tank *tnk, BYTE baseNum) {
         netPNBAdd(screenGetNetPnb(), NPNB_BASE_REFUEL_ARMOUR, baseNum,
                   playersGetSelf(screenGetPlayers()), 0, 0, 0);
         if (!threadsGetContext()) {
-          frontEndUpdateBaseStatusBars(((*value)->item[baseNum].shells),
-                                       ((*value)->item[baseNum].mines),
-                                       ((*value)->item[baseNum].armour));
+          screenGetFrontend()->updateBaseStatusBars(
+              ((*value)->item[baseNum].shells), ((*value)->item[baseNum].mines),
+              ((*value)->item[baseNum].armour));
         }
       } else if (shellsAmount < TANK_FULL_SHELLS &&
                  ((*value)->item[baseNum].shells - BASE_SHELLS_GIVE) >=
@@ -750,9 +758,9 @@ void basesRefueling(bases *value, tank *tnk, BYTE baseNum) {
         (*value)->item[baseNum].refuelTime =
             basesHalfTickCalulator(BASES_HALFTICK_TYPE_SHELL);
         if (!threadsGetContext()) {
-          frontEndUpdateBaseStatusBars(((*value)->item[baseNum].shells),
-                                       ((*value)->item[baseNum].mines),
-                                       ((*value)->item[baseNum].armour));
+          screenGetFrontend()->updateBaseStatusBars(
+              ((*value)->item[baseNum].shells), ((*value)->item[baseNum].mines),
+              ((*value)->item[baseNum].armour));
         }
       } else if (mines < TANK_FULL_MINES &&
                  ((*value)->item[baseNum].mines - BASE_MINES_GIVE) >=
@@ -764,9 +772,9 @@ void basesRefueling(bases *value, tank *tnk, BYTE baseNum) {
         netPNBAdd(screenGetNetPnb(), NPNB_BASE_REFUEL_MINES, baseNum,
                   playersGetSelf(screenGetPlayers()), 0, 0, 0);
         if (!threadsGetContext()) {
-          frontEndUpdateBaseStatusBars(((*value)->item[baseNum].shells),
-                                       ((*value)->item[baseNum].mines),
-                                       ((*value)->item[baseNum].armour));
+          screenGetFrontend()->updateBaseStatusBars(
+              ((*value)->item[baseNum].shells), ((*value)->item[baseNum].mines),
+              ((*value)->item[baseNum].armour));
         }
       }
       logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells,
@@ -901,7 +909,7 @@ void basesDamagePos(bases *value, BYTE xValue, BYTE yValue) {
       }
       if ((*value)->item[count].armour <= BASE_DISPLAY_X) {
         if (!threadsGetContext()) {
-          frontEndStatusBase((BYTE)(count + 1), baseDead);
+          screenGetFrontend()->statusBase((BYTE)(count + 1), baseDead);
         }
       }
       done = true;
@@ -1330,8 +1338,9 @@ void basesServerRefuel(bases *value, BYTE baseNum, BYTE addAmount) {
       if (oldArmour == BASE_DEAD &&
           (*value)->item[baseNum].armour > BASE_DEAD) {
         if (!threadsGetContext()) {
-          frontEndStatusBase((BYTE)(baseNum + 1),
-                             (basesGetStatusNum(value, (BYTE)(baseNum + 1))));
+          screenGetFrontend()->statusBase(
+              (BYTE)(baseNum + 1),
+              (basesGetStatusNum(value, (BYTE)(baseNum + 1))));
         }
       }
     }

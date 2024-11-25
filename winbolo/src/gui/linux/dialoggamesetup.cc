@@ -35,6 +35,7 @@
 #include "../../bolo/util.h"
 #include "../lang.h"
 #include "../linresource.h"
+#include "frontend.h"
 #include "gamefront.h"
 #include "messagebox.h"
 
@@ -100,7 +101,8 @@ static void dialogGameSetupMapCheck(char *fileName) {
   output[0] = '\0';
   std::ifstream input(fileName);
   std::string mapName = bolo::utilExtractMapName(fileName);
-  openOK = screenLoadMap(input, mapName.c_str(), gameOpen, FALSE, 0,
+  openOK = screenLoadMap(input, mapName.c_str(), gameOpen,
+                         std::make_unique<bolo::LinuxFrontend>(), FALSE, 0,
                          UNLIMITED_GAME_TIME,
                          langGetText(STR_DLGGAMESETUP_DEFAULTNAME), TRUE);
   if (openOK == FALSE) {

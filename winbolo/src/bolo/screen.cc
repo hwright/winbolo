@@ -79,6 +79,12 @@ Morrison <john@winbolo.com>          \0" */
 #include "tankexp.h"
 #include "tilenum.h"
 #include "treegrow.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 /* Module Level Variables */
 
@@ -153,6 +159,9 @@ void moveMousePointer(updateType value);
 static int cursorPosX, cursorPosY;
 static std::shared_mutex cursorMutex;
 
+/* Frontend functions */
+bolo::Frontend *frontend = nullptr;
+
 /*********************************************************
  *NAME:          screenSetup
  *AUTHOR:        John Morrison
@@ -169,7 +178,8 @@ static std::shared_mutex cursorMutex;
  *  gmeLen      - Length of the game (in 50ths)
  *                (-1 =unlimited)
  *********************************************************/
-void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
+void screenSetup(gameType game, std::unique_ptr<bolo::Frontend> frontend_input,
+                 bool hiddenMines, int srtDelay, long gmeLen) {
   srand((unsigned int)time(nullptr));
   xOffset = 0;
   yOffset = 0;
@@ -211,6 +221,7 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   brainBuildInfo = new BuildInfo;
   brainBuildInfo->action = 0;
 
+  frontend = frontend_input.release();
   view = new screenObj;
   mineView = new screenMineObj;
   /*  messageAdd(globalMessage, BOLO_VERSION_STRING, OLD_BOLO_COPYRIGHT_STRING);
@@ -257,6 +268,9 @@ void screenDestroy() {
   treeGrowState = std::nullopt;
   pillsDestroy(&mypb);
   playersDestroy(&plyrs);
+  if (frontend != nullptr) {
+    delete frontend;
+  }
   if (view != nullptr) {
     delete view;
   }
@@ -314,11 +328,11 @@ void screenUpdate(updateType value) {
   }
   ns = netGetStatus();
   if (ns != netRunning && ns != netFailed) {
-    frontEndDrawDownload(false);
+    frontend->drawDownload(false);
     return;
   }
   if (inStart) {
-    frontEndDrawDownload(true);
+    frontend->drawDownload(true);
     return;
   }
 
@@ -462,8 +476,8 @@ void screenUpdate(updateType value) {
                                  (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
                                  yOffset,
                                  (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    frontEndDrawMainScreen(&view, &mineView, &scnTnk, &gs, &sBullets, &lgms,
-                           gmeStartDelay, inPillView, &mytk, 0, 0);
+    frontend->drawMainScreen(&view, &mineView, &scnTnk, &gs, &sBullets, &lgms,
+                             gmeStartDelay, inPillView, &mytk, 0, 0);
   }
   screenBulletsDestroy(&sBullets);
   screenLgmDestroy(&lgms);
@@ -755,6 +769,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
  *                if a map is valid
  *********************************************************/
 bool screenLoadMap(std::istream &input, const char *name, gameType game,
+                   std::unique_ptr<bolo::Frontend> frontend_input,
                    bool hiddenMines, long srtDelay, long gmeLen,
                    char *playerName, bool wantFree) {
   bool returnValue; /* Value to return */
@@ -762,7 +777,7 @@ bool screenLoadMap(std::istream &input, const char *name, gameType game,
 
   returnValue = false;
   doneFree = false;
-  screenSetup(game, hiddenMines, srtDelay, gmeLen);
+  screenSetup(game, std::move(frontend_input), hiddenMines, srtDelay, gmeLen);
   returnValue = mapRead(input, &mymp, &mypb, &mybs, &myss);
 
   /*
@@ -970,7 +985,7 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
     if (gmeLength == 0) {
       /* Game Times Up. */
       screenGameRunning = false;
-      frontEndGameOver();
+      screenGetFrontend()->gameOver();
       return;
     }
   }
@@ -1039,7 +1054,7 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
   ta[0] = mytk;
   basesGetStats(&mybs, (basesGetClosest(&mybs, tankX, tankY)), &shellsAmount,
                 &armour, &minesAmount);
-  frontEndUpdateBaseStatusBars(shellsAmount, minesAmount, armour);
+  frontend->updateBaseStatusBars(shellsAmount, minesAmount, armour);
   shellsUpdate(&myshs, &mymp, &mypb, &mybs, ta, 1, false);
   lgmUpdate(&mylgman, &mymp, &mypb, &mybs, &mytk);
   test = &mylgman;
@@ -1290,8 +1305,8 @@ void screenSetupTank(char *playerName) {
   }
   tankCreate(&mytk, &myss);
   playersSetSelf(screenGetPlayers(), (playerNumbers)0, playerName);
-  frontEndSetPlayer((playerNumbers)playersGetSelf(screenGetPlayers()),
-                    playerName);
+  screenGetFrontend()->setPlayer(
+      (playerNumbers)playersGetSelf(screenGetPlayers()), playerName);
 }
 
 /*********************************************************
@@ -1458,7 +1473,7 @@ void screenLgmDropPill(BYTE mx, BYTE my, BYTE owner, BYTE pillNum) {
   pillsSetPill(&mypb, &item, pillNum);
   netPNBAdd(&clientPNB, NPNB_PILL_DEAD, (BYTE)(pillNum - 1),
             playersGetSelf(screenGetPlayers()), mx, my, 0);
-  frontEndStatusPillbox(pillNum, (pillsGetAllianceNum(&mypb, pillNum)));
+  frontend->statusPillbox(pillNum, (pillsGetAllianceNum(&mypb, pillNum)));
 }
 
 /*********************************************************
@@ -2074,13 +2089,13 @@ void screenSetBaseNetData(BYTE *buff, int length) {
   count = 1;
   max = basesGetNumBases(&mybs);
   while (count <= max) {
-    frontEndStatusBase(count, basesGetStatusNum(&mybs, count));
+    frontend->statusBase(count, basesGetStatusNum(&mybs, count));
     count++;
   }
   /* Set our player name in the menu */
   max = playersGetSelf(screenGetPlayers());
   playersGetPlayerName(screenGetPlayers(), max, pn);
-  frontEndSetPlayer((playerNumbers)max, pn);
+  screenGetFrontend()->setPlayer((playerNumbers)max, pn);
   /* Set The other players in the menu */
   playersSetMenuItems(screenGetPlayers());
 }
@@ -2105,7 +2120,7 @@ void screenSetPillNetData(BYTE *buff, BYTE dataLen) {
   count = 1;
   max = pillsGetNumPills(&mypb);
   while (count <= max) {
-    frontEndStatusPillbox(count, pillsGetAllianceNum(&mypb, count));
+    frontend->statusPillbox(count, pillsGetAllianceNum(&mypb, count));
     count++;
   }
 }
@@ -3627,7 +3642,8 @@ void screenSetTankStartPosition(BYTE xValue, BYTE yValue, TURNTYPE angle,
     numTrees = TANK_FULL_TREES;
   }
   tankSetStats(&mytk, numShells, numMines, TANK_FULL_ARMOUR, numTrees);
-  frontEndUpdateTankStatusBars(numShells, numMines, TANK_FULL_ARMOUR, numTrees);
+  frontend->updateTankStatusBars(numShells, numMines, TANK_FULL_ARMOUR,
+                                 numTrees);
   screenTankView();
   clientSetInStartFind(false);
 }
@@ -4039,3 +4055,5 @@ void screenSendMem() {
   netMNTAdd(screenGetNetMnt(), NMNT_TANKHIT, playersGetSelf(screenGetPlayers()),
             playersGetSelf(screenGetPlayers()), 0xFF, 0xFF);
 }
+
+bolo::Frontend *screenGetFrontend() { return frontend; }

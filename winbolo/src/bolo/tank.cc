@@ -55,6 +55,12 @@
 #include "tankexp.h"
 #include "tilenum.h"
 #include "util.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 int tankCalcCRCSetup(tank *value);
 netPlayers *serverNetGetNetPlayers();
@@ -234,9 +240,9 @@ void tankUpdate(tank *value, map *mp, bases *bs, pillboxes *pb, shells *shs,
     tankRegisterChangeByte(value, CRC_SHELLS_OFFSET, (*value)->shells);
 
     if (!threadsGetContext()) {
-      frontEndPlaySound(bolo::sndEffects::shootSelf);
-      frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                   (*value)->armour, (*value)->trees);
+      screenGetFrontend()->playSound(bolo::sndEffects::shootSelf);
+      screenGetFrontend()->updateTankStatusBars(
+          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
     }
     (*value)->justFired = true;
     tankRegisterChangeByte(value, CRC_JUSTFIRED_OFFSET, true);
@@ -723,7 +729,7 @@ void tankGunsightIncrease(tank *value) {
     (*value)->showSight = false;
     tankRegisterChangeByte(value, CRC_SHOWSIGHT_OFFSET, false);
     if (!threadsGetContext()) {
-      frontEndShowGunsight(false);
+      screenGetFrontend()->showGunsight(false);
     }
   }
 }
@@ -748,7 +754,7 @@ void tankGunsightDecrease(tank *value) {
     (*value)->showSight = true;
     tankRegisterChangeByte(value, CRC_SHOWSIGHT_OFFSET, true);
     if (!threadsGetContext()) {
-      frontEndShowGunsight(true);
+      screenGetFrontend()->showGunsight(true);
     }
   }
 }
@@ -834,8 +840,8 @@ void tankSetWorld(tank *value, WORLD x, WORLD y, TURNTYPE angle,
     (*value)->trees = trees;
     tankRegisterChangeByte(value, CRC_TREES_OFFSET, trees);
     if (!threadsGetContext()) {
-      frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                   (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankStatusBars(
+          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
     }
   }
 }
@@ -979,8 +985,9 @@ tankHit tankIsTankHit(tank *value, map *mp, pillboxes *pb, bases *bs, WORLD x,
     }
     if ((*value)->armour <= TANK_FULL_ARMOUR) {
       if (!threadsGetContext()) {
-        frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                     (*value)->armour, (*value)->trees);
+        screenGetFrontend()->updateTankStatusBars(
+            (*value)->shells, (*value)->mines, (*value)->armour,
+            (*value)->trees);
         if (needSend) {
           /* Send hit to network */
           netMNTAdd(screenGetNetMnt(), NMNT_TANKHIT,
@@ -991,8 +998,8 @@ tankHit tankIsTankHit(tank *value, map *mp, pillboxes *pb, bases *bs, WORLD x,
       }
     } else {
       if (!threadsGetContext()) {
-        frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines, 0,
-                                     (*value)->trees);
+        screenGetFrontend()->updateTankStatusBars(
+            (*value)->shells, (*value)->mines, 0, (*value)->trees);
       }
     }
   } else if (abs((*value)->x - x) < 128 && abs((*value)->y - y) < 128 &&
@@ -1031,9 +1038,9 @@ void tankInWater(tank *value) {
   if (modsMade) {
     /* Update view and play sound */
     if (!threadsGetContext()) {
-      frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                   (*value)->armour, (*value)->trees);
-      frontEndPlaySound(bolo::sndEffects::bubbles);
+      screenGetFrontend()->updateTankStatusBars(
+          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
+      screenGetFrontend()->playSound(bolo::sndEffects::bubbles);
     }
   }
 }
@@ -1123,8 +1130,9 @@ void tankDeath(tank *value, starts *sts) {
         screenTankView();
         screenSetInStartFind(false);
         if (!threadsGetContext()) {
-          frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                       (*value)->armour, (*value)->trees);
+          screenGetFrontend()->updateTankStatusBars(
+              (*value)->shells, (*value)->mines, (*value)->armour,
+              (*value)->trees);
         }
       }
     }
@@ -1140,7 +1148,7 @@ void tankDeath(tank *value, starts *sts) {
     tankRegisterChangeByte(value, CRC_WATERCOUNT_OFFSET, 0);
     /* Get the start position */
     if (!threadsGetContext()) {
-      frontEndKillsDeaths((*value)->numKills, (*value)->numDeaths);
+      screenGetFrontend()->killsDeaths((*value)->numKills, (*value)->numDeaths);
     }
   } else if (threadsGetContext()) { /* FIXME */
     (*value)->armour = 10;
@@ -1187,8 +1195,8 @@ void tankAddArmour(tank *value, BYTE amount) {
     (*value)->armour += amount;
     tankRegisterChangeByte(value, CRC_ARMOUR_OFFSET, (*value)->armour);
     if (!threadsGetContext()) {
-      frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                   (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankStatusBars(
+          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
     }
   }
 }
@@ -1210,8 +1218,8 @@ void tankAddShells(tank *value, BYTE amount) {
     (*value)->shells += amount;
     tankRegisterChangeByte(value, CRC_SHELLS_OFFSET, (*value)->shells);
     if (!threadsGetContext()) {
-      frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                   (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankStatusBars(
+          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
     }
   }
 }
@@ -1233,8 +1241,8 @@ void tankAddMines(tank *value, BYTE amount) {
     (*value)->mines += amount;
     tankRegisterChangeByte(value, CRC_MINES_OFFSET, (*value)->mines);
     if (!threadsGetContext()) {
-      frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                   (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankStatusBars(
+          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
     }
   }
 }
@@ -1347,7 +1355,7 @@ void tankMoveOnBoat(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
 
     if (newbmy < bmy) {
       if (!threadsGetContext()) {
-        if (frontEndTutorial(newbmy)) {
+        if (screenGetFrontend()->tutorial(newbmy)) {
           (*value)->speed = 0;
         }
       }
@@ -1548,7 +1556,7 @@ void tankMoveOnLand(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
     newbmy = (BYTE)newmy;
     if (newbmy < bmy) {
       if (!threadsGetContext()) {
-        if (frontEndTutorial(newbmy)) {
+        if (screenGetFrontend()->tutorial(newbmy)) {
           (*value)->speed = 0;
         }
       }
@@ -1644,7 +1652,8 @@ void tankMoveOnLand(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
           netPNBAdd(screenGetNetPnb(), NPNB_BASE_CAPTURE, (BYTE)(baseNum - 1),
                     screenGetTankPlayer(value), bmx, bmy, 0);
           if (!threadsGetContext()) {
-            frontEndStatusBase(baseNum, (basesGetStatusNum(bs, baseNum)));
+            screenGetFrontend()->statusBase(baseNum,
+                                            (basesGetStatusNum(bs, baseNum)));
           }
           screenReCalc();
         }
@@ -1813,7 +1822,8 @@ void tankCheckPillCapture(tank *value, pillboxes *pb) {
                   screenGetTankPlayer(value), 0, 0, 0);
         /* We are a client.. which should only happen in a single player game */
         if (!threadsGetContext()) {
-          frontEndStatusPillbox(pillNum, (pillsGetAllianceNum(pb, pillNum)));
+          screenGetFrontend()->statusPillbox(
+              pillNum, (pillsGetAllianceNum(pb, pillNum)));
         }
         q = new tankCarrypbObj;
         q->pillNum = pillNum;
@@ -1927,8 +1937,8 @@ void tankDropPills(tank *value, map *mp, pillboxes *pb, bases *bs) {
                         item.x, item.y, 0);
             }
             if (!threadsGetContext()) {
-              frontEndStatusPillbox(q->pillNum,
-                                    (pillsGetAllianceNum(pb, q->pillNum)));
+              screenGetFrontend()->statusPillbox(
+                  q->pillNum, (pillsGetAllianceNum(pb, q->pillNum)));
             }
             (*value)->carryPills = TankPillsTail(q);
             delete q;
@@ -1993,13 +2003,14 @@ bool tankGetLgmTrees(tank *value, BYTE amount, bool perform) {
       tankRegisterChangeByte(value, CRC_TREES_OFFSET, (*value)->trees);
       if ((*value)->armour <= TANK_FULL_ARMOUR) {
         if (!threadsGetContext()) {
-          frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                       (*value)->armour, (*value)->trees);
+          screenGetFrontend()->updateTankStatusBars(
+              (*value)->shells, (*value)->mines, (*value)->armour,
+              (*value)->trees);
         }
       } else {
         if (!threadsGetContext()) {
-          frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines, 0,
-                                       (*value)->trees);
+          screenGetFrontend()->updateTankStatusBars(
+              (*value)->shells, (*value)->mines, 0, (*value)->trees);
         }
       }
     }
@@ -2028,13 +2039,13 @@ void tankGiveTrees(tank *value, BYTE amount) {
   tankRegisterChangeByte(value, CRC_TREES_OFFSET, (*value)->trees);
   if ((*value)->armour <= TANK_FULL_ARMOUR) {
     if (!threadsGetContext()) {
-      frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                   (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankStatusBars(
+          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
     }
   } else {
     if (!threadsGetContext()) {
-      frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines, 0,
-                                   (*value)->trees);
+      screenGetFrontend()->updateTankStatusBars(
+          (*value)->shells, (*value)->mines, 0, (*value)->trees);
     }
   }
 }
@@ -2066,13 +2077,14 @@ bool tankGetLgmMines(tank *value, BYTE amount, bool perform) {
       tankRegisterChangeByte(value, CRC_MINES_OFFSET, (*value)->mines);
       if ((*value)->armour <= TANK_FULL_ARMOUR) {
         if (!threadsGetContext()) {
-          frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                       (*value)->armour, (*value)->trees);
+          screenGetFrontend()->updateTankStatusBars(
+              (*value)->shells, (*value)->mines, (*value)->armour,
+              (*value)->trees);
         }
       } else {
         if (!threadsGetContext()) {
-          frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines, 0,
-                                       (*value)->trees);
+          screenGetFrontend()->updateTankStatusBars(
+              (*value)->shells, (*value)->mines, 0, (*value)->trees);
         }
       }
     }
@@ -2101,13 +2113,13 @@ void tankGiveMines(tank *value, BYTE amount) {
   tankRegisterChangeByte(value, CRC_MINES_OFFSET, (*value)->mines);
   if ((*value)->armour <= TANK_FULL_ARMOUR) {
     if (!threadsGetContext()) {
-      frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                   (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankStatusBars(
+          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
     }
   } else {
     if (!threadsGetContext()) {
-      frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines, 0,
-                                   (*value)->trees);
+      screenGetFrontend()->updateTankStatusBars(
+          (*value)->shells, (*value)->mines, 0, (*value)->trees);
     }
   }
 }
@@ -2273,13 +2285,14 @@ void tankLayMine(tank *value, map *mp, pillboxes *pb, bases *bs) {
       soundDist(bolo::sndEffects::manLayingMineNear, bmx, bmy);
       if ((*value)->armour <= TANK_FULL_ARMOUR) {
         if (!threadsGetContext()) {
-          frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                       (*value)->armour, (*value)->trees);
+          screenGetFrontend()->updateTankStatusBars(
+              (*value)->shells, (*value)->mines, (*value)->armour,
+              (*value)->trees);
         }
       } else {
         if (!threadsGetContext()) {
-          frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines, 0,
-                                       (*value)->trees);
+          screenGetFrontend()->updateTankStatusBars(
+              (*value)->shells, (*value)->mines, 0, (*value)->trees);
         }
       }
       screenReCalc();
@@ -2358,13 +2371,14 @@ void tankMineDamage(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE mx,
     }
     if ((*value)->armour <= TANK_FULL_ARMOUR) {
       if (!threadsGetContext()) {
-        frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines,
-                                     (*value)->armour, (*value)->trees);
+        screenGetFrontend()->updateTankStatusBars(
+            (*value)->shells, (*value)->mines, (*value)->armour,
+            (*value)->trees);
       }
     } else {
       if (!threadsGetContext()) {
-        frontEndUpdateTankStatusBars((*value)->shells, (*value)->mines, 0,
-                                     (*value)->trees);
+        screenGetFrontend()->updateTankStatusBars(
+            (*value)->shells, (*value)->mines, 0, (*value)->trees);
       }
     }
 
@@ -2607,7 +2621,7 @@ void tankAddKill(tank *value) {
   (*value)->numKills++;
   tankRegisterChangeInt(value, CRC_NUMKILLS_OFFSET, (*value)->numKills);
   if (!threadsGetContext()) {
-    frontEndKillsDeaths((*value)->numKills, (*value)->numDeaths);
+    screenGetFrontend()->killsDeaths((*value)->numKills, (*value)->numDeaths);
   }
 }
 
@@ -2921,7 +2935,8 @@ void tankPutPill(tank *value, pillboxes *pb, BYTE pillNum) {
   tankCarryPb q; /* Temp pointer for adding PBs to tank */
 
   if (!threadsGetContext()) {
-    frontEndStatusPillbox(pillNum, (pillsGetAllianceNum(pb, pillNum)));
+    screenGetFrontend()->statusPillbox(pillNum,
+                                       (pillsGetAllianceNum(pb, pillNum)));
   }
   q = new tankCarrypbObj;
   q->pillNum = pillNum;

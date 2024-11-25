@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 add_executable(linbolods
+               serverclient.cc
                servercore.cc
                serverfrontend.cc
                servermain.cc

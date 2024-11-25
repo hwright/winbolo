@@ -52,6 +52,7 @@
 #include "draw.h"
 #include "e_map.h"
 #include "framemutex.h"
+#include "frontend.h"
 #include "gamefront.h"
 #include "input.h"
 #include "messagebox.h"
@@ -89,23 +90,6 @@ static std::shared_mutex llfMutex;
 #define FRAME_RATE_30 55
 #define FRAME_RATE_50 82
 #define FRAME_RATE_60 111
-
-#define STR_01 "1\0"
-#define STR_02 "2\0"
-#define STR_03 "3\0"
-#define STR_04 "4\0"
-#define STR_05 "5\0"
-#define STR_06 "6\0"
-#define STR_07 "7\0"
-#define STR_08 "8\0"
-#define STR_09 "9\0"
-#define STR_10 "10\0"
-#define STR_11 "11\0"
-#define STR_12 "12\0"
-#define STR_13 "13\0"
-#define STR_14 "14\0"
-#define STR_15 "15\0"
-#define STR_16 "16\0"
 #define STR_PLAYER_LEN 2
 
 #define timeGetTime() SDL_GetTicks()
@@ -119,8 +103,8 @@ static std::shared_mutex llfMutex;
 #define ZOOM_FACTOR_DOUBLE 2
 #define ZOOM_FACTOR_QUAD 4
 
-static bool isTutorial;
-bool isInMenu = FALSE;
+bool isTutorial;
+bool isInMenu = false;
 static bool isQuiting = FALSE;
 
 /* Time since the game timer last went up */
@@ -130,13 +114,13 @@ static DWORD oldFrameTick;
 
 /* Stuff for the system info dialog box */
 static DWORD dwSysFrameTotal = 0;
-static DWORD dwSysFrame = 0;
+DWORD dwSysFrame = 0;
 static DWORD dwSysGameTotal = 0;
 static DWORD dwSysGame = 0;
 static DWORD dwSysBrainTotal = 0;
 static DWORD dwSysBrain = 0;
 
-static bool doingTutorial = FALSE;
+bool doingTutorial = false;
 /* Current building item selected */
 static buildSelect BsLinuxCurrent = BsTrees;
 
@@ -144,7 +128,7 @@ static buildSelect BsLinuxCurrent = BsTrees;
 static bool showGunsight = FALSE;
 
 /* Whether the sound effects are turn on or not */
-static bool soundEffects = FALSE;
+bool soundEffects = false;
 /* Do we play background sound */
 static bool backgroundSound = TRUE;
 
@@ -176,8 +160,8 @@ static bool gameFrontWbnSavePass;
 static bool autoScrollingEnabled = FALSE;
 
 /* Whether Pillbox & base labels should be shown */
-static bool showPillLabels = FALSE;
-static bool showBaseLabels = FALSE;
+bool showPillLabels = false;
+bool showBaseLabels = false;
 
 /* Labels of stuff */
 static bool labelSelf = FALSE;
@@ -202,8 +186,8 @@ static GtkWidget *change_player_name1;
 GSList *brainsGroup = nullptr;
 GtkWidget *brains1_menu;
 
-static SDL_TimerID timerGameID = nullptr;
-static SDL_TimerID timerFrameID = nullptr;
+SDL_TimerID timerGameID = nullptr;
+SDL_TimerID timerFrameID = nullptr;
 
 gchar *applicationPath;
 
@@ -216,7 +200,6 @@ void clientMutexRelease(void);
 bool brainHandlerIsBrainRunning();
 void brainHandlerRun(GtkWidget *hWnd);
 void brainsHandlerSet(GtkWidget *hWnd, bool enabled);
-void drawSetManClear(void);
 
 void gameFrontCloseServer();
 int frameRateTime = (int)(MILLISECONDS / FRAME_RATE_30) - 1;
@@ -236,9 +219,6 @@ bool screenLoadCompressedMap() { return FALSE; }
  * to enable compilation */
 int serverMainGetTicks() { return 0; }
 
-/** FIXME THIS ENTIRE SECTION NEEDS TO BE BROUGHT UP TO LATEST VERSION.... Added
- * to enable compilation */
-void frontEndRedrawAll() {}
 /** FIXME THIS ENTIRE SECTION NEEDS TO BE BROUGHT UP TO LATEST VERSION.... Added
  * to enable compilation */
 int windowsGetTicks() { return 0; }
@@ -490,7 +470,7 @@ Uint32 windowGameTimer(Uint32 interval, void *param) {
   }
   return interval;
 }
-bool hideMainView = FALSE;
+bool hideMainView = false;
 
 Uint32 windowFrameRateTimer(Uint32 interval, void *param) {
   DWORD tick;
@@ -1224,6 +1204,7 @@ bool startSinglePlayer();
 
 bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
   GtkWidget *newWindow;
+  auto frontend = std::make_unique<bolo::LinuxFrontend>();
   if (newState == openSetup || newState == openUdpSetup ||
       newState == openInternetSetup || newState == openLanSetup) {
     dlgState = newState;
@@ -1234,7 +1215,8 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
               dlgState == openLanSetup) &&
              newState == openFinished) {
     if (gameFrontSetupServer() == TRUE) {
-      screenSetup((gameType)0, FALSE, 0, UNLIMITED_GAME_TIME);
+      screenSetup((gameType)0, std::move(frontend), FALSE, 0,
+                  UNLIMITED_GAME_TIME);
       if (netSetup(netUdp, gameFrontMyUdp, "127.0.0.1", gameFrontTargetUdp,
                    password, FALSE, gameFrontTrackerAddr, gameFrontTrackerPort,
                    gameFrontTrackerEnabled, wantRejoin, gameFrontWbnUse,
@@ -1277,7 +1259,8 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
               dlgState == openUdp || dlgState == openLanManual ||
               dlgState == openInternetManual) &&
              newState == openUdpJoin) {
-    screenSetup((gameType)0, FALSE, 0, UNLIMITED_GAME_TIME);
+    screenSetup((gameType)0, std::move(frontend), FALSE, 0,
+                UNLIMITED_GAME_TIME);
     if (netSetup(netUdp, gameFrontMyUdp, gameFrontUdpAddress,
                  gameFrontTargetUdp, password, FALSE, gameFrontTrackerAddr,
                  gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin,
@@ -1448,14 +1431,16 @@ bool startSinglePlayer() {
     dlgState = openSetup;
     returnValue = FALSE;
   } else {
+    auto frontend = std::make_unique<bolo::LinuxFrontend>();
     if (strcmp(fileName, "") != 0) {
       std::ifstream input(fileName);
       screenLoadMap(input, bolo::utilExtractMapName(fileName).c_str(), gametype,
-                    hiddenMines, startDelay, timeLen, gameFrontName, false);
+                    std::move(frontend), hiddenMines, startDelay, timeLen,
+                    gameFrontName, false);
     } else {
       std::istringstream input(std::string((const char *)e_map, e_map_len));
-      screenLoadMap(input, "Everard Island", gametype, hiddenMines, startDelay,
-                    timeLen, gameFrontName, false);
+      screenLoadMap(input, "Everard Island", gametype, std::move(frontend),
+                    hiddenMines, startDelay, timeLen, gameFrontName, false);
     }
   }
   if (returnValue == TRUE) {
@@ -1520,609 +1505,6 @@ int windowGetAiTime(void) { return dwSysBrainTotal; }
  *
  *********************************************************/
 int windowGetSimTime(void) { return dwSysGameTotal; }
-
-/*********************************************************
-*NAME:          frontEndDrawMainScreen
-*AUTHOR:        John Morrison
-*CREATION DATE: 31/10/98
-*LAST MODIFIED: 18/11/99
-*PURPOSE:
-Updates the Window View
-*
-*ARGUMENTS:
-*  value      - Pointer to the sceen structure
-*  mineView   - Pointer to the screen mine structure
-*  tks        - Pointer to the screen tank structure
-*  gs         - pointer to the screen gunsight structure
-*  lgms       - Pointer to the screen builder structure
-*  srtDelay   - Start delay. If this is greater then 0
-*               Then the delay screen should be drawn
-*  isPillView - TRUE if we are in pillbox view
-*  edgeX      - X Offset for smooth scrolling
-*  edgeY      - Y Offset for smooth scrolling
-*********************************************************/
-void frontEndDrawMainScreen(screen *value, screenMines *mineView,
-                            screenTanks *tks, screenGunsight *gs,
-                            screenBullets *sBullet, screenLgm *lgms,
-                            long srtDelay, bool isPillView, tank *tank,
-                            int edgeX, int edgeY) {
-  BYTE cursorX;
-  BYTE cursorY;
-  bool showCursor;
-
-  showCursor = screenGetCursorPos(&cursorX, &cursorY);
-  drawMainScreen(value, mineView, tks, gs, sBullet, lgms, showPillLabels,
-                 showBaseLabels, srtDelay, isPillView, edgeX, edgeY, showCursor,
-                 cursorX, cursorY);
-}
-
-/*********************************************************
- *NAME:          frontEndUpdateTankStatusBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 28/12/98
- *LAST MODIFIED: 28/12/98
- *PURPOSE:
- * Function is called when the tanks status bars need to
- * be updated
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *  trees   - Amount of trees
- *********************************************************/
-void frontEndUpdateTankStatusBars(BYTE shells, BYTE mines, BYTE armour,
-                                  BYTE trees) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawStatusTankBars(0, 0, shells, mines, armour, trees);
-  dwSysFrame += (timeGetTime() - tick);
-}
-
-/*********************************************************
- *NAME:          frontEndSoundEffects
- *AUTHOR:        John Morrison
- *CREATION DATE: 28/12/98
- *LAST MODIFIED: 28/12/98
- *PURPOSE:
- *  Plays a sound effect if it is turned on
- *
- *ARGUMENTS:
- *  value - The sound effect to play
- *********************************************************/
-void frontEndPlaySound(bolo::sndEffects value) {
-  if (soundEffects == TRUE) {
-    soundPlayEffect(value);
-  }
-}
-
-/*********************************************************
- *NAME:          frontEndStatusPillbox
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  Sets the pillbox status for a particular pillbox
- *
- *ARGUMENTS:
- *  pillNum - The base number to draw (1-16)
- *  pa      - The allience of the pillbox
- *********************************************************/
-void frontEndStatusPillbox(BYTE pillNum, pillAlliance pb) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawStatusPillbox(pillNum, pb, showPillLabels);
-  drawCopyPillsStatus();
-  dwSysFrame += (timeGetTime() - tick);
-}
-
-/*********************************************************
- *NAME:          frontEndStatusTank
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/1/99
- *LAST MODIFIED: 26/1/99
- *PURPOSE:
- *  Sets the tank status for a particular tank
- *
- *ARGUMENTS:
- *  tankNum - The tank number to draw (1-16)
- *  ts      - The allience of the tank
- *********************************************************/
-void frontEndStatusTank(BYTE tankNum, tankAlliance ts) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawStatusTank(tankNum, ts);
-  drawCopyTanksStatus();
-  dwSysFrame += (timeGetTime() - tick);
-}
-
-/*********************************************************
- *NAME:          frontEndMessages
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  The messages must be drawn on the screen
- *
- *ARGUMENTS:
- *  top    - The top line to write
- *  bottom - The bottom line to write
- *********************************************************/
-void frontEndMessages(char *top, char *bottom) {
-  DWORD tick;
-  tick = timeGetTime();
-  frameMutexWaitFor();
-  drawMessages(0, 0, top, bottom);
-  frameMutexRelease();
-  dwSysFrame += (timeGetTime() - tick);
-}
-
-/*********************************************************
- *NAME:          frontEndKillsDeaths
- *AUTHOR:        John Morrison
- *CREATION DATE:  8/1/99
- *LAST MODIFIED:  8/1/99
- *PURPOSE:
- *  The tank kills/deaths must be updated
- *
- *ARGUMENTS:
- *  kills  - The number of kills the tank has.
- *  deaths - The number of times the tank has died
- *********************************************************/
-void frontEndKillsDeaths(int kills, int deaths) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawKillsDeaths(0, 0, kills, deaths);
-  dwSysFrame += (timeGetTime() - tick);
-}
-
-/*********************************************************
- *NAME:          frontEndStatusBase
- *AUTHOR:        John Morrison
- *CREATION DATE: 10/1/99
- *LAST MODIFIED: 10/1/99
- *PURPOSE:
- *  Sets the base status for a particular base
- *
- *ARGUMENTS:
- *  pillNum - The base number to draw (1-16)
- *  bs      - The allience of the pillbox
- *********************************************************/
-void frontEndStatusBase(BYTE baseNum, baseAlliance bs) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawStatusBase(baseNum, bs, showBaseLabels);
-  drawCopyBasesStatus();
-  dwSysFrame += (timeGetTime() - tick);
-}
-
-/*********************************************************
- *NAME:          frontEndUpdateBaseStatusBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 11/1/99
- *LAST MODIFIED: 11/1/99
- *PURPOSE:
- * Function is called when the tanks status bars need to
- * be updated
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *********************************************************/
-void frontEndUpdateBaseStatusBars(BYTE shells, BYTE mines, BYTE armour) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawStatusBaseBars(0, 0, shells, mines, armour, FALSE);
-  dwSysFrame += (timeGetTime() - tick);
-}
-
-void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking);
-
-/*********************************************************
- *NAME:          frontEndManStatus
- *AUTHOR:        John Morrison
- *CREATION DATE:  8/1/99
- *LAST MODIFIED:  8/1/99
- *PURPOSE:
- *  The tank kills/deaths must be updated
- *
- *ARGUMENTS:
- *  isDead - Is the man dead
- *  angle  - The angle the man is facing
- *********************************************************/
-void frontEndManStatus(bool isDead, TURNTYPE angle) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  frameMutexWaitFor();
-  drawSetManStatus(isDead, angle, TRUE);
-  frameMutexRelease();
-  dwSysFrame += (timeGetTime() - tick);
-}
-
-/*********************************************************
- *NAME:          frontEndDrawDownload
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/3/99
- *LAST MODIFIED:  3/1/00
- *PURPOSE:
- * A screen redraw request has been made but we are still
- * downloading network data. Draw progress line instead.
- *
- *ARGUMENTS:
- *  justBlack - TRUE if we want just a black screen
- *********************************************************/
-void frontEndDrawDownload(bool justBlack) {
-  DWORD tick;
-
-  if (hideMainView == FALSE) {
-    tick = timeGetTime();
-    frameMutexWaitFor();
-    drawDownloadScreen(justBlack);
-    frameMutexRelease();
-    dwSysFrame += (timeGetTime() - tick);
-  }
-}
-
-/*********************************************************
- *NAME:          frontEndManClear
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/99
- *LAST MODIFIED: 18/1/99
- *PURPOSE:
- *  Clears the man status (ie man is in tank)
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void frontEndManClear(void) { drawSetManClear(); }
-
-/*********************************************************
- *NAME:          frontEndGameOver
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/1/99
- *LAST MODIFIED: 29/1/99
- *PURPOSE:
- *  Time limit is up. The game is over
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void frontEndGameOver(void) {
-  frameRateTime = 0;
-  SDL_RemoveTimer(timerGameID);
-  SDL_RemoveTimer(timerFrameID);
-  strcpy(messageTitle, DIALOG_BOX_TITLE);
-  strcpy(messageBody, langGetText(STR_WBTIMELIMIT_END));
-  numMessages = 1;
-}
-
-/*********************************************************
- *NAME:          frontEndSetPlayer
- *AUTHOR:        John Morrison
- *CREATION DATE: 4/2/99
- *LAST MODIFIED: 4/2/99
- *PURPOSE:
- * Sets a player name in the menu and enables it.
- *
- *ARGUMENTS:
- *  value - The player number to set
- *  str   - String identifier of the name
- *********************************************************/
-void frontEndSetPlayer(playerNumbers value, char *str) {
-  isInMenu = TRUE;
-  switch (value) {
-    case player01:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player1)->child)), str);
-      gtk_widget_set_sensitive(idc_player1, TRUE);
-      break;
-    case player02:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player2)->child)), str);
-      gtk_widget_set_sensitive(idc_player2, TRUE);
-      break;
-    case player03:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player3)->child)), str);
-      gtk_widget_set_sensitive(idc_player3, TRUE);
-      break;
-    case player04:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player4)->child)), str);
-      gtk_widget_set_sensitive(idc_player4, TRUE);
-      break;
-    case player05:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player5)->child)), str);
-      gtk_widget_set_sensitive(idc_player5, TRUE);
-      break;
-    case player06:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player6)->child)), str);
-      gtk_widget_set_sensitive(idc_player6, TRUE);
-      break;
-    case player07:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player7)->child)), str);
-      gtk_widget_set_sensitive(idc_player7, TRUE);
-      break;
-    case player08:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player8)->child)), str);
-      gtk_widget_set_sensitive(idc_player8, TRUE);
-      break;
-    case player09:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player9)->child)), str);
-      gtk_widget_set_sensitive(idc_player9, TRUE);
-      break;
-    case player10:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player10)->child)), str);
-      gtk_widget_set_sensitive(idc_player10, TRUE);
-      break;
-    case player11:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player11)->child)), str);
-      gtk_widget_set_sensitive(idc_player11, TRUE);
-      break;
-    case player12:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player12)->child)), str);
-      gtk_widget_set_sensitive(idc_player12, TRUE);
-      break;
-    case player13:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player13)->child)), str);
-      gtk_widget_set_sensitive(idc_player13, TRUE);
-      break;
-    case player14:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player14)->child)), str);
-      gtk_widget_set_sensitive(idc_player14, TRUE);
-      break;
-    case player15:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player15)->child)), str);
-      gtk_widget_set_sensitive(idc_player15, TRUE);
-      break;
-    default:
-      /* case player16: */
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player16)->child)), str);
-      gtk_widget_set_sensitive(idc_player16, TRUE);
-      break;
-  }
-  isInMenu = FALSE;
-}
-
-/*********************************************************
- *NAME:          frontEndClearPlayer
- *AUTHOR:        John Morrison
- *CREATION DATE: 4/2/99
- *LAST MODIFIED: 4/2/99
- *PURPOSE:
- * Clears a player name from the menu and disables it.
- *
- *ARGUMENTS:
- *  value - The player number to clear
- *********************************************************/
-void frontEndClearPlayer(playerNumbers value) {
-  isInMenu = TRUE;
-  switch (value) {
-    case player01:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player1)->child)), STR_01);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player1), FALSE);
-      gtk_widget_set_sensitive(idc_player1, FALSE);
-      break;
-    case player02:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player2)->child)), STR_02);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player2), FALSE);
-      gtk_widget_set_sensitive(idc_player2, FALSE);
-      break;
-    case player03:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player3)->child)), STR_03);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player3), FALSE);
-      gtk_widget_set_sensitive(idc_player3, FALSE);
-      break;
-    case player04:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player4)->child)), STR_04);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player4), FALSE);
-      gtk_widget_set_sensitive(idc_player4, FALSE);
-      break;
-    case player05:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player5)->child)), STR_05);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player5), FALSE);
-      gtk_widget_set_sensitive(idc_player5, FALSE);
-      break;
-    case player06:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player6)->child)), STR_06);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player6), FALSE);
-      gtk_widget_set_sensitive(idc_player6, FALSE);
-      break;
-    case player07:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player7)->child)), STR_07);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player7), FALSE);
-      gtk_widget_set_sensitive(idc_player7, FALSE);
-      break;
-    case player08:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player8)->child)), STR_08);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player8), FALSE);
-      gtk_widget_set_sensitive(idc_player8, FALSE);
-      break;
-    case player09:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player9)->child)), STR_09);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player9), FALSE);
-      gtk_widget_set_sensitive(idc_player9, FALSE);
-      break;
-    case player10:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player10)->child)), STR_10);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player10), FALSE);
-      gtk_widget_set_sensitive(idc_player10, FALSE);
-      break;
-    case player11:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player11)->child)), STR_11);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player11), FALSE);
-      gtk_widget_set_sensitive(idc_player11, FALSE);
-      break;
-    case player12:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player12)->child)), STR_12);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player12), FALSE);
-      gtk_widget_set_sensitive(idc_player12, FALSE);
-      break;
-    case player13:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player13)->child)), STR_13);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player13), FALSE);
-      gtk_widget_set_sensitive(idc_player13, FALSE);
-      break;
-    case player14:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player14)->child)), STR_14);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player14), FALSE);
-      gtk_widget_set_sensitive(idc_player14, FALSE);
-      break;
-    case player15:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player15)->child)), STR_15);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player15), FALSE);
-      gtk_widget_set_sensitive(idc_player15, FALSE);
-      break;
-    default:
-      /* case player16: */
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player16)->child)), STR_16);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player16), FALSE);
-      gtk_widget_set_sensitive(idc_player16, FALSE);
-      break;
-  }
-  isInMenu = FALSE;
-}
-
-/*********************************************************
- *NAME:          frontEndSetPlayerCheckState
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/3/99
- *LAST MODIFIED: 27/3/99
- *PURPOSE:
- * Checks/unchecks a player
- *
- *ARGUMENTS:
- * value     - The player number
- * isChecked - Is the item checked
- *********************************************************/
-void frontEndSetPlayerCheckState(playerNumbers value, bool isChecked) {
-  isInMenu = TRUE;
-  switch (value) {
-    case player01:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player1),
-                                     isChecked);
-      break;
-    case player02:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player2),
-                                     isChecked);
-      break;
-    case player03:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player3),
-                                     isChecked);
-      break;
-    case player04:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player4),
-                                     isChecked);
-      break;
-    case player05:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player5),
-                                     isChecked);
-      break;
-    case player06:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player6),
-                                     isChecked);
-      break;
-    case player07:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player7),
-                                     isChecked);
-      break;
-    case player08:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player8),
-                                     isChecked);
-      break;
-    case player09:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player9),
-                                     isChecked);
-      break;
-    case player10:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player10),
-                                     isChecked);
-      break;
-    case player11:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player11),
-                                     isChecked);
-      break;
-    case player12:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player12),
-                                     isChecked);
-      break;
-    case player13:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player13),
-                                     isChecked);
-      break;
-    case player14:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player14),
-                                     isChecked);
-      break;
-    case player15:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player15),
-                                     isChecked);
-      break;
-    default:
-      /* case player16: */
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player16),
-                                     isChecked);
-      break;
-  }
-  isInMenu = FALSE;
-}
-
-/*********************************************************
- *NAME:          frontEndEnableRequestAllyMenu
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/11/99
- *LAST MODIFIED: 1/11/99
- *PURPOSE:
- * Request to enable/disable the request alliance menu
- * item
- *
- *ARGUMENTS:
- *  enabled - TRUE for enabled/FALSE for diabled
- *********************************************************/
-void frontEndEnableRequestAllyMenu(bool enabled) {
-  gtk_widget_set_sensitive(request_alliance1, enabled);
-}
-
-/*********************************************************
- *NAME:          frontEndEnableRequestMenu
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/11/99
- *LAST MODIFIED: 1/11/99
- *PURPOSE:
- * Request to enable/disable the leave alliance menu item
- *
- *ARGUMENTS:
- *  enabled - TRUE for enabled/FALSE for diabled
- *********************************************************/
-void frontEndEnableLeaveAllyMenu(bool enabled) {
-  gtk_widget_set_sensitive(leave_alliance1, enabled);
-}
-
-/*********************************************************
- *NAME:          frontEndShowGunsight
- *AUTHOR:        John Morrison
- *CREATION DATE: 4/1/99
- *LAST MODIFIED: 4/1/99
- *PURPOSE:
- * Set the front end whether the gunsight is visible or not
- * (Called by auto show/hide gunsight being triggered)
- *
- *ARGUMENTS:
- *  isShown - Is the gunsight shown or not
- *********************************************************/
-void frontEndShowGunsight(bool isShown) {
-  isInMenu = TRUE;
-  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(show_gunsight1), isShown);
-  isInMenu = FALSE;
-}
 
 /*********************************************************
  *NAME:          gameFrontGetPrefs
@@ -2393,262 +1775,6 @@ void gameFrontPutPrefs(keyItems *keys) {
 }
 
 BYTE upTo = 0;
-
-bool frontEndTutorial(BYTE pos) {
-  bool returnValue; /* Value to return */
-
-  // gdk_threads_enter();
-  returnValue = FALSE;
-  if (isTutorial == TRUE) {
-    switch (upTo) {
-      case 0:
-        if (pos == 208) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL01));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-        }
-        break;
-      case 1:
-        if (pos == 197) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL02));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-        }
-        break;
-      case 2:
-        if (pos == 192) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL03));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-        }
-        break;
-      case 3:
-        if (pos == 186) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL04));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-        }
-        break;
-      case 4:
-        if (pos == 181) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL05));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-        }
-        break;
-      case 5:
-        if (pos == 175) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL06));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-        }
-        break;
-      case 6:
-        if (pos == 166) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL07));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-        }
-        break;
-      case 7:
-        if (pos == 159) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL09));
-          strcpy(messageTitle2, DIALOG_BOX_TITLE);
-          strcpy(messageBody2, langGetText(STR_TUTORIAL08));
-          numMessages = 2;
-          returnValue = TRUE;
-          upTo++;
-          upTo++;
-        }
-        break;
-      case 8:
-        upTo++;
-        break;
-      case 9:
-        if (pos == 142) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL11));
-          strcpy(messageTitle2, DIALOG_BOX_TITLE);
-          strcpy(messageBody2, langGetText(STR_TUTORIAL10));
-          numMessages = 2;
-          returnValue = TRUE;
-          upTo++;
-          upTo++;
-        }
-        break;
-      case 10:
-        upTo++;
-        break;
-      case 11:
-        if (pos == 122) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL12));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-        }
-        break;
-      case 12:
-        if (pos == 120) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL14));
-          strcpy(messageTitle2, DIALOG_BOX_TITLE);
-          strcpy(messageBody2, langGetText(STR_TUTORIAL13));
-          numMessages = 2;
-          returnValue = TRUE;
-          upTo++;
-          upTo++;
-        }
-        break;
-      case 13:
-        upTo++;
-        break;
-      case 14:
-        if (pos == 110) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL15));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-        }
-        break;
-      case 15:
-        if (pos == 103) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL16));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-        }
-        break;
-      case 16:
-        if (pos == 98) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL17));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-        }
-        break;
-      case 17:
-        if (pos == 84) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL19));
-          strcpy(messageTitle2, DIALOG_BOX_TITLE);
-          strcpy(messageBody2, langGetText(STR_TUTORIAL18));
-          numMessages = 2;
-          returnValue = TRUE;
-          upTo++;
-          upTo++;
-        }
-        break;
-      case 18:
-        upTo++;
-        break;
-      case 19:
-        if (pos == 66) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL21));
-          strcpy(messageTitle2, DIALOG_BOX_TITLE);
-          strcpy(messageBody2, langGetText(STR_TUTORIAL20));
-          numMessages = 2;
-          returnValue = TRUE;
-          upTo++;
-          upTo++;
-        }
-        break;
-      case 20:
-        upTo++;
-        break;
-      case 21:
-        if (pos == 47) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle3, DIALOG_BOX_TITLE);
-          strcpy(messageBody3, langGetText(STR_TUTORIAL22));
-          strcpy(messageTitle2, DIALOG_BOX_TITLE);
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody2, langGetText(STR_TUTORIAL23));
-          strcpy(messageBody, langGetText(STR_TUTORIAL24));
-          numMessages = 3;
-          returnValue = TRUE;
-          upTo++;
-          upTo++;
-        }
-        break;
-      case 22:
-        upTo++;
-        break;
-      case 23:
-        upTo++;
-        break;
-      case 24:
-        if (pos == 21) {
-          doingTutorial = TRUE;
-          clientMutexRelease();
-          strcpy(messageTitle, DIALOG_BOX_TITLE);
-          strcpy(messageBody, langGetText(STR_TUTORIAL25));
-          numMessages = 1;
-          returnValue = TRUE;
-          upTo++;
-          frameRateTime = 0;
-          SDL_RemoveTimer(timerGameID);
-        }
-        break;
-      default:
-        break;
-    }
-  }
-
-  return returnValue;
-}
 
 void windowStartTutorial() {
   upTo = 0;

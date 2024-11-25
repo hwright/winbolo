@@ -50,6 +50,26 @@
 #define PLAYERS_BRAIN_HOSTILE 1
 #define PLAYERS_BRAIN_FRIENDLY 0
 
+/* Player Numbers */
+typedef enum {
+  player01,
+  player02,
+  player03,
+  player04,
+  player05,
+  player06,
+  player07,
+  player08,
+  player09,
+  player10,
+  player11,
+  player12,
+  player13,
+  player14,
+  player15,
+  player16
+} playerNumbers;
+
 #ifndef UCHAR36_DEFINED
 #define UCHAR36_DEFINED
 typedef struct {

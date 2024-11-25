@@ -30,6 +30,7 @@
 
 #include "../server/servercore.h"
 #include "allience.h"
+#include "backend.h"
 #include "frontend.h"
 #include "global.h"
 #include "labels.h"
@@ -43,6 +44,12 @@
 #include "tank.h"
 #include "tilenum.h"
 #include "util.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 static char myLastPlayerName[PLAYER_NAME_LEN];
 
@@ -146,7 +153,7 @@ bool playersSetSelf(players *plrs, BYTE playerNum, char *playerName) {
       strcpy((char *)(*plrs)->playerBrainNames[playerNum],
              bolo::utilCtoPString(playerName).c_str());
       if (!threadsGetContext()) {
-        frontEndSetPlayer((playerNumbers)playerNum, playerName);
+        screenGetFrontend()->setPlayer((playerNumbers)playerNum, playerName);
       }
       if (!backendGetContext()) {
         strcpy(myLastPlayerName, playerName);
@@ -211,7 +218,7 @@ bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
         strcpy(myLastPlayerName, playerName);
       }
       if (!threadsGetContext()) {
-        frontEndSetPlayer((playerNumbers)playerNum, temp);
+        screenGetFrontend()->setPlayer((playerNumbers)playerNum, temp);
       }
       /* Log it */
       logAddEvent(log_ChangeName, playerNum, 0, 0, 0, 0,
@@ -245,7 +252,7 @@ void playersSetPlayersMenu(players *plrs) {
         strcat(temp, (*plrs)->item[count].location);
       }
       if (!threadsGetContext()) {
-        frontEndSetPlayer((playerNumbers)count, temp);
+        screenGetFrontend()->setPlayer((playerNumbers)count, temp);
       }
     }
     count++;
@@ -321,10 +328,10 @@ void playersSetPlayer(players *plrs, BYTE playerNum, char *playerName,
       strcat(str, (*plrs)->item[playerNum].location);
     }
     if (!threadsGetContext()) {
-      frontEndSetPlayer((playerNumbers)playerNum, str);
-      frontEndStatusTank((BYTE)(playerNum + 1),
-                         playersScreenAllience(plrs, playerNum));
-      frontEndRedrawAll();
+      screenGetFrontend()->setPlayer((playerNumbers)playerNum, str);
+      screenGetFrontend()->statusTank((BYTE)(playerNum + 1),
+                                      playersScreenAllience(plrs, playerNum));
+      screenGetFrontend()->redrawAll();
     }
   }
 }
@@ -368,9 +375,9 @@ void playerSetLocation(players *plrs, char *ip, char *host) {
         strcat(str, (*plrs)->item[found].location);
       }
       if (!threadsGetContext()) {
-        frontEndSetPlayer((playerNumbers)found, str);
-        frontEndSetPlayerCheckState((playerNumbers)found,
-                                    (*plrs)->item[found].isChecked);
+        screenGetFrontend()->setPlayer((playerNumbers)found, str);
+        screenGetFrontend()->setPlayerCheckState(
+            (playerNumbers)found, (*plrs)->item[found].isChecked);
       }
     }
   }
@@ -1132,9 +1139,9 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
     (*plrs)->item[playerNum].isChecked = false;
     (*plrs)->playerBrainNames[playerNum][0] = '\0';
     if (!threadsGetContext()) {
-      frontEndClearPlayer((playerNumbers)playerNum);
-      frontEndStatusTank((BYTE)(playerNum + 1), tankNone);
-      frontEndSetPlayerCheckState((playerNumbers)playerNum, false);
+      screenGetFrontend()->clearPlayer((playerNumbers)playerNum);
+      screenGetFrontend()->statusTank((BYTE)(playerNum + 1), tankNone);
+      screenGetFrontend()->setPlayerCheckState((playerNumbers)playerNum, false);
     }
     /* Make a message about it */
     strcat(output, MESSAGE_QUOTES);
@@ -1168,13 +1175,13 @@ void playersSetMenuItems(players *plrs) {
         strcat(str, (*plrs)->item[count].location);
       }
       if (!threadsGetContext()) {
-        frontEndSetPlayer((playerNumbers)count, str);
+        screenGetFrontend()->setPlayer((playerNumbers)count, str);
       }
     }
   }
   if (!threadsGetContext()) {
-    frontEndEnableRequestAllyMenu(false);
-    frontEndEnableLeaveAllyMenu(false);
+    screenGetFrontend()->enableRequestAllyMenu(false);
+    screenGetFrontend()->enableLeaveAllyMenu(false);
   }
 }
 
@@ -1247,8 +1254,8 @@ void playersCheckAllies(players *plrs) {
         (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count) ||
          count == (*plrs)->myPlayerNum);
     if (!threadsGetContext()) {
-      frontEndSetPlayerCheckState((playerNumbers)count,
-                                  (*plrs)->item[count].isChecked);
+      screenGetFrontend()->setPlayerCheckState((playerNumbers)count,
+                                               (*plrs)->item[count].isChecked);
     }
     count++;
   }
@@ -1276,7 +1283,8 @@ void playersCheckAllNone(players *plrs, bool isChecked) {
     if ((*plrs)->item[count].inUse) {
       (*plrs)->item[count].isChecked = isChecked;
       if (!threadsGetContext()) {
-        frontEndSetPlayerCheckState((playerNumbers)count, isChecked);
+        screenGetFrontend()->setPlayerCheckState((playerNumbers)count,
+                                                 isChecked);
       }
     }
     count++;
@@ -1301,8 +1309,8 @@ void playersToggleCheckedState(players *plrs, BYTE playerNum) {
     if ((*plrs)->item[playerNum].inUse) {
       (*plrs)->item[playerNum].isChecked = !(*plrs)->item[playerNum].isChecked;
       if (!threadsGetContext()) {
-        frontEndSetPlayerCheckState((playerNumbers)playerNum,
-                                    (*plrs)->item[playerNum].isChecked);
+        screenGetFrontend()->setPlayerCheckState(
+            (playerNumbers)playerNum, (*plrs)->item[playerNum].isChecked);
       }
     }
   }
@@ -1336,8 +1344,8 @@ void playersCheckNearbyPlayers(players *plrs, BYTE xValue, BYTE yValue) {
           xDiff >= PLAYER_MAX_SELECT_LEFT && xDiff <= PLAYER_MAX_SELECT_RIGHT &&
           yDiff >= PLAYER_MAX_SELECT_TOP && yDiff <= PLAYER_MAX_SELECT_BOTTOM;
       if (!threadsGetContext()) {
-        frontEndSetPlayerCheckState((playerNumbers)count,
-                                    (*plrs)->item[count].isChecked);
+        screenGetFrontend()->setPlayerCheckState(
+            (playerNumbers)count, (*plrs)->item[count].isChecked);
       }
     }
     count++;
@@ -1636,8 +1644,8 @@ void playersSetAllieMenu(players *plrs) {
     count++;
   }
   if (!threadsGetContext()) {
-    frontEndEnableRequestAllyMenu(req);
-    frontEndEnableLeaveAllyMenu(leave);
+    screenGetFrontend()->enableRequestAllyMenu(req);
+    screenGetFrontend()->enableLeaveAllyMenu(leave);
   }
 }
 
@@ -1713,15 +1721,16 @@ void playersLeaveAlliance(players *plrs, BYTE playerNum) {
   if (!threadsGetContext()) {
     total = screenNumBases();
     for (count = 1; count <= total; count++) {
-      frontEndStatusBase(count, screenBaseAlliance(count));
+      screenGetFrontend()->statusBase(count, screenBaseAlliance(count));
     }
     total = screenNumPills();
     for (count = 1; count <= total; count++) {
-      frontEndStatusPillbox(count, screenPillAlliance(count));
+      screenGetFrontend()->statusPillbox(count, screenPillAlliance(count));
     }
     total = screenGetNumPlayers();
     for (count = 1; count <= total; count++) {
-      frontEndStatusTank(count, playersScreenAllience(plrs, (BYTE)(count - 1)));
+      screenGetFrontend()->statusTank(
+          count, playersScreenAllience(plrs, (BYTE)(count - 1)));
     }
     playersSetAllieMenu(plrs);
   }
@@ -1789,15 +1798,16 @@ void playersAcceptAlliance(players *plrs, BYTE acceptedBy, BYTE newMember) {
   if (!threadsGetContext()) {
     total = screenNumBases();
     for (count = 1; count <= total; count++) {
-      frontEndStatusBase(count, screenBaseAlliance(count));
+      screenGetFrontend()->statusBase(count, screenBaseAlliance(count));
     }
     total = screenNumPills();
     for (count = 1; count <= total; count++) {
-      frontEndStatusPillbox(count, screenPillAlliance(count));
+      screenGetFrontend()->statusPillbox(count, screenPillAlliance(count));
     }
     total = screenGetNumPlayers();
     for (count = 1; count <= total; count++) {
-      frontEndStatusTank(count, playersScreenAllience(plrs, (BYTE)(count - 1)));
+      screenGetFrontend()->statusTank(
+          count, playersScreenAllience(plrs, (BYTE)(count - 1)));
     }
     playersSetAllieMenu(plrs);
   }

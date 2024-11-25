@@ -380,7 +380,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
  *  top    - The top string to draw
  *  bottom - The bottom string to draw
  *********************************************************/
-void drawMessages(int xValue, int yValue, char *top, char *bottom);
+void drawMessages(int xValue, int yValue, const char *top, const char *bottom);
 
 /*********************************************************
  *NAME:          drawKillsDeaths
@@ -413,5 +413,7 @@ void drawKillsDeaths(int xValue, int yValue, int kills, int deaths);
 void drawSetupArrays(BYTE zoomFactor);
 
 void drawDownloadScreen(bool justBlack);
+void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking);
+void drawSetManClear();
 
 #endif

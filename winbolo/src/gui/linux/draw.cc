@@ -2644,7 +2644,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
  *  top    - The top string to draw
  *  bottom - The bottom string to draw
  *********************************************************/
-void drawMessages(int xValue, int yValue, char *top, char *bottom) {
+void drawMessages(int xValue, int yValue, const char *top, const char *bottom) {
   SDL_Surface *lpTextSurface;
   SDL_Rect dest; /* The dest square to draw it */
   BYTE zf;       /* Scaling factor */

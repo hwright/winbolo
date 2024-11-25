@@ -28,6 +28,7 @@
 
 #include <memory.h>
 
+#include "backend.h"
 #include "bolo_map.h"
 #include "building.h"
 #include "explosions.h"
@@ -482,7 +483,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
           case TH_HIT:
             returnValue = true;
             if (!threadsGetContext()) {
-              frontEndPlaySound(bolo::sndEffects::hitTankSelf);
+              screenGetFrontend()->playSound(bolo::sndEffects::hitTankSelf);
             }
             if (!isServer) {
               if ((mapGetPos(mp, tankGetMX(&(tk[count])),
@@ -519,7 +520,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
               /*							} */
             }
             if (!threadsGetContext()) {
-              frontEndPlaySound(bolo::sndEffects::hitTankSelf);
+              screenGetFrontend()->playSound(bolo::sndEffects::hitTankSelf);
             }
             break;
           case TH_KILL_BIG:
@@ -540,7 +541,7 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
               /*							} */
             }
             if (!threadsGetContext()) {
-              frontEndPlaySound(bolo::sndEffects::hitTankSelf);
+              screenGetFrontend()->playSound(bolo::sndEffects::hitTankSelf);
             }
             break;
           case TH_MISSED:

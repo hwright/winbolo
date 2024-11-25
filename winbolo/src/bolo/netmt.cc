@@ -31,6 +31,7 @@
 
 #include "../server/servercore.h"
 #include "../winbolonet/winbolonet.h"
+#include "backend.h"
 #include "bolo_map.h"
 #include "building.h"
 #include "explosions.h"
@@ -50,6 +51,12 @@
 #include "sounddist.h"
 #include "swamp.h"
 #include "tank.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 /* Protos */
 void netErrorOccured();
