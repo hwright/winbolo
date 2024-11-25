@@ -1527,30 +1527,6 @@ int windowGetAiTime(void) { return dwSysBrainTotal; }
  *********************************************************/
 int windowGetSimTime(void) { return dwSysGameTotal; }
 
-void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking);
-
-/*********************************************************
- *NAME:          frontEndManStatus
- *AUTHOR:        John Morrison
- *CREATION DATE:  8/1/99
- *LAST MODIFIED:  8/1/99
- *PURPOSE:
- *  The tank kills/deaths must be updated
- *
- *ARGUMENTS:
- *  isDead - Is the man dead
- *  angle  - The angle the man is facing
- *********************************************************/
-void frontEndManStatus(bool isDead, TURNTYPE angle) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  frameMutexWaitFor();
-  drawSetManStatus(isDead, angle, TRUE);
-  frameMutexRelease();
-  dwSysFrame += (timeGetTime() - tick);
-}
-
 /*********************************************************
  *NAME:          frontEndDrawDownload
  *AUTHOR:        John Morrison

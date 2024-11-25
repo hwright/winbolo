@@ -100,4 +100,12 @@ void LinuxFrontend::killsDeaths(int kills, int deaths) {
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 
+void LinuxFrontend::manStatus(bool isDead, TURNTYPE angle) {
+  uint64_t tick = SDL_GetTicks();
+  frameMutexWaitFor();
+  drawSetManStatus(isDead, angle, TRUE);
+  frameMutexRelease();
+  dwSysFrame += (SDL_GetTicks() - tick);
+}
+
 }  // namespace bolo

@@ -51,20 +51,6 @@ void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
  *CREATION DATE: 18/1/99
  *LAST MODIFIED: 18/1/99
  *PURPOSE:
- *  The tank kills/deaths must be updated
- *
- *ARGUMENTS:
- *  isDead - Is the man dead
- *  angle  - The angle the man is facing
- *********************************************************/
-void frontEndManStatus(bool isDead, TURNTYPE angle) { return; }
-
-/*********************************************************
- *NAME:          frontEndManStatus
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/99
- *LAST MODIFIED: 18/1/99
- *PURPOSE:
  *  Clears the man status (ie man is in tank)
  *
  *ARGUMENTS:

@@ -212,8 +212,8 @@ void lgmUpdate(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
       tankGetWorld(tnk, &wx, &wy);
       /* Multiplayer game but just a client */
       if (!threadsGetContext()) {
-        frontEndManStatus(false,
-                          utilCalcAngle((*lgman)->x, (*lgman)->y, wx, wy));
+        screenGetFrontend()->manStatus(
+            false, utilCalcAngle((*lgman)->x, (*lgman)->y, wx, wy));
       }
     }
   }
@@ -722,7 +722,7 @@ void lgmMoveAway(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
       utilCalcAngle((*lgman)->x, (*lgman)->y, (*lgman)->destX, (*lgman)->destY);
   frontAngle = utilCalcAngle((*lgman)->x, (*lgman)->y, newmx, newmy);
   if (!threadsGetContext()) {
-    frontEndManStatus(false, frontAngle);
+    screenGetFrontend()->manStatus(false, frontAngle);
   }
   conv = (*lgman)->x;
   conv >>= TANK_SHIFT_MAPSIZE;
@@ -842,7 +842,7 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   angle = utilCalcAngle((*lgman)->x, (*lgman)->y, newmx, newmy);
 
   if (!threadsGetContext()) {
-    frontEndManStatus(false, angle);
+    screenGetFrontend()->manStatus(false, angle);
   }
 
   conv = (*lgman)->x;
@@ -1516,7 +1516,7 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx,
       (*lgman)->y <<= TANK_SHIFT_MAPSIZE;
       (*lgman)->y += MAP_SQUARE_MIDDLE;
       if (!threadsGetContext()) {
-        frontEndManStatus(true, 0.0f);
+        screenGetFrontend()->manStatus(true, 0.0f);
       }
 
       /* Log it */
@@ -2062,7 +2062,7 @@ void lgmSetIsDead(lgm *lgman, bool isDead) {
     (*lgman)->x = 0;
     (*lgman)->y = 0;
     if (!threadsGetContext()) {
-      frontEndManStatus(true, 0.0f);
+      screenGetFrontend()->manStatus(true, 0.0f);
     }
   } else {
     if (!threadsGetContext()) {
