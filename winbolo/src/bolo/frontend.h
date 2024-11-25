@@ -114,23 +114,16 @@ class Frontend {
   //  top    - The top line to write
   //  bottom - The bottom line to write
   virtual void messages(std::string_view top, std::string_view bottom) = 0;
+
+  // The tank kills/deaths must be updated
+  //
+  // ARGUMENTS:
+  //  kills  - The number of kills the tank has.
+  //  deaths - The number of times the tank has died
+  virtual void killsDeaths(int kills, int deaths) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndKillsDeaths
- *AUTHOR:        John Morrison
- *CREATION DATE:  8/1/99
- *LAST MODIFIED:  8/1/99
- *PURPOSE:
- *  The tank kills/deaths must be updated
- *
- *ARGUMENTS:
- *  kills  - The number of kills the tank has.
- *  deaths - The number of times the tank has died
- *********************************************************/
-void frontEndKillsDeaths(int kills, int deaths);
 
 /*********************************************************
  *NAME:          frontEndManStatus

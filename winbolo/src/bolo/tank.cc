@@ -1142,7 +1142,7 @@ void tankDeath(tank *value, starts *sts) {
     tankRegisterChangeByte(value, CRC_WATERCOUNT_OFFSET, 0);
     /* Get the start position */
     if (!threadsGetContext()) {
-      frontEndKillsDeaths((*value)->numKills, (*value)->numDeaths);
+      screenGetFrontend()->killsDeaths((*value)->numKills, (*value)->numDeaths);
     }
   } else if (threadsGetContext()) { /* FIXME */
     (*value)->armour = 10;
@@ -2615,7 +2615,7 @@ void tankAddKill(tank *value) {
   (*value)->numKills++;
   tankRegisterChangeInt(value, CRC_NUMKILLS_OFFSET, (*value)->numKills);
   if (!threadsGetContext()) {
-    frontEndKillsDeaths((*value)->numKills, (*value)->numDeaths);
+    screenGetFrontend()->killsDeaths((*value)->numKills, (*value)->numDeaths);
   }
 }
 

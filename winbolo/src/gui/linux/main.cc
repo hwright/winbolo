@@ -1527,26 +1527,6 @@ int windowGetAiTime(void) { return dwSysBrainTotal; }
  *********************************************************/
 int windowGetSimTime(void) { return dwSysGameTotal; }
 
-/*********************************************************
- *NAME:          frontEndKillsDeaths
- *AUTHOR:        John Morrison
- *CREATION DATE:  8/1/99
- *LAST MODIFIED:  8/1/99
- *PURPOSE:
- *  The tank kills/deaths must be updated
- *
- *ARGUMENTS:
- *  kills  - The number of kills the tank has.
- *  deaths - The number of times the tank has died
- *********************************************************/
-void frontEndKillsDeaths(int kills, int deaths) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawKillsDeaths(0, 0, kills, deaths);
-  dwSysFrame += (timeGetTime() - tick);
-}
-
 void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking);
 
 /*********************************************************

@@ -94,4 +94,10 @@ void LinuxFrontend::messages(std::string_view top, std::string_view bottom) {
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 
+void LinuxFrontend::killsDeaths(int kills, int deaths) {
+  uint64_t tick = SDL_GetTicks();
+  drawKillsDeaths(0, 0, kills, deaths);
+  dwSysFrame += (SDL_GetTicks() - tick);
+}
+
 }  // namespace bolo

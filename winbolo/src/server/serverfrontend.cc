@@ -46,20 +46,6 @@ void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
 }
 
 /*********************************************************
- *NAME:          frontEndKillsDeaths
- *AUTHOR:        John Morrison
- *CREATION DATE:  8/1/99
- *LAST MODIFIED:  8/1/99
- *PURPOSE:
- *  The tank kills/deaths must be updated
- *
- *ARGUMENTS:
- *  kills  - The number of kills the tank has.
- *  deaths - The number of times the tank has died
- *********************************************************/
-void frontEndKillsDeaths(int kills, int deaths) { return; }
-
-/*********************************************************
  *NAME:          frontEndManStatus
  *AUTHOR:        John Morrison
  *CREATION DATE: 18/1/99

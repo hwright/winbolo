@@ -38,6 +38,7 @@ class ServerFrontend : public Frontend {
   void statusTank(uint8_t tankNum, tankAlliance ts) override {}
   void statusBase(uint8_t baseNum, baseAlliance bs) override {}
   void messages(std::string_view top, std::string_view bottom) override {}
+  void killsDeaths(int kills, int deaths) override {}
 };
 
 }  // namespace bolo
