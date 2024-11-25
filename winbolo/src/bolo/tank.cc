@@ -55,6 +55,12 @@
 #include "tankexp.h"
 #include "tilenum.h"
 #include "util.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 int tankCalcCRCSetup(tank *value);
 netPlayers *serverNetGetNetPlayers();

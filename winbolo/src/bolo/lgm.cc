@@ -56,6 +56,12 @@
 #include "tank.h"
 #include "types.h"
 #include "util.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 static char streamText[2048];
 

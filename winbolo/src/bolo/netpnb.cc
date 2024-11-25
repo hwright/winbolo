@@ -42,6 +42,12 @@
 #include "screen.h"
 #include "sounddist.h"
 #include "util.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 void tankAddHit(tank *value, int amount);
 

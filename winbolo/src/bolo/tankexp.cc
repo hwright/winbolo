@@ -42,6 +42,12 @@
 #include "swamp.h"
 #include "tank.h"
 #include "util.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 /*********************************************************
  *NAME:          tkExplosionCreate

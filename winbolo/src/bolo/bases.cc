@@ -42,6 +42,12 @@
 #include "players.h"
 #include "screen.h"
 #include "tank.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 static int baseTimer[MAX_TANKS];
 

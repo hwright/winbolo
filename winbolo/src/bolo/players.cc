@@ -44,6 +44,12 @@
 #include "tank.h"
 #include "tilenum.h"
 #include "util.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 static char myLastPlayerName[PLAYER_NAME_LEN];
 

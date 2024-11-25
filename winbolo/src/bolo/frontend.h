@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,12 +27,6 @@
 #include "screentank.h"
 #include "sound_effects.h"
 #include "types.h"
-#ifdef _WIN32
-#include "../gui/resource.h"
-#else
-#include "../gui/linresource.h"
-#endif
-#include "../gui/lang.h"
 
 namespace bolo {
 
@@ -188,7 +181,7 @@ class Frontend {
   //
   // ARGUMENTS:
   //  pos - Y Position on the map
-  virtual bool tutorial(BYTE pos) = 0;
+  virtual bool tutorial(uint8_t pos) = 0;
 };
 
 }  // namespace bolo

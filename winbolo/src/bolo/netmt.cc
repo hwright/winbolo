@@ -51,6 +51,12 @@
 #include "sounddist.h"
 #include "swamp.h"
 #include "tank.h"
+#include "../gui/lang.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 /* Protos */
 void netErrorOccured();

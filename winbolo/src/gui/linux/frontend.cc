@@ -18,7 +18,9 @@
 #include <SDL.h>
 
 #include "../clientmutex.h"
+#include "../linresource.h"
 #include "draw.h"
+#include "../lang.h"
 #include "framemutex.h"
 #include "sound.h"
 
