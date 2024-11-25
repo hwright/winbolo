@@ -30,6 +30,7 @@
 #include "../bolo/building.h"
 #include "../bolo/explosions.h"
 #include "../bolo/floodfill.h"
+#include "../bolo/frontend.h"
 #include "../bolo/gametype.h"
 #include "../bolo/global.h"
 #include "../bolo/grass.h"
@@ -1047,5 +1048,7 @@ void serverCoreBasesMigrate(BYTE playerNumOldOwner, BYTE playerNumNewOwner);
  *********************************************************/
 void serverCorePillsMigratePlanted(BYTE playerNumOldOwner,
                                    BYTE playerNumNewOwner);
+
+bolo::Frontend *serverCoreGetFrontend();
 
 #endif /* SERVER_CORE_H */

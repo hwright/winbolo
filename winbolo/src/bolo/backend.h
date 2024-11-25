@@ -28,6 +28,7 @@
 #define _BACKEND_H
 
 #include <istream>
+#include <memory>
 
 #include "brain.h"
 #include "building.h"
@@ -97,12 +98,14 @@ extern "C" {
  *
  *ARGUMENTS:
  *  game - The game type-Open/tournament/strict tournament
+ *  frontend - The frontend interface to use.
  *  hiddenMines - Are hidden mines allowed
  *  srtDelay    - Game start delay (50th second increments)
  *  gmeLen      - Length of the game (in 50ths)
  *                (-1 =unlimited)
  *********************************************************/
-void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen);
+void screenSetup(gameType game, std::unique_ptr<bolo::Frontend> frontend,
+                 bool hiddenMines, int srtDelay, long gmeLen);
 
 /*********************************************************
  *NAME:          screenDestroy
@@ -186,8 +189,8 @@ bool screenIsMine(screenMines *value, BYTE xValue, BYTE yValue);
  *                if a map is valid
  *********************************************************/
 bool screenLoadMap(std::istream &input, const char *name, gameType game,
-                   bool hiddenMines, long srtDelay, long gmeLen,
-                   char *playerName, bool wantFree);
+                   std::unique_ptr<bolo::Frontend> frontend, bool hiddenMines,
+                   long srtDelay, long gmeLen, char *playerName, bool wantFree);
 
 /*********************************************************
  *NAME:          screenGameTick
@@ -1046,6 +1049,8 @@ bool screenGetGameRunning();
  *
  *********************************************************/
 bolo::BuildingState *screenGetBuildings();
+
+bolo::Frontend *screenGetFrontend();
 
 /*********************************************************
  *NAME:          screenGetExplosions

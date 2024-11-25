@@ -30,6 +30,7 @@
 
 #include "../server/servercore.h"
 #include "allience.h"
+#include "backend.h"
 #include "frontend.h"
 #include "global.h"
 #include "labels.h"

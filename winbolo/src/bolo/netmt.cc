@@ -31,6 +31,7 @@
 
 #include "../server/servercore.h"
 #include "../winbolonet/winbolonet.h"
+#include "backend.h"
 #include "bolo_map.h"
 #include "building.h"
 #include "explosions.h"

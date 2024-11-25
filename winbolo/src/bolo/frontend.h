@@ -42,25 +42,26 @@
 #include "../gui/linresource.h"
 #endif
 #include "../gui/lang.h"
-#include "backend.h"
 
-/*********************************************************
- *NAME:          frontEndUpdateTankStatusBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 28/12/98
- *LAST MODIFIED: 28/12/98
- *PURPOSE:
- * Function is called when the tanks status bars need to
- * be updated
- *
- *ARGUMENTS:
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *  trees   - Amount of trees
- *********************************************************/
-void frontEndUpdateTankStatusBars(BYTE shells, BYTE mines, BYTE armour,
-                                  BYTE trees);
+namespace bolo {
+
+// The interface which a frontend must implement
+class Frontend {
+ public:
+  virtual ~Frontend() = default;
+
+  // Called when the tanks status bars need to be updated
+  //
+  // ARGUMENTS:
+  //  shells  - Number of shells
+  //  mines   - Number of mines
+  //  armour  - Amount of armour
+  //  trees   - Amount of trees
+  virtual void updateTankStatusBars(BYTE shells, BYTE mines, BYTE armour,
+                                    BYTE trees) = 0;
+};
+
+}  // namespace bolo
 
 /*********************************************************
  *NAME:          frontEndUpdateBaseStatusBars

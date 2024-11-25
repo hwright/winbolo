@@ -24,6 +24,7 @@ add_executable(linbolo
                dnslookups.cc
                draw.cc
                framemutex.cc
+               frontend.cc
                input.cc
                lang.cc
                main.cc

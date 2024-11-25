@@ -31,6 +31,7 @@
 #include <memory.h>
 
 #include "../winbolonet/winbolonet.h"
+#include "backend.h"
 #include "frontend.h"
 #include "global.h"
 #include "log.h"

@@ -64,6 +64,7 @@
 #include "../bolo/tankexp.h"
 #include "../bolo/tilenum.h"
 #include "../winbolonet/winbolonet.h"
+#include "serverfrontend.h"
 #include "servernet.h"
 
 #ifdef _WIN32
@@ -97,6 +98,7 @@ static std::optional<bolo::SwampState> serverSwamp;
 static tkExplosion serverTankExp = nullptr;
 static netPnbContext serverPNB = nullptr;
 static netMntContext serverNMT = nullptr;
+static bolo::Frontend *frontend = nullptr;
 
 static gameType sGame;
 
@@ -171,6 +173,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines,
   serverMines.emplace(hiddenMines);
   serverMinesExp.emplace();
   playersRejoinCreate();
+  frontend = new bolo::ServerFrontend();
 
   std::ifstream input(fileName);
   returnValue = mapRead(input, &mp, &pb, &bs, &ss);
@@ -300,6 +303,7 @@ void serverCoreDestroy() {
   serverMinesExp = std::nullopt;
   logDestroy();
   playersDestroy(&splrs);
+  delete frontend;
 }
 
 /* FIXME: Comment */
@@ -1933,3 +1937,5 @@ void serverCoreInformation() {
     }
   }
 }
+
+bolo::Frontend *serverCoreGetFrontend() { return frontend; }

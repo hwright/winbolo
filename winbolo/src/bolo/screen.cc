@@ -153,6 +153,9 @@ void moveMousePointer(updateType value);
 static int cursorPosX, cursorPosY;
 static std::shared_mutex cursorMutex;
 
+/* Frontend functions */
+bolo::Frontend *frontend = nullptr;
+
 /*********************************************************
  *NAME:          screenSetup
  *AUTHOR:        John Morrison
@@ -169,7 +172,8 @@ static std::shared_mutex cursorMutex;
  *  gmeLen      - Length of the game (in 50ths)
  *                (-1 =unlimited)
  *********************************************************/
-void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
+void screenSetup(gameType game, std::unique_ptr<bolo::Frontend> frontend_input,
+                 bool hiddenMines, int srtDelay, long gmeLen) {
   srand((unsigned int)time(nullptr));
   xOffset = 0;
   yOffset = 0;
@@ -211,6 +215,7 @@ void screenSetup(gameType game, bool hiddenMines, int srtDelay, long gmeLen) {
   brainBuildInfo = new BuildInfo;
   brainBuildInfo->action = 0;
 
+  frontend = frontend_input.release();
   view = new screenObj;
   mineView = new screenMineObj;
   /*  messageAdd(globalMessage, BOLO_VERSION_STRING, OLD_BOLO_COPYRIGHT_STRING);
@@ -257,6 +262,9 @@ void screenDestroy() {
   treeGrowState = std::nullopt;
   pillsDestroy(&mypb);
   playersDestroy(&plyrs);
+  if (frontend != nullptr) {
+    delete frontend;
+  }
   if (view != nullptr) {
     delete view;
   }
@@ -755,6 +763,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
  *                if a map is valid
  *********************************************************/
 bool screenLoadMap(std::istream &input, const char *name, gameType game,
+                   std::unique_ptr<bolo::Frontend> frontend_input,
                    bool hiddenMines, long srtDelay, long gmeLen,
                    char *playerName, bool wantFree) {
   bool returnValue; /* Value to return */
@@ -762,7 +771,7 @@ bool screenLoadMap(std::istream &input, const char *name, gameType game,
 
   returnValue = false;
   doneFree = false;
-  screenSetup(game, hiddenMines, srtDelay, gmeLen);
+  screenSetup(game, std::move(frontend_input), hiddenMines, srtDelay, gmeLen);
   returnValue = mapRead(input, &mymp, &mypb, &mybs, &myss);
 
   /*
@@ -3627,7 +3636,8 @@ void screenSetTankStartPosition(BYTE xValue, BYTE yValue, TURNTYPE angle,
     numTrees = TANK_FULL_TREES;
   }
   tankSetStats(&mytk, numShells, numMines, TANK_FULL_ARMOUR, numTrees);
-  frontEndUpdateTankStatusBars(numShells, numMines, TANK_FULL_ARMOUR, numTrees);
+  frontend->updateTankStatusBars(numShells, numMines, TANK_FULL_ARMOUR,
+                                 numTrees);
   screenTankView();
   clientSetInStartFind(false);
 }
@@ -4039,3 +4049,5 @@ void screenSendMem() {
   netMNTAdd(screenGetNetMnt(), NMNT_TANKHIT, playersGetSelf(screenGetPlayers()),
             playersGetSelf(screenGetPlayers()), 0xFF, 0xFF);
 }
+
+bolo::Frontend *screenGetFrontend() { return frontend; }

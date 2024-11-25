@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,16 +13,7 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          FrontEnd
- *Filename:      frontEnd
- *Author:        John Morrison
- *Creation Date: 10/08/99
- *Last Modified: 05/05/01
- *Purpose:
- *  Provides dummy functions that can be called in lui
- *  of a front end.
- *********************************************************/
+#include "serverfrontend.h"
 
 #include <stdio.h>
 

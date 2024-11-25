@@ -52,6 +52,7 @@
 #include "draw.h"
 #include "e_map.h"
 #include "framemutex.h"
+#include "frontend.h"
 #include "gamefront.h"
 #include "input.h"
 #include "messagebox.h"
@@ -130,7 +131,7 @@ static DWORD oldFrameTick;
 
 /* Stuff for the system info dialog box */
 static DWORD dwSysFrameTotal = 0;
-static DWORD dwSysFrame = 0;
+DWORD dwSysFrame = 0;
 static DWORD dwSysGameTotal = 0;
 static DWORD dwSysGame = 0;
 static DWORD dwSysBrainTotal = 0;
@@ -1224,6 +1225,7 @@ bool startSinglePlayer();
 
 bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
   GtkWidget *newWindow;
+  auto frontend = std::make_unique<bolo::LinuxFrontend>();
   if (newState == openSetup || newState == openUdpSetup ||
       newState == openInternetSetup || newState == openLanSetup) {
     dlgState = newState;
@@ -1234,7 +1236,8 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
               dlgState == openLanSetup) &&
              newState == openFinished) {
     if (gameFrontSetupServer() == TRUE) {
-      screenSetup((gameType)0, FALSE, 0, UNLIMITED_GAME_TIME);
+      screenSetup((gameType)0, std::move(frontend), FALSE, 0,
+                  UNLIMITED_GAME_TIME);
       if (netSetup(netUdp, gameFrontMyUdp, "127.0.0.1", gameFrontTargetUdp,
                    password, FALSE, gameFrontTrackerAddr, gameFrontTrackerPort,
                    gameFrontTrackerEnabled, wantRejoin, gameFrontWbnUse,
@@ -1277,7 +1280,8 @@ bool gameFrontSetDlgState(GtkWidget *oldWindow, openingStates newState) {
               dlgState == openUdp || dlgState == openLanManual ||
               dlgState == openInternetManual) &&
              newState == openUdpJoin) {
-    screenSetup((gameType)0, FALSE, 0, UNLIMITED_GAME_TIME);
+    screenSetup((gameType)0, std::move(frontend), FALSE, 0,
+                UNLIMITED_GAME_TIME);
     if (netSetup(netUdp, gameFrontMyUdp, gameFrontUdpAddress,
                  gameFrontTargetUdp, password, FALSE, gameFrontTrackerAddr,
                  gameFrontTrackerPort, gameFrontTrackerEnabled, wantRejoin,
@@ -1448,14 +1452,16 @@ bool startSinglePlayer() {
     dlgState = openSetup;
     returnValue = FALSE;
   } else {
+    auto frontend = std::make_unique<bolo::LinuxFrontend>();
     if (strcmp(fileName, "") != 0) {
       std::ifstream input(fileName);
       screenLoadMap(input, bolo::utilExtractMapName(fileName).c_str(), gametype,
-                    hiddenMines, startDelay, timeLen, gameFrontName, false);
+                    std::move(frontend), hiddenMines, startDelay, timeLen,
+                    gameFrontName, false);
     } else {
       std::istringstream input(std::string((const char *)e_map, e_map_len));
-      screenLoadMap(input, "Everard Island", gametype, hiddenMines, startDelay,
-                    timeLen, gameFrontName, false);
+      screenLoadMap(input, "Everard Island", gametype, std::move(frontend),
+                    hiddenMines, startDelay, timeLen, gameFrontName, false);
     }
   }
   if (returnValue == TRUE) {
@@ -1554,32 +1560,6 @@ void frontEndDrawMainScreen(screen *value, screenMines *mineView,
   drawMainScreen(value, mineView, tks, gs, sBullet, lgms, showPillLabels,
                  showBaseLabels, srtDelay, isPillView, edgeX, edgeY, showCursor,
                  cursorX, cursorY);
-}
-
-/*********************************************************
- *NAME:          frontEndUpdateTankStatusBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 28/12/98
- *LAST MODIFIED: 28/12/98
- *PURPOSE:
- * Function is called when the tanks status bars need to
- * be updated
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *  trees   - Amount of trees
- *********************************************************/
-void frontEndUpdateTankStatusBars(BYTE shells, BYTE mines, BYTE armour,
-                                  BYTE trees) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawStatusTankBars(0, 0, shells, mines, armour, trees);
-  dwSysFrame += (timeGetTime() - tick);
 }
 
 /*********************************************************

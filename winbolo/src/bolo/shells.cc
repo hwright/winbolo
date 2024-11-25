@@ -28,6 +28,7 @@
 
 #include <memory.h>
 
+#include "backend.h"
 #include "bolo_map.h"
 #include "building.h"
 #include "explosions.h"

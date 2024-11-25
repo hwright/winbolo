@@ -26,6 +26,7 @@
 
 #include "tankexp.h"
 
+#include "backend.h"
 #include "building.h"
 #include "explosions.h"
 #include "floodfill.h"

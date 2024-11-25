@@ -912,3 +912,5 @@ int main(int argc, char **argv) {
 }
 
 time_t serverMainGetTicks() { return ticks; }
+
+bolo::Frontend *screenGetFrontend() { return serverCoreGetFrontend(); }
