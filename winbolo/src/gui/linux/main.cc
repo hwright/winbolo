@@ -145,7 +145,7 @@ static buildSelect BsLinuxCurrent = BsTrees;
 static bool showGunsight = FALSE;
 
 /* Whether the sound effects are turn on or not */
-static bool soundEffects = FALSE;
+bool soundEffects = false;
 /* Do we play background sound */
 static bool backgroundSound = TRUE;
 
@@ -1560,23 +1560,6 @@ void frontEndDrawMainScreen(screen *value, screenMines *mineView,
   drawMainScreen(value, mineView, tks, gs, sBullet, lgms, showPillLabels,
                  showBaseLabels, srtDelay, isPillView, edgeX, edgeY, showCursor,
                  cursorX, cursorY);
-}
-
-/*********************************************************
- *NAME:          frontEndSoundEffects
- *AUTHOR:        John Morrison
- *CREATION DATE: 28/12/98
- *LAST MODIFIED: 28/12/98
- *PURPOSE:
- *  Plays a sound effect if it is turned on
- *
- *ARGUMENTS:
- *  value - The sound effect to play
- *********************************************************/
-void frontEndPlaySound(bolo::sndEffects value) {
-  if (soundEffects == TRUE) {
-    soundPlayEffect(value);
-  }
 }
 
 /*********************************************************

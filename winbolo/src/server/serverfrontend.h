@@ -22,14 +22,12 @@ namespace bolo {
 class ServerFrontend : public Frontend {
  public:
   void updateTankStatusBars(uint8_t shells, uint8_t mines, uint8_t armour,
-                            uint8_t trees) override {
-    return;
-  }
+                            uint8_t trees) override {}
 
   void updateBaseStatusBars(uint8_t shells, uint8_t mines,
-                            uint8_t armour) override {
-    return;
-  }
+                            uint8_t armour) override {}
+
+  void playSound(sndEffects value) override {}
 };
 
 }  // namespace bolo

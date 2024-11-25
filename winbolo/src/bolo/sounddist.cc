@@ -27,6 +27,7 @@
 
 #include "sounddist.h"
 
+#include "backend.h"
 #include "frontend.h"
 #include "global.h"
 #include "log.h"
@@ -77,77 +78,77 @@ void clientSoundDist(bolo::sndEffects value, BYTE mx, BYTE my) {
     switch (value) {
       case bolo::sndEffects::shootNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(bolo::sndEffects::shootFar);
+          screenGetFrontend()->playSound(bolo::sndEffects::shootFar);
         } else {
-          frontEndPlaySound(bolo::sndEffects::shootNear);
+          screenGetFrontend()->playSound(bolo::sndEffects::shootNear);
         }
         break;
       case bolo::sndEffects::shotTreeNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(bolo::sndEffects::shotTreeFar);
+          screenGetFrontend()->playSound(bolo::sndEffects::shotTreeFar);
         } else {
-          frontEndPlaySound(bolo::sndEffects::shotTreeNear);
+          screenGetFrontend()->playSound(bolo::sndEffects::shotTreeNear);
         }
         break;
       case bolo::sndEffects::shotBuildingNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(bolo::sndEffects::shotBuildingFar);
+          screenGetFrontend()->playSound(bolo::sndEffects::shotBuildingFar);
         } else {
-          frontEndPlaySound(bolo::sndEffects::shotBuildingNear);
+          screenGetFrontend()->playSound(bolo::sndEffects::shotBuildingNear);
         }
         break;
       case bolo::sndEffects::hitTankNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(bolo::sndEffects::hitTankFar);
+          screenGetFrontend()->playSound(bolo::sndEffects::hitTankFar);
         } else {
-          frontEndPlaySound(bolo::sndEffects::hitTankNear);
+          screenGetFrontend()->playSound(bolo::sndEffects::hitTankNear);
         }
         break;
       case bolo::sndEffects::tankSinkNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(bolo::sndEffects::tankSinkFar);
+          screenGetFrontend()->playSound(bolo::sndEffects::tankSinkFar);
         } else {
-          frontEndPlaySound(bolo::sndEffects::tankSinkNear);
+          screenGetFrontend()->playSound(bolo::sndEffects::tankSinkNear);
         }
         break;
       case bolo::sndEffects::bigExplosionNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(bolo::sndEffects::bigExplosionFar);
+          screenGetFrontend()->playSound(bolo::sndEffects::bigExplosionFar);
         } else {
-          frontEndPlaySound(bolo::sndEffects::bigExplosionNear);
+          screenGetFrontend()->playSound(bolo::sndEffects::bigExplosionNear);
         }
         break;
       case bolo::sndEffects::farmingTreeNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(bolo::sndEffects::farmingTreeFar);
+          screenGetFrontend()->playSound(bolo::sndEffects::farmingTreeFar);
         } else {
-          frontEndPlaySound(bolo::sndEffects::farmingTreeNear);
+          screenGetFrontend()->playSound(bolo::sndEffects::farmingTreeNear);
         }
         break;
       case bolo::sndEffects::manBuildingNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(bolo::sndEffects::manBuildingFar);
+          screenGetFrontend()->playSound(bolo::sndEffects::manBuildingFar);
         } else {
-          frontEndPlaySound(bolo::sndEffects::manBuildingNear);
+          screenGetFrontend()->playSound(bolo::sndEffects::manBuildingNear);
         }
         break;
       case bolo::sndEffects::manDyingNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(bolo::sndEffects::manDyingFar);
+          screenGetFrontend()->playSound(bolo::sndEffects::manDyingFar);
         } else {
-          frontEndPlaySound(bolo::sndEffects::manDyingNear);
+          screenGetFrontend()->playSound(bolo::sndEffects::manDyingNear);
         }
         break;
       case bolo::sndEffects::mineExplosionNear:
         if (gapX > SDIST_SOFT || gapY > SDIST_SOFT) {
-          frontEndPlaySound(bolo::sndEffects::mineExplosionFar);
+          screenGetFrontend()->playSound(bolo::sndEffects::mineExplosionFar);
         } else {
-          frontEndPlaySound(bolo::sndEffects::mineExplosionNear);
+          screenGetFrontend()->playSound(bolo::sndEffects::mineExplosionNear);
         }
         break;
       case bolo::sndEffects::manLayingMineNear:
         if (gapX <= SDIST_SOFT || gapY <= SDIST_SOFT) {
-          frontEndPlaySound(bolo::sndEffects::manLayingMineNear);
+          screenGetFrontend()->playSound(bolo::sndEffects::manLayingMineNear);
         }
         break;
       case bolo::sndEffects::shootSelf:

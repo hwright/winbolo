@@ -234,7 +234,7 @@ void tankUpdate(tank *value, map *mp, bases *bs, pillboxes *pb, shells *shs,
     tankRegisterChangeByte(value, CRC_SHELLS_OFFSET, (*value)->shells);
 
     if (!threadsGetContext()) {
-      frontEndPlaySound(bolo::sndEffects::shootSelf);
+      screenGetFrontend()->playSound(bolo::sndEffects::shootSelf);
       screenGetFrontend()->updateTankStatusBars(
           (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
     }
@@ -1034,7 +1034,7 @@ void tankInWater(tank *value) {
     if (!threadsGetContext()) {
       screenGetFrontend()->updateTankStatusBars(
           (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
-      frontEndPlaySound(bolo::sndEffects::bubbles);
+      screenGetFrontend()->playSound(bolo::sndEffects::bubbles);
     }
   }
 }

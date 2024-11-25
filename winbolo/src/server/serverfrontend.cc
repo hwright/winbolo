@@ -66,19 +66,6 @@ void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
 }
 
 /*********************************************************
- *NAME:          frontEndSoundEffects
- *AUTHOR:        John Morrison
- *CREATION DATE: 28/12/98
- *LAST MODIFIED: 28/12/98
- *PURPOSE:
- *  Plays a sound effect if it is turned on
- *
- *ARGUMENTS:
- *  value - The sound effect to play
- *********************************************************/
-void frontEndPlaySound(bolo::sndEffects value) { return; }
-
-/*********************************************************
  *NAME:          frontEndDrawMainScreen
  *AUTHOR:        John Morrison
  *CREATION DATE: 31/10/98

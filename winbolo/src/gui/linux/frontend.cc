@@ -18,8 +18,10 @@
 #include <SDL.h>
 
 #include "draw.h"
+#include "sound.h"
 
 extern uint64_t dwSysFrame;
+extern bool soundEffects;
 
 namespace bolo {
 
@@ -39,6 +41,12 @@ void LinuxFrontend::updateBaseStatusBars(uint8_t shells, uint8_t mines,
   tick = SDL_GetTicks();
   drawStatusBaseBars(0, 0, shells, mines, armour, FALSE);
   dwSysFrame += (SDL_GetTicks() - tick);
+}
+
+void LinuxFrontend::playSound(sndEffects value) {
+  if (soundEffects) {
+    soundPlayEffect(value);
+  }
 }
 
 }  // namespace bolo

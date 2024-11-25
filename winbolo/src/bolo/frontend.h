@@ -68,22 +68,15 @@ class Frontend {
   //  armour  - Amount of armour
   virtual void updateBaseStatusBars(uint8_t shells, uint8_t mines,
                                     uint8_t armour) = 0;
+
+  // Play a sound effect if sounds are enabled.
+  //
+  // ARGUMENTS:
+  //  value - The sound effect to play
+  virtual void playSound(sndEffects value) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndSoundEffects
- *AUTHOR:        John Morrison
- *CREATION DATE: 28/12/98
- *LAST MODIFIED: 28/12/98
- *PURPOSE:
- *  Plays a sound effect if it is turned on
- *
- *ARGUMENTS:
- *  value - The sound effect to play
- *********************************************************/
-void frontEndPlaySound(bolo::sndEffects value);
 
 /*********************************************************
  *NAME:          frontEndDrawMainScreen
