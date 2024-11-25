@@ -46,20 +46,6 @@ void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
 }
 
 /*********************************************************
- *NAME:          frontEndMessages
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  The messages must be drawn on the screen
- *
- *ARGUMENTS:
- *  top    - The top line to write
- *  bottom - The bottom line to write
- *********************************************************/
-void frontEndMessages(char *top, char *bottom) { return; }
-
-/*********************************************************
  *NAME:          frontEndKillsDeaths
  *AUTHOR:        John Morrison
  *CREATION DATE:  8/1/99

@@ -28,6 +28,7 @@
 
 #include <string.h>
 
+#include "backend.h"
 #include "frontend.h"
 #include "global.h"
 #include "util.h"
@@ -451,7 +452,7 @@ void messageUpdate(void) {
     bottomLine[MESSAGE_WIDTH - 1] = END_OF_STRING;
     /* Update the screen */
     if (!threadsGetContext()) {
-      frontEndMessages(topLine, bottomLine);
+      screenGetFrontend()->messages(topLine, bottomLine);
     }
   }
 }

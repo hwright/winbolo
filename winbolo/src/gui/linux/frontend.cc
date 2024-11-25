@@ -18,6 +18,7 @@
 #include <SDL.h>
 
 #include "draw.h"
+#include "framemutex.h"
 #include "sound.h"
 
 extern uint64_t dwSysFrame;
@@ -82,6 +83,14 @@ void LinuxFrontend::statusBase(uint8_t baseNum, baseAlliance bs) {
   uint64_t tick = SDL_GetTicks();
   drawStatusBase(baseNum, bs, showBaseLabels);
   drawCopyBasesStatus();
+  dwSysFrame += (SDL_GetTicks() - tick);
+}
+
+void LinuxFrontend::messages(std::string_view top, std::string_view bottom) {
+  uint64_t tick = SDL_GetTicks();
+  frameMutexWaitFor();
+  drawMessages(0, 0, std::string(top).c_str(), std::string(bottom).c_str());
+  frameMutexRelease();
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 

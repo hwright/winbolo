@@ -107,23 +107,16 @@ class Frontend {
   //  pillNum - The base number to draw (1-16)
   //  bs      - The allience of the pillbox
   virtual void statusBase(uint8_t baseNum, baseAlliance bs) = 0;
+
+  // The messages must be drawn on the screen
+  //
+  // ARGUMENTS:
+  //  top    - The top line to write
+  //  bottom - The bottom line to write
+  virtual void messages(std::string_view top, std::string_view bottom) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndMessages
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  The messages must be drawn on the screen
- *
- *ARGUMENTS:
- *  top    - The top line to write
- *  bottom - The bottom line to write
- *********************************************************/
-void frontEndMessages(char *top, char *bottom);
 
 /*********************************************************
  *NAME:          frontEndKillsDeaths

@@ -1528,27 +1528,6 @@ int windowGetAiTime(void) { return dwSysBrainTotal; }
 int windowGetSimTime(void) { return dwSysGameTotal; }
 
 /*********************************************************
- *NAME:          frontEndMessages
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  The messages must be drawn on the screen
- *
- *ARGUMENTS:
- *  top    - The top line to write
- *  bottom - The bottom line to write
- *********************************************************/
-void frontEndMessages(char *top, char *bottom) {
-  DWORD tick;
-  tick = timeGetTime();
-  frameMutexWaitFor();
-  drawMessages(0, 0, top, bottom);
-  frameMutexRelease();
-  dwSysFrame += (timeGetTime() - tick);
-}
-
-/*********************************************************
  *NAME:          frontEndKillsDeaths
  *AUTHOR:        John Morrison
  *CREATION DATE:  8/1/99
