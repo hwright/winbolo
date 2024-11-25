@@ -763,21 +763,6 @@ void clientPillsMigratePlanted(BYTE playerNumOldOwner, BYTE playerNumNewOwner) {
 }
 
 /*********************************************************
- *NAME:          frontEndRedrawAll
- *AUTHOR:        Minhiriath
- *CREATION DATE: 16/3/2009
- *LAST MODIFIED: 16/3/2009
- *PURPOSE:
- *  called windowRedrawAll()
- *
- *ARGUMENTS:
- *  none
- *********************************************************/
-void frontEndRedrawAll(void) {
-  // do nothing here.
-}
-
-/*********************************************************
  *NAME:          clientGetBuildings
  *AUTHOR:        John Morrison
  *CREATION DATE: 04/10/03

@@ -221,9 +221,6 @@ int serverMainGetTicks() { return 0; }
 
 /** FIXME THIS ENTIRE SECTION NEEDS TO BE BROUGHT UP TO LATEST VERSION.... Added
  * to enable compilation */
-void frontEndRedrawAll() {}
-/** FIXME THIS ENTIRE SECTION NEEDS TO BE BROUGHT UP TO LATEST VERSION.... Added
- * to enable compilation */
 int windowsGetTicks() { return 0; }
 
 gint windowclose(GtkWidget *widget, gpointer gdata) {

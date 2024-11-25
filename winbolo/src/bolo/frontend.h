@@ -180,22 +180,12 @@ class Frontend {
   // ARGUMENTS:
   //  isShown - Is the gunsight shown or not
   virtual void showGunsight(bool isShown) = 0;
+
+  // Force a complete window redraw.
+  virtual void redrawAll(void) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndRedrawAll
- *AUTHOR:        Minhiriath
- *CREATION DATE: 16/3/2009
- *LAST MODIFIED: 16/3/2009
- *PURPOSE:
- *  called windowRedrawAll()
- *
- *ARGUMENTS:
- *  none
- *********************************************************/
-void frontEndRedrawAll(void);
 
 /*********************************************************
  *NAME:          frontEndTutorial

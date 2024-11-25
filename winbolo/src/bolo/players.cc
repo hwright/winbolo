@@ -325,7 +325,7 @@ void playersSetPlayer(players *plrs, BYTE playerNum, char *playerName,
       screenGetFrontend()->setPlayer((playerNumbers)playerNum, str);
       screenGetFrontend()->statusTank((BYTE)(playerNum + 1),
                                       playersScreenAllience(plrs, playerNum));
-      frontEndRedrawAll();
+      screenGetFrontend()->redrawAll();
     }
   }
 }
