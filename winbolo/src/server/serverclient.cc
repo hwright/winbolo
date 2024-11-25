@@ -324,19 +324,6 @@ void netMessageSendPlayer(BYTE playerNum, BYTE destPlayer, char *message) {
 }
 
 /*********************************************************
- *NAME:          frontEndEnableRequestMenu
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/11/99
- *LAST MODIFIED: 1/11/99
- *PURPOSE:
- * Request to enable/disable the leave alliance menu item
- *
- *ARGUMENTS:
- *  enabled - true for enabled/false for diabled
- *********************************************************/
-void frontEndEnableLeaveAllyMenu(bool enabled) { return; }
-
-/*********************************************************
  *NAME:          netRequestAlliance
  *AUTHOR:        John Morrison
  *CREATION DATE: 1/11/99

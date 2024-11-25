@@ -1175,7 +1175,7 @@ void playersSetMenuItems(players *plrs) {
   }
   if (!threadsGetContext()) {
     screenGetFrontend()->enableRequestAllyMenu(false);
-    frontEndEnableLeaveAllyMenu(false);
+    screenGetFrontend()->enableLeaveAllyMenu(false);
   }
 }
 
@@ -1639,7 +1639,7 @@ void playersSetAllieMenu(players *plrs) {
   }
   if (!threadsGetContext()) {
     screenGetFrontend()->enableRequestAllyMenu(req);
-    frontEndEnableLeaveAllyMenu(leave);
+    screenGetFrontend()->enableLeaveAllyMenu(leave);
   }
 }
 

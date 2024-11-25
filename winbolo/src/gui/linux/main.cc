@@ -1510,21 +1510,6 @@ int windowGetAiTime(void) { return dwSysBrainTotal; }
 int windowGetSimTime(void) { return dwSysGameTotal; }
 
 /*********************************************************
- *NAME:          frontEndEnableRequestMenu
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/11/99
- *LAST MODIFIED: 1/11/99
- *PURPOSE:
- * Request to enable/disable the leave alliance menu item
- *
- *ARGUMENTS:
- *  enabled - TRUE for enabled/FALSE for diabled
- *********************************************************/
-void frontEndEnableLeaveAllyMenu(bool enabled) {
-  gtk_widget_set_sensitive(leave_alliance1, enabled);
-}
-
-/*********************************************************
  *NAME:          frontEndShowGunsight
  *AUTHOR:        John Morrison
  *CREATION DATE: 4/1/99

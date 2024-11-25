@@ -167,22 +167,15 @@ class Frontend {
   // ARGUMENTS:
   //  enabled - TRUE for enabled/FALSE for diabled
   virtual void enableRequestAllyMenu(bool enabled) = 0;
+
+  // Request to enable/disable the leave alliance menu item
+  //
+  // ARGUMENTS:
+  //  enabled - TRUE for enabled/FALSE for diabled
+  virtual void enableLeaveAllyMenu(bool enabled) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndEnableRequestMenu
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/11/99
- *LAST MODIFIED: 1/11/99
- *PURPOSE:
- * Request to enable/disable the leave alliance menu item
- *
- *ARGUMENTS:
- *  enabled - TRUE for enabled/FALSE for diabled
- *********************************************************/
-void frontEndEnableLeaveAllyMenu(bool enabled);
 
 /*********************************************************
  *NAME:          frontEndShowGunsight

@@ -46,6 +46,7 @@ class LinuxFrontend : public Frontend {
   void drawDownload(bool justBlack) override;
   void setPlayerCheckState(playerNumbers value, bool isChecked) override;
   void enableRequestAllyMenu(bool enabled) override;
+  void enableLeaveAllyMenu(bool enabled) override;
 };
 
 }  // namespace bolo
