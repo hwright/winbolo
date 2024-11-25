@@ -737,9 +737,9 @@ void basesRefueling(bases *value, tank *tnk, BYTE baseNum) {
         netPNBAdd(screenGetNetPnb(), NPNB_BASE_REFUEL_ARMOUR, baseNum,
                   playersGetSelf(screenGetPlayers()), 0, 0, 0);
         if (!threadsGetContext()) {
-          frontEndUpdateBaseStatusBars(((*value)->item[baseNum].shells),
-                                       ((*value)->item[baseNum].mines),
-                                       ((*value)->item[baseNum].armour));
+          screenGetFrontend()->updateBaseStatusBars(
+              ((*value)->item[baseNum].shells), ((*value)->item[baseNum].mines),
+              ((*value)->item[baseNum].armour));
         }
       } else if (shellsAmount < TANK_FULL_SHELLS &&
                  ((*value)->item[baseNum].shells - BASE_SHELLS_GIVE) >=
@@ -751,9 +751,9 @@ void basesRefueling(bases *value, tank *tnk, BYTE baseNum) {
         (*value)->item[baseNum].refuelTime =
             basesHalfTickCalulator(BASES_HALFTICK_TYPE_SHELL);
         if (!threadsGetContext()) {
-          frontEndUpdateBaseStatusBars(((*value)->item[baseNum].shells),
-                                       ((*value)->item[baseNum].mines),
-                                       ((*value)->item[baseNum].armour));
+          screenGetFrontend()->updateBaseStatusBars(
+              ((*value)->item[baseNum].shells), ((*value)->item[baseNum].mines),
+              ((*value)->item[baseNum].armour));
         }
       } else if (mines < TANK_FULL_MINES &&
                  ((*value)->item[baseNum].mines - BASE_MINES_GIVE) >=
@@ -765,9 +765,9 @@ void basesRefueling(bases *value, tank *tnk, BYTE baseNum) {
         netPNBAdd(screenGetNetPnb(), NPNB_BASE_REFUEL_MINES, baseNum,
                   playersGetSelf(screenGetPlayers()), 0, 0, 0);
         if (!threadsGetContext()) {
-          frontEndUpdateBaseStatusBars(((*value)->item[baseNum].shells),
-                                       ((*value)->item[baseNum].mines),
-                                       ((*value)->item[baseNum].armour));
+          screenGetFrontend()->updateBaseStatusBars(
+              ((*value)->item[baseNum].shells), ((*value)->item[baseNum].mines),
+              ((*value)->item[baseNum].armour));
         }
       }
       logAddEvent(log_BaseSetStock, baseNum, (*value)->item[baseNum].shells,

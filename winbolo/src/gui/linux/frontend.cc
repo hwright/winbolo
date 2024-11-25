@@ -23,12 +23,21 @@ extern uint64_t dwSysFrame;
 
 namespace bolo {
 
-void LinuxFrontend::updateTankStatusBars(BYTE shells, BYTE mines, BYTE armour,
-                                         BYTE trees) {
+void LinuxFrontend::updateTankStatusBars(uint8_t shells, uint8_t mines,
+                                         uint8_t armour, uint8_t trees) {
   uint64_t tick;
 
   tick = SDL_GetTicks();
   drawStatusTankBars(0, 0, shells, mines, armour, trees);
+  dwSysFrame += (SDL_GetTicks() - tick);
+}
+
+void LinuxFrontend::updateBaseStatusBars(uint8_t shells, uint8_t mines,
+                                         uint8_t armour) {
+  uint64_t tick;
+
+  tick = SDL_GetTicks();
+  drawStatusBaseBars(0, 0, shells, mines, armour, FALSE);
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 

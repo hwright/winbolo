@@ -13,14 +13,24 @@
  * GNU General Public License for more details.
  */
 
+// Linux Frontend implementation
+
+#ifndef _LINUX_FRONTEND_H
+#define _LINUX_FRONTEND_H
+
 #include "../../bolo/frontend.h"
 
 namespace bolo {
 
 class LinuxFrontend : public Frontend {
  public:
-  void updateTankStatusBars(BYTE shells, BYTE mines, BYTE armour,
-                            BYTE trees) override;
+  void updateTankStatusBars(uint8_t shells, uint8_t mines, uint8_t armour,
+                            uint8_t trees) override;
+
+  void updateBaseStatusBars(uint8_t shells, uint8_t mines,
+                            uint8_t armour) override;
 };
 
 }  // namespace bolo
+
+#endif

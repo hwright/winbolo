@@ -21,8 +21,13 @@ namespace bolo {
 
 class ServerFrontend : public Frontend {
  public:
-  void updateTankStatusBars(BYTE shells, BYTE mines, BYTE armour,
-                            BYTE trees) override {
+  void updateTankStatusBars(uint8_t shells, uint8_t mines, uint8_t armour,
+                            uint8_t trees) override {
+    return;
+  }
+
+  void updateBaseStatusBars(uint8_t shells, uint8_t mines,
+                            uint8_t armour) override {
     return;
   }
 };

@@ -57,27 +57,20 @@ class Frontend {
   //  mines   - Number of mines
   //  armour  - Amount of armour
   //  trees   - Amount of trees
-  virtual void updateTankStatusBars(BYTE shells, BYTE mines, BYTE armour,
-                                    BYTE trees) = 0;
+  virtual void updateTankStatusBars(uint8_t shells, uint8_t mines,
+                                    uint8_t armour, uint8_t trees) = 0;
+
+  // Called when the tanks status bars need to be updated
+  //
+  // ARGUMENTS:
+  //  shells  - Number of shells
+  //  mines   - Number of mines
+  //  armour  - Amount of armour
+  virtual void updateBaseStatusBars(uint8_t shells, uint8_t mines,
+                                    uint8_t armour) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndUpdateBaseStatusBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 11/1/99
- *LAST MODIFIED: 11/1/99
- *PURPOSE:
- * Function is called when the tanks status bars need to
- * be updated
- *
- *ARGUMENTS:
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *********************************************************/
-void frontEndUpdateBaseStatusBars(BYTE shells, BYTE mines, BYTE armour);
 
 /*********************************************************
  *NAME:          frontEndSoundEffects

@@ -25,26 +25,6 @@
 #include "servernet.h"
 
 /*********************************************************
- *NAME:          frontEndUpdateTankStatusBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 28/12/98
- *LAST MODIFIED: 28/12/98
- *PURPOSE:
- * Function is called when the tanks status bars need to
- * be updated
- *
- *ARGUMENTS:
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *  trees   - Amount of trees
- *********************************************************/
-void frontEndUpdateTankStatusBars(BYTE shells, BYTE mines, BYTE armour,
-                                  BYTE trees) {
-  return;
-}
-
-/*********************************************************
  *NAME:          frontEndUpdateBaseStatusBars
  *AUTHOR:        John Morrison
  *CREATION DATE: 11/1/99

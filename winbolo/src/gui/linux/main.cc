@@ -1683,30 +1683,6 @@ void frontEndStatusBase(BYTE baseNum, baseAlliance bs) {
   dwSysFrame += (timeGetTime() - tick);
 }
 
-/*********************************************************
- *NAME:          frontEndUpdateBaseStatusBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 11/1/99
- *LAST MODIFIED: 11/1/99
- *PURPOSE:
- * Function is called when the tanks status bars need to
- * be updated
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *********************************************************/
-void frontEndUpdateBaseStatusBars(BYTE shells, BYTE mines, BYTE armour) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawStatusBaseBars(0, 0, shells, mines, armour, FALSE);
-  dwSysFrame += (timeGetTime() - tick);
-}
-
 void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking);
 
 /*********************************************************
