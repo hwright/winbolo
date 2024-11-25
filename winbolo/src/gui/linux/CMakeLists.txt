@@ -67,6 +67,7 @@ add_executable(linbolo
                ../../bolo/tankexp.cc
                ../../bolo/udppackets.cc
                ../../server/servercore.cc
+               ../../server/serverfrontend.cc
                ../../server/servertransport.cc
                ../../server/servermessages.cc
                ../../server/servernet.cc

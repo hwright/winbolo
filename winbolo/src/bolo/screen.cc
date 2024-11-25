@@ -979,7 +979,7 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
     if (gmeLength == 0) {
       /* Game Times Up. */
       screenGameRunning = false;
-      frontEndGameOver();
+      screenGetFrontend()->gameOver();
       return;
     }
   }

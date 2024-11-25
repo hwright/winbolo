@@ -25,6 +25,12 @@ extern uint64_t dwSysFrame;
 extern bool soundEffects;
 extern bool showPillLabels;
 extern bool showBaseLabels;
+extern SDL_TimerID timerGameID;
+extern SDL_TimerID timerFrameID;
+extern char messageBody[16 * 1024];
+extern char messageTitle[256];
+extern int frameRateTime;
+extern uint8_t numMessages;
 
 namespace bolo {
 
@@ -109,5 +115,14 @@ void LinuxFrontend::manStatus(bool isDead, TURNTYPE angle) {
 }
 
 void LinuxFrontend::manClear(void) { drawSetManClear(); }
+
+void LinuxFrontend::gameOver(void) {
+  frameRateTime = 0;
+  SDL_RemoveTimer(timerGameID);
+  SDL_RemoveTimer(timerFrameID);
+  strcpy(messageTitle, "LinBolo");
+  strcpy(messageBody, langGetText(STR_WBTIMELIMIT_END));
+  numMessages = 1;
+}
 
 }  // namespace bolo

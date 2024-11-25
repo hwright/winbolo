@@ -383,7 +383,7 @@ void serverCoreGameTick() {
     if (sGmeLength == 0) {
       /* Game Times Up. */
       serverCoreGameRunning = false;
-      frontEndGameOver();
+      frontend->gameOver();
       serverCoreGameRunning = false;
       return;
     }

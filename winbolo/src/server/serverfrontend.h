@@ -41,6 +41,7 @@ class ServerFrontend : public Frontend {
   void killsDeaths(int kills, int deaths) override {}
   void manStatus(bool isDead, TURNTYPE angle) override {}
   void manClear(void) override {}
+  void gameOver(void) override;
 };
 
 }  // namespace bolo

@@ -203,8 +203,8 @@ static GtkWidget *change_player_name1;
 GSList *brainsGroup = nullptr;
 GtkWidget *brains1_menu;
 
-static SDL_TimerID timerGameID = nullptr;
-static SDL_TimerID timerFrameID = nullptr;
+SDL_TimerID timerGameID = nullptr;
+SDL_TimerID timerFrameID = nullptr;
 
 gchar *applicationPath;
 
@@ -1561,26 +1561,6 @@ void frontEndDrawDownload(bool justBlack) {
  *ARGUMENTS:
  *
  *********************************************************/
-
-/*********************************************************
- *NAME:          frontEndGameOver
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/1/99
- *LAST MODIFIED: 29/1/99
- *PURPOSE:
- *  Time limit is up. The game is over
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void frontEndGameOver(void) {
-  frameRateTime = 0;
-  SDL_RemoveTimer(timerGameID);
-  SDL_RemoveTimer(timerFrameID);
-  strcpy(messageTitle, DIALOG_BOX_TITLE);
-  strcpy(messageBody, langGetText(STR_WBTIMELIMIT_END));
-  numMessages = 1;
-}
 
 /*********************************************************
  *NAME:          frontEndSetPlayer

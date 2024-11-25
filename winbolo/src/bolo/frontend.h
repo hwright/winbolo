@@ -131,22 +131,12 @@ class Frontend {
 
   // Clears the man status (ie man is in tank)
   virtual void manClear(void) = 0;
+
+  // Time limit is up. The game is over
+  virtual void gameOver(void) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndGameOver
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/1/99
- *LAST MODIFIED: 29/1/99
- *PURPOSE:
- *  Time limit is up. The game is over
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void frontEndGameOver(void);
 
 /*********************************************************
  *NAME:          frontEndClearPlayer
