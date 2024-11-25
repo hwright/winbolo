@@ -22,6 +22,8 @@
 
 extern uint64_t dwSysFrame;
 extern bool soundEffects;
+extern bool showPillLabels;
+extern bool showBaseLabels;
 
 namespace bolo {
 
@@ -47,6 +49,21 @@ void LinuxFrontend::playSound(sndEffects value) {
   if (soundEffects) {
     soundPlayEffect(value);
   }
+}
+
+void LinuxFrontend::drawMainScreen(screen *value, screenMines *mineView,
+                                   screenTanks *tks, screenGunsight *gs,
+                                   screenBullets *sBullet, screenLgm *lgms,
+                                   long srtDelay, bool isPillView, tank *tank,
+                                   int edgeX, int edgeY) {
+  BYTE cursorX;
+  BYTE cursorY;
+  bool showCursor;
+
+  showCursor = screenGetCursorPos(&cursorX, &cursorY);
+  ::drawMainScreen(value, mineView, tks, gs, sBullet, lgms, showPillLabels,
+                   showBaseLabels, srtDelay, isPillView, edgeX, edgeY,
+                   showCursor, cursorX, cursorY);
 }
 
 }  // namespace bolo

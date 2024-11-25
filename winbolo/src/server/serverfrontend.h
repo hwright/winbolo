@@ -28,6 +28,11 @@ class ServerFrontend : public Frontend {
                             uint8_t armour) override {}
 
   void playSound(sndEffects value) override {}
+
+  void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
+                      screenGunsight *gs, screenBullets *sBullet,
+                      screenLgm *lgms, long srtDelay, bool isPillView,
+                      tank *tank, int edgeX, int edgeY) override {}
 };
 
 }  // namespace bolo

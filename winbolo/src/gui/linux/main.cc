@@ -177,8 +177,8 @@ static bool gameFrontWbnSavePass;
 static bool autoScrollingEnabled = FALSE;
 
 /* Whether Pillbox & base labels should be shown */
-static bool showPillLabels = FALSE;
-static bool showBaseLabels = FALSE;
+bool showPillLabels = false;
+bool showBaseLabels = false;
 
 /* Labels of stuff */
 static bool labelSelf = FALSE;
@@ -1526,41 +1526,6 @@ int windowGetAiTime(void) { return dwSysBrainTotal; }
  *
  *********************************************************/
 int windowGetSimTime(void) { return dwSysGameTotal; }
-
-/*********************************************************
-*NAME:          frontEndDrawMainScreen
-*AUTHOR:        John Morrison
-*CREATION DATE: 31/10/98
-*LAST MODIFIED: 18/11/99
-*PURPOSE:
-Updates the Window View
-*
-*ARGUMENTS:
-*  value      - Pointer to the sceen structure
-*  mineView   - Pointer to the screen mine structure
-*  tks        - Pointer to the screen tank structure
-*  gs         - pointer to the screen gunsight structure
-*  lgms       - Pointer to the screen builder structure
-*  srtDelay   - Start delay. If this is greater then 0
-*               Then the delay screen should be drawn
-*  isPillView - TRUE if we are in pillbox view
-*  edgeX      - X Offset for smooth scrolling
-*  edgeY      - Y Offset for smooth scrolling
-*********************************************************/
-void frontEndDrawMainScreen(screen *value, screenMines *mineView,
-                            screenTanks *tks, screenGunsight *gs,
-                            screenBullets *sBullet, screenLgm *lgms,
-                            long srtDelay, bool isPillView, tank *tank,
-                            int edgeX, int edgeY) {
-  BYTE cursorX;
-  BYTE cursorY;
-  bool showCursor;
-
-  showCursor = screenGetCursorPos(&cursorX, &cursorY);
-  drawMainScreen(value, mineView, tks, gs, sBullet, lgms, showPillLabels,
-                 showBaseLabels, srtDelay, isPillView, edgeX, edgeY, showCursor,
-                 cursorX, cursorY);
-}
 
 /*********************************************************
  *NAME:          frontEndStatusPillbox

@@ -470,8 +470,8 @@ void screenUpdate(updateType value) {
                                  (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
                                  yOffset,
                                  (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    frontEndDrawMainScreen(&view, &mineView, &scnTnk, &gs, &sBullets, &lgms,
-                           gmeStartDelay, inPillView, &mytk, 0, 0);
+    frontend->drawMainScreen(&view, &mineView, &scnTnk, &gs, &sBullets, &lgms,
+                             gmeStartDelay, inPillView, &mytk, 0, 0);
   }
   screenBulletsDestroy(&sBullets);
   screenLgmDestroy(&lgms);

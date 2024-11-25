@@ -66,35 +66,6 @@ void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
 }
 
 /*********************************************************
- *NAME:          frontEndDrawMainScreen
- *AUTHOR:        John Morrison
- *CREATION DATE: 31/10/98
- *LAST MODIFIED: 18/11/99
- *PURPOSE:
- *  Updates the Window View
- *
- *ARGUMENTS:
- *  value      - Pointer to the sceen structure
- *  mineView   - Pointer to the screen mine structure
- *  tks        - Pointer to the screen tank structure
- *  gs         - pointer to the screen gunsight structure
- *  lgms       - Pointer to the screen builder structure
- *  srtDelay   - Start delay. If this is greater then 0
- *               Then the delay screen should be drawn
- *  isPillView - true if we are in pillbox view
- *  tank       - Pointer to player's tank structure
- *  edgeX      - X Offset for smooth scrolling
- *  edgeY      - Y Offset for smooth scrolling
- *********************************************************/
-void frontEndDrawMainScreen(screen *value, screenMines *mineView,
-                            screenTanks *tks, screenGunsight *gs,
-                            screenBullets *sBullet, screenLgm *lgms,
-                            long srtDelay, bool isPillView, tank *tank,
-                            int edgeX, int edgeY) {
-  return;
-}
-
-/*********************************************************
  *NAME:          frontEndStatusPillbox
  *AUTHOR:        John Morrison
  *CREATION DATE:  3/1/99
