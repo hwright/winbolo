@@ -1133,7 +1133,7 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
     (*plrs)->item[playerNum].isChecked = false;
     (*plrs)->playerBrainNames[playerNum][0] = '\0';
     if (!threadsGetContext()) {
-      frontEndClearPlayer((playerNumbers)playerNum);
+      screenGetFrontend()->clearPlayer((playerNumbers)playerNum);
       screenGetFrontend()->statusTank((BYTE)(playerNum + 1), tankNone);
       frontEndSetPlayerCheckState((playerNumbers)playerNum, false);
     }

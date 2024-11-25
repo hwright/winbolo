@@ -134,22 +134,15 @@ class Frontend {
 
   // Time limit is up. The game is over
   virtual void gameOver(void) = 0;
+
+  // Clears a player name from the menu and disables it.
+  //
+  // ARGUMENTS:
+  //  value - The player number to clear
+  virtual void clearPlayer(playerNumbers value) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndClearPlayer
- *AUTHOR:        John Morrison
- *CREATION DATE: 4/2/99
- *LAST MODIFIED: 4/2/99
- *PURPOSE:
- * Clears a player name from the menu and disables it.
- *
- *ARGUMENTS:
- *  value - The player number to clear
- *********************************************************/
-void frontEndClearPlayer(playerNumbers value);
 
 /*********************************************************
  *NAME:          frontEndSetPlayer

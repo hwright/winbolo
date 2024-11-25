@@ -41,6 +41,7 @@ class LinuxFrontend : public Frontend {
   void manStatus(bool isDead, TURNTYPE angle) override;
   void manClear(void) override;
   void gameOver(void) override;
+  void clearPlayer(playerNumbers value) override;
 };
 
 }  // namespace bolo

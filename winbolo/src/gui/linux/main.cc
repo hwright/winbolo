@@ -90,23 +90,6 @@ static std::shared_mutex llfMutex;
 #define FRAME_RATE_30 55
 #define FRAME_RATE_50 82
 #define FRAME_RATE_60 111
-
-#define STR_01 "1\0"
-#define STR_02 "2\0"
-#define STR_03 "3\0"
-#define STR_04 "4\0"
-#define STR_05 "5\0"
-#define STR_06 "6\0"
-#define STR_07 "7\0"
-#define STR_08 "8\0"
-#define STR_09 "9\0"
-#define STR_10 "10\0"
-#define STR_11 "11\0"
-#define STR_12 "12\0"
-#define STR_13 "13\0"
-#define STR_14 "14\0"
-#define STR_15 "15\0"
-#define STR_16 "16\0"
 #define STR_PLAYER_LEN 2
 
 #define timeGetTime() SDL_GetTicks()
@@ -121,7 +104,7 @@ static std::shared_mutex llfMutex;
 #define ZOOM_FACTOR_QUAD 4
 
 static bool isTutorial;
-bool isInMenu = FALSE;
+bool isInMenu = false;
 static bool isQuiting = FALSE;
 
 /* Time since the game timer last went up */
@@ -1641,105 +1624,6 @@ void frontEndSetPlayer(playerNumbers value, char *str) {
       /* case player16: */
       gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player16)->child)), str);
       gtk_widget_set_sensitive(idc_player16, TRUE);
-      break;
-  }
-  isInMenu = FALSE;
-}
-
-/*********************************************************
- *NAME:          frontEndClearPlayer
- *AUTHOR:        John Morrison
- *CREATION DATE: 4/2/99
- *LAST MODIFIED: 4/2/99
- *PURPOSE:
- * Clears a player name from the menu and disables it.
- *
- *ARGUMENTS:
- *  value - The player number to clear
- *********************************************************/
-void frontEndClearPlayer(playerNumbers value) {
-  isInMenu = TRUE;
-  switch (value) {
-    case player01:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player1)->child)), STR_01);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player1), FALSE);
-      gtk_widget_set_sensitive(idc_player1, FALSE);
-      break;
-    case player02:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player2)->child)), STR_02);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player2), FALSE);
-      gtk_widget_set_sensitive(idc_player2, FALSE);
-      break;
-    case player03:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player3)->child)), STR_03);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player3), FALSE);
-      gtk_widget_set_sensitive(idc_player3, FALSE);
-      break;
-    case player04:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player4)->child)), STR_04);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player4), FALSE);
-      gtk_widget_set_sensitive(idc_player4, FALSE);
-      break;
-    case player05:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player5)->child)), STR_05);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player5), FALSE);
-      gtk_widget_set_sensitive(idc_player5, FALSE);
-      break;
-    case player06:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player6)->child)), STR_06);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player6), FALSE);
-      gtk_widget_set_sensitive(idc_player6, FALSE);
-      break;
-    case player07:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player7)->child)), STR_07);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player7), FALSE);
-      gtk_widget_set_sensitive(idc_player7, FALSE);
-      break;
-    case player08:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player8)->child)), STR_08);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player8), FALSE);
-      gtk_widget_set_sensitive(idc_player8, FALSE);
-      break;
-    case player09:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player9)->child)), STR_09);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player9), FALSE);
-      gtk_widget_set_sensitive(idc_player9, FALSE);
-      break;
-    case player10:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player10)->child)), STR_10);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player10), FALSE);
-      gtk_widget_set_sensitive(idc_player10, FALSE);
-      break;
-    case player11:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player11)->child)), STR_11);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player11), FALSE);
-      gtk_widget_set_sensitive(idc_player11, FALSE);
-      break;
-    case player12:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player12)->child)), STR_12);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player12), FALSE);
-      gtk_widget_set_sensitive(idc_player12, FALSE);
-      break;
-    case player13:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player13)->child)), STR_13);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player13), FALSE);
-      gtk_widget_set_sensitive(idc_player13, FALSE);
-      break;
-    case player14:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player14)->child)), STR_14);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player14), FALSE);
-      gtk_widget_set_sensitive(idc_player14, FALSE);
-      break;
-    case player15:
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player15)->child)), STR_15);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player15), FALSE);
-      gtk_widget_set_sensitive(idc_player15, FALSE);
-      break;
-    default:
-      /* case player16: */
-      gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player16)->child)), STR_16);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player16), FALSE);
-      gtk_widget_set_sensitive(idc_player16, FALSE);
       break;
   }
   isInMenu = FALSE;
