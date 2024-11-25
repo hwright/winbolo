@@ -154,23 +154,16 @@ class Frontend {
   // ARGUMENTS:
   //  justBlack - TRUE if we want just a black screen
   virtual void drawDownload(bool justBlack) = 0;
+
+  // Checks/unchecks a player
+  //
+  // ARGUMENTS:
+  //  value     - The player number
+  //  isChecked - Is the item checked
+  virtual void setPlayerCheckState(playerNumbers value, bool isChecked) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndSetPlayerCheckState
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/3/99
- *LAST MODIFIED: 27/3/99
- *PURPOSE:
- * Checks/unchecks a player
- *
- *ARGUMENTS:
- * value     - The player number
- * isChecked - Is the item checked
- *********************************************************/
-void frontEndSetPlayerCheckState(playerNumbers value, bool isChecked);
 
 /*********************************************************
  *NAME:          frontEndEnableRequestAllyMenu

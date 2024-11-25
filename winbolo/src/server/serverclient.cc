@@ -44,22 +44,6 @@ void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
 }
 
 /*********************************************************
- *NAME:          frontEndSetPlayerCheckState
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/3/99
- *LAST MODIFIED: 27/3/99
- *PURPOSE:
- * Checks/unchecks a player
- *
- *ARGUMENTS:
- * value     - The player number
- * isChecked - Is the item checked
- *********************************************************/
-void frontEndSetPlayerCheckState(playerNumbers value, bool isChecked) {
-  return;
-}
-
-/*********************************************************
  *NAME:          screenReCalc
  *AUTHOR:        John Morrison
  *CREATION DATE: 30/12/98

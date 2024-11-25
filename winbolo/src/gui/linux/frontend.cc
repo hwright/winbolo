@@ -349,4 +349,76 @@ void LinuxFrontend::drawDownload(bool justBlack) {
   }
 }
 
+void LinuxFrontend::setPlayerCheckState(playerNumbers value, bool isChecked) {
+  isInMenu = true;
+  switch (value) {
+    case player01:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player1),
+                                     isChecked);
+      break;
+    case player02:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player2),
+                                     isChecked);
+      break;
+    case player03:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player3),
+                                     isChecked);
+      break;
+    case player04:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player4),
+                                     isChecked);
+      break;
+    case player05:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player5),
+                                     isChecked);
+      break;
+    case player06:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player6),
+                                     isChecked);
+      break;
+    case player07:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player7),
+                                     isChecked);
+      break;
+    case player08:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player8),
+                                     isChecked);
+      break;
+    case player09:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player9),
+                                     isChecked);
+      break;
+    case player10:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player10),
+                                     isChecked);
+      break;
+    case player11:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player11),
+                                     isChecked);
+      break;
+    case player12:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player12),
+                                     isChecked);
+      break;
+    case player13:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player13),
+                                     isChecked);
+      break;
+    case player14:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player14),
+                                     isChecked);
+      break;
+    case player15:
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player15),
+                                     isChecked);
+      break;
+    default:
+      /* case player16: */
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(idc_player16),
+                                     isChecked);
+      break;
+  }
+  isInMenu = false;
+}
+
 }  // namespace bolo

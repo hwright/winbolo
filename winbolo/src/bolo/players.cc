@@ -370,8 +370,8 @@ void playerSetLocation(players *plrs, char *ip, char *host) {
       }
       if (!threadsGetContext()) {
         screenGetFrontend()->setPlayer((playerNumbers)found, str);
-        frontEndSetPlayerCheckState((playerNumbers)found,
-                                    (*plrs)->item[found].isChecked);
+        screenGetFrontend()->setPlayerCheckState(
+            (playerNumbers)found, (*plrs)->item[found].isChecked);
       }
     }
   }
@@ -1135,7 +1135,7 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
     if (!threadsGetContext()) {
       screenGetFrontend()->clearPlayer((playerNumbers)playerNum);
       screenGetFrontend()->statusTank((BYTE)(playerNum + 1), tankNone);
-      frontEndSetPlayerCheckState((playerNumbers)playerNum, false);
+      screenGetFrontend()->setPlayerCheckState((playerNumbers)playerNum, false);
     }
     /* Make a message about it */
     strcat(output, MESSAGE_QUOTES);
@@ -1248,8 +1248,8 @@ void playersCheckAllies(players *plrs) {
         (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count) ||
          count == (*plrs)->myPlayerNum);
     if (!threadsGetContext()) {
-      frontEndSetPlayerCheckState((playerNumbers)count,
-                                  (*plrs)->item[count].isChecked);
+      screenGetFrontend()->setPlayerCheckState((playerNumbers)count,
+                                               (*plrs)->item[count].isChecked);
     }
     count++;
   }
@@ -1277,7 +1277,8 @@ void playersCheckAllNone(players *plrs, bool isChecked) {
     if ((*plrs)->item[count].inUse) {
       (*plrs)->item[count].isChecked = isChecked;
       if (!threadsGetContext()) {
-        frontEndSetPlayerCheckState((playerNumbers)count, isChecked);
+        screenGetFrontend()->setPlayerCheckState((playerNumbers)count,
+                                                 isChecked);
       }
     }
     count++;
@@ -1302,8 +1303,8 @@ void playersToggleCheckedState(players *plrs, BYTE playerNum) {
     if ((*plrs)->item[playerNum].inUse) {
       (*plrs)->item[playerNum].isChecked = !(*plrs)->item[playerNum].isChecked;
       if (!threadsGetContext()) {
-        frontEndSetPlayerCheckState((playerNumbers)playerNum,
-                                    (*plrs)->item[playerNum].isChecked);
+        screenGetFrontend()->setPlayerCheckState(
+            (playerNumbers)playerNum, (*plrs)->item[playerNum].isChecked);
       }
     }
   }
@@ -1337,8 +1338,8 @@ void playersCheckNearbyPlayers(players *plrs, BYTE xValue, BYTE yValue) {
           xDiff >= PLAYER_MAX_SELECT_LEFT && xDiff <= PLAYER_MAX_SELECT_RIGHT &&
           yDiff >= PLAYER_MAX_SELECT_TOP && yDiff <= PLAYER_MAX_SELECT_BOTTOM;
       if (!threadsGetContext()) {
-        frontEndSetPlayerCheckState((playerNumbers)count,
-                                    (*plrs)->item[count].isChecked);
+        screenGetFrontend()->setPlayerCheckState(
+            (playerNumbers)count, (*plrs)->item[count].isChecked);
       }
     }
     count++;
