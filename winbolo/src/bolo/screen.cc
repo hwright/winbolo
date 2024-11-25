@@ -322,11 +322,11 @@ void screenUpdate(updateType value) {
   }
   ns = netGetStatus();
   if (ns != netRunning && ns != netFailed) {
-    frontEndDrawDownload(false);
+    frontend->drawDownload(false);
     return;
   }
   if (inStart) {
-    frontEndDrawDownload(true);
+    frontend->drawDownload(true);
     return;
   }
 

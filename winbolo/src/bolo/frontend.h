@@ -147,23 +147,16 @@ class Frontend {
   //  value - The player number to set
   //  str   - String identifier of the name
   virtual void setPlayer(playerNumbers value, std::string_view str) = 0;
+
+  // A screen redraw request has been made but we are still
+  // downloading network data. Draw progress line instead.
+  //
+  // ARGUMENTS:
+  //  justBlack - TRUE if we want just a black screen
+  virtual void drawDownload(bool justBlack) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndDrawDownload
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/3/99
- *LAST MODIFIED: 13/12/99
- *PURPOSE:
- * A screen redraw request has been made but we are still
- * downloading network data. Draw progress line instead.
- *
- *ARGUMENTS:
- *  justBlack - TRUE if we want just a black screen
- *********************************************************/
-void frontEndDrawDownload(bool justBlack);
 
 /*********************************************************
  *NAME:          frontEndSetPlayerCheckState

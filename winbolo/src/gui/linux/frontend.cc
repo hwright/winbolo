@@ -32,6 +32,7 @@ extern char messageTitle[256];
 extern int frameRateTime;
 extern uint8_t numMessages;
 extern bool isInMenu;
+extern bool hideMainView;
 
 extern GtkWidget *idc_player1;
 extern GtkWidget *idc_player2;
@@ -252,7 +253,7 @@ void LinuxFrontend::clearPlayer(playerNumbers value) {
 }
 
 void LinuxFrontend::setPlayer(playerNumbers value, std::string_view str) {
-  isInMenu = TRUE;
+  isInMenu = true;
   switch (value) {
     case player01:
       gtk_label_set_text((GTK_LABEL(GTK_BIN(idc_player1)->child)),
@@ -335,7 +336,17 @@ void LinuxFrontend::setPlayer(playerNumbers value, std::string_view str) {
       gtk_widget_set_sensitive(idc_player16, TRUE);
       break;
   }
-  isInMenu = FALSE;
+  isInMenu = false;
+}
+
+void LinuxFrontend::drawDownload(bool justBlack) {
+  if (!hideMainView) {
+    uint64_t tick = SDL_GetTicks();
+    frameMutexWaitFor();
+    drawDownloadScreen(justBlack);
+    frameMutexRelease();
+    dwSysFrame += (SDL_GetTicks() - tick);
+  }
 }
 
 }  // namespace bolo

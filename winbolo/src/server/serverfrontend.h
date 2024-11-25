@@ -44,6 +44,7 @@ class ServerFrontend : public Frontend {
   void gameOver(void) override;
   void clearPlayer(playerNumbers value) override {}
   void setPlayer(playerNumbers value, std::string_view str) override {}
+  void drawDownload(bool justBlack) override {}
 };
 
 }  // namespace bolo

@@ -473,7 +473,7 @@ Uint32 windowGameTimer(Uint32 interval, void *param) {
   }
   return interval;
 }
-bool hideMainView = FALSE;
+bool hideMainView = false;
 
 Uint32 windowFrameRateTimer(Uint32 interval, void *param) {
   DWORD tick;
@@ -1508,30 +1508,6 @@ int windowGetAiTime(void) { return dwSysBrainTotal; }
  *
  *********************************************************/
 int windowGetSimTime(void) { return dwSysGameTotal; }
-
-/*********************************************************
- *NAME:          frontEndDrawDownload
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/3/99
- *LAST MODIFIED:  3/1/00
- *PURPOSE:
- * A screen redraw request has been made but we are still
- * downloading network data. Draw progress line instead.
- *
- *ARGUMENTS:
- *  justBlack - TRUE if we want just a black screen
- *********************************************************/
-void frontEndDrawDownload(bool justBlack) {
-  DWORD tick;
-
-  if (hideMainView == FALSE) {
-    tick = timeGetTime();
-    frameMutexWaitFor();
-    drawDownloadScreen(justBlack);
-    frameMutexRelease();
-    dwSysFrame += (timeGetTime() - tick);
-  }
-}
 
 /*********************************************************
  *NAME:          frontEndSetPlayerCheckState

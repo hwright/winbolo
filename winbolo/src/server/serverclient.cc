@@ -44,20 +44,6 @@ void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
 }
 
 /*********************************************************
- *NAME:          frontEndDrawDownload
- *AUTHOR:        John Morrison
- *CREATION DATE: 27/3/99
- *LAST MODIFIED: 13/12/99
- *PURPOSE:
- * A screen redraw request has been made but we are still
- * downloading network data. Draw progress line instead.
- *
- *ARGUMENTS:
- *  justBlack - true if we want just a black screen
- *********************************************************/
-void frontEndDrawDownload(bool justBlack) { return; }
-
-/*********************************************************
  *NAME:          frontEndSetPlayerCheckState
  *AUTHOR:        John Morrison
  *CREATION DATE: 27/3/99
