@@ -33,6 +33,8 @@ class ServerFrontend : public Frontend {
                       screenGunsight *gs, screenBullets *sBullet,
                       screenLgm *lgms, long srtDelay, bool isPillView,
                       tank *tank, int edgeX, int edgeY) override {}
+
+  void statusPillbox(uint8_t pillNum, pillAlliance pb) override {}
 };
 
 }  // namespace bolo

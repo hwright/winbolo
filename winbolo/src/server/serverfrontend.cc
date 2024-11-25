@@ -25,26 +25,6 @@
 #include "servernet.h"
 
 /*********************************************************
- *NAME:          frontEndUpdateBaseStatusBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 11/1/99
- *LAST MODIFIED: 11/1/99
- *PURPOSE:
- * Function is called when the tanks status bars need to
- * be updated
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *********************************************************/
-void frontEndUpdateBaseStatusBars(BYTE shells, BYTE mines, BYTE armour) {
-  return;
-}
-
-/*********************************************************
  *NAME:          screenLgmAddItem
  *AUTHOR:        John Morrison
  *CREATION DATE: 19/2/98
@@ -64,20 +44,6 @@ void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
                       BYTE frame) {
   return;
 }
-
-/*********************************************************
- *NAME:          frontEndStatusPillbox
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  Sets the pillbox status for a particular pillbox
- *
- *ARGUMENTS:
- *  pillNum - The base number to draw (1-16)
- *  pa      - The allience of the pillbox
- *********************************************************/
-void frontEndStatusPillbox(BYTE pillNum, pillAlliance pb) { return; }
 
 /*********************************************************
  *NAME:          frontEndStatusTank

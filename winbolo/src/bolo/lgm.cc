@@ -1181,7 +1181,7 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
                       addPill.x, addPill.y, 0);
             soundDist(bolo::sndEffects::manBuildingNear, bmx, bmy);
             if (!threadsGetContext()) {
-              frontEndStatusPillbox(
+              screenGetFrontend()->statusPillbox(
                   (*lgman)->numPills,
                   (pillsGetAllianceNum(pb, (*lgman)->numPills)));
             }
@@ -1488,7 +1488,7 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx,
                     (BYTE)((*lgman)->numPills - 1), (*lgman)->playerNum, item.x,
                     item.y, 0);
           if (!threadsGetContext()) {
-            frontEndStatusPillbox(
+            screenGetFrontend()->statusPillbox(
                 (*lgman)->numPills,
                 (pillsGetAllianceNum(pb, (*lgman)->numPills)));
           }

@@ -1815,7 +1815,8 @@ void tankCheckPillCapture(tank *value, pillboxes *pb) {
                   screenGetTankPlayer(value), 0, 0, 0);
         /* We are a client.. which should only happen in a single player game */
         if (!threadsGetContext()) {
-          frontEndStatusPillbox(pillNum, (pillsGetAllianceNum(pb, pillNum)));
+          screenGetFrontend()->statusPillbox(
+              pillNum, (pillsGetAllianceNum(pb, pillNum)));
         }
         q = new tankCarrypbObj;
         q->pillNum = pillNum;
@@ -1929,8 +1930,8 @@ void tankDropPills(tank *value, map *mp, pillboxes *pb, bases *bs) {
                         item.x, item.y, 0);
             }
             if (!threadsGetContext()) {
-              frontEndStatusPillbox(q->pillNum,
-                                    (pillsGetAllianceNum(pb, q->pillNum)));
+              screenGetFrontend()->statusPillbox(
+                  q->pillNum, (pillsGetAllianceNum(pb, q->pillNum)));
             }
             (*value)->carryPills = TankPillsTail(q);
             delete q;
@@ -2927,7 +2928,8 @@ void tankPutPill(tank *value, pillboxes *pb, BYTE pillNum) {
   tankCarryPb q; /* Temp pointer for adding PBs to tank */
 
   if (!threadsGetContext()) {
-    frontEndStatusPillbox(pillNum, (pillsGetAllianceNum(pb, pillNum)));
+    screenGetFrontend()->statusPillbox(pillNum,
+                                       (pillsGetAllianceNum(pb, pillNum)));
   }
   q = new tankCarrypbObj;
   q->pillNum = pillNum;

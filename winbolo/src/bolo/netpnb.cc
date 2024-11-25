@@ -30,6 +30,7 @@
 #include <tuple>
 
 #include "../server/servercore.h"
+#include "backend.h"
 #include "bases.h"
 #include "frontend.h"
 #include "global.h"
@@ -288,8 +289,9 @@ bool netPNBExtractItemServer(netPnbContext *pnbc, map *mp, bases *bs,
     case NPNB_PILL_PICKUP:
       pillsSetPillInTank(pb, (BYTE)(itemNum + 1), true);
       if (!threadsGetContext()) {
-        frontEndStatusPillbox((BYTE)(itemNum + 1),
-                              (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
+        screenGetFrontend()->statusPillbox(
+            (BYTE)(itemNum + 1),
+            (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
       }
       break;
     case NPNB_PILL_DROP:
@@ -455,7 +457,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
           pillsSetPillInTank(pb, (BYTE)(itemNum + 1), true);
           if (!threadsGetContext()) {
             /* We are a client */
-            frontEndStatusPillbox(
+            screenGetFrontend()->statusPillbox(
                 (BYTE)(itemNum + 1),
                 (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
           }
@@ -465,8 +467,9 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
         pillsSetPillInTank(pb, (BYTE)(itemNum + 1), true);
         if (!threadsGetContext()) {
           /* We are a client */
-          frontEndStatusPillbox((BYTE)(itemNum + 1),
-                                (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
+          screenGetFrontend()->statusPillbox(
+              (BYTE)(itemNum + 1),
+              (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
         }
       }
       needCalc = true;
@@ -482,8 +485,9 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
       addPill.justSeen = false;
       pillsSetPill(pb, &addPill, (BYTE)(itemNum + 1));
       if (!threadsGetContext()) {
-        frontEndStatusPillbox((BYTE)(itemNum + 1),
-                              (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
+        screenGetFrontend()->statusPillbox(
+            (BYTE)(itemNum + 1),
+            (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
       }
       soundDist(bolo::sndEffects::manBuildingNear, opt1, opt2);
       needCalc = true;
@@ -500,8 +504,9 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
       addPill.justSeen = false;
       pillsSetPill(pb, &addPill, (BYTE)(itemNum + 1));
       if (!threadsGetContext()) {
-        frontEndStatusPillbox((BYTE)(itemNum + 1),
-                              (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
+        screenGetFrontend()->statusPillbox(
+            (BYTE)(itemNum + 1),
+            (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
       }
       needCalc = true;
       /*			} */
@@ -511,9 +516,10 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
       pillsRepairPos(pb, opt1, opt2, opt3);
       soundDist(bolo::sndEffects::manBuildingNear, opt1, opt2);
       if (!threadsGetContext()) {
-        frontEndStatusPillbox((BYTE)(itemNum + 1),
-                              (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
-        /*				frontEndStatusPillbox((BYTE)
+        screenGetFrontend()->statusPillbox(
+            (BYTE)(itemNum + 1),
+            (pillsGetAllianceNum(pb, (BYTE)(itemNum + 1))));
+        /*				screenGetFrontend()->statusPillbox((BYTE)
          * (itemNum+1), (pillsGetAllianceNum(pb, (BYTE) (itemNum+1)))); */
       }
       needCalc = true;

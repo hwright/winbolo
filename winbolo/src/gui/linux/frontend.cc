@@ -56,14 +56,23 @@ void LinuxFrontend::drawMainScreen(screen *value, screenMines *mineView,
                                    screenBullets *sBullet, screenLgm *lgms,
                                    long srtDelay, bool isPillView, tank *tank,
                                    int edgeX, int edgeY) {
-  BYTE cursorX;
-  BYTE cursorY;
+  uint8_t cursorX;
+  uint8_t cursorY;
   bool showCursor;
 
   showCursor = screenGetCursorPos(&cursorX, &cursorY);
   ::drawMainScreen(value, mineView, tks, gs, sBullet, lgms, showPillLabels,
                    showBaseLabels, srtDelay, isPillView, edgeX, edgeY,
                    showCursor, cursorX, cursorY);
+}
+
+void LinuxFrontend::statusPillbox(BYTE pillNum, pillAlliance pb) {
+  DWORD tick;
+
+  tick = SDL_GetTicks();
+  drawStatusPillbox(pillNum, pb, showPillLabels);
+  drawCopyPillsStatus();
+  dwSysFrame += (SDL_GetTicks() - tick);
 }
 
 }  // namespace bolo

@@ -1467,7 +1467,7 @@ void screenLgmDropPill(BYTE mx, BYTE my, BYTE owner, BYTE pillNum) {
   pillsSetPill(&mypb, &item, pillNum);
   netPNBAdd(&clientPNB, NPNB_PILL_DEAD, (BYTE)(pillNum - 1),
             playersGetSelf(screenGetPlayers()), mx, my, 0);
-  frontEndStatusPillbox(pillNum, (pillsGetAllianceNum(&mypb, pillNum)));
+  frontend->statusPillbox(pillNum, (pillsGetAllianceNum(&mypb, pillNum)));
 }
 
 /*********************************************************
@@ -2114,7 +2114,7 @@ void screenSetPillNetData(BYTE *buff, BYTE dataLen) {
   count = 1;
   max = pillsGetNumPills(&mypb);
   while (count <= max) {
-    frontEndStatusPillbox(count, pillsGetAllianceNum(&mypb, count));
+    frontend->statusPillbox(count, pillsGetAllianceNum(&mypb, count));
     count++;
   }
 }

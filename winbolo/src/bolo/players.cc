@@ -1718,7 +1718,7 @@ void playersLeaveAlliance(players *plrs, BYTE playerNum) {
     }
     total = screenNumPills();
     for (count = 1; count <= total; count++) {
-      frontEndStatusPillbox(count, screenPillAlliance(count));
+      screenGetFrontend()->statusPillbox(count, screenPillAlliance(count));
     }
     total = screenGetNumPlayers();
     for (count = 1; count <= total; count++) {
@@ -1794,7 +1794,7 @@ void playersAcceptAlliance(players *plrs, BYTE acceptedBy, BYTE newMember) {
     }
     total = screenNumPills();
     for (count = 1; count <= total; count++) {
-      frontEndStatusPillbox(count, screenPillAlliance(count));
+      screenGetFrontend()->statusPillbox(count, screenPillAlliance(count));
     }
     total = screenGetNumPlayers();
     for (count = 1; count <= total; count++) {

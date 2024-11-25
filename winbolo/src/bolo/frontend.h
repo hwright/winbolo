@@ -14,15 +14,7 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          FrontEnd
- *Filename:      frontEnd.h
- *Author:        John Morrison
- *Creation Date: 3/1/99
- *Last Modified: 4/1/00
- *Purpose:
- *  Functions called by the back end
- *********************************************************/
+// Abstract interface for functions called by the back end
 
 #ifndef _FRONTEND_H
 #define _FRONTEND_H
@@ -94,23 +86,16 @@ class Frontend {
                               screenBullets *sBullet, screenLgm *lgms,
                               long srtDelay, bool isPillView, tank *tank,
                               int edgeX, int edgeY) = 0;
+
+  // Sets the pillbox status for a particular pillbox
+  //
+  // ARGUMENTS:
+  //  pillNum - The base number to draw (1-16)
+  //  pa      - The allience of the pillbox
+  virtual void statusPillbox(uint8_t pillNum, pillAlliance pb) = 0;
 };
 
 }  // namespace bolo
-
-/*********************************************************
- *NAME:          frontEndStatusPillbox
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  Sets the pillbox status for a particular pillbox
- *
- *ARGUMENTS:
- *  pillNum - The base number to draw (1-16)
- *  pa      - The allience of the pillbox
- *********************************************************/
-void frontEndStatusPillbox(BYTE pillNum, pillAlliance pb);
 
 /*********************************************************
  *NAME:          frontEndStatusTank

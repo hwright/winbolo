@@ -1528,27 +1528,6 @@ int windowGetAiTime(void) { return dwSysBrainTotal; }
 int windowGetSimTime(void) { return dwSysGameTotal; }
 
 /*********************************************************
- *NAME:          frontEndStatusPillbox
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  Sets the pillbox status for a particular pillbox
- *
- *ARGUMENTS:
- *  pillNum - The base number to draw (1-16)
- *  pa      - The allience of the pillbox
- *********************************************************/
-void frontEndStatusPillbox(BYTE pillNum, pillAlliance pb) {
-  DWORD tick;
-
-  tick = timeGetTime();
-  drawStatusPillbox(pillNum, pb, showPillLabels);
-  drawCopyPillsStatus();
-  dwSysFrame += (timeGetTime() - tick);
-}
-
-/*********************************************************
  *NAME:          frontEndStatusTank
  *AUTHOR:        John Morrison
  *CREATION DATE: 26/1/99

@@ -469,7 +469,7 @@ bool pillsDamagePos(pillboxes *value, BYTE xValue, BYTE yValue, bool wantDamage,
       if ((*value)->item[count].armour == 0) {
         returnValue = true;
         if (!threadsGetContext()) {
-          frontEndStatusPillbox((BYTE)(count + 1), pillDead);
+          screenGetFrontend()->statusPillbox((BYTE)(count + 1), pillDead);
         }
       } else if (wantDamage) {
         (*value)->item[count].coolDown = PILLBOX_COOLDOWN_TIME;
@@ -961,7 +961,8 @@ BYTE pillsSetPillOwner(pillboxes *value, BYTE pillNum, BYTE owner,
       }
     }
     if (!threadsGetContext()) {
-      frontEndStatusPillbox(pillNum, (pillsGetAllianceNum(value, pillNum)));
+      screenGetFrontend()->statusPillbox(pillNum,
+                                         (pillsGetAllianceNum(value, pillNum)));
     }
   }
   return returnValue;
@@ -996,7 +997,7 @@ void pillsGetDamagePos(pillboxes *value, BYTE xValue, BYTE yValue,
       }
       if ((*value)->item[count].armour == 0) {
         if (!threadsGetContext()) {
-          frontEndStatusPillbox((BYTE)(count + 1), pillDead);
+          screenGetFrontend()->statusPillbox((BYTE)(count + 1), pillDead);
         }
       }
       logAddEvent(log_PillSetHealth,
@@ -1077,8 +1078,8 @@ void pillsRepairPos(pillboxes *value, BYTE xValue, BYTE yValue,
         (*value)->item[count].armour = PILLS_MAX_ARMOUR;
       }
       if (!threadsGetContext()) {
-        frontEndStatusPillbox((BYTE)(count + 1),
-                              (pillsGetAllianceNum(value, (BYTE)(count + 1))));
+        screenGetFrontend()->statusPillbox(
+            (BYTE)(count + 1), (pillsGetAllianceNum(value, (BYTE)(count + 1))));
       }
       logAddEvent(log_PillSetHealth,
                   bolo::utilPutNibble(count, (*value)->item[count].armour), 0,
