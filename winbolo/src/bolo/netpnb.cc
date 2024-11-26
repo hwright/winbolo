@@ -642,10 +642,10 @@ bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb,
   }
   if (!returnValue) {
     /* Print error */
-    messageAdd(messageType::network, (char *)"\0", (char *)"pnb-no");
+    messageAdd(bolo::messageType::network, (char *)"\0", (char *)"pnb-no");
   }
   if (errOccurred) {
-    messageAdd(messageType::network, (char *)"\0", (char *)"pnb-a");
+    messageAdd(bolo::messageType::network, (char *)"\0", (char *)"pnb-a");
   }
 
   //  return returnValue;
@@ -673,7 +673,7 @@ void netPNBMessage(BYTE playerNum, char *msg) {
   strcpy(msg2, msg);
   playersMakeMessageName(screenGetPlayers(), playerNum, name);
   std::string output = std::format("\"{}\"{}", name, msg2);
-  messageAdd(messageType::newsWire, langGetText2(MESSAGE_NEWSWIRE),
+  messageAdd(bolo::messageType::newsWire, langGetText2(MESSAGE_NEWSWIRE),
              output.c_str());
 }
 

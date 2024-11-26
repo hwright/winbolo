@@ -206,7 +206,7 @@ void clientCenterTank() { return; }
  *  y - Pointer to hold World Y Co-ordinates
  *********************************************************/
 void screenGetTankWorld(WORLD *x, WORLD *y) {
-  messageAdd(messageType::global, (char *)"DANGEROUS: screenGetTankWorld",
+  messageAdd(bolo::messageType::global, (char *)"DANGEROUS: screenGetTankWorld",
              (char *)""); /* This code should never be called by the server. */
   return;
 }
@@ -224,7 +224,8 @@ void screenGetTankWorld(WORLD *x, WORLD *y) {
  *  bmy - Y position
  *********************************************************/
 bool screenIsItemInTrees(WORLD bmx, WORLD bmy) {
-  messageAdd(messageType::global, (char *)"DANGEROUS: screenIsItemInTrees",
+  messageAdd(bolo::messageType::global,
+             (char *)"DANGEROUS: screenIsItemInTrees",
              (char *)""); /* This code should never be called by the server. */
   return true;
 }
@@ -241,7 +242,8 @@ bool screenIsItemInTrees(WORLD bmx, WORLD bmy) {
  *  value - String to hold copy of the player name
  *********************************************************/
 void screenGetPlayerName(char *value) {
-  messageAdd(messageType::global, (char *)"DANGEROUS: screenGetPlayerName",
+  messageAdd(bolo::messageType::global,
+             (char *)"DANGEROUS: screenGetPlayerName",
              (char *)""); /* This code should never be called by the server. */
   return;
 }
@@ -292,7 +294,7 @@ netStatus netGetStatus(void) { return netFailed; }
  *********************************************************/
 void screenTanksAddItem(screenTanks *value, BYTE mx, BYTE my, BYTE px, BYTE py,
                         BYTE frame, BYTE playerNum, char *playerName) {
-  messageAdd(messageType::global,
+  messageAdd(bolo::messageType::global,
              (char *)"DANGEROUS: screenTanksAddItem - Something MUST go here",
              (char *)""); /* This code should never be called by the server. */
   return;
@@ -310,14 +312,14 @@ void screenTanksAddItem(screenTanks *value, BYTE mx, BYTE my, BYTE px, BYTE py,
  *  playerNum - The player number to remove.
  *********************************************************/
 void netRemovePlayer(BYTE playerNum) {
-  messageAdd(messageType::global,
+  messageAdd(bolo::messageType::global,
              (char *)"DANGEROUS: netRemovePlayer - Something MUST go here",
              (char *)""); /* This code should never be called by the server. */
   return;
 }
 
 void netMessageSendPlayer(BYTE playerNum, BYTE destPlayer, char *message) {
-  messageAdd(messageType::global,
+  messageAdd(bolo::messageType::global,
              (char *)"DANGEROUS: netMessageSendPlayer - Something MUST go here",
              (char *)""); /* This code should never be called by the server. */
   return;
@@ -336,7 +338,7 @@ void netMessageSendPlayer(BYTE playerNum, BYTE destPlayer, char *message) {
  *  requestTo - Who we are requesting to
  *********************************************************/
 void netRequestAlliance(BYTE playerNum, BYTE reqestTo) {
-  messageAdd(messageType::global, (char *)"DANGEROUS: netRequestAlliance",
+  messageAdd(bolo::messageType::global, (char *)"DANGEROUS: netRequestAlliance",
              (char *)""); /* This code should never be called by the server. */
 }
 
@@ -353,7 +355,7 @@ void netRequestAlliance(BYTE playerNum, BYTE reqestTo) {
  *  pillNum - The pillbox number to get
  *********************************************************/
 pillAlliance screenPillAlliance(BYTE pillNum) {
-  messageAdd(messageType::global, (char *)"DANGEROUS: screenPillAlliance",
+  messageAdd(bolo::messageType::global, (char *)"DANGEROUS: screenPillAlliance",
              (char *)""); /* This code should never be called by the server. */
   return (pillAlliance)0;
 }
@@ -371,7 +373,7 @@ pillAlliance screenPillAlliance(BYTE pillNum) {
  *  baseNum - The base number to get
  *********************************************************/
 baseAlliance screenBaseAlliance(BYTE baseNum) {
-  messageAdd(messageType::global, (char *)"DANGEROUS: screenBaseAlliance",
+  messageAdd(bolo::messageType::global, (char *)"DANGEROUS: screenBaseAlliance",
              (char *)""); /* This code should never be called by the server. */
   return (baseAlliance)0;
 }
@@ -388,7 +390,8 @@ baseAlliance screenBaseAlliance(BYTE baseNum) {
  *
  *********************************************************/
 BYTE screenGetNumPlayers() {
-  messageAdd(messageType::global, (char *)"DANGEROUS: screenGetNumPlayers",
+  messageAdd(bolo::messageType::global,
+             (char *)"DANGEROUS: screenGetNumPlayers",
              (char *)""); /* This code should never be called by the server. */
   return 0;
 }
@@ -406,7 +409,8 @@ BYTE screenGetNumPlayers() {
  *  oldOwner - The old Owner of the stuff
  *********************************************************/
 void screenChangeOwnership(BYTE oldOwner) {
-  messageAdd(messageType::global, (char *)"DANGEROUS: screenChangeOwnership",
+  messageAdd(bolo::messageType::global,
+             (char *)"DANGEROUS: screenChangeOwnership",
              (char *)""); /* This code should never be called by the server. */
 }
 
@@ -684,7 +688,7 @@ void clientGetRandStart(BYTE *mx, BYTE *my, TURNTYPE *dir) { return; }
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void clientMessageAdd(messageType msgType, const char *top,
+void clientMessageAdd(bolo::messageType msgType, const char *top,
                       const char *bottom) {
   return;
 }

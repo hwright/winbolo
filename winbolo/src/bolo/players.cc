@@ -201,7 +201,7 @@ bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
       }
       std::string messageStr = std::format(
           "\"{}\"{}{}\"", label, langGetText(MESSAGE_CHANGENAME), playerName);
-      messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+      messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
                  messageStr.c_str());
       /* Update the name */
       strcpy((*plrs)->item[playerNum].playerName, playerName);
@@ -1141,7 +1141,7 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
     /* Make a message about it */
     std::string output =
         std::format("\"{}\"{}", name, langGetText(MESSAGE_QUIT_GAME));
-    messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+    messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
                output.c_str());
   }
 }
@@ -1431,7 +1431,8 @@ void playersSendMessageAllSelected(players *plrs, char *messageStr) {
         /* Send self */
         topLine[0] = '\0';
         playersMakeMessageName(plrs, playersGetSelf(plrs), topLine);
-        messageAdd((messageType)playersGetSelf(plrs), topLine, messageStr);
+        messageAdd((bolo::messageType)playersGetSelf(plrs), topLine,
+                   messageStr);
       } else {
         netMessageSendPlayer((*plrs)->myPlayerNum, count, messageStr);
       }
@@ -2112,7 +2113,8 @@ void playersSendAiMessage(players *plrs, unsigned long bitMap,
       if (count == (*plrs)->myPlayerNum) {
         topLine[0] = '\0';
         playersMakeMessageName(plrs, (*plrs)->myPlayerNum, topLine);
-        messageAdd((messageType)(*plrs)->myPlayerNum, topLine, messageStr);
+        messageAdd((bolo::messageType)(*plrs)->myPlayerNum, topLine,
+                   messageStr);
       } else {
         netMessageSendPlayer((*plrs)->myPlayerNum, count, messageStr);
       }

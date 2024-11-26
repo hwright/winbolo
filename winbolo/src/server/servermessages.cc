@@ -54,10 +54,10 @@ void serverMessagesSetLogFile(char *logFile) {
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void serverMessageAdd(messageType msgType, const char *top,
+void serverMessageAdd(bolo::messageType msgType, const char *top,
                       const char *bottom) {
   FILE *fp; /* File to write to */
-  if (msgType != messageType::assistant && !isServerQuiet) {
+  if (msgType != bolo::messageType::assistant && !isServerQuiet) {
     if (!serverMessageUseLogFile) {
       fprintf(stdout, "%s\n%s\n", top, bottom);
     } else {

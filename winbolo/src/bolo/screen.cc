@@ -1799,9 +1799,9 @@ void screenSendMessageAllPlayers(char *messageStr) {
   topLine[0] = '\0';
   playersMakeMessageName(screenGetPlayers(), playersGetSelf(screenGetPlayers()),
                          topLine);
-  messageAdd(
-      (messageType)(playersGetSelf(screenGetPlayers()) + PLAYER_MESSAGE_OFFSET),
-      topLine, messageStr);
+  messageAdd((bolo::messageType)(playersGetSelf(screenGetPlayers()) +
+                                 PLAYER_MESSAGE_OFFSET),
+             topLine, messageStr);
   netMessageSendAllPlayers(playersGetSelf(screenGetPlayers()), messageStr);
 }
 
@@ -1832,7 +1832,7 @@ bool screenSaveMap(char *fileName) {
                              playersGetSelf(screenGetPlayers()), name);
       std::string output =
           std::format("\"{}\"{}", name, langGetText(MESSAGE_SAVED_MAP));
-      messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+      messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
                  output.c_str());
     }
   }
@@ -2522,7 +2522,7 @@ void screenIncomingMessage(BYTE playerNum, char *messageStr) {
 
   topLine[0] = '\0';
   playersMakeMessageName(screenGetPlayers(), playerNum, topLine);
-  messageAdd((messageType)(playerNum + PLAYER_MESSAGE_OFFSET), topLine,
+  messageAdd((bolo::messageType)(playerNum + PLAYER_MESSAGE_OFFSET), topLine,
              messageStr);
 }
 
@@ -2646,9 +2646,9 @@ void screenSendMessageAllAllies(char *messageStr) {
   topLine[0] = '\0';
   playersMakeMessageName(screenGetPlayers(), playersGetSelf(screenGetPlayers()),
                          topLine);
-  messageAdd(
-      (messageType)(playersGetSelf(screenGetPlayers()) + PLAYER_MESSAGE_OFFSET),
-      topLine, messageStr);
+  messageAdd((bolo::messageType)(playersGetSelf(screenGetPlayers()) +
+                                 PLAYER_MESSAGE_OFFSET),
+             topLine, messageStr);
   playersSendMessageAllAllies(screenGetPlayers(), messageStr);
 }
 
@@ -2684,9 +2684,9 @@ void screenSendMessageAllNearby(char *messageStr) {
   topLine[0] = '\0';
   playersMakeMessageName(screenGetPlayers(), playersGetSelf(screenGetPlayers()),
                          topLine);
-  messageAdd(
-      (messageType)(playersGetSelf(screenGetPlayers()) + PLAYER_MESSAGE_OFFSET),
-      topLine, messageStr);
+  messageAdd((bolo::messageType)(playersGetSelf(screenGetPlayers()) +
+                                 PLAYER_MESSAGE_OFFSET),
+             topLine, messageStr);
   playersSendMessageAllNearby(screenGetPlayers(), tankGetMX(&mytk),
                               tankGetMY(&mytk), messageStr);
 }
@@ -3231,7 +3231,7 @@ void screenExtractBrainInfo(BrainInfo *value) {
     strcpy(msg, bolo::utilPtoCString((char *)value->sendmessage).c_str());
     if (*(value->messagedest) == 0) {
       /* Its a debug message */
-      messageAdd(messageType::AI, langGetText(MESSAGE_AI), msg);
+      messageAdd(bolo::messageType::AI, langGetText(MESSAGE_AI), msg);
     } else {
       /* Send this message to the appropriate players */
       playersSendAiMessage(screenGetPlayers(), *(value->messagedest), msg);
@@ -3457,7 +3457,8 @@ bool screenGetCursorPos(BYTE *posX, BYTE *posY) {
  *  messageStr - The message text
  *********************************************************/
 void screenNetStatusMessage(char *messageStr) {
-  messageAdd(messageType::networkStatus, (char *)"Network Status", messageStr);
+  messageAdd(bolo::messageType::networkStatus, (char *)"Network Status",
+             messageStr);
 }
 
 /*********************************************************

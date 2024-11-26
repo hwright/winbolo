@@ -520,10 +520,10 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
   }
 
   if (!returnValue) {
-    messageAdd(messageType::network, (char *)"\0", (char *)"mnt-no");
+    messageAdd(bolo::messageType::network, (char *)"\0", (char *)"mnt-no");
   }
   if (errOccurred) {
-    messageAdd(messageType::network, (char *)"\0", (char *)"nmt-a");
+    messageAdd(bolo::messageType::network, (char *)"\0", (char *)"nmt-a");
   }
   return true;
   //  return returnValue;
@@ -549,7 +549,7 @@ void netMNTMessage(BYTE playerNum, char *msg) {
 
   playersMakeMessageName(screenGetPlayers(), playerNum, name);
   std::string output = std::format("\"{}\"{}", name, msg);
-  messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+  messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
              output.c_str());
 }
 

@@ -36,6 +36,8 @@
 /* Width of the screen */
 #define MESSAGE_WIDTH 68
 
+namespace bolo {
+
 // Different kinds of messages
 enum class messageType {
   newsWire,  // Differnt Message types
@@ -61,8 +63,6 @@ enum class messageType {
   player15,
   global  // Message must be printed
 };
-
-namespace bolo {
 
 class Messages {
  public:
@@ -171,7 +171,8 @@ void messageDestroy(void);
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void clientMessageAdd(messageType msgType, const char *top, const char *bottom);
+void clientMessageAdd(bolo::messageType msgType, const char *top,
+                      const char *bottom);
 
 /*********************************************************
  *NAME:          serverMessageAdd
@@ -188,7 +189,8 @@ void clientMessageAdd(messageType msgType, const char *top, const char *bottom);
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void serverMessageAdd(messageType msgType, const char *top, const char *bottom);
+void serverMessageAdd(bolo::messageType msgType, const char *top,
+                      const char *bottom);
 
 /*********************************************************
  *NAME:          messageAdd
@@ -205,7 +207,7 @@ void serverMessageAdd(messageType msgType, const char *top, const char *bottom);
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void messageAdd(messageType msgType, const char *top, const char *bottom);
+void messageAdd(bolo::messageType msgType, const char *top, const char *bottom);
 
 /*********************************************************
  *NAME:          messageAddItem

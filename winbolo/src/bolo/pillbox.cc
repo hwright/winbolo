@@ -940,7 +940,7 @@ BYTE pillsSetPillOwner(pillboxes *value, BYTE pillNum, BYTE owner,
       /* Neutral pill */
       playersMakeMessageName(screenGetPlayers(), owner, messageStr);
       strcat(messageStr, langGetText(MESSAGE_CAPTURE_PILL));
-      messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+      messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
                  messageStr);
     } else if (owner == NEUTRAL) {
       /* Do nothing */
@@ -951,7 +951,7 @@ BYTE pillsSetPillOwner(pillboxes *value, BYTE pillNum, BYTE owner,
       strcat(messageStr, langGetText(MESSAGE_STOLE_PILL));
       playersGetPlayerName(screenGetPlayers(), returnValue, oldOwner);
       strcat(messageStr, oldOwner);
-      messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+      messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
                  messageStr);
     }
     (*value)->item[pillNum].owner = owner;

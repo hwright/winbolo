@@ -199,7 +199,7 @@ void messageCreate(void) { messages = new bolo::Messages(); }
 
 void messageDestroy(void) { delete messages; }
 
-void clientMessageAdd(messageType msgType, const char *top,
+void clientMessageAdd(bolo::messageType msgType, const char *top,
                       const char *bottom) {
   messages->addMessage(msgType, top, bottom);
 }

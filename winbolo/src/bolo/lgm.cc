@@ -252,7 +252,7 @@ void lgmAddRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk,
                    BYTE mapX, BYTE mapY, BYTE action) {
   if ((*lgman)->isDead && tankGetArmour(tnk) <= TANK_FULL_ARMOUR) {
     /* LGM is parachuting in and tank is alive */
-    messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+    messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                langGetText2(LGM_MAN_DEAD));
   } else if ((*lgman)->action != LGM_IDLE) {
     /* Busy doing something else  Place in second request */
@@ -359,7 +359,7 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
   switch (*action) {
     case LGM_TREE_REQUEST:
       if (pos != FOREST || isBase || isPill) {
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_NO_TREE));
         proceed = false;
       }
@@ -373,7 +373,7 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
         /* Clicked one of the following a boat, deep sea, building, half
          * building, pill, base  */
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_NO_BUILD));
       } else if (pos == ROAD) {
         /* Clicked on a road */
@@ -382,11 +382,11 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
                  tankIsOnBoat(tnk)) {
         /* Clicked on a square that has a tank on a boat on it */
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_NO_BUILD_UNDER_BOAT));
       } else if (!tankGetLgmTrees(tnk, LGM_COST_ROAD, perform)) {
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_INSUFFICIENT_TREES));
       } else {
         *trees = LGM_COST_ROAD;
@@ -397,20 +397,21 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
         *action = LGM_TREE_REQUEST;
       } else if (pos == BOAT || pos == DEEP_SEA || isPill || isBase) {
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_NO_BUILD));
       } else if (pos == RIVER && mapX == tankX && mapY == tankY &&
                  tankIsOnBoat(tnk)) {
         /* Clicked on a square that has a tank on a boat on it */
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_NO_BUILD_UNDER_BOAT));
       } else if (pos == RIVER) {
         /* Build a wall on a river, that means build a boat */
         *action = LGM_BOAT_REQUEST;
         if (!tankGetLgmTrees(tnk, LGM_COST_BOAT, perform)) {
           proceed = false;
-          messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+          messageAdd(bolo::messageType::assistant,
+                     langGetText(MESSAGE_ASSISTANT),
                      langGetText2(LGM_INSUFFICIENT_TREES));
         } else {
           *trees = LGM_COST_BOAT;
@@ -418,12 +419,13 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
 
       } else if (tankX == mapX && tankY == mapY) {
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_BUILDTANK));
       } else if (pos == HALFBUILDING) {
         if (!tankGetLgmTrees(tnk, LGM_COST_REPAIRBUILDING, perform)) {
           proceed = false;
-          messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+          messageAdd(bolo::messageType::assistant,
+                     langGetText(MESSAGE_ASSISTANT),
                      langGetText2(LGM_INSUFFICIENT_TREES));
         } else {
           *trees = LGM_COST_REPAIRBUILDING;
@@ -432,7 +434,7 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
         proceed = false;
       } else if (!tankGetLgmTrees(tnk, LGM_COST_BUILDING, perform)) {
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_INSUFFICIENT_TREES));
       } else {
         *trees = LGM_COST_BUILDING;
@@ -443,22 +445,24 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
       if (pos == BOAT || pos == DEEP_SEA || pos == BUILDING ||
           pos == HALFBUILDING || pos == RIVER || isBase) {
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_NO_BUILD));
       } else if (pos == FOREST && !isPill) {
         *action = LGM_TREE_REQUEST;
       } else if (tankX == mapX && tankY == mapY) {
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_BUILDTANK));
       } else if (isPill) {
         if (pillsGetArmourPos(pb, mapX, mapY) == PILLS_MAX_ARMOUR) {
           proceed = false;
-          messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+          messageAdd(bolo::messageType::assistant,
+                     langGetText(MESSAGE_ASSISTANT),
                      langGetText2(LGM_PILL_NO_NEED_REPAIR));
         } else if (tankTrees < LGM_COST_PILLREPAIR) {
           proceed = false;
-          messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+          messageAdd(bolo::messageType::assistant,
+                     langGetText(MESSAGE_ASSISTANT),
                      langGetText2(LGM_INSUFFICIENT_TREES));
         } else {
           pillArmour = pillsGetArmourPos(pb, mapX, mapY);
@@ -482,12 +486,12 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
         *pillNum = LGM_NO_PILL;
       } else if (!tankGetCarriedPill(tnk, pillNum, perform)) {
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_NO_PILLS));
       } else if (!tankGetLgmTrees(tnk, LGM_COST_PILLNEW, perform)) {
         proceed = false;
         tankPutCarriedPill(tnk, *pillNum);
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_INSUFFICIENT_TREES));
       } else {
         *trees = LGM_COST_PILLNEW;
@@ -507,11 +511,11 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
       if (pos == DEEP_SEA || pos == RIVER || pos == BUILDING || pos == BOAT ||
           pos == HALFBUILDING || isPill || isBase) {
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_NO_BUILD));
       } else if (!tankGetLgmMines(tnk, LGM_COST_MINE, perform)) {
         proceed = false;
-        messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+        messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                    langGetText2(LGM_INSUFFICIENT_MINES));
       } else {
         *minesAmount = LGM_COST_MINE;
@@ -520,7 +524,7 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
   }
   if (*action == LGM_TREE_REQUEST && pos != FOREST) {
     proceed = false;
-    messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+    messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                langGetText2(LGM_NO_TREE));
   }
 
@@ -529,7 +533,7 @@ bool lgmCheckNewRequest(lgm *lgman, map *mp, pillboxes *pb, bases *bs,
     if (screenGetMines()->existPos(MapPoint{.x = mapX, .y = mapY})) {
       *isMine = true;
       proceed = false;
-      messageAdd(messageType::assistant, langGetText(MESSAGE_ASSISTANT),
+      messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                  langGetText2(LGM_PILL_NO_BUILD_ON_MINE));
       if ((*lgman)->nextAction == LGM_MINE_REQUEST && (*lgman)->nextX == mapX &&
           (*lgman)->nextY == mapY) {
@@ -1539,7 +1543,7 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx,
       labelMakeMessage(messageStr, playerName,
                        langGetText(MESSAGE_THIS_COMPUTER));
       strcat(messageStr, langGetText(MESSAGE_LGM_DEAD));
-      messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+      messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
                  messageStr);
     }
   }
