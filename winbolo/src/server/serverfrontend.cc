@@ -20,7 +20,7 @@
 namespace bolo {
 
 void ServerFrontend::gameOver(void) {
-  messageAdd(globalMessage, "Game Timelimit has expired. Shutting down\n",
+  messageAdd(messageType::global, "Game Timelimit has expired. Shutting down\n",
              ""); /* FIXME - message localisation */
   return;
 }

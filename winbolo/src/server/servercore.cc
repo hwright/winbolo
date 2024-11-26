@@ -141,9 +141,8 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines,
   BYTE count;       /* Looping variable */
 
   srand((unsigned int)time(nullptr));
-  messageAdd(globalMessage, (char *)BOLO_VERSION_STRING,
-             (char *)COPYRIGHT_STRING);
-  messageAdd(globalMessage, (char *)"", (char *)"Core Simulation Startup");
+  messageAdd(bolo::messageType::global, BOLO_VERSION_STRING, COPYRIGHT_STRING);
+  messageAdd(bolo::messageType::global, "", "Core Simulation Startup");
 
   sMapName[0] = '\0';
   sGmeStartDelay = srtDelay;
@@ -216,9 +215,8 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn,
   bool returnValue; /* Value to return */
   BYTE count;       /* Looping variable */
 
-  messageAdd(globalMessage, (char *)BOLO_VERSION_STRING,
-             (char *)COPYRIGHT_STRING);
-  messageAdd(globalMessage, (char *)"", (char *)"Core Simulation Startup");
+  messageAdd(bolo::messageType::global, BOLO_VERSION_STRING, COPYRIGHT_STRING);
+  messageAdd(bolo::messageType::global, "", "Core Simulation Startup");
 
   sMapName[0] = '\0';
   sGmeStartDelay = srtDelay;
@@ -277,7 +275,7 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn,
 void serverCoreDestroy() {
   BYTE count; /* Looping variable */
 
-  messageAdd(globalMessage, (char *)"Core Simulation Shutdown", (char *)"");
+  messageAdd(bolo::messageType::global, "Core Simulation Shutdown", "");
   serverCoreGameRunning = false;
   for (count = 0; count < MAX_TANKS; count++) {
     tankDestroy(&tk[count], &mp, &pb, &bs);

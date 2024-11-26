@@ -27,8 +27,10 @@
 
 #include "netmt.h"
 
+#include <format>
 #include <tuple>
 
+#include "../gui/lang.h"
 #include "../server/servercore.h"
 #include "../winbolonet/winbolonet.h"
 #include "backend.h"
@@ -51,7 +53,6 @@
 #include "sounddist.h"
 #include "swamp.h"
 #include "tank.h"
-#include "../gui/lang.h"
 #ifdef _WIN32
 #include "../gui/resource.h"
 #else
@@ -519,10 +520,10 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
   }
 
   if (!returnValue) {
-    messageAdd(networkMessage, (char *)"\0", (char *)"mnt-no");
+    messageAdd(bolo::messageType::network, "", "mnt-no");
   }
   if (errOccurred) {
-    messageAdd(networkMessage, (char *)"\0", (char *)"nmt-a");
+    messageAdd(bolo::messageType::network, "", "nmt-a");
   }
   return true;
   //  return returnValue;
@@ -542,18 +543,14 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
  *  msg       - Message to display
  *********************************************************/
 void netMNTMessage(BYTE playerNum, char *msg) {
-  char name[FILENAME_MAX];   /* The Player Name */
-  char output[FILENAME_MAX]; /* The message */
+  char name[FILENAME_MAX]; /* The Player Name */
 
-  output[0] = '\0';
   name[0] = '\0';
 
   playersMakeMessageName(screenGetPlayers(), playerNum, name);
-  strcat(output, MESSAGE_QUOTES);
-  strcat(output, name);
-  strcat(output, MESSAGE_QUOTES);
-  strcat(output, msg);
-  messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE), output);
+  std::string output = std::format("\"{}\"{}", name, msg);
+  messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+             output);
 }
 
 /*********************************************************

@@ -206,8 +206,8 @@ void clientCenterTank() { return; }
  *  y - Pointer to hold World Y Co-ordinates
  *********************************************************/
 void screenGetTankWorld(WORLD *x, WORLD *y) {
-  messageAdd(globalMessage, (char *)"DANGEROUS: screenGetTankWorld",
-             (char *)""); /* This code should never be called by the server. */
+  // This code should never be called by the server.
+  messageAdd(bolo::messageType::global, "DANGEROUS: screenGetTankWorld", "");
   return;
 }
 
@@ -224,8 +224,8 @@ void screenGetTankWorld(WORLD *x, WORLD *y) {
  *  bmy - Y position
  *********************************************************/
 bool screenIsItemInTrees(WORLD bmx, WORLD bmy) {
-  messageAdd(globalMessage, (char *)"DANGEROUS: screenIsItemInTrees",
-             (char *)""); /* This code should never be called by the server. */
+  // This code should never be called by the server.
+  messageAdd(bolo::messageType::global, "DANGEROUS: screenIsItemInTrees", "");
   return true;
 }
 
@@ -241,8 +241,8 @@ bool screenIsItemInTrees(WORLD bmx, WORLD bmy) {
  *  value - String to hold copy of the player name
  *********************************************************/
 void screenGetPlayerName(char *value) {
-  messageAdd(globalMessage, (char *)"DANGEROUS: screenGetPlayerName",
-             (char *)""); /* This code should never be called by the server. */
+  // This code should never be called by the server.
+  messageAdd(bolo::messageType::global, "DANGEROUS: screenGetPlayerName", "");
   return;
 }
 
@@ -292,9 +292,9 @@ netStatus netGetStatus(void) { return netFailed; }
  *********************************************************/
 void screenTanksAddItem(screenTanks *value, BYTE mx, BYTE my, BYTE px, BYTE py,
                         BYTE frame, BYTE playerNum, char *playerName) {
-  messageAdd(globalMessage,
-             (char *)"DANGEROUS: screenTanksAddItem - Something MUST go here",
-             (char *)""); /* This code should never be called by the server. */
+  // This code should never be called by the server.
+  messageAdd(bolo::messageType::global,
+             "DANGEROUS: screenTanksAddItem - Something MUST go here", "");
   return;
 }
 
@@ -310,16 +310,16 @@ void screenTanksAddItem(screenTanks *value, BYTE mx, BYTE my, BYTE px, BYTE py,
  *  playerNum - The player number to remove.
  *********************************************************/
 void netRemovePlayer(BYTE playerNum) {
-  messageAdd(globalMessage,
-             (char *)"DANGEROUS: netRemovePlayer - Something MUST go here",
-             (char *)""); /* This code should never be called by the server. */
+  // This code should never be called by the server.
+  messageAdd(bolo::messageType::global,
+             "DANGEROUS: netRemovePlayer - Something MUST go here", "");
   return;
 }
 
 void netMessageSendPlayer(BYTE playerNum, BYTE destPlayer, char *message) {
-  messageAdd(globalMessage,
-             (char *)"DANGEROUS: netMessageSendPlayer - Something MUST go here",
-             (char *)""); /* This code should never be called by the server. */
+  // This code should never be called by the server.
+  messageAdd(bolo::messageType::global,
+             "DANGEROUS: netMessageSendPlayer - Something MUST go here", "");
   return;
 }
 
@@ -336,8 +336,8 @@ void netMessageSendPlayer(BYTE playerNum, BYTE destPlayer, char *message) {
  *  requestTo - Who we are requesting to
  *********************************************************/
 void netRequestAlliance(BYTE playerNum, BYTE reqestTo) {
-  messageAdd(globalMessage, (char *)"DANGEROUS: netRequestAlliance",
-             (char *)""); /* This code should never be called by the server. */
+  // This code should never be called by the server.
+  messageAdd(bolo::messageType::global, "DANGEROUS: netRequestAlliance", "");
 }
 
 /*********************************************************
@@ -353,8 +353,8 @@ void netRequestAlliance(BYTE playerNum, BYTE reqestTo) {
  *  pillNum - The pillbox number to get
  *********************************************************/
 pillAlliance screenPillAlliance(BYTE pillNum) {
-  messageAdd(globalMessage, (char *)"DANGEROUS: screenPillAlliance",
-             (char *)""); /* This code should never be called by the server. */
+  // This code should never be called by the server.
+  messageAdd(bolo::messageType::global, "DANGEROUS: screenPillAlliance", "");
   return (pillAlliance)0;
 }
 
@@ -371,8 +371,8 @@ pillAlliance screenPillAlliance(BYTE pillNum) {
  *  baseNum - The base number to get
  *********************************************************/
 baseAlliance screenBaseAlliance(BYTE baseNum) {
-  messageAdd(globalMessage, (char *)"DANGEROUS: screenBaseAlliance",
-             (char *)""); /* This code should never be called by the server. */
+  // This code should never be called by the server.
+  messageAdd(bolo::messageType::global, "DANGEROUS: screenBaseAlliance", "");
   return (baseAlliance)0;
 }
 
@@ -388,8 +388,8 @@ baseAlliance screenBaseAlliance(BYTE baseNum) {
  *
  *********************************************************/
 BYTE screenGetNumPlayers() {
-  messageAdd(globalMessage, (char *)"DANGEROUS: screenGetNumPlayers",
-             (char *)""); /* This code should never be called by the server. */
+  // This code should never be called by the server.
+  messageAdd(bolo::messageType::global, "DANGEROUS: screenGetNumPlayers", "");
   return 0;
 }
 
@@ -406,8 +406,8 @@ BYTE screenGetNumPlayers() {
  *  oldOwner - The old Owner of the stuff
  *********************************************************/
 void screenChangeOwnership(BYTE oldOwner) {
-  messageAdd(globalMessage, (char *)"DANGEROUS: screenChangeOwnership",
-             (char *)""); /* This code should never be called by the server. */
+  // This code should never be called by the server.
+  messageAdd(bolo::messageType::global, "DANGEROUS: screenChangeOwnership", "");
 }
 
 /*********************************************************
@@ -684,8 +684,8 @@ void clientGetRandStart(BYTE *mx, BYTE *my, TURNTYPE *dir) { return; }
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void clientMessageAdd(messageType msgType, const char *top,
-                      const char *bottom) {
+void clientMessageAdd(bolo::messageType msgType, std::string_view top,
+                      std::string_view bottom) {
   return;
 }
 

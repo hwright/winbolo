@@ -348,7 +348,8 @@ void screenServerConsoleMessage(const char *msg) {
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void messageAdd(messageType msgType, const char *top, const char *bottom) {
+void messageAdd(bolo::messageType msgType, std::string_view top,
+                std::string_view bottom) {
   if (!threadsGetContext()) {
     clientMessageAdd(msgType, top, bottom);
   } else {

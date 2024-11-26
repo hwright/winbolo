@@ -262,7 +262,8 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs,
             soundDist(bolo::sndEffects::tankSinkNear, mx, my);
             tankSetLastTankDeath(
                 tank, LAST_DEATH_BY_DEEPSEA); /* Override LAST_DEATH_BY_SHELL */
-            messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT),
+            messageAdd(bolo::messageType::assistant,
+                       langGetText(MESSAGE_ASSISTANT),
                        langGetText2(MESSAGE_TANKSUNK));
           }
         }

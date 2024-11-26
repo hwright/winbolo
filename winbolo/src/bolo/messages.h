@@ -27,31 +27,95 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include <array>
+#include <queue>
+#include <string_view>
+
 #include "global.h"
-
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define MessageTail(list) ((list)->next);
-#define MessageHeadTop(list) ((list)->topLine);
-#define MessageHeadBottom(list) ((list)->bottomLine);
-
-/* Message String Macros */
-#define MESSAGE_QUOTES "\""
 
 /* Width of the screen */
 #define MESSAGE_WIDTH 68
-/* End of string marker */
-#define END_OF_STRING '\0'
-/* Blank space marker */
-#define MESSAGE_BLANK ' '
 
-/* An Empty Message */
-#define MESSAGE_EMPTY " \0"
+namespace bolo {
 
-/* Time between screen updates */
-#define MESSAGE_SCROLL_TIME 4 /* Was 5 prior to 1.09 */
+// Different kinds of messages
+enum class messageType {
+  newsWire,  // Differnt Message types
+  assistant,
+  AI,
+  network,
+  networkStatus,
+  player0,  // Player Number messages
+  player1,
+  player2,
+  player3,
+  player4,
+  player5,
+  player6,
+  player7,
+  player8,
+  player9,
+  player10,
+  player11,
+  player12,
+  player13,
+  player14,
+  player15,
+  global  // Message must be printed
+};
 
-/* Type structure */
+class Messages {
+ public:
+  Messages();
+
+  // Display a new message of the given type.
+  //
+  // ARGUMENTS:
+  //  msgType - The type of the message
+  //  top     - The message to print in the top line
+  //  bottom  - The message to print in the bottom line
+  void addMessage(messageType msgType, std::string_view top,
+                  std::string_view bottom);
+
+  // Update the scrolling message
+  void Update();
+
+  // Return the current messages on screen.
+  std::tuple<std::string, std::string> getMessage();
+
+  // Show or hide various message types
+  void set_newswire(bool show) { show_newswire_ = show; }
+  void set_assistant(bool show) { show_assistant_ = show; }
+  void set_ai(bool show) { show_ai_ = show; }
+  void set_network(bool show) { show_network_ = show; }
+  void set_netstat(bool show) { show_netstat_ = show; }
+
+ private:
+  // Add an item to the message data structure.
+  //
+  // ARGUMENTS:
+  //  top    - The message to print in the top line
+  //  bottom - The message to print in the bottom line
+  void addItem(std::string_view top, std::string_view bottom);
+
+  // The messages
+  std::array<char, MESSAGE_WIDTH> top_line_;
+  std::array<char, MESSAGE_WIDTH> bottom_line_;
+
+  // Queue for waiting messages.
+  std::queue<std::tuple<char, char>> waiting_messages_;
+
+  messageType last_message_ = messageType::global;
+
+  // What types to show
+  bool show_newswire_ = true;
+  bool show_assistant_ = true;
+  bool show_ai_ = false;
+  bool show_network_ = false;
+  bool show_netstat_ = true;
+};
+
+}  // namespace bolo
 
 typedef struct messageObj *message;
 struct messageObj {
@@ -62,31 +126,6 @@ struct messageObj {
 
 /* Offset to a player message */
 #define PLAYER_MESSAGE_OFFSET 5
-
-typedef enum {
-  newsWireMessage, /* Differnt Message types */
-  assistantMessage,
-  AIMessage,
-  networkMessage,
-  networkStatus,
-  player0Message, /* Player Number messages */
-  player1Message,
-  player2Message,
-  player3Message,
-  player4Message,
-  player5Message,
-  player6Message,
-  player7Message,
-  player8Message,
-  player9Message,
-  player10Message,
-  player11Message,
-  player12Message,
-  player13Message,
-  player14Message,
-  player15Message,
-  globalMessage /* Message must be printed */
-} messageType;
 
 /* Prototypes */
 
@@ -132,7 +171,8 @@ void messageDestroy(void);
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void clientMessageAdd(messageType msgType, const char *top, const char *bottom);
+void clientMessageAdd(bolo::messageType msgType, std::string_view top,
+                      std::string_view bottom);
 
 /*********************************************************
  *NAME:          serverMessageAdd
@@ -149,7 +189,8 @@ void clientMessageAdd(messageType msgType, const char *top, const char *bottom);
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void serverMessageAdd(messageType msgType, const char *top, const char *bottom);
+void serverMessageAdd(bolo::messageType msgType, std::string_view top,
+                      std::string_view bottom);
 
 /*********************************************************
  *NAME:          messageAdd
@@ -166,21 +207,8 @@ void serverMessageAdd(messageType msgType, const char *top, const char *bottom);
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void messageAdd(messageType msgType, const char *top, const char *bottom);
-
-/*********************************************************
- *NAME:          messageAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  Adds an item to the message data structure.
- *
- *ARGUMENTS:
- *  top    - The message to print in the top line
- *  bottom - The message to print in the bottom line
- *********************************************************/
-void messageAddItem(const char *top, const char *bottom);
+void messageAdd(bolo::messageType msgType, std::string_view top,
+                std::string_view bottom);
 
 /*********************************************************
  *NAME:          messageUpdate

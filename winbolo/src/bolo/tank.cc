@@ -266,7 +266,7 @@ void tankUpdate(tank *value, map *mp, bases *bs, pillboxes *pb, shells *shs,
     /* Check for death by drowning - client instance */
     tankSetLastTankDeath(value, LAST_DEATH_BY_DEEPSEA);
     soundDist(bolo::sndEffects::tankSinkNear, bmx, bmy);
-    messageAdd(assistantMessage, langGetText(MESSAGE_ASSISTANT),
+    messageAdd(bolo::messageType::assistant, langGetText(MESSAGE_ASSISTANT),
                langGetText2(MESSAGE_TANKSUNK));
     netMNTAdd(screenGetNetMnt(), NMNT_KILLME, 0, screenGetTankPlayer(value),
               0xFF, 0xFF);
