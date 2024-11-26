@@ -95,7 +95,7 @@ std::string GetPreferenceFile() {
 
   pwd = getpwuid(getuid());
   std::string filename = std::format("{}/.linbolo/", pwd->pw_dir);
-  MakeDir(filename.c_str());
+  MakeDir(filename);
   return std::format("{}{}", filename, Preferences::DEFAULT_FILE);
 }
 

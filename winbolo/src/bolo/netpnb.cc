@@ -674,7 +674,7 @@ void netPNBMessage(BYTE playerNum, char *msg) {
   playersMakeMessageName(screenGetPlayers(), playerNum, name);
   std::string output = std::format("\"{}\"{}", name, msg2);
   messageAdd(bolo::messageType::newsWire, langGetText2(MESSAGE_NEWSWIRE),
-             output.c_str());
+             output);
 }
 
 /*********************************************************

@@ -26,6 +26,9 @@
 
 #include <stdio.h>
 
+#include <fstream>
+#include <iostream>
+
 #include "../bolo/messages.h"
 
 bool isServerQuiet = false; /* Is the server running in quiet mode */
@@ -54,17 +57,15 @@ void serverMessagesSetLogFile(char *logFile) {
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void serverMessageAdd(bolo::messageType msgType, const char *top,
-                      const char *bottom) {
-  FILE *fp; /* File to write to */
+void serverMessageAdd(bolo::messageType msgType, std::string_view top,
+                      std::string_view bottom) {
   if (msgType != bolo::messageType::assistant && !isServerQuiet) {
     if (!serverMessageUseLogFile) {
-      fprintf(stdout, "%s\n%s\n", top, bottom);
+      std::cout << top << "\n" << bottom << "\n";
     } else {
-      fp = fopen(serverMessageLogFile, "a");
-      if (fp) {
-        fprintf(fp, "%s\n%s\n", top, bottom);
-        fclose(fp);
+      std::ofstream outfile(serverMessageLogFile, std::ios::app);
+      if (outfile.is_open()) {
+        outfile << top << "\n" << bottom << "\n";
       }
     }
   }

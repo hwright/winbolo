@@ -1,1 +1,1 @@
-Checks: '-*,readability-simplify-boolean-expr,modernize-use-nullptr'
+Checks: '-*,readability-simplify-boolean-expr,modernize-use-nullptr,readability-redundant-string-cstr'

@@ -688,8 +688,8 @@ void clientGetRandStart(BYTE *mx, BYTE *my, TURNTYPE *dir) { return; }
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void clientMessageAdd(bolo::messageType msgType, const char *top,
-                      const char *bottom) {
+void clientMessageAdd(bolo::messageType msgType, std::string_view top,
+                      std::string_view bottom) {
   return;
 }
 

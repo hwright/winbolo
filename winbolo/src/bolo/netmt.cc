@@ -550,7 +550,7 @@ void netMNTMessage(BYTE playerNum, char *msg) {
   playersMakeMessageName(screenGetPlayers(), playerNum, name);
   std::string output = std::format("\"{}\"{}", name, msg);
   messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
-             output.c_str());
+             output);
 }
 
 /*********************************************************

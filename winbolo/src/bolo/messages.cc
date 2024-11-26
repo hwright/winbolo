@@ -199,8 +199,8 @@ void messageCreate(void) { messages = new bolo::Messages(); }
 
 void messageDestroy(void) { delete messages; }
 
-void clientMessageAdd(bolo::messageType msgType, const char *top,
-                      const char *bottom) {
+void clientMessageAdd(bolo::messageType msgType, std::string_view top,
+                      std::string_view bottom) {
   messages->addMessage(msgType, top, bottom);
 }
 

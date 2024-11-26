@@ -202,7 +202,7 @@ bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
       std::string messageStr = std::format(
           "\"{}\"{}{}\"", label, langGetText(MESSAGE_CHANGENAME), playerName);
       messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
-                 messageStr.c_str());
+                 messageStr);
       /* Update the name */
       strcpy((*plrs)->item[playerNum].playerName, playerName);
       strcpy((char *)(*plrs)->playerBrainNames[playerNum],
@@ -1142,7 +1142,7 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
     std::string output =
         std::format("\"{}\"{}", name, langGetText(MESSAGE_QUIT_GAME));
     messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
-               output.c_str());
+               output);
   }
 }
 

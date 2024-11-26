@@ -171,8 +171,8 @@ void messageDestroy(void);
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void clientMessageAdd(bolo::messageType msgType, const char *top,
-                      const char *bottom);
+void clientMessageAdd(bolo::messageType msgType, std::string_view top,
+                      std::string_view bottom);
 
 /*********************************************************
  *NAME:          serverMessageAdd
@@ -189,8 +189,8 @@ void clientMessageAdd(bolo::messageType msgType, const char *top,
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void serverMessageAdd(bolo::messageType msgType, const char *top,
-                      const char *bottom);
+void serverMessageAdd(bolo::messageType msgType, std::string_view top,
+                      std::string_view bottom);
 
 /*********************************************************
  *NAME:          messageAdd
@@ -207,21 +207,8 @@ void serverMessageAdd(bolo::messageType msgType, const char *top,
  *  top     - The message to print in the top line
  *  bottom  - The message to print in the bottom line
  *********************************************************/
-void messageAdd(bolo::messageType msgType, const char *top, const char *bottom);
-
-/*********************************************************
- *NAME:          messageAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  Adds an item to the message data structure.
- *
- *ARGUMENTS:
- *  top    - The message to print in the top line
- *  bottom - The message to print in the bottom line
- *********************************************************/
-void messageAddItem(const char *top, const char *bottom);
+void messageAdd(bolo::messageType msgType, std::string_view top,
+                std::string_view bottom);
 
 /*********************************************************
  *NAME:          messageUpdate

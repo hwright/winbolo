@@ -1833,7 +1833,7 @@ bool screenSaveMap(char *fileName) {
       std::string output =
           std::format("\"{}\"{}", name, langGetText(MESSAGE_SAVED_MAP));
       messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
-                 output.c_str());
+                 output);
     }
   }
   return returnValue;
