@@ -37,8 +37,6 @@
 #define MESSAGE_WIDTH 68
 /* End of string marker */
 #define END_OF_STRING '\0'
-/* Blank space marker */
-#define MESSAGE_BLANK ' '
 
 /* An Empty Message */
 #define MESSAGE_EMPTY " \0"

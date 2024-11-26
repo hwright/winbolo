@@ -43,8 +43,8 @@ static BYTE newMessageFrom;           /* Where it came from */
 namespace bolo {
 
 Messages::Messages() {
-  top_line_.fill(MESSAGE_BLANK);
-  bottom_line_.fill(MESSAGE_BLANK);
+  top_line_.fill(' ');
+  bottom_line_.fill(' ');
   top_line_[MESSAGE_WIDTH - 1] = '\0';
   bottom_line_[MESSAGE_WIDTH - 1] = '\0';
 }
@@ -276,8 +276,8 @@ void Messages::addItem(std::string_view top, std::string_view bottom) {
 
   // Add the items to the data structure
   for (int i = 0; i < longest; ++i) {
-    waiting_messages_.push({i < top.length() ? top[i] : MESSAGE_BLANK,
-                            i < bottom.length() ? bottom[i] : MESSAGE_BLANK});
+    waiting_messages_.push({i < top.length() ? top[i] : ' ',
+                            i < bottom.length() ? bottom[i] : ' '});
   }
 
   // Add a space between messages.
