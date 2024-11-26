@@ -27,6 +27,10 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include <array>
+#include <queue>
+#include <string_view>
+
 #include "global.h"
 
 #define IsEmpty(list) ((list) == NULL)
@@ -51,18 +55,7 @@
 /* Time between screen updates */
 #define MESSAGE_SCROLL_TIME 4 /* Was 5 prior to 1.09 */
 
-/* Type structure */
-
-typedef struct messageObj *message;
-struct messageObj {
-  message next;
-  char topLine;
-  char bottomLine;
-};
-
-/* Offset to a player message */
-#define PLAYER_MESSAGE_OFFSET 5
-
+// Different kinds of messages
 enum class messageType {
   newsWire,  // Differnt Message types
   assistant,
@@ -87,6 +80,71 @@ enum class messageType {
   player15,
   global  // Message must be printed
 };
+
+namespace bolo {
+
+class Messages {
+ public:
+  Messages();
+
+  // Display a new message of the given type.
+  //
+  // ARGUMENTS:
+  //  msgType - The type of the message
+  //  top     - The message to print in the top line
+  //  bottom  - The message to print in the bottom line
+  void addMessage(messageType msgType, std::string_view top,
+                  std::string_view bottom);
+
+  // Update the scrolling message
+  void Update();
+
+  // Return the current messages on screen.
+  std::tuple<std::string, std::string> getMessage();
+
+  // Show or hide various message types
+  void set_newswire(bool show) { show_newswire_ = show; }
+  void set_assistant(bool show) { show_assistant_ = show; }
+  void set_ai(bool show) { show_ai_ = show; }
+  void set_network(bool show) { show_network_ = show; }
+  void set_netstat(bool show) { show_netstat_ = show; }
+
+ private:
+  // Add an item to the message data structure.
+  //
+  // ARGUMENTS:
+  //  top    - The message to print in the top line
+  //  bottom - The message to print in the bottom line
+  void addItem(std::string_view top, std::string_view bottom);
+
+  // The messages
+  std::array<char, MESSAGE_WIDTH> top_line_;
+  std::array<char, MESSAGE_WIDTH> bottom_line_;
+
+  // Queue for waiting messages.
+  std::queue<std::tuple<char, char>> waiting_messages_;
+
+  messageType last_message_ = messageType::global;
+
+  // What types to show
+  bool show_newswire_ = true;
+  bool show_assistant_ = true;
+  bool show_ai_ = false;
+  bool show_network_ = false;
+  bool show_netstat_ = true;
+};
+
+}  // namespace bolo
+
+typedef struct messageObj *message;
+struct messageObj {
+  message next;
+  char topLine;
+  char bottomLine;
+};
+
+/* Offset to a player message */
+#define PLAYER_MESSAGE_OFFSET 5
 
 /* Prototypes */
 

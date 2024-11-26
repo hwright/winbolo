@@ -35,509 +35,312 @@
 
 /* Module Variables */
 
-/* Messages */
-static char topLine[MESSAGE_WIDTH];
-static char bottomLine[MESSAGE_WIDTH];
+static bolo::Messages *messages;
 
 static char newMessage[FILENAME_MAX]; /* A new message */
 static BYTE newMessageFrom;           /* Where it came from */
 
-/* What types to show */
-static bool showNewswire = true;
-static bool showAssistant = true;
-static bool showAI = false;
-static bool showNetwork = false;
-static bool showNetStat = true;
+namespace bolo {
 
-/* Queue DS for waiting messages */
-static message msg;
-
-/*********************************************************
- *NAME:          messageCreate
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  Sets up the messages data structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void messageCreate(void) {
-  BYTE count; /* Looping variable */
-
-  msg = nullptr;
-  showNewswire = true;
-  showAssistant = true;
-  showAI = false;
-  showNetwork = false;
-  showNetStat = true;
-  for (count = 0; count < MESSAGE_WIDTH; count++) {
-    topLine[count] = MESSAGE_BLANK;
-    bottomLine[count] = MESSAGE_BLANK;
-  }
-  topLine[MESSAGE_WIDTH - 1] = END_OF_STRING;
-  bottomLine[MESSAGE_WIDTH - 1] = END_OF_STRING;
+Messages::Messages() {
+  top_line_.fill(MESSAGE_BLANK);
+  bottom_line_.fill(MESSAGE_BLANK);
+  top_line_[MESSAGE_WIDTH - 1] = '\0';
+  bottom_line_[MESSAGE_WIDTH - 1] = '\0';
 }
 
-/*********************************************************
- *NAME:          messageDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  Destroys and frees memory for the message data
- *  structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void messageDestroy(void) {
-  message q;
-
-  while (!IsEmpty(msg)) {
-    q = msg;
-    msg = MessageTail(q);
-    delete q;
-  }
-}
-
-/*********************************************************
- *NAME:          clientMessageAdd
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  4/7/00
- *PURPOSE:
- *  Functions call this to display a message. They must
- *  pass the message type so that it can be determined
- *  whether the header should be printed etc.
- *
- *ARGUMENTS:
- *  msgType - The type of the message
- *  top     - The message to print in the top line
- *  bottom  - The message to print in the bottom line
- *********************************************************/
-void clientMessageAdd(messageType msgType, const char *top,
-                      const char *bottom) {
-  static messageType lastMessage = messageType::global;
-
+void Messages::addMessage(messageType msgType, std::string_view top,
+                          std::string_view bottom) {
   switch (msgType) {
     /* 4 Main message Types */
     case messageType::newsWire:
-      if (showNewswire) {
-        if (lastMessage != messageType::newsWire) {
-          messageAddItem(top, bottom);
+      if (show_newswire_) {
+        if (last_message_ != messageType::newsWire) {
+          addItem(std::string(top).c_str(), std::string(bottom).c_str());
         } else {
-          messageAddItem((char *)MESSAGE_EMPTY, bottom);
+          addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
         }
-        lastMessage = messageType::newsWire;
+        last_message_ = messageType::newsWire;
       }
       break;
     case messageType::assistant:
-      if (showAssistant) {
-        if (lastMessage != messageType::assistant) {
-          messageAddItem(top, bottom);
+      if (show_assistant_) {
+        if (last_message_ != messageType::assistant) {
+          addItem(std::string(top).c_str(), std::string(bottom).c_str());
         } else {
-          messageAddItem((char *)MESSAGE_EMPTY, bottom);
+          addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
         }
-        lastMessage = messageType::assistant;
+        last_message_ = messageType::assistant;
       }
       break;
     case messageType::AI:
-      if (showAI) {
-        if (lastMessage != messageType::AI) {
-          messageAddItem(top, bottom);
+      if (show_ai_) {
+        if (last_message_ != messageType::AI) {
+          addItem(std::string(top).c_str(), std::string(bottom).c_str());
         } else {
-          messageAddItem((char *)MESSAGE_EMPTY, bottom);
+          addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
         }
-        lastMessage = messageType::AI;
+        last_message_ = messageType::AI;
       }
       break;
     case messageType::network:
-      if (showNetwork) {
-        if (lastMessage != messageType::network) {
-          messageAddItem(top, bottom);
+      if (show_network_) {
+        if (last_message_ != messageType::network) {
+          addItem(std::string(top).c_str(), std::string(bottom).c_str());
         } else {
-          messageAddItem((char *)MESSAGE_EMPTY, bottom);
+          addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
         }
-        lastMessage = messageType::network;
+        last_message_ = messageType::network;
       }
       break;
     /* Player Messages */
     case messageType::player0:
       newMessageFrom = BASE_0; /* Using base macro because I am lazy :) */
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player0) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player0) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player0;
+      last_message_ = messageType::player0;
       break;
     case messageType::player1:
       newMessageFrom = BASE_1;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player1) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player1) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player1;
+      last_message_ = messageType::player1;
       break;
     case messageType::player2:
       newMessageFrom = BASE_2;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player2) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player2) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player2;
+      last_message_ = messageType::player2;
       break;
     case messageType::player3:
       newMessageFrom = BASE_3;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player3) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player3) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player3;
+      last_message_ = messageType::player3;
       break;
     case messageType::player4:
       newMessageFrom = BASE_4;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player4) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player4) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player4;
+      last_message_ = messageType::player4;
       break;
     case messageType::player5:
       newMessageFrom = BASE_5;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player5) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player5) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player5;
+      last_message_ = messageType::player5;
       break;
     case messageType::player6:
       newMessageFrom = BASE_6;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player6) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player6) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player6;
+      last_message_ = messageType::player6;
       break;
     case messageType::player7:
       newMessageFrom = BASE_7;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player7) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player7) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player7;
+      last_message_ = messageType::player7;
       break;
     case messageType::player8:
       newMessageFrom = BASE_8;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player8) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player8) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player8;
+      last_message_ = messageType::player8;
       break;
     case messageType::player9:
       newMessageFrom = BASE_9;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player9) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player9) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player9;
+      last_message_ = messageType::player9;
       break;
     case messageType::player10:
       newMessageFrom = BASE_10;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player10) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player10) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player10;
+      last_message_ = messageType::player10;
       break;
     case messageType::player11:
       newMessageFrom = BASE_11;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player11) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player11) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player11;
+      last_message_ = messageType::player11;
       break;
     case messageType::player12:
       newMessageFrom = BASE_12;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player12) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player12) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player12;
+      last_message_ = messageType::player12;
       break;
     case messageType::player13:
       newMessageFrom = BASE_13;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player13) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player13) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player13;
+      last_message_ = messageType::player13;
       break;
     case messageType::player14:
       newMessageFrom = BASE_14;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player14) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player14) {
+        addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
       }
-      lastMessage = messageType::player14;
+      last_message_ = messageType::player14;
       break;
     case messageType::player15:
       newMessageFrom = BASE_15;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != messageType::player15) {
-        messageAddItem(top, bottom);
+      if (last_message_ != messageType::player15) {
+        addItem(top, bottom);
       } else {
-        messageAddItem((char *)MESSAGE_EMPTY, bottom);
+        addItem(MESSAGE_EMPTY, bottom);
       }
-      lastMessage = messageType::player15;
+      last_message_ = messageType::player15;
       break;
     case messageType::networkStatus:
-      if (showNetStat) {
+      if (show_netstat_) {
         newMessageFrom = 20;  // messageType::networkStatus;
-        if (lastMessage != messageType::networkStatus) {
-          messageAddItem(top, bottom);
+        if (last_message_ != messageType::networkStatus) {
+          addItem(std::string(top).c_str(), std::string(bottom).c_str());
         } else {
-          messageAddItem((char *)MESSAGE_EMPTY, bottom);
+          addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
         }
-        lastMessage = messageType::networkStatus;
+        last_message_ = messageType::networkStatus;
       }
       break;
     case messageType::global:
-    default:
-      messageAddItem(top, bottom);
+      addItem(std::string(top).c_str(), std::string(bottom).c_str());
   }
 }
 
-/*********************************************************
- *NAME:          messageAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE:  3/1/99
- *LAST MODIFIED:  3/1/99
- *PURPOSE:
- *  Adds an item to the message data structure.
- *
- *ARGUMENTS:
- *  top    - The message to print in the top line
- *  bottom - The message to print in the bottom line
- *********************************************************/
-void messageAddItem(const char *top, const char *bottom) {
-  message q;     /* temp Pointer */
-  message prev;  /* temp pointer */
-  message add;   /* Item to add */
-  int lenTop;    /* Lengths of the item */
-  int lenBottom; /* Length of the bottom string */
-  int count;     /* Looping variable */
-  int longest;   /* Longest item */
-  bool newQ;     /* Denotes a new queue */
+void Messages::addItem(std::string_view top, std::string_view bottom) {
+  // Get the longest size for left justification
+  int longest = std::max(top.length(), bottom.length());
 
-  /* Get the location to add it to */
-
-  newQ = false;
-
-  if (IsEmpty(msg)) {
-    newQ = true;
-    msg = new messageObj;
-    msg->next = nullptr;
+  // Add the items to the data structure
+  for (int i = 0; i < longest; ++i) {
+    waiting_messages_.push({i < top.length() ? top[i] : MESSAGE_BLANK,
+                            i < bottom.length() ? bottom[i] : MESSAGE_BLANK});
   }
 
-  prev = q = msg;
-  while (NonEmpty(q)) {
-    prev = q;
-    q = MessageTail(q);
-  }
-  q = prev;
-
-  /* Get the longest of the two strings */
-  lenTop = (int)strlen(top);
-  lenBottom = (int)strlen(bottom);
-  if (lenTop > lenBottom) {
-    longest = lenTop;
-  } else {
-    longest = lenBottom;
-  }
-
-  /* Add the items to the data structure */
-  count = 0;
-  while (count <= (longest)) {
-    add = new messageObj;
-    if (count < lenTop) {
-      add->topLine = top[count];
-    } else {
-      add->topLine = MESSAGE_BLANK;
-    }
-    if (count < lenBottom) {
-      add->bottomLine = bottom[count];
-    } else {
-      add->bottomLine = MESSAGE_BLANK;
-    }
-    add->next = nullptr;
-    q->next = add;
-    q = MessageTail(q);
-    count++;
-  }
-
-  if (newQ) {
-    q = msg;
-    msg = MessageTail(q);
-    delete q;
-  }
+  // Add a space between messages.
+  waiting_messages_.push({' ', ' '});
 }
 
-/*********************************************************
- *NAME:          messageUpdate
- *AUTHOR:        John Morrison
- *CREATION DATE: 03/01/99
- *LAST MODIFIED: 20/01/02
- *PURPOSE:
- *  Updates the scrolling message
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void messageUpdate(void) {
-  message q;  /* temp Pointer */
-  BYTE count; /* Looping variable */
+void Messages::Update() {
+  // Only want to do something if the message needs to be scrolled
+  if (!waiting_messages_.empty()) {
+    // Get the next characters
+    std::tie(top_line_[MESSAGE_WIDTH - 1], bottom_line_[MESSAGE_WIDTH - 1]) =
+        waiting_messages_.front();
 
-  /* Only want to do something if the message needs to be scrolled */
-  if (NonEmpty(msg)) {
-    /* Get the next charectors */
-    topLine[MESSAGE_WIDTH - 1] = MessageHeadTop(msg);
-    bottomLine[MESSAGE_WIDTH - 1] = MessageHeadBottom(msg);
-    /* Delete the item */
-    q = msg;
-    msg = MessageTail(q);
-    delete q;
+    // Delete the item
+    waiting_messages_.pop();
 
-    /* Move the message */
-    count = 0;
-    while (count < (MESSAGE_WIDTH - 1)) {
-      topLine[count] = topLine[count + 1];
-      bottomLine[count] = bottomLine[count + 1];
-      count++;
+    // Move the message
+    for (int i = 0; i < (MESSAGE_WIDTH - 1); ++i) {
+      top_line_[i] = top_line_[i + 1];
+      bottom_line_[i] = bottom_line_[i + 1];
     }
-    topLine[MESSAGE_WIDTH - 1] = END_OF_STRING;
-    bottomLine[MESSAGE_WIDTH - 1] = END_OF_STRING;
-    /* Update the screen */
+    top_line_[MESSAGE_WIDTH - 1] = '\0';
+    bottom_line_[MESSAGE_WIDTH - 1] = '\0';
+
+    // Update the screen
     if (!threadsGetContext()) {
-      screenGetFrontend()->messages(topLine, bottomLine);
+      screenGetFrontend()->messages(
+          std::string_view(top_line_.data(), top_line_.size()),
+          std::string_view(bottom_line_.data(), bottom_line_.size()));
     }
   }
 }
 
-/*********************************************************
- *NAME:          messageGetMessage
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/1/98
- *LAST MODIFIED: 1/1/98
- *PURPOSE:
- *  Copys the messages on screen into the given variables
- *
- *ARGUMENTS:
- *  top    - The message to print in the top line
- *  bottom - The message to print in the bottom line
- *********************************************************/
-void messageGetMessage(char *top, char *bottom) {
-  strcpy(top, topLine);
-  strcpy(bottom, bottomLine);
+std::tuple<std::string, std::string> Messages::getMessage() {
+  return std::make_tuple(
+      std::string(std::string_view(top_line_.data(), top_line_.size())),
+      std::string(std::string_view(bottom_line_.data(), bottom_line_.size())));
 }
 
-/*********************************************************
- *NAME:          messageSetNewswire
- *AUTHOR:        John Morrison
- *CREATION DATE: 8/1/98
- *LAST MODIFIED: 8/1/98
- *PURPOSE:
- *  Sets the state of newswire messages
- *
- *ARGUMENTS:
- *  isShown - Is this type of message shown
- *********************************************************/
-void messageSetNewswire(bool isShown) { showNewswire = isShown; }
+}  // namespace bolo
 
-/*********************************************************
- *NAME:          messageSetAssistant
- *AUTHOR:        John Morrison
- *CREATION DATE: 8/1/98
- *LAST MODIFIED: 8/1/98
- *PURPOSE:
- *  Sets the state of assistant messages
- *
- *ARGUMENTS:
- *  isShown - Is this type of message shown
- *********************************************************/
-void messageSetAssistant(bool isShown) { showAssistant = isShown; }
+void messageCreate(void) { messages = new bolo::Messages(); }
 
-/*********************************************************
- *NAME:          messageSetAI
- *AUTHOR:        John Morrison
- *CREATION DATE: 8/1/98
- *LAST MODIFIED: 8/1/98
- *PURPOSE:
- *  Sets the state of AI messages
- *
- *ARGUMENTS:
- *  isShown - Is this type of message shown
- *********************************************************/
-void messageSetAI(bool isShown) { showAI = isShown; }
+void messageDestroy(void) { delete messages; }
 
-/*********************************************************
- *NAME:          messageSetNetwork
- *AUTHOR:        John Morrison
- *CREATION DATE: 8/1/98
- *LAST MODIFIED: 8/1/98
- *PURPOSE:
- *  Sets the state of network messages
- *
- *ARGUMENTS:
- *  isShown - Is this type of message shown
- *********************************************************/
-void messageSetNetwork(bool isShown) { showNetwork = isShown; }
+void clientMessageAdd(messageType msgType, const char *top,
+                      const char *bottom) {
+  messages->addMessage(msgType, top, bottom);
+}
 
-/*********************************************************
- *NAME:          messageSetNetStatus
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/6/00
- *LAST MODIFIED: 1/6/00
- *PURPOSE:
- *  Sets the state of network status messages
- *
- *ARGUMENTS:
- *  isShown - Is this type of message shown
- *********************************************************/
-void messageSetNetStatus(bool isShown) { showNetStat = isShown; }
+void messageUpdate(void) { messages->Update(); }
+
+void messageGetMessage(char *top, char *bottom) {
+  std::tuple<std::string, std::string> msg = messages->getMessage();
+  strcpy(top, std::get<0>(msg).c_str());
+  strcpy(bottom, std::get<1>(msg).c_str());
+}
+
+void messageSetNewswire(bool isShown) { messages->set_newswire(isShown); }
+void messageSetAssistant(bool isShown) { messages->set_assistant(isShown); }
+void messageSetAI(bool isShown) { messages->set_ai(isShown); }
+void messageSetNetwork(bool isShown) { messages->set_network(isShown); }
+void messageSetNetStatus(bool isShown) { messages->set_netstat(isShown); }
 
 /*********************************************************
  *NAME:          messageIsNewMessage
