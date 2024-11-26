@@ -205,7 +205,8 @@ bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
       strcat(messageStr, langGetText(MESSAGE_CHANGENAME));
       strcat(messageStr, playerName);
       strcat(messageStr, MESSAGE_QUOTES);
-      messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE), messageStr);
+      messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+                 messageStr);
       /* Update the name */
       strcpy((*plrs)->item[playerNum].playerName, playerName);
       strcpy((char *)(*plrs)->playerBrainNames[playerNum],
@@ -1148,7 +1149,7 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
     strcat(output, name);
     strcat(output, MESSAGE_QUOTES);
     strcat(output, langGetText(MESSAGE_QUIT_GAME));
-    messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE), output);
+    messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE), output);
   }
 }
 

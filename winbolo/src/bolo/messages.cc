@@ -119,223 +119,223 @@ void messageDestroy(void) {
  *********************************************************/
 void clientMessageAdd(messageType msgType, const char *top,
                       const char *bottom) {
-  static BYTE lastMessage = globalMessage;
+  static messageType lastMessage = messageType::global;
 
   switch (msgType) {
     /* 4 Main message Types */
-    case newsWireMessage:
+    case messageType::newsWire:
       if (showNewswire) {
-        if (lastMessage != newsWireMessage) {
+        if (lastMessage != messageType::newsWire) {
           messageAddItem(top, bottom);
         } else {
           messageAddItem((char *)MESSAGE_EMPTY, bottom);
         }
-        lastMessage = newsWireMessage;
+        lastMessage = messageType::newsWire;
       }
       break;
-    case assistantMessage:
+    case messageType::assistant:
       if (showAssistant) {
-        if (lastMessage != assistantMessage) {
+        if (lastMessage != messageType::assistant) {
           messageAddItem(top, bottom);
         } else {
           messageAddItem((char *)MESSAGE_EMPTY, bottom);
         }
-        lastMessage = assistantMessage;
+        lastMessage = messageType::assistant;
       }
       break;
-    case AIMessage:
+    case messageType::AI:
       if (showAI) {
-        if (lastMessage != AIMessage) {
+        if (lastMessage != messageType::AI) {
           messageAddItem(top, bottom);
         } else {
           messageAddItem((char *)MESSAGE_EMPTY, bottom);
         }
-        lastMessage = AIMessage;
+        lastMessage = messageType::AI;
       }
       break;
-    case networkMessage:
+    case messageType::network:
       if (showNetwork) {
-        if (lastMessage != networkMessage) {
+        if (lastMessage != messageType::network) {
           messageAddItem(top, bottom);
         } else {
           messageAddItem((char *)MESSAGE_EMPTY, bottom);
         }
-        lastMessage = networkMessage;
+        lastMessage = messageType::network;
       }
       break;
     /* Player Messages */
-    case player0Message:
+    case messageType::player0:
       newMessageFrom = BASE_0; /* Using base macro because I am lazy :) */
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player0Message) {
+      if (lastMessage != messageType::player0) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player0Message;
+      lastMessage = messageType::player0;
       break;
-    case player1Message:
+    case messageType::player1:
       newMessageFrom = BASE_1;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player1Message) {
+      if (lastMessage != messageType::player1) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player1Message;
+      lastMessage = messageType::player1;
       break;
-    case player2Message:
+    case messageType::player2:
       newMessageFrom = BASE_2;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player2Message) {
+      if (lastMessage != messageType::player2) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player2Message;
+      lastMessage = messageType::player2;
       break;
-    case player3Message:
+    case messageType::player3:
       newMessageFrom = BASE_3;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player3Message) {
+      if (lastMessage != messageType::player3) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player3Message;
+      lastMessage = messageType::player3;
       break;
-    case player4Message:
+    case messageType::player4:
       newMessageFrom = BASE_4;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player4Message) {
+      if (lastMessage != messageType::player4) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player4Message;
+      lastMessage = messageType::player4;
       break;
-    case player5Message:
+    case messageType::player5:
       newMessageFrom = BASE_5;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player5Message) {
+      if (lastMessage != messageType::player5) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player5Message;
+      lastMessage = messageType::player5;
       break;
-    case player6Message:
+    case messageType::player6:
       newMessageFrom = BASE_6;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player6Message) {
+      if (lastMessage != messageType::player6) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player6Message;
+      lastMessage = messageType::player6;
       break;
-    case player7Message:
+    case messageType::player7:
       newMessageFrom = BASE_7;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player7Message) {
+      if (lastMessage != messageType::player7) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player7Message;
+      lastMessage = messageType::player7;
       break;
-    case player8Message:
+    case messageType::player8:
       newMessageFrom = BASE_8;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player8Message) {
+      if (lastMessage != messageType::player8) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player8Message;
+      lastMessage = messageType::player8;
       break;
-    case player9Message:
+    case messageType::player9:
       newMessageFrom = BASE_9;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player9Message) {
+      if (lastMessage != messageType::player9) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player9Message;
+      lastMessage = messageType::player9;
       break;
-    case player10Message:
+    case messageType::player10:
       newMessageFrom = BASE_10;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player10Message) {
+      if (lastMessage != messageType::player10) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player10Message;
+      lastMessage = messageType::player10;
       break;
-    case player11Message:
+    case messageType::player11:
       newMessageFrom = BASE_11;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player11Message) {
+      if (lastMessage != messageType::player11) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player11Message;
+      lastMessage = messageType::player11;
       break;
-    case player12Message:
+    case messageType::player12:
       newMessageFrom = BASE_12;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player12Message) {
+      if (lastMessage != messageType::player12) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player12Message;
+      lastMessage = messageType::player12;
       break;
-    case player13Message:
+    case messageType::player13:
       newMessageFrom = BASE_13;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player13Message) {
+      if (lastMessage != messageType::player13) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player13Message;
+      lastMessage = messageType::player13;
       break;
-    case player14Message:
+    case messageType::player14:
       newMessageFrom = BASE_14;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player14Message) {
+      if (lastMessage != messageType::player14) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player14Message;
+      lastMessage = messageType::player14;
       break;
-    case player15Message:
+    case messageType::player15:
       newMessageFrom = BASE_15;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (lastMessage != player15Message) {
+      if (lastMessage != messageType::player15) {
         messageAddItem(top, bottom);
       } else {
         messageAddItem((char *)MESSAGE_EMPTY, bottom);
       }
-      lastMessage = player15Message;
+      lastMessage = messageType::player15;
       break;
-    case networkStatus:
+    case messageType::networkStatus:
       if (showNetStat) {
-        newMessageFrom = networkStatus;
-        if (lastMessage != networkStatus) {
+        newMessageFrom = 20;  // messageType::networkStatus;
+        if (lastMessage != messageType::networkStatus) {
           messageAddItem(top, bottom);
         } else {
           messageAddItem((char *)MESSAGE_EMPTY, bottom);
         }
-        lastMessage = networkStatus;
+        lastMessage = messageType::networkStatus;
       }
       break;
-    case globalMessage:
+    case messageType::global:
     default:
       messageAddItem(top, bottom);
   }

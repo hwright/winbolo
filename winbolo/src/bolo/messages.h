@@ -63,30 +63,30 @@ struct messageObj {
 /* Offset to a player message */
 #define PLAYER_MESSAGE_OFFSET 5
 
-typedef enum {
-  newsWireMessage, /* Differnt Message types */
-  assistantMessage,
-  AIMessage,
-  networkMessage,
+enum class messageType {
+  newsWire,  // Differnt Message types
+  assistant,
+  AI,
+  network,
   networkStatus,
-  player0Message, /* Player Number messages */
-  player1Message,
-  player2Message,
-  player3Message,
-  player4Message,
-  player5Message,
-  player6Message,
-  player7Message,
-  player8Message,
-  player9Message,
-  player10Message,
-  player11Message,
-  player12Message,
-  player13Message,
-  player14Message,
-  player15Message,
-  globalMessage /* Message must be printed */
-} messageType;
+  player0,  // Player Number messages
+  player1,
+  player2,
+  player3,
+  player4,
+  player5,
+  player6,
+  player7,
+  player8,
+  player9,
+  player10,
+  player11,
+  player12,
+  player13,
+  player14,
+  player15,
+  global  // Message must be printed
+};
 
 /* Prototypes */
 

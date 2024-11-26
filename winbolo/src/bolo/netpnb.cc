@@ -641,10 +641,10 @@ bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb,
   }
   if (!returnValue) {
     /* Print error */
-    messageAdd(networkMessage, (char *)"\0", (char *)"pnb-no");
+    messageAdd(messageType::network, (char *)"\0", (char *)"pnb-no");
   }
   if (errOccurred) {
-    messageAdd(networkMessage, (char *)"\0", (char *)"pnb-a");
+    messageAdd(messageType::network, (char *)"\0", (char *)"pnb-a");
   }
 
   //  return returnValue;
@@ -677,7 +677,7 @@ void netPNBMessage(BYTE playerNum, char *msg) {
   strcat(output, name);
   strcat(output, MESSAGE_QUOTES);
   strcat(output, msg2);
-  messageAdd(newsWireMessage, langGetText2(MESSAGE_NEWSWIRE), output);
+  messageAdd(messageType::newsWire, langGetText2(MESSAGE_NEWSWIRE), output);
 }
 
 /*********************************************************

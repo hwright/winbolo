@@ -57,7 +57,7 @@ void serverMessagesSetLogFile(char *logFile) {
 void serverMessageAdd(messageType msgType, const char *top,
                       const char *bottom) {
   FILE *fp; /* File to write to */
-  if (msgType != assistantMessage && !isServerQuiet) {
+  if (msgType != messageType::assistant && !isServerQuiet) {
     if (!serverMessageUseLogFile) {
       fprintf(stdout, "%s\n%s\n", top, bottom);
     } else {

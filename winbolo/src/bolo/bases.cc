@@ -572,11 +572,13 @@ BYTE basesSetBaseOwner(bases *value, BYTE baseNum, BYTE owner, BYTE migrate) {
         strcat(messageStr, langGetText(MESSAGE_STOLE_BASE));
         playersGetPlayerName(screenGetPlayers(), returnValue, oldOwner);
         strcat(messageStr, oldOwner);
-        messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE), messageStr);
+        messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+                   messageStr);
       } else {
         /* Neutral */
         strcat(messageStr, langGetText(MESSAGE_CAPTURE_BASE));
-        messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE), messageStr);
+        messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+                   messageStr);
       }
       (*value)->item[baseNum].owner = owner;
     }
@@ -647,12 +649,12 @@ BYTE basesSetOwner(bases *value, BYTE xValue, BYTE yValue, BYTE owner,
           strcat(messageStr, langGetText(MESSAGE_STOLE_BASE));
           playersGetPlayerName(screenGetPlayers(), returnValue, oldOwner);
           strcat(messageStr, oldOwner);
-          messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE),
+          messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
                      messageStr);
         } else {
           /* Neutral */
           strcat(messageStr, langGetText(MESSAGE_CAPTURE_BASE));
-          messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE),
+          messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
                      messageStr);
         }
         (*value)->item[count].owner = owner;

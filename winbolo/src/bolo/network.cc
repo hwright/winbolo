@@ -628,7 +628,7 @@ void netTcpPacketArrive(BYTE *buff, int len) {
     } else {
       char str[255];
       sprintf(str, "You have ignored alliance request from %s", pName);
-      messageAdd(networkStatus, "Alliance Request", str);
+      messageAdd(messageType::networkStatus, "Alliance Request", str);
       playersGetPlayerName(screenGetPlayers(),
                            playersGetSelf(screenGetPlayers()), pName);
       sprintf(str, "%s has ignored your alliance request", pName);

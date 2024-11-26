@@ -1829,7 +1829,7 @@ bool screenSaveMap(char *fileName) {
       strcat(output, name);
       strcat(output, MESSAGE_QUOTES);
       strcat(output, langGetText(MESSAGE_SAVED_MAP));
-      messageAdd(newsWireMessage, langGetText(MESSAGE_NEWSWIRE), output);
+      messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE), output);
     }
   }
   return returnValue;
@@ -3227,7 +3227,7 @@ void screenExtractBrainInfo(BrainInfo *value) {
     strcpy(msg, bolo::utilPtoCString((char *)value->sendmessage).c_str());
     if (*(value->messagedest) == 0) {
       /* Its a debug message */
-      messageAdd(AIMessage, langGetText(MESSAGE_AI), msg);
+      messageAdd(messageType::AI, langGetText(MESSAGE_AI), msg);
     } else {
       /* Send this message to the appropriate players */
       playersSendAiMessage(screenGetPlayers(), *(value->messagedest), msg);
@@ -3453,7 +3453,7 @@ bool screenGetCursorPos(BYTE *posX, BYTE *posY) {
  *  messageStr - The message text
  *********************************************************/
 void screenNetStatusMessage(char *messageStr) {
-  messageAdd(networkStatus, (char *)"Network Status", messageStr);
+  messageAdd(messageType::networkStatus, (char *)"Network Status", messageStr);
 }
 
 /*********************************************************
