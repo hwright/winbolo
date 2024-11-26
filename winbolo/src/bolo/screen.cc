@@ -3457,8 +3457,7 @@ bool screenGetCursorPos(BYTE *posX, BYTE *posY) {
  *  messageStr - The message text
  *********************************************************/
 void screenNetStatusMessage(char *messageStr) {
-  messageAdd(bolo::messageType::networkStatus, (char *)"Network Status",
-             messageStr);
+  messageAdd(bolo::messageType::networkStatus, "Network Status", messageStr);
 }
 
 /*********************************************************

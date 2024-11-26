@@ -642,10 +642,10 @@ bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb,
   }
   if (!returnValue) {
     /* Print error */
-    messageAdd(bolo::messageType::network, (char *)"\0", (char *)"pnb-no");
+    messageAdd(bolo::messageType::network, "", "pnb-no");
   }
   if (errOccurred) {
-    messageAdd(bolo::messageType::network, (char *)"\0", (char *)"pnb-a");
+    messageAdd(bolo::messageType::network, "", "pnb-a");
   }
 
   //  return returnValue;

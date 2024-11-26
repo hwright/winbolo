@@ -520,10 +520,10 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
   }
 
   if (!returnValue) {
-    messageAdd(bolo::messageType::network, (char *)"\0", (char *)"mnt-no");
+    messageAdd(bolo::messageType::network, "", "mnt-no");
   }
   if (errOccurred) {
-    messageAdd(bolo::messageType::network, (char *)"\0", (char *)"nmt-a");
+    messageAdd(bolo::messageType::network, "", "nmt-a");
   }
   return true;
   //  return returnValue;

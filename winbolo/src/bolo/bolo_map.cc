@@ -1448,7 +1448,7 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
   while (NonEmpty(q)) {
     q->length = q->length + 1;
     if (q->length > MAP_MAX_SERVER_WAIT && !q->needSend) {
-      messageAdd(bolo::messageType::network, (char *)"\0", (char *)"at");
+      messageAdd(bolo::messageType::network, "", "at");
       if (q->oldTerrain >= MINE_START && q->oldTerrain <= MINE_END) {
         q->oldTerrain -= MINE_SUBTRACT;
       }
@@ -1484,7 +1484,7 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
   while (NonEmpty(q)) {
     q->length++;
     if (q->length > MAP_MAX_SERVER_WAIT) { /* Was 25 */
-      messageAdd(bolo::messageType::network, (char *)"\0", (char *)"pt");
+      messageAdd(bolo::messageType::network, "", "pt");
       (*value)->mapItem[q->mx][q->my] = q->terrain;
       mapNetCheckWater(value, pb, bs, q->mx, q->my);
       screenBrainMapSetPos(
