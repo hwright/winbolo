@@ -56,9 +56,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
     case messageType::newsWire:
       if (show_newswire_) {
         if (last_message_ != messageType::newsWire) {
-          addItem(std::string(top).c_str(), std::string(bottom).c_str());
+          addItem(top, bottom);
         } else {
-          addItem("", std::string(bottom).c_str());
+          addItem("", bottom);
         }
         last_message_ = messageType::newsWire;
       }
@@ -66,9 +66,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
     case messageType::assistant:
       if (show_assistant_) {
         if (last_message_ != messageType::assistant) {
-          addItem(std::string(top).c_str(), std::string(bottom).c_str());
+          addItem(top, bottom);
         } else {
-          addItem("", std::string(bottom).c_str());
+          addItem("", bottom);
         }
         last_message_ = messageType::assistant;
       }
@@ -76,9 +76,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
     case messageType::AI:
       if (show_ai_) {
         if (last_message_ != messageType::AI) {
-          addItem(std::string(top).c_str(), std::string(bottom).c_str());
+          addItem(top, bottom);
         } else {
-          addItem("", std::string(bottom).c_str());
+          addItem("", bottom);
         }
         last_message_ = messageType::AI;
       }
@@ -86,9 +86,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
     case messageType::network:
       if (show_network_) {
         if (last_message_ != messageType::network) {
-          addItem(std::string(top).c_str(), std::string(bottom).c_str());
+          addItem(top, bottom);
         } else {
-          addItem("", std::string(bottom).c_str());
+          addItem("", bottom);
         }
         last_message_ = messageType::network;
       }
@@ -98,9 +98,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_0; /* Using base macro because I am lazy :) */
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player0) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player0;
       break;
@@ -108,9 +108,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_1;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player1) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player1;
       break;
@@ -118,9 +118,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_2;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player2) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player2;
       break;
@@ -128,9 +128,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_3;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player3) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player3;
       break;
@@ -138,9 +138,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_4;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player4) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player4;
       break;
@@ -148,9 +148,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_5;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player5) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player5;
       break;
@@ -158,9 +158,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_6;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player6) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player6;
       break;
@@ -168,9 +168,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_7;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player7) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player7;
       break;
@@ -178,9 +178,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_8;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player8) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player8;
       break;
@@ -188,9 +188,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_9;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player9) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player9;
       break;
@@ -198,9 +198,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_10;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player10) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player10;
       break;
@@ -208,9 +208,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_11;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player11) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player11;
       break;
@@ -218,9 +218,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_12;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player12) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player12;
       break;
@@ -228,9 +228,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_13;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player13) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player13;
       break;
@@ -238,9 +238,9 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       newMessageFrom = BASE_14;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
       if (last_message_ != messageType::player14) {
-        addItem(std::string(top).c_str(), std::string(bottom).c_str());
+        addItem(top, bottom);
       } else {
-        addItem("", std::string(bottom).c_str());
+        addItem("", bottom);
       }
       last_message_ = messageType::player14;
       break;
@@ -258,15 +258,15 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (show_netstat_) {
         newMessageFrom = 20;  // messageType::networkStatus;
         if (last_message_ != messageType::networkStatus) {
-          addItem(std::string(top).c_str(), std::string(bottom).c_str());
+          addItem(top, bottom);
         } else {
-          addItem("", std::string(bottom).c_str());
+          addItem("", bottom);
         }
         last_message_ = messageType::networkStatus;
       }
       break;
     case messageType::global:
-      addItem(std::string(top).c_str(), std::string(bottom).c_str());
+      addItem(top, bottom);
   }
 }
 
