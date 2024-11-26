@@ -51,223 +51,99 @@ Messages::Messages() {
 
 void Messages::addMessage(messageType msgType, std::string_view top,
                           std::string_view bottom) {
+  bool show_message = true;
+  bool show_label = (last_message_ != msgType);
   switch (msgType) {
     /* 4 Main message Types */
     case messageType::newsWire:
-      if (show_newswire_) {
-        if (last_message_ != messageType::newsWire) {
-          addItem(top, bottom);
-        } else {
-          addItem("", bottom);
-        }
-        last_message_ = messageType::newsWire;
-      }
+      show_message = show_newswire_;
       break;
     case messageType::assistant:
-      if (show_assistant_) {
-        if (last_message_ != messageType::assistant) {
-          addItem(top, bottom);
-        } else {
-          addItem("", bottom);
-        }
-        last_message_ = messageType::assistant;
-      }
+      show_message = show_assistant_;
       break;
     case messageType::AI:
-      if (show_ai_) {
-        if (last_message_ != messageType::AI) {
-          addItem(top, bottom);
-        } else {
-          addItem("", bottom);
-        }
-        last_message_ = messageType::AI;
-      }
+      show_message = show_ai_;
       break;
     case messageType::network:
-      if (show_network_) {
-        if (last_message_ != messageType::network) {
-          addItem(top, bottom);
-        } else {
-          addItem("", bottom);
-        }
-        last_message_ = messageType::network;
-      }
+      show_message = show_network_;
       break;
     /* Player Messages */
     case messageType::player0:
       newMessageFrom = BASE_0; /* Using base macro because I am lazy :) */
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player0) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player0;
       break;
     case messageType::player1:
       newMessageFrom = BASE_1;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player1) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player1;
       break;
     case messageType::player2:
       newMessageFrom = BASE_2;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player2) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player2;
       break;
     case messageType::player3:
       newMessageFrom = BASE_3;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player3) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player3;
       break;
     case messageType::player4:
       newMessageFrom = BASE_4;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player4) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player4;
       break;
     case messageType::player5:
       newMessageFrom = BASE_5;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player5) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player5;
       break;
     case messageType::player6:
       newMessageFrom = BASE_6;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player6) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player6;
       break;
     case messageType::player7:
       newMessageFrom = BASE_7;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player7) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player7;
       break;
     case messageType::player8:
       newMessageFrom = BASE_8;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player8) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player8;
       break;
     case messageType::player9:
       newMessageFrom = BASE_9;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player9) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player9;
       break;
     case messageType::player10:
       newMessageFrom = BASE_10;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player10) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player10;
       break;
     case messageType::player11:
       newMessageFrom = BASE_11;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player11) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player11;
       break;
     case messageType::player12:
       newMessageFrom = BASE_12;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player12) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player12;
       break;
     case messageType::player13:
       newMessageFrom = BASE_13;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player13) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player13;
       break;
     case messageType::player14:
       newMessageFrom = BASE_14;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player14) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player14;
       break;
     case messageType::player15:
       newMessageFrom = BASE_15;
       strcpy(newMessage, bolo::utilCtoPString(bottom).c_str());
-      if (last_message_ != messageType::player15) {
-        addItem(top, bottom);
-      } else {
-        addItem("", bottom);
-      }
-      last_message_ = messageType::player15;
       break;
     case messageType::networkStatus:
-      if (show_netstat_) {
-        newMessageFrom = 20;  // messageType::networkStatus;
-        if (last_message_ != messageType::networkStatus) {
-          addItem(top, bottom);
-        } else {
-          addItem("", bottom);
-        }
-        last_message_ = messageType::networkStatus;
-      }
+      show_message = show_netstat_;
       break;
     case messageType::global:
-      addItem(top, bottom);
+      break;
   }
+
+  // Actually show the message if requested
+  if (show_message) {
+    addItem(show_label ? top : "", bottom);
+  }
+  last_message_ = msgType;
 }
 
 void Messages::addItem(std::string_view top, std::string_view bottom) {
