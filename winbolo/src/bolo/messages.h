@@ -41,9 +41,6 @@
 /* An Empty Message */
 #define MESSAGE_EMPTY " \0"
 
-/* Time between screen updates */
-#define MESSAGE_SCROLL_TIME 4 /* Was 5 prior to 1.09 */
-
 // Different kinds of messages
 enum class messageType {
   newsWire,  // Differnt Message types

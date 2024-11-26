@@ -163,6 +163,12 @@ static std::shared_mutex cursorMutex;
 /* Frontend functions */
 bolo::Frontend *frontend = nullptr;
 
+namespace {
+
+const int MESSAGE_SCROLL_TIME = 4; /* Was 5 prior to 1.09 */
+
+}
+
 /*********************************************************
  *NAME:          screenSetup
  *AUTHOR:        John Morrison
