@@ -35,11 +35,6 @@
 
 /* Width of the screen */
 #define MESSAGE_WIDTH 68
-/* End of string marker */
-#define END_OF_STRING '\0'
-
-/* An Empty Message */
-#define MESSAGE_EMPTY " \0"
 
 // Different kinds of messages
 enum class messageType {

@@ -58,7 +58,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
         if (last_message_ != messageType::newsWire) {
           addItem(std::string(top).c_str(), std::string(bottom).c_str());
         } else {
-          addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+          addItem("", std::string(bottom).c_str());
         }
         last_message_ = messageType::newsWire;
       }
@@ -68,7 +68,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
         if (last_message_ != messageType::assistant) {
           addItem(std::string(top).c_str(), std::string(bottom).c_str());
         } else {
-          addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+          addItem("", std::string(bottom).c_str());
         }
         last_message_ = messageType::assistant;
       }
@@ -78,7 +78,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
         if (last_message_ != messageType::AI) {
           addItem(std::string(top).c_str(), std::string(bottom).c_str());
         } else {
-          addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+          addItem("", std::string(bottom).c_str());
         }
         last_message_ = messageType::AI;
       }
@@ -88,7 +88,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
         if (last_message_ != messageType::network) {
           addItem(std::string(top).c_str(), std::string(bottom).c_str());
         } else {
-          addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+          addItem("", std::string(bottom).c_str());
         }
         last_message_ = messageType::network;
       }
@@ -100,7 +100,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player0) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player0;
       break;
@@ -110,7 +110,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player1) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player1;
       break;
@@ -120,7 +120,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player2) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player2;
       break;
@@ -130,7 +130,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player3) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player3;
       break;
@@ -140,7 +140,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player4) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player4;
       break;
@@ -150,7 +150,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player5) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player5;
       break;
@@ -160,7 +160,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player6) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player6;
       break;
@@ -170,7 +170,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player7) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player7;
       break;
@@ -180,7 +180,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player8) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player8;
       break;
@@ -190,7 +190,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player9) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player9;
       break;
@@ -200,7 +200,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player10) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player10;
       break;
@@ -210,7 +210,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player11) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player11;
       break;
@@ -220,7 +220,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player12) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player12;
       break;
@@ -230,7 +230,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player13) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player13;
       break;
@@ -240,7 +240,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player14) {
         addItem(std::string(top).c_str(), std::string(bottom).c_str());
       } else {
-        addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+        addItem("", std::string(bottom).c_str());
       }
       last_message_ = messageType::player14;
       break;
@@ -250,7 +250,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
       if (last_message_ != messageType::player15) {
         addItem(top, bottom);
       } else {
-        addItem(MESSAGE_EMPTY, bottom);
+        addItem("", bottom);
       }
       last_message_ = messageType::player15;
       break;
@@ -260,7 +260,7 @@ void Messages::addMessage(messageType msgType, std::string_view top,
         if (last_message_ != messageType::networkStatus) {
           addItem(std::string(top).c_str(), std::string(bottom).c_str());
         } else {
-          addItem(MESSAGE_EMPTY, std::string(bottom).c_str());
+          addItem("", std::string(bottom).c_str());
         }
         last_message_ = messageType::networkStatus;
       }
