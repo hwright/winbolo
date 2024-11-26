@@ -38,12 +38,14 @@ Morrison <john@winbolo.com>          \0" */
 #include <string.h>
 #include <time.h>
 
+#include <format>
 #include <fstream>
 #include <mutex>
 #include <optional>
 #include <shared_mutex>
 #include <tuple>
 
+#include "../gui/lang.h"
 #include "../gui/netclient.h"
 #include "backend.h"
 #include "bases.h"
@@ -79,7 +81,6 @@ Morrison <john@winbolo.com>          \0" */
 #include "tankexp.h"
 #include "tilenum.h"
 #include "treegrow.h"
-#include "../gui/lang.h"
 #ifdef _WIN32
 #include "../gui/resource.h"
 #else
@@ -1813,9 +1814,7 @@ void screenSendMessageAllPlayers(char *messageStr) {
 bool screenSaveMap(char *fileName) {
   bool returnValue;          /* Value to return */
   char name[FILENAME_MAX];   /* The Me@This computer line */
-  char output[FILENAME_MAX]; /* The message eg Me just saved map etc */
 
-  output[0] = '\0';
   name[0] = '\0';
 
   returnValue = mapWrite(fileName, &mymp, &mypb, &mybs, &myss);
@@ -1825,11 +1824,10 @@ bool screenSaveMap(char *fileName) {
     if (netGetType() == netSingle) {
       playersMakeMessageName(screenGetPlayers(),
                              playersGetSelf(screenGetPlayers()), name);
-      strcat(output, MESSAGE_QUOTES);
-      strcat(output, name);
-      strcat(output, MESSAGE_QUOTES);
-      strcat(output, langGetText(MESSAGE_SAVED_MAP));
-      messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE), output);
+      std::string output =
+          std::format("\"{}\"{}", name, langGetText(MESSAGE_SAVED_MAP));
+      messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+                 output.c_str());
     }
   }
   return returnValue;

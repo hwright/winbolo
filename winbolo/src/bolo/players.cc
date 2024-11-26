@@ -28,6 +28,9 @@
 
 #include <string.h>
 
+#include <format>
+
+#include "../gui/lang.h"
 #include "../server/servercore.h"
 #include "allience.h"
 #include "backend.h"
@@ -44,7 +47,6 @@
 #include "tank.h"
 #include "tilenum.h"
 #include "util.h"
-#include "../gui/lang.h"
 #ifdef _WIN32
 #include "../gui/resource.h"
 #else
@@ -180,11 +182,9 @@ bool playersSetSelf(players *plrs, BYTE playerNum, char *playerName) {
  *********************************************************/
 bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
   bool returnValue;              /* Value to return */
-  char messageStr[FILENAME_MAX]; /* Newswire Message */
   char label[FILENAME_MAX];      /* Used to hold the string made by label */
   char temp[FILENAME_MAX];
 
-  messageStr[0] = '\0';
   label[0] = '\0';
   returnValue = false;
   if ((*plrs)->item[playerNum].inUse) {
@@ -192,7 +192,6 @@ bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
       /* OK to change do so and then make the message */
       returnValue = true;
       /* Make Message */
-      strcat(messageStr, MESSAGE_QUOTES);
       if (playerNum == (*plrs)->myPlayerNum) {
         labelMakeMessage(label, (*plrs)->item[playerNum].playerName,
                          langGetText(MESSAGE_THIS_COMPUTER));
@@ -200,13 +199,10 @@ bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
         labelMakeMessage(label, (*plrs)->item[playerNum].playerName,
                          (*plrs)->item[playerNum].location);
       }
-      strcat(messageStr, label);
-      strcat(messageStr, MESSAGE_QUOTES);
-      strcat(messageStr, langGetText(MESSAGE_CHANGENAME));
-      strcat(messageStr, playerName);
-      strcat(messageStr, MESSAGE_QUOTES);
+      std::string messageStr = std::format(
+          "\"{}\"{}{}\"", label, langGetText(MESSAGE_CHANGENAME), playerName);
       messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
-                 messageStr);
+                 messageStr.c_str());
       /* Update the name */
       strcpy((*plrs)->item[playerNum].playerName, playerName);
       strcpy((char *)(*plrs)->playerBrainNames[playerNum],
@@ -1118,7 +1114,6 @@ BYTE playersGetFirstNotUsed(players *plrs) {
  *********************************************************/
 void playersLeaveGame(players *plrs, BYTE playerNum) {
   char name[FILENAME_MAX];   /* The Player Name */
-  char output[FILENAME_MAX]; /* The message */
   BYTE count;                /* Looping variable */
 
   if ((*plrs)->item[playerNum].inUse) {
@@ -1132,7 +1127,6 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
       count++;
     }
 
-    output[0] = '\0';
     name[0] = '\0';
     playersMakeMessageName(plrs, playerNum, name);
     (*plrs)->item[playerNum].inUse = false;
@@ -1145,11 +1139,10 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
       screenGetFrontend()->setPlayerCheckState((playerNumbers)playerNum, false);
     }
     /* Make a message about it */
-    strcat(output, MESSAGE_QUOTES);
-    strcat(output, name);
-    strcat(output, MESSAGE_QUOTES);
-    strcat(output, langGetText(MESSAGE_QUIT_GAME));
-    messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE), output);
+    std::string output =
+        std::format("\"{}\"{}", name, langGetText(MESSAGE_QUIT_GAME));
+    messageAdd(messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
+               output.c_str());
   }
 }
 

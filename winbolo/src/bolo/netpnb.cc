@@ -27,8 +27,10 @@
 
 #include "netpnb.h"
 
+#include <format>
 #include <tuple>
 
+#include "../gui/lang.h"
 #include "../server/servercore.h"
 #include "backend.h"
 #include "bases.h"
@@ -42,7 +44,6 @@
 #include "screen.h"
 #include "sounddist.h"
 #include "util.h"
-#include "../gui/lang.h"
 #ifdef _WIN32
 #include "../gui/resource.h"
 #else
@@ -667,17 +668,13 @@ bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb,
 void netPNBMessage(BYTE playerNum, char *msg) {
   char name[FILENAME_MAX];   /* The Player Name */
   char msg2[FILENAME_MAX];   /* Temp buffer */
-  char output[FILENAME_MAX]; /* The message */
 
-  output[0] = '\0';
   name[0] = '\0';
   strcpy(msg2, msg);
   playersMakeMessageName(screenGetPlayers(), playerNum, name);
-  strcat(output, MESSAGE_QUOTES);
-  strcat(output, name);
-  strcat(output, MESSAGE_QUOTES);
-  strcat(output, msg2);
-  messageAdd(messageType::newsWire, langGetText2(MESSAGE_NEWSWIRE), output);
+  std::string output = std::format("\"{}\"{}", name, msg2);
+  messageAdd(messageType::newsWire, langGetText2(MESSAGE_NEWSWIRE),
+             output.c_str());
 }
 
 /*********************************************************

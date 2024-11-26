@@ -33,15 +33,6 @@
 
 #include "global.h"
 
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define MessageTail(list) ((list)->next);
-#define MessageHeadTop(list) ((list)->topLine);
-#define MessageHeadBottom(list) ((list)->bottomLine);
-
-/* Message String Macros */
-#define MESSAGE_QUOTES "\""
-
 /* Width of the screen */
 #define MESSAGE_WIDTH 68
 /* End of string marker */
