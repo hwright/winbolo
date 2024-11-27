@@ -962,7 +962,8 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
   ta[0] = mytk;
   basesGetStats(&mybs, (basesGetClosest(&mybs, tankX, tankY)), &shellsAmount,
                 &armour, &minesAmount);
-  frontend->updateBaseStatusBars(shellsAmount, minesAmount, armour);
+  frontend->updateBaseSupplyBars(bolo::BaseSupply{
+      .shells = shellsAmount, .mines = minesAmount, .armor = armour});
   shellsUpdate(&myshs, &mymp, &mypb, &mybs, ta, 1, false);
   lgmUpdate(&mylgman, &mymp, &mypb, &mybs, &mytk);
   test = &mylgman;

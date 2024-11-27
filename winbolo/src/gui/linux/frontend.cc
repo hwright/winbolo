@@ -99,10 +99,11 @@ void LinuxFrontend::updateTankSupplyBars(TankSupply tank_supply) {
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 
-void LinuxFrontend::updateBaseStatusBars(uint8_t shells, uint8_t mines,
-                                         uint8_t armour) {
+void LinuxFrontend::updateBaseSupplyBars(BaseSupply base_supply) {
+  base_supply_ = std::move(base_supply);
   uint64_t tick = SDL_GetTicks();
-  drawStatusBaseBars(0, 0, shells, mines, armour, FALSE);
+  drawStatusBaseBars(0, 0, base_supply_.shells, base_supply_.mines,
+                     base_supply_.armor, false);
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 

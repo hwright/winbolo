@@ -25,8 +25,7 @@ namespace bolo {
 class LinuxFrontend : public Frontend {
  public:
   void updateTankSupplyBars(TankSupply tank_supply) override;
-  void updateBaseStatusBars(uint8_t shells, uint8_t mines,
-                            uint8_t armour) override;
+  void updateBaseSupplyBars(BaseSupply base_supply) override;
   void playSound(sndEffects value) override;
   void drawMainScreen(ScreenTiles tiles, ScreenTankList tks,
                       std::optional<ScreenGunsight> gunsight,
@@ -53,6 +52,7 @@ class LinuxFrontend : public Frontend {
 
  private:
   TankSupply tank_supply_;
+  BaseSupply base_supply_;
 };
 
 }  // namespace bolo

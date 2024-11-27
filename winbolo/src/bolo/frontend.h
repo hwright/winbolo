@@ -41,6 +41,13 @@ struct TankSupply {
   uint8_t trees = 0;
 };
 
+// Consolidated base supply struct
+struct BaseSupply {
+  uint8_t shells = 0;
+  uint8_t mines = 0;
+  uint8_t armor = 0;
+};
+
 // The interface which a frontend must implement
 class Frontend {
  public:
@@ -55,11 +62,8 @@ class Frontend {
   // Called when the tanks status bars need to be updated
   //
   // ARGUMENTS:
-  //  shells  - Number of shells
-  //  mines   - Number of mines
-  //  armour  - Amount of armour
-  virtual void updateBaseStatusBars(uint8_t shells, uint8_t mines,
-                                    uint8_t armour) = 0;
+  //  status  - The base status struct
+  virtual void updateBaseSupplyBars(BaseSupply base_status) = 0;
 
   // Play a sound effect if sounds are enabled.
   //
