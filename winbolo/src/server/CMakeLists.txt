@@ -28,7 +28,6 @@ add_executable(linbolods
                ../bolo/players.cc
                ../bolo/playersrejoin.cc
                ../bolo/screenbrainmap.cc
-               ../bolo/screenbullet.cc
                ../bolo/screencalc.cc
                ../bolo/shells.cc
                ../bolo/starts.cc

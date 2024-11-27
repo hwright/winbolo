@@ -30,7 +30,7 @@
 #include "global.h"
 #include "rubble.h"
 #include "screen.h"
-#include "screenbullet.h"
+#include "screentypes.h"
 
 /*********************************************************
  *NAME:          explosionsCreate
@@ -195,17 +195,21 @@ void explosionDeleteItem(explosions *expl, explosions *value) {
  *  topPos     - Y Map offset end
  *  bottomPos  - Y Map offset end
  *********************************************************/
-void explosionsCalcScreenBullets(explosions *expl, screenBullets *sBullets,
-                                 BYTE leftPos, BYTE rightPos, BYTE topPos,
-                                 BYTE bottomPos) {
+void explosionsCalcScreenBullets(explosions *expl,
+                                 bolo::ScreenBulletList *sBullets, BYTE leftPos,
+                                 BYTE rightPos, BYTE topPos, BYTE bottomPos) {
   explosions q; /* Temp Pointer */
 
   q = *expl;
   while (NonEmpty(q)) {
     if (q->mx >= leftPos && q->mx < rightPos && q->my >= topPos &&
         q->my < bottomPos) {
-      screenBulletsAddItem(sBullets, (BYTE)(q->mx - leftPos),
-                           (BYTE)(q->my - topPos), q->px, q->py, q->length);
+      sBullets->push_back(bolo::ScreenBullet{
+          .pos = MapPoint{.x = static_cast<uint8_t>(q->mx - leftPos),
+                          .y = static_cast<uint8_t>(q->my - topPos)},
+          .px = q->px,
+          .py = q->py,
+          .frame = q->length});
     }
     q = ExplosionsTail(q);
   }

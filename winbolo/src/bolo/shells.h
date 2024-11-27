@@ -28,7 +28,7 @@
 #define SHELLS_H
 
 #include "global.h"
-#include "screenbullet.h"
+#include "screentypes.h"
 #include "types.h"
 #include "util.h"
 
@@ -192,7 +192,7 @@ void shellsDeleteItem(shells *master, shells *value);
  *  top      - Y Map offset end
  *  bottom   - Y Map offset end
  *********************************************************/
-void shellsCalcScreenBullets(shells *value, screenBullets *sBullets,
+void shellsCalcScreenBullets(shells *value, bolo::ScreenBulletList *sBullets,
                              BYTE leftPos, BYTE rightPos, BYTE top,
                              BYTE bottom);
 

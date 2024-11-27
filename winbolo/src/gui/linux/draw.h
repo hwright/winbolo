@@ -75,7 +75,7 @@ void drawCleanup(void);
  *ARGUMENTS:
  *  sBullets - The screen Bullets data structure
  *********************************************************/
-void drawShells(screenBullets *sBullets);
+void drawShells(const bolo::ScreenBulletList &sBullets);
 
 /*********************************************************
  *NAME:          drawTanks
@@ -131,8 +131,8 @@ void drawLGMs(screenLgm *lgms);
  *  cursorTop      - Cursor Top position
  *********************************************************/
 void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
-                    std::optional<bolo::ScreenGunsight> gunsight,
-                    screenBullets *sBullets, screenLgm *lgms,
+                    const std::optional<bolo::ScreenGunsight> &gunsight,
+                    const bolo::ScreenBulletList &sBullets, screenLgm *lgms,
                     bool showPillLabels, bool showBaseLabels, long srtDelay,
                     bool isPillView, int edgeX, int edgeY, bool useCursor,
                     BYTE cursorLeft, BYTE cursorTop);

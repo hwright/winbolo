@@ -45,7 +45,7 @@
 #include "players.h"
 #include "rubble.h"
 #include "screen.h"
-#include "screenbullet.h"
+#include "screentypes.h"
 #include "sounddist.h"
 #include "swamp.h"
 #include "tank.h"
@@ -357,7 +357,7 @@ void shellsDeleteItem(shells *master, shells *value) {
  *  top      - Y Map offset end
  *  bottom   - Y Map offset end
  *********************************************************/
-void shellsCalcScreenBullets(shells *value, screenBullets *sBullets,
+void shellsCalcScreenBullets(shells *value, bolo::ScreenBulletList *sBullets,
                              BYTE leftPos, BYTE rightPos, BYTE top,
                              BYTE bottom) {
   shells q;   /* Temp Pointer */
@@ -389,8 +389,11 @@ void shellsCalcScreenBullets(shells *value, screenBullets *sBullets,
       conv <<= TANK_SHIFT_MAPSIZE;
       conv >>= TANK_SHIFT_PIXELSIZE;
       py = (BYTE)conv;
-      screenBulletsAddItem(sBullets, x, y, px, py,
-                           (BYTE)(frame + SHELL_START_EXPLODE + 1));
+      sBullets->push_back(bolo::ScreenBullet{
+          .pos = MapPoint{.x = x, .y = y},
+          .px = px,
+          .py = py,
+          .frame = static_cast<uint8_t>(frame + SHELL_START_EXPLODE + 1)});
     }
     q = ShellsTail(q);
   }

@@ -28,7 +28,7 @@
 #define EXPLOSIONS_H
 
 #include "global.h"
-#include "screenbullet.h"
+#include "screentypes.h"
 
 #define IsEmpty(list) ((list) == NULL)
 #define NonEmpty(list) (!IsEmpty(list))
@@ -145,8 +145,8 @@ void explosionDeleteItem(explosions *expl, explosions *value);
  *  topPos     - Y Map offset end
  *  bottomPos  - Y Map offset end
  *********************************************************/
-void explosionsCalcScreenBullets(explosions *expl, screenBullets *sBullets,
-                                 BYTE leftPos, BYTE rightPos, BYTE topPos,
-                                 BYTE bottomPos);
+void explosionsCalcScreenBullets(explosions *expl,
+                                 bolo::ScreenBulletList *sBullets, BYTE leftPos,
+                                 BYTE rightPos, BYTE topPos, BYTE bottomPos);
 
 #endif /* EXPLOSIONS_H */

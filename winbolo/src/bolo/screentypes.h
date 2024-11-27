@@ -13,10 +13,12 @@
  * GNU General Public License for more details.
  */
 
-// Defines the gunsight position on the screen
+// Various types which represent computed values before to display.
 
-#ifndef _SCREENGUNSIGHT_H
-#define _SCREENGUNSIGHT_H
+#ifndef _SCREENTYPES_H
+#define _SCREENTYPES_H
+
+#include <vector>
 
 #include "types.h"
 
@@ -27,6 +29,16 @@ struct ScreenGunsight {
   uint8_t pixelX = 0;
   uint8_t pixelY = 0;
 };
+
+struct ScreenBullet {
+  // Map point of the bullet (mapped to screen)
+  MapPoint pos;
+  uint8_t px;     // X Pixel offset of the bullet
+  uint8_t py;     // Y Pixel offset of the bullet
+  uint8_t frame;  // Frame identifier type
+};
+
+using ScreenBulletList = std::vector<ScreenBullet>;
 
 }  // namespace bolo
 

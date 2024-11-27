@@ -32,7 +32,7 @@
 #include "bolo_map.h"
 #include "global.h"
 #include "pillbox.h"
-#include "screengunsight.h"
+#include "screentypes.h"
 #include "shells.h"
 #include "starts.h"
 #include "types.h"

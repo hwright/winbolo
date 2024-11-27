@@ -55,7 +55,6 @@ add_executable(linbolo
                ../../bolo/playersrejoin.cc
                ../../bolo/screen.cc
                ../../bolo/screenbrainmap.cc
-               ../../bolo/screenbullet.cc
                ../../bolo/screencalc.cc
                ../../bolo/screenlgm.cc
                ../../bolo/screentank.cc

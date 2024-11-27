@@ -43,9 +43,9 @@
 #include "netmt.h"
 #include "netpnb.h"
 #include "rubble.h"
-#include "screenbullet.h"
 #include "screenlgm.h"
 #include "screentank.h"
+#include "screentypes.h"
 #include "swamp.h"
 #include "tankexp.h"
 
