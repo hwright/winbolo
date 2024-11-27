@@ -667,8 +667,8 @@ bool tankIsGunsightShow(tank *value) { return (*value)->showSight; }
  *  xPixel - Pointer to hold X Pixel
  *  yPixel - Pointer to hold Y Pixel
  *********************************************************/
-void tankGetGunsight(tank *value, BYTE *xMap, BYTE *yMap, BYTE *xPixel,
-                     BYTE *yPixel) {
+screenGunsight tankGetGunsight(tank *value) {
+  screenGunsight returnValue;
   WORLD x;
   WORLD y;
   WORLD conv;
@@ -686,28 +686,30 @@ void tankGetGunsight(tank *value, BYTE *xMap, BYTE *yMap, BYTE *xPixel,
 
     conv = x;
     conv >>= TANK_SHIFT_MAPSIZE;
-    *xMap = (BYTE)conv;
+    returnValue.mapX = (BYTE)conv;
 
     conv = y;
     conv >>= TANK_SHIFT_MAPSIZE;
-    *yMap = (BYTE)conv;
+    returnValue.mapY = (BYTE)conv;
 
     conv = x;
     conv <<= TANK_SHIFT_MAPSIZE;
     conv >>= TANK_SHIFT_PIXELSIZE;
 
-    *xPixel = (BYTE)conv;
+    returnValue.pixelX = (BYTE)conv;
 
     conv = y;
     conv <<= TANK_SHIFT_MAPSIZE;
     conv >>= TANK_SHIFT_PIXELSIZE;
-    *yPixel = (BYTE)conv;
+    returnValue.pixelY = (BYTE)conv;
   } else {
-    *xMap = 0;
-    *yMap = 0;
-    *xPixel = 0;
-    *yPixel = 0;
+    returnValue.mapX = 0;
+    returnValue.mapY = 0;
+    returnValue.pixelX = 0;
+    returnValue.pixelY = 0;
   }
+
+  return returnValue;
 }
 
 /*********************************************************

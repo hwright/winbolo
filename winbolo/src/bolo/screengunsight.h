@@ -13,6 +13,9 @@
  * GNU General Public License for more details.
  */
 
+#ifndef _SCREENGUNSIGHT_H
+#define _SCREENGUNSIGHT_H
+
 /* Defines the gunsight position on the screen */
 /* If turned off mapX is set to NO_GUNSIGHT */
 typedef struct {
@@ -21,3 +24,5 @@ typedef struct {
   BYTE pixelX;
   BYTE pixelY;
 } screenGunsight;
+
+#endif
