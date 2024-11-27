@@ -176,7 +176,8 @@ void tkExplosionDeleteItem(tkExplosion *tkem, tkExplosion *value);
  *  topPos    - Y Map offset end
  *  bottomPos - Y Map offset end
  *********************************************************/
-void tkExplosionCalcScreenBullets(tkExplosion *tke, screenBullets *sBullets,
+void tkExplosionCalcScreenBullets(tkExplosion *tke,
+                                  bolo::ScreenBulletList *sBullets,
                                   BYTE leftPos, BYTE rightPos, BYTE topPos,
                                   BYTE bottomPos);
 

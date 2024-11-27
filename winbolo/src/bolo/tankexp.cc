@@ -367,7 +367,8 @@ void tkExplosionDeleteItem(tkExplosion *tke, tkExplosion *value) {
  *  topPos    - Y Map offset end
  *  bottomPos - Y Map offset end
  *********************************************************/
-void tkExplosionCalcScreenBullets(tkExplosion *tke, screenBullets *sBullets,
+void tkExplosionCalcScreenBullets(tkExplosion *tke,
+                                  bolo::ScreenBulletList *sBullets,
                                   BYTE leftPos, BYTE rightPos, BYTE topPos,
                                   BYTE bottomPos) {
   tkExplosion q; /* Temp Pointer */
@@ -395,8 +396,12 @@ void tkExplosionCalcScreenBullets(tkExplosion *tke, screenBullets *sBullets,
       conv >>= TANK_SHIFT_PIXELSIZE;
       py = (BYTE)conv;
 
-      screenBulletsAddItem(sBullets, (BYTE)(mx - leftPos), (BYTE)(my - topPos),
-                           px, py, TANK_EXPLOSION_FRAME);
+      sBullets->push_back(bolo::ScreenBullet{
+          .pos = MapPoint{.x = static_cast<uint8_t>(mx - leftPos),
+                          .y = static_cast<uint8_t>(my - topPos)},
+          .px = px,
+          .py = py,
+          .frame = TANK_EXPLOSION_FRAME});
     }
     q = TkExplosionTail(q);
   }

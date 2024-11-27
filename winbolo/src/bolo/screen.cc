@@ -317,7 +317,6 @@ void screenUpdate(updateType value) {
   BYTE y;
   BYTE px; /* Pixel X and Y co-ords of the tank */
   BYTE py;
-  screenBullets sBullets;
   screenLgm lgms;
   screenTanks scnTnk;
   netStatus ns;
@@ -358,7 +357,7 @@ void screenUpdate(updateType value) {
   }
 
   screenLgmCreate(&lgms);
-  sBullets = screenBulletsCreate();
+  bolo::ScreenBulletList sBullets;
   screenTanksCreate(&scnTnk);
 
   switch (value) {
@@ -481,10 +480,9 @@ void screenUpdate(updateType value) {
                                  yOffset,
                                  (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
     frontend->drawMainScreen(&view, &mineView, &scnTnk, std::move(gs),
-                             &sBullets, &lgms, gmeStartDelay, inPillView, &mytk,
-                             0, 0);
+                             std::move(sBullets), &lgms, gmeStartDelay,
+                             inPillView, &mytk, 0, 0);
   }
-  screenBulletsDestroy(&sBullets);
   screenLgmDestroy(&lgms);
   screenTanksDestroy(&scnTnk);
   b = false;

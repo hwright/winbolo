@@ -515,173 +515,159 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
  *ARGUMENTS:
  *  sBullets - The screen Bullets data structure
  *********************************************************/
-void drawShells(screenBullets *sBullets) {
+void drawShells(const bolo::ScreenBulletList &sBullets) {
   SDL_Rect output; /* Output Rectangle */
-  int total;       /* Total shells to been drawn */
-  int count;       /* Looping Variable */
-  BYTE px;
-  BYTE py;
-  BYTE frame;
-  BYTE mx;
-  BYTE my;
-  BYTE zf;
   SDL_Rect dest;
 
-  total = screenBulletsGetNumEntries(sBullets);
-  count = 1;
-  zf = 1;  // FIXME: windowGetZoomFactor();
-  while (count <= total) {
-    screenBulletsGetItem(sBullets, count, &mx, &my, &px, &py, &frame);
-    dest.x = (mx * zf * TILE_SIZE_X) + zf * px;
-    dest.y = (my * zf * TILE_SIZE_Y) + zf * py;
-    switch (frame) {
+  for (const auto &bullet : sBullets) {
+    dest.x = (bullet.pos.x * TILE_SIZE_X) + bullet.px;
+    dest.y = (bullet.pos.y * TILE_SIZE_Y) + bullet.py;
+    switch (bullet.frame) {
       case SHELL_EXPLOSION8:
-        output.x = zf * EXPLOSION8_X;
-        output.y = zf * EXPLOSION8_Y;
-        output.w = zf * TILE_SIZE_X;
-        output.h = zf * TILE_SIZE_Y;
+        output.x = EXPLOSION8_X;
+        output.y = EXPLOSION8_Y;
+        output.w = TILE_SIZE_X;
+        output.h = TILE_SIZE_Y;
         break;
       case SHELL_EXPLOSION7:
-        output.x = zf * EXPLOSION7_X;
-        output.y = zf * EXPLOSION7_Y;
-        output.w = zf * TILE_SIZE_X;
-        output.h = zf * TILE_SIZE_Y;
+        output.x = EXPLOSION7_X;
+        output.y = EXPLOSION7_Y;
+        output.w = TILE_SIZE_X;
+        output.h = TILE_SIZE_Y;
         break;
       case SHELL_EXPLOSION6:
-        output.x = zf * EXPLOSION6_X;
-        output.y = zf * EXPLOSION6_Y;
-        output.w = zf * TILE_SIZE_X;
-        output.h = zf * TILE_SIZE_Y;
+        output.x = EXPLOSION6_X;
+        output.y = EXPLOSION6_Y;
+        output.w = TILE_SIZE_X;
+        output.h = TILE_SIZE_Y;
         break;
       case SHELL_EXPLOSION5:
-        output.x = zf * EXPLOSION5_X;
-        output.y = zf * EXPLOSION5_Y;
-        output.w = zf * TILE_SIZE_X;
-        output.h = zf * TILE_SIZE_Y;
+        output.x = EXPLOSION5_X;
+        output.y = EXPLOSION5_Y;
+        output.w = TILE_SIZE_X;
+        output.h = TILE_SIZE_Y;
         break;
       case SHELL_EXPLOSION4:
-        output.x = zf * EXPLOSION4_X;
-        output.y = zf * EXPLOSION4_Y;
-        output.w = zf * TILE_SIZE_X;
-        output.h = zf * TILE_SIZE_Y;
+        output.x = EXPLOSION4_X;
+        output.y = EXPLOSION4_Y;
+        output.w = TILE_SIZE_X;
+        output.h = TILE_SIZE_Y;
         break;
       case SHELL_EXPLOSION3:
-        output.x = zf * EXPLOSION3_X;
-        output.y = zf * EXPLOSION3_Y;
-        output.w = zf * TILE_SIZE_X;
-        output.h = zf * TILE_SIZE_Y;
+        output.x = EXPLOSION3_X;
+        output.y = EXPLOSION3_Y;
+        output.w = TILE_SIZE_X;
+        output.h = TILE_SIZE_Y;
         break;
       case SHELL_EXPLOSION2:
-        output.x = zf * EXPLOSION2_X;
-        output.y = zf * EXPLOSION2_Y;
-        output.w = zf * TILE_SIZE_X;
-        output.h = zf * TILE_SIZE_Y;
+        output.x = EXPLOSION2_X;
+        output.y = EXPLOSION2_Y;
+        output.w = TILE_SIZE_X;
+        output.h = TILE_SIZE_Y;
         break;
       case SHELL_EXPLOSION1:
-        output.x = zf * EXPLOSION1_X;
-        output.y = zf * EXPLOSION1_Y;
-        output.w = zf * TILE_SIZE_X;
-        output.h = zf * TILE_SIZE_Y;
+        output.x = EXPLOSION1_X;
+        output.y = EXPLOSION1_Y;
+        output.w = TILE_SIZE_X;
+        output.h = TILE_SIZE_Y;
         break;
       case SHELL_DIR0:
-        output.x = zf * SHELL_0_X;
-        output.y = zf * SHELL_0_Y;
-        output.w = zf * SHELL_0_WIDTH;
-        output.h = zf * SHELL_0_HEIGHT;
+        output.x = SHELL_0_X;
+        output.y = SHELL_0_Y;
+        output.w = SHELL_0_WIDTH;
+        output.h = SHELL_0_HEIGHT;
         break;
       case SHELL_DIR1:
-        output.x = zf * SHELL_1_X;
-        output.y = zf * SHELL_1_Y;
-        output.w = zf * SHELL_1_WIDTH;
-        output.h = zf * SHELL_1_HEIGHT;
+        output.x = SHELL_1_X;
+        output.y = SHELL_1_Y;
+        output.w = SHELL_1_WIDTH;
+        output.h = SHELL_1_HEIGHT;
         break;
       case SHELL_DIR2:
-        output.x = zf * SHELL_2_X;
-        output.y = zf * SHELL_2_Y;
-        output.w = zf * SHELL_2_WIDTH;
-        output.h = zf * SHELL_2_HEIGHT;
+        output.x = SHELL_2_X;
+        output.y = SHELL_2_Y;
+        output.w = SHELL_2_WIDTH;
+        output.h = SHELL_2_HEIGHT;
         break;
       case SHELL_DIR3:
-        output.x = zf * SHELL_3_X;
-        output.y = zf * SHELL_3_Y;
-        output.w = zf * SHELL_3_WIDTH;
-        output.h = zf * SHELL_3_HEIGHT;
+        output.x = SHELL_3_X;
+        output.y = SHELL_3_Y;
+        output.w = SHELL_3_WIDTH;
+        output.h = SHELL_3_HEIGHT;
         break;
       case SHELL_DIR4:
-        output.x = zf * SHELL_4_X;
-        output.y = zf * SHELL_4_Y;
-        output.w = zf * SHELL_4_WIDTH;
-        output.h = zf * SHELL_4_HEIGHT;
+        output.x = SHELL_4_X;
+        output.y = SHELL_4_Y;
+        output.w = SHELL_4_WIDTH;
+        output.h = SHELL_4_HEIGHT;
         break;
       case SHELL_DIR5:
-        output.x = zf * SHELL_5_X;
-        output.y = zf * SHELL_5_Y;
-        output.w = zf * SHELL_5_WIDTH;
-        output.h = zf * SHELL_5_HEIGHT;
+        output.x = SHELL_5_X;
+        output.y = SHELL_5_Y;
+        output.w = SHELL_5_WIDTH;
+        output.h = SHELL_5_HEIGHT;
         break;
       case SHELL_DIR6:
-        output.x = zf * SHELL_6_X;
-        output.y = zf * SHELL_6_Y;
-        output.w = zf * SHELL_6_WIDTH;
-        output.h = zf * SHELL_6_HEIGHT;
+        output.x = SHELL_6_X;
+        output.y = SHELL_6_Y;
+        output.w = SHELL_6_WIDTH;
+        output.h = SHELL_6_HEIGHT;
         break;
       case SHELL_DIR7:
-        output.x = zf * SHELL_7_X;
-        output.y = zf * SHELL_7_Y;
-        output.w = zf * SHELL_7_WIDTH;
-        output.h = zf * SHELL_7_HEIGHT;
+        output.x = SHELL_7_X;
+        output.y = SHELL_7_Y;
+        output.w = SHELL_7_WIDTH;
+        output.h = SHELL_7_HEIGHT;
         break;
       case SHELL_DIR8:
-        output.x = zf * SHELL_8_X;
-        output.y = zf * SHELL_8_Y;
-        output.w = zf * SHELL_8_WIDTH;
-        output.h = zf * SHELL_8_HEIGHT;
+        output.x = SHELL_8_X;
+        output.y = SHELL_8_Y;
+        output.w = SHELL_8_WIDTH;
+        output.h = SHELL_8_HEIGHT;
         break;
       case SHELL_DIR9:
-        output.x = zf * SHELL_9_X;
-        output.y = zf * SHELL_9_Y;
-        output.w = zf * SHELL_9_WIDTH;
-        output.h = zf * SHELL_9_HEIGHT;
+        output.x = SHELL_9_X;
+        output.y = SHELL_9_Y;
+        output.w = SHELL_9_WIDTH;
+        output.h = SHELL_9_HEIGHT;
         break;
       case SHELL_DIR10:
-        output.x = zf * SHELL_10_X;
-        output.y = zf * SHELL_10_Y;
-        output.w = zf * SHELL_10_WIDTH;
-        output.h = zf * SHELL_10_HEIGHT;
+        output.x = SHELL_10_X;
+        output.y = SHELL_10_Y;
+        output.w = SHELL_10_WIDTH;
+        output.h = SHELL_10_HEIGHT;
         break;
       case SHELL_DIR11:
-        output.x = zf * SHELL_11_X;
-        output.y = zf * SHELL_11_Y;
-        output.w = zf * SHELL_11_WIDTH;
-        output.h = zf * SHELL_11_HEIGHT;
+        output.x = SHELL_11_X;
+        output.y = SHELL_11_Y;
+        output.w = SHELL_11_WIDTH;
+        output.h = SHELL_11_HEIGHT;
         break;
       case SHELL_DIR12:
-        output.x = zf * SHELL_12_X;
-        output.y = zf * SHELL_12_Y;
-        output.w = zf * SHELL_12_WIDTH;
-        output.h = zf * SHELL_12_HEIGHT;
+        output.x = SHELL_12_X;
+        output.y = SHELL_12_Y;
+        output.w = SHELL_12_WIDTH;
+        output.h = SHELL_12_HEIGHT;
         break;
       case SHELL_DIR13:
-        output.x = zf * SHELL_13_X;
-        output.y = zf * SHELL_13_Y;
-        output.w = zf * SHELL_13_WIDTH;
-        output.h = zf * SHELL_13_HEIGHT;
+        output.x = SHELL_13_X;
+        output.y = SHELL_13_Y;
+        output.w = SHELL_13_WIDTH;
+        output.h = SHELL_13_HEIGHT;
         break;
       case SHELL_DIR14:
-        output.x = zf * SHELL_14_X;
-        output.y = zf * SHELL_14_Y;
-        output.w = zf * SHELL_14_WIDTH;
-        output.h = zf * SHELL_14_HEIGHT;
+        output.x = SHELL_14_X;
+        output.y = SHELL_14_Y;
+        output.w = SHELL_14_WIDTH;
+        output.h = SHELL_14_HEIGHT;
         break;
-      default:
-        /* SHELL_DIR15 */
-        output.x = zf * SHELL_15_X;
-        output.y = zf * SHELL_15_Y;
-        output.w = zf * SHELL_15_WIDTH;
-        output.h = zf * SHELL_15_HEIGHT;
+      case SHELL_DIR15:
+        output.x = SHELL_15_X;
+        output.y = SHELL_15_Y;
+        output.w = SHELL_15_WIDTH;
+        output.h = SHELL_15_HEIGHT;
         break;
     }
-    count++;
     dest.w = output.w;
     dest.h = output.h;
     SDL_BlitSurface(lpTiles, &output, lpBackBuffer, &dest);
@@ -1380,8 +1366,8 @@ void drawStartDelay(long srtDelay) {
  *  cursorTop      - Cursor Top position
  *********************************************************/
 void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
-                    std::optional<bolo::ScreenGunsight> gunsight,
-                    screenBullets *sBullets, screenLgm *lgms,
+                    const std::optional<bolo::ScreenGunsight> &gunsight,
+                    const bolo::ScreenBulletList &sBullets, screenLgm *lgms,
                     bool showPillLabels, bool showBaseLabels, long srtDelay,
                     bool isPillView, int edgeX, int edgeY, bool useCursor,
                     BYTE cursorLeft, BYTE cursorTop) {

@@ -79,7 +79,7 @@ class Frontend {
   virtual void drawMainScreen(screen *value, screenMines *mineView,
                               screenTanks *tks,
                               std::optional<ScreenGunsight> gunsight,
-                              screenBullets *sBullet, screenLgm *lgms,
+                              ScreenBulletList sBullets, screenLgm *lgms,
                               long srtDelay, bool isPillView, tank *tank,
                               int edgeX, int edgeY) = 0;
 

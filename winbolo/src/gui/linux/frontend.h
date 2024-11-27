@@ -31,7 +31,7 @@ class LinuxFrontend : public Frontend {
   void playSound(sndEffects value) override;
   void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
                       std::optional<ScreenGunsight> gunsight,
-                      screenBullets *sBullet, screenLgm *lgms, long srtDelay,
+                      ScreenBulletList sBullet, screenLgm *lgms, long srtDelay,
                       bool isPillView, tank *tank, int edgeX,
                       int edgeY) override;
   void statusPillbox(uint8_t pillNum, pillAlliance pb) override;

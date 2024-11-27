@@ -307,9 +307,8 @@ void serverCoreDestroy() {
 /* FIXME: Comment */
 void serverCoreLogTick() {
   if (logIsRecording()) {
-    BYTE temp1, temp2, temp3, mx, my;
-    int count, entries;
-    screenBullets sb = screenBulletsCreate();
+    BYTE mx, my;
+    int count;
     /* Item locations */
     for (count = 0; count < MAX_TANKS; count++) {
       if (tk[count] != nullptr) {
@@ -334,18 +333,17 @@ void serverCoreLogTick() {
     }
 
     /* Shells */
+    bolo::ScreenBulletList sb;
     shellsCalcScreenBullets(&shs, &sb, 0, MAP_ARRAY_LAST, 0, MAP_ARRAY_LAST);
     explosionsCalcScreenBullets(&serverExpl, &sb, 0, MAP_ARRAY_LAST, 0,
                                 MAP_ARRAY_LAST);
     tkExplosionCalcScreenBullets(&serverTankExp, &sb, 0, MAP_ARRAY_LAST, 0,
                                  MAP_ARRAY_LAST);
-    entries = screenBulletsGetNumEntries(&sb);
-    for (count = 1; count <= entries; count++) {
-      screenBulletsGetItem(&sb, count, &mx, &my, &temp1, &temp2, &temp3);
-      logAddEvent(log_Shell, mx, my, bolo::utilPutNibble(temp1, temp2), temp3,
-                  0, nullptr);
+    for (const auto &bullet : sb) {
+      logAddEvent(log_Shell, bullet.pos.x, bullet.pos.y,
+                  bolo::utilPutNibble(bullet.px, bullet.py), bullet.frame, 0,
+                  nullptr);
     }
-    screenBulletsDestroy(&sb);
   }
   logWriteTick();
 }

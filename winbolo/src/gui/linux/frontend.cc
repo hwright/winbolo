@@ -113,9 +113,10 @@ void LinuxFrontend::playSound(sndEffects value) {
 void LinuxFrontend::drawMainScreen(screen *value, screenMines *mineView,
                                    screenTanks *tks,
                                    std::optional<ScreenGunsight> gunsight,
-                                   screenBullets *sBullet, screenLgm *lgms,
-                                   long srtDelay, bool isPillView, tank *tank,
-                                   int edgeX, int edgeY) {
+                                   bolo::ScreenBulletList sBullet,
+                                   screenLgm *lgms, long srtDelay,
+                                   bool isPillView, tank *tank, int edgeX,
+                                   int edgeY) {
   uint8_t cursorX;
   uint8_t cursorY;
   bool showCursor;

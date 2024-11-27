@@ -39,96 +39,18 @@
 #define ScreenBulletHeadDir(list) ((list)->dir);
 #define ScreenBulletTail(list) ((list)->next);
 
-/* Type structure */
+namespace bolo {
 
-typedef struct screenBulletsObj *screenBullets;
-struct screenBulletsObj {
-  screenBullets next;
-  BYTE mx;    /* X Map co-ord of the bullet (Mapped to screen) */
-  BYTE my;    /* Y Map co-ord of the bullet (Mapped to screen) */
-  BYTE px;    /* X Pixel offset of the bullet */
-  BYTE py;    /* Y Pixel offset of the bullet */
-  BYTE frame; /* Frame identifier type */
+struct ScreenBullet {
+  // Map point of the bullet (mapped to screen)
+  MapPoint pos;
+  uint8_t px;     // X Pixel offset of the bullet
+  uint8_t py;     // Y Pixel offset of the bullet
+  uint8_t frame;  // Frame identifier type
 };
 
-/* Prototypes */
+using ScreenBulletList = std::vector<ScreenBullet>;
 
-/*********************************************************
- *NAME:          screenBulletsCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/12/98
- *LAST MODIFIED: 26/12/98
- *PURPOSE:
- *  Sets up the screen bullets data structure
- *
- *ARGUMENTS:
- *
- *********************************************************/
-screenBullets screenBulletsCreate(void);
-
-/*********************************************************
- *NAME:          screenBulletsAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/12/98
- *LAST MODIFIED: 26/12/98
- *PURPOSE:
- *  Adds an item to the screenBullets data structure.
- *
- *ARGUMENTS:
- *  value - Pointer to the screenBullets data structure
- *  mx    - X co-ord of the map position
- *  my    - Y co-ord of the map position
- *  px    - X pixel offset
- *  py    - Y pixel offset
- *  frame - Frame identifer of the bullet
- *********************************************************/
-void screenBulletsAddItem(screenBullets *value, BYTE mx, BYTE my, BYTE px,
-                          BYTE py, BYTE frame);
-
-/*********************************************************
- *NAME:          screenBulletsGetNumEntries
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/12/98
- *LAST MODIFIED: 26/12/98
- *PURPOSE:
- *  Returns the number of elements in the data structure
- *
- *ARGUMENTS:
- *  value - Pointer to the screenBullets data structure
- *********************************************************/
-int screenBulletsGetNumEntries(screenBullets *value);
-
-/*********************************************************
- *NAME:          screenBulletsDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/12/98
- *LAST MODIFIED: 26/12/98
- *PURPOSE:
- *  Destroys and frees memory for the data structure
- *
- *ARGUMENTS:
- *  value - Pointer to the screenBullets data structure
- *********************************************************/
-void screenBulletsDestroy(screenBullets *value);
-
-/*********************************************************
- *NAME:          screenBulletsGetItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/12/98
- *LAST MODIFIED: 26/12/98
- *PURPOSE:
- *  Gets data for a specific item
- *
- *ARGUMENTS:
- *  value   - Pointer to the screenBullets data structure
- *  itemNum - The item number to get
- *  mx    - X co-ord of the map position
- *  my    - Y co-ord of the map position
- *  px    - X pixel offset
- *  py    - Y pixel offset
- *  frame - Frame identifer of the bullet
- *********************************************************/
-void screenBulletsGetItem(screenBullets *value, int itemNum, BYTE *mx, BYTE *my,
-                          BYTE *px, BYTE *py, BYTE *frame);
+}  // namespace bolo
 
 #endif /* SCREENBULLETS_H */
