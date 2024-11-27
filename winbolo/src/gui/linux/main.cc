@@ -164,9 +164,6 @@ static labelLen labelTank = lblShort;
 
 #define itoa(X) std::format("{}", (int) X)
 
-/* The Window scaling */
-static BYTE zoomFactor = 1;  // FIXME: ZOOM_FACTOR_NORMAL;
-
 static keyItems keys;
 
 GtkWidget *window;
@@ -582,40 +579,30 @@ gboolean windowMouseClick(GtkWidget *widget, GdkEventButton *event,
     llf.bs = BsLinuxCurrent;
     llf.used = TRUE;
   } else {
-    if (xPos >= (zoomFactor * BS_TREE_OFFSET_X) &&
-        xPos <=
-            ((zoomFactor * BS_TREE_OFFSET_X) + (zoomFactor * BS_ITEM_SIZE_X)) &&
-        yPos >= (zoomFactor * BS_TREE_OFFSET_Y) &&
-        yPos <=
-            ((zoomFactor * BS_TREE_OFFSET_Y) + (zoomFactor * BS_ITEM_SIZE_Y))) {
+    if (xPos >= BS_TREE_OFFSET_X &&
+        xPos <= (BS_TREE_OFFSET_X + BS_ITEM_SIZE_X) &&
+        yPos >= BS_TREE_OFFSET_Y &&
+        yPos <= (BS_TREE_OFFSET_Y + BS_ITEM_SIZE_Y)) {
       newSelect = BsTrees;
-    } else if (xPos >= (zoomFactor * BS_ROAD_OFFSET_X) &&
-               xPos <= ((zoomFactor * BS_ROAD_OFFSET_X) +
-                        (zoomFactor * BS_ITEM_SIZE_X)) &&
-               yPos >= (zoomFactor * BS_ROAD_OFFSET_Y) &&
-               yPos <= ((zoomFactor * BS_ROAD_OFFSET_Y) +
-                        (zoomFactor * BS_ITEM_SIZE_Y))) {
+    } else if (xPos >= BS_ROAD_OFFSET_X &&
+               xPos <= (BS_ROAD_OFFSET_X + BS_ITEM_SIZE_X) &&
+               yPos >= BS_ROAD_OFFSET_Y &&
+               yPos <= (BS_ROAD_OFFSET_Y + BS_ITEM_SIZE_Y)) {
       newSelect = BsRoad;
-    } else if (xPos >= (zoomFactor * BS_BUILDING_OFFSET_X) &&
-               xPos <= ((zoomFactor * BS_BUILDING_OFFSET_X) +
-                        (zoomFactor * BS_ITEM_SIZE_X)) &&
-               yPos >= (zoomFactor * BS_BUILDING_OFFSET_Y) &&
-               yPos <= ((zoomFactor * BS_BUILDING_OFFSET_Y) +
-                        (zoomFactor * BS_ITEM_SIZE_Y))) {
+    } else if (xPos >= BS_BUILDING_OFFSET_X &&
+               xPos <= (BS_BUILDING_OFFSET_X + BS_ITEM_SIZE_X) &&
+               yPos >= BS_BUILDING_OFFSET_Y &&
+               yPos <= (BS_BUILDING_OFFSET_Y + BS_ITEM_SIZE_Y)) {
       newSelect = BsBuilding;
-    } else if (xPos >= (zoomFactor * BS_PILLBOX_OFFSET_X) &&
-               xPos <= ((zoomFactor * BS_PILLBOX_OFFSET_X) +
-                        (zoomFactor * BS_ITEM_SIZE_X)) &&
-               yPos >= (zoomFactor * BS_PILLBOX_OFFSET_Y) &&
-               yPos <= ((zoomFactor * BS_PILLBOX_OFFSET_Y) +
-                        (zoomFactor * BS_ITEM_SIZE_Y))) {
+    } else if (xPos >= BS_PILLBOX_OFFSET_X &&
+               xPos <= (BS_PILLBOX_OFFSET_X + BS_ITEM_SIZE_X) &&
+               yPos >= BS_PILLBOX_OFFSET_Y &&
+               yPos <= (BS_PILLBOX_OFFSET_Y + BS_ITEM_SIZE_Y)) {
       newSelect = BsPillbox;
-    } else if (xPos >= (zoomFactor * BS_MINE_OFFSET_X) &&
-               xPos <= ((zoomFactor * BS_MINE_OFFSET_X) +
-                        (zoomFactor * BS_ITEM_SIZE_X)) &&
-               yPos >= (zoomFactor * BS_MINE_OFFSET_Y) &&
-               yPos <= ((zoomFactor * BS_MINE_OFFSET_Y) +
-                        (zoomFactor * BS_ITEM_SIZE_Y))) {
+    } else if (xPos >= BS_MINE_OFFSET_X &&
+               xPos <= (BS_MINE_OFFSET_X + BS_ITEM_SIZE_X) &&
+               yPos >= BS_MINE_OFFSET_Y &&
+               yPos <= (BS_MINE_OFFSET_Y + BS_ITEM_SIZE_Y)) {
       newSelect = BsMine;
     }
 
@@ -1623,7 +1610,7 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   buff = prefs.get("MENU", "Label Own Tank").value_or("No");
   labelSelf = YESNO_TO_TRUEFALSE(buff[0]);
   buff = prefs.get("MENU", "Window Size").value_or("1");
-  zoomFactor = std::stoi(buff);
+  // zoomFactor = std::stoi(buff);
   buff = prefs.get("MENU", "Message Label Size").value_or("1");
   labelMsg = (labelLen)std::stoi(buff);
   buff = prefs.get("MENU", "Tank Label Size").value_or("1");
@@ -1742,7 +1729,7 @@ void gameFrontPutPrefs(keyItems *keys) {
   prefs.set("MENU", "Show Pill Labels", TRUEFALSE_TO_STR(showPillLabels));
   prefs.set("MENU", "Show Base Labels", TRUEFALSE_TO_STR(showBaseLabels));
   prefs.set("MENU", "Label Own Tank", TRUEFALSE_TO_STR(labelSelf));
-  prefs.set("MENU", "Window Size", itoa(zoomFactor));
+  prefs.set("MENU", "Window Size", "1");
   prefs.set("MENU", "Message Label Size", itoa((int)labelMsg));
   prefs.set("MENU", "Tank Label Size", itoa((int)labelTank));
 
