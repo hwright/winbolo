@@ -408,9 +408,8 @@ void drawKillsDeaths(int xValue, int yValue, int kills, int deaths);
  *  remove the giant switch statement every drawing loop
  *
  *ARGUMENTS:
- *  zoomFactor - The scaling factor
  *********************************************************/
-void drawSetupArrays(BYTE zoomFactor);
+void drawSetupArrays();
 
 void drawDownloadScreen(bool justBlack);
 void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking);

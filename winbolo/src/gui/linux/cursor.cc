@@ -124,7 +124,6 @@ void cursorSetCursor(bool normalCurs) {
 void cursorMove(int mouseX, int mouseY) {
   int xPos;        /* X and Y positions of the mouse adjusted */
   int yPos;        /* to the window */
-  BYTE zoomFactor; /* Zooming size */
   int left;        /* Rect co-ordinates */
   int right;
   int top;
@@ -137,13 +136,12 @@ void cursorMove(int mouseX, int mouseY) {
       }
       return;
     } else { */
-  zoomFactor = 1;  // FIXME: windowGetZoomFactor();
   xPos = mouseX;
   yPos = mouseY;
-  left = zoomFactor * MAIN_OFFSET_X;
-  right = left + (MAIN_SCREEN_SIZE_X * (zoomFactor * TILE_SIZE_X));
-  top = zoomFactor * MAIN_OFFSET_Y;
-  bottom = top + (MAIN_SCREEN_SIZE_Y * (zoomFactor * TILE_SIZE_Y));
+  left = MAIN_OFFSET_X;
+  right = left + (MAIN_SCREEN_SIZE_X * TILE_SIZE_X);
+  top = MAIN_OFFSET_Y;
+  bottom = top + (MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y);
   if (xPos >= left && xPos <= right && yPos >= top && yPos <= bottom) {
     if (!cursorInMainView) {
       cursorSetCursor(false);
@@ -179,21 +177,19 @@ bool cursorPos(int mouseX, int mouseY, BYTE *xValue, BYTE *yValue) {
   static int oldY;
   int xPos;        /* X and Y positions of the mouse adjusted */
   int yPos;        /* to the window */
-  BYTE zoomFactor; /* The zooming factor */
   div_t dt;        /* Used for integer division */
 
   if (cursorInMainView) {
     if (mouseX != oldX || mouseY != oldY) {
       oldX = mouseX;
       oldY = mouseY;
-      zoomFactor = 1;  // FIXME: windowGetZoomFactor();
       xPos = mouseX;
       yPos = mouseY;
-      xPos -= zoomFactor * MAIN_OFFSET_X;
-      yPos -= zoomFactor * MAIN_OFFSET_Y;
-      dt = div(xPos, (zoomFactor * (MAIN_SCREEN_SIZE_X + 1)));
+      xPos -= MAIN_OFFSET_X;
+      yPos -= MAIN_OFFSET_Y;
+      dt = div(xPos, (MAIN_SCREEN_SIZE_X + 1));
       *xValue = (BYTE)(dt.quot + 1);
-      dt = div(yPos, (zoomFactor * (MAIN_SCREEN_SIZE_Y + 1)));
+      dt = div(yPos, (MAIN_SCREEN_SIZE_Y + 1));
       *yValue = (BYTE)(dt.quot + 1);
     }
   } else {
@@ -221,19 +217,16 @@ void cursorAcquireCursor() {
   /* FIXME: Is relevent?
   int xPos;        // X and Y positions of the mouse adjusted
   int yPos;        // to the window
-  BYTE zoomFactor; // The zooming factor
 
   GetCursorPos(&mousePos);
-  zoomFactor = windowGetZoomFactor();
 
   xPos = mousePos.x - rcWindow.left;
   yPos = mousePos.y - rcWindow.top;
 
-  if ((xPos >= (zoomFactor * MAIN_OFFSET_X) && xPos <= ((zoomFactor *
-  MAIN_OFFSET_X) + ((zoomFactor * MAIN_SCREEN_SIZE_X) * (zoomFactor *
-  TILE_SIZE_X)))) && (yPos >= (zoomFactor * MAIN_OFFSET_Y) && yPos <=
-  ((zoomFactor * MAIN_OFFSET_Y) + ((zoomFactor * MAIN_SCREEN_SIZE_Y) *
-  (zoomFactor * TILE_SIZE_Y))))) { cursorSetCursor(appInst, false);
+  if ((xPos >= MAIN_OFFSET_X && xPos <= (MAIN_OFFSET_X + (MAIN_SCREEN_SIZE_X *
+  TILE_SIZE_X))) && (yPos >= MAIN_OFFSET_Y && yPos <=
+  (MAIN_OFFSET_Y + (MAIN_SCREEN_SIZE_Y *
+  TILE_SIZE_Y)))) { cursorSetCursor(appInst, false);
     cursorInMainView = true;
   } else {
     cursorSetCursor(appInst, true);

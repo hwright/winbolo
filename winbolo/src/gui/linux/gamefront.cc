@@ -113,7 +113,6 @@ extern bool showAIMessages;
 extern bool showNetworkStatusMessages;
 extern bool showNetworkDebugMessages;
 extern bool autoScrollingEnabled;
-extern BYTE zoomFactor;
 extern bool showPillLabels;
 extern bool showBaseLabels;
 extern bool labelSelf;

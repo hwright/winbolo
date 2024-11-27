@@ -95,7 +95,6 @@ extern GtkWidget *drawingarea1;
 static int drawPosX[255];
 static int drawPosY[255];
 
-void drawSetupArrays(BYTE zoomFactor);
 void clientMutexWaitFor(void);
 void clientMutexRelease(void);
 
@@ -117,7 +116,6 @@ int drawGetFrameRate() { return g_dwFrameTotal; }
  *********************************************************/
 bool drawSetup(GtkWidget *appWnd) {
   bool returnValue; /* Value to return */
-  BYTE zoomFactor;  /* scaling factor */
   int ret;          /* Direct Draw Function returns */
   SDL_Rect in;      /* Used for copying the bases & pills icon in */
   SDL_Rect out;     /* Used for copying the bases & pills icon in */
@@ -138,7 +136,6 @@ bool drawSetup(GtkWidget *appWnd) {
   }
 
   returnValue = TRUE;
-  zoomFactor = 1;  // FIXME: windowGetZoomFactor();
   // lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y , 0, 0);
   lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
   if (lpScreen == nullptr) {
@@ -149,8 +146,8 @@ bool drawSetup(GtkWidget *appWnd) {
   /* Create the back buffer surface */
   if (returnValue == TRUE) {
     lpTemp = SDL_CreateRGBSurface(
-        SDL_HWSURFACE, zoomFactor * MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
-        zoomFactor * MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
+        SDL_HWSURFACE, MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
+        MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
       returnValue = FALSE;
       MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
@@ -193,16 +190,15 @@ bool drawSetup(GtkWidget *appWnd) {
     }
   }
 
-  out.w = zoomFactor * TILE_SIZE_X;
-  out.h = zoomFactor * TILE_SIZE_Y;
-  in.w = zoomFactor * TILE_SIZE_X;
-  in.h = zoomFactor * TILE_SIZE_Y;
+  out.w = TILE_SIZE_X;
+  out.h = TILE_SIZE_Y;
+  in.w = TILE_SIZE_X;
+  in.h = TILE_SIZE_Y;
 
   /* Create the Base status window */
   if (returnValue == TRUE) {
-    lpTemp =
-        SDL_CreateRGBSurface(0, zoomFactor * STATUS_BASES_WIDTH,
-                             zoomFactor * STATUS_BASES_HEIGHT, 16, 0, 0, 0, 0);
+    lpTemp = SDL_CreateRGBSurface(0, STATUS_BASES_WIDTH, STATUS_BASES_HEIGHT,
+                                  16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
       returnValue = FALSE;
       MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
@@ -221,19 +217,18 @@ bool drawSetup(GtkWidget *appWnd) {
         SDL_FillRect(lpBasesStatus, &fill,
                      SDL_MapRGB(lpBasesStatus->format, 0, 0, 0));
         /* Copy in the icon */
-        in.x = zoomFactor * BASE_GOOD_X;
-        in.y = zoomFactor * BASE_GOOD_Y;
-        out.x = zoomFactor * STATUS_BASES_MIDDLE_ICON_X;
-        out.y = zoomFactor * STATUS_BASES_MIDDLE_ICON_Y;
+        in.x = BASE_GOOD_X;
+        in.y = BASE_GOOD_Y;
+        out.x = STATUS_BASES_MIDDLE_ICON_X;
+        out.y = STATUS_BASES_MIDDLE_ICON_Y;
         SDL_BlitSurface(lpTiles, &in, lpBasesStatus, &out);
       }
     }
   }
   /* Makes the pills status */
   if (returnValue == TRUE) {
-    lpTemp =
-        SDL_CreateRGBSurface(0, zoomFactor * STATUS_PILLS_WIDTH,
-                             zoomFactor * STATUS_PILLS_HEIGHT, 16, 0, 0, 0, 0);
+    lpTemp = SDL_CreateRGBSurface(0, STATUS_PILLS_WIDTH, STATUS_PILLS_HEIGHT,
+                                  16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
       returnValue = FALSE;
       MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
@@ -252,10 +247,10 @@ bool drawSetup(GtkWidget *appWnd) {
         SDL_FillRect(lpPillsStatus, &fill,
                      SDL_MapRGB(lpPillsStatus->format, 0, 0, 0));
         /* Copy in the icon */
-        in.x = zoomFactor * PILL_GOOD15_X;
-        in.y = zoomFactor * PILL_GOOD15_Y;
-        out.x = zoomFactor * STATUS_PILLS_MIDDLE_ICON_X;
-        out.y = zoomFactor * STATUS_PILLS_MIDDLE_ICON_Y;
+        in.x = PILL_GOOD15_X;
+        in.y = PILL_GOOD15_Y;
+        out.x = STATUS_PILLS_MIDDLE_ICON_X;
+        out.y = STATUS_PILLS_MIDDLE_ICON_Y;
         SDL_BlitSurface(lpTiles, &in, lpPillsStatus, &out);
       }
     }
@@ -263,9 +258,8 @@ bool drawSetup(GtkWidget *appWnd) {
 
   /* Makes the tanks status */
   if (returnValue == TRUE) {
-    lpTemp =
-        SDL_CreateRGBSurface(0, zoomFactor * STATUS_TANKS_WIDTH,
-                             zoomFactor * STATUS_TANKS_HEIGHT, 16, 0, 0, 0, 0);
+    lpTemp = SDL_CreateRGBSurface(0, STATUS_TANKS_WIDTH, STATUS_TANKS_HEIGHT,
+                                  16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
       returnValue = FALSE;
       MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
@@ -284,10 +278,10 @@ bool drawSetup(GtkWidget *appWnd) {
         SDL_FillRect(lpTankStatus, &fill,
                      SDL_MapRGB(lpTankStatus->format, 0, 0, 0));
         /* Copy in the icon */
-        in.x = zoomFactor * TANK_SELF_0_X;
-        in.y = zoomFactor * TANK_SELF_0_Y;
-        out.x = zoomFactor * STATUS_TANKS_MIDDLE_ICON_X;
-        out.y = zoomFactor * STATUS_TANKS_MIDDLE_ICON_Y;
+        in.x = TANK_SELF_0_X;
+        in.y = TANK_SELF_0_Y;
+        out.x = STATUS_TANKS_MIDDLE_ICON_X;
+        out.y = STATUS_TANKS_MIDDLE_ICON_Y;
         SDL_BlitSurface(lpTiles, &in, lpTankStatus, &out);
       }
     }
@@ -310,7 +304,7 @@ bool drawSetup(GtkWidget *appWnd) {
 
   g_dwFrameTime = SDL_GetTicks();
   g_dwFrameCount = 0;
-  drawSetupArrays(zoomFactor);
+  drawSetupArrays();
 
   delete[] buff;
   return returnValue;
@@ -373,14 +367,13 @@ int lastManY = 0;
  *ARGUMENTS:
  *********************************************************/
 void drawSetManClear() {
-  int zoomFactor, left, top, width, height;
+  int left, top, width, height;
 
   //  jm removed today gdk_threads_enter();
-  zoomFactor = 1;  // FIXME
-  left = zoomFactor * MAN_STATUS_X;
-  top = (zoomFactor * MAN_STATUS_Y);
-  width = zoomFactor * MAN_STATUS_WIDTH + 5;
-  height = zoomFactor * MAN_STATUS_HEIGHT + 5;
+  left = MAN_STATUS_X;
+  top = MAN_STATUS_Y;
+  width = MAN_STATUS_WIDTH + 5;
+  height = MAN_STATUS_HEIGHT + 5;
   gdk_draw_rectangle(drawingarea1->window, drawingarea1->style->black_gc, TRUE,
                      left, top, width, height);
   lastManX = 0;
@@ -407,12 +400,10 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   // TURNTYPE oldAngle; /* Copy of the angle parameter */
   double dbAngle; /* Angle in radians */
   double dbTemp;
-  BYTE zoomFactor; /* Zooming factor */
   int addX;        /* X And and Y co-ordinates */
   int addY;
   int left, top;
   int width, height;
-  zoomFactor = 1;  // FIXME windowGetZoomFactor();
 
   // drawSetManClear(menuHeight); /* Clear the display */
 
@@ -428,12 +419,12 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
     /* Convert degrees to radians */
     dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
 
-    addX = (zoomFactor * MAN_STATUS_CENTER_X);
-    addY = (zoomFactor * MAN_STATUS_CENTER_Y);
+    addX = MAN_STATUS_CENTER_X;
+    addY = MAN_STATUS_CENTER_Y;
     dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
-    addX += (int)(zoomFactor * dbTemp);
+    addX += (int)dbTemp;
     dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
-    addY -= (int)(zoomFactor * dbTemp);
+    addY -= (int)dbTemp;
   } else if (angle >= BRADIANS_EAST && angle < BRADIANS_SOUTH) {
     angle = BRADIANS_SOUTH - angle;
     /* Convert bradians to degrees */
@@ -441,12 +432,12 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
     /* Convert degrees to radians */
     dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
 
-    addX = (zoomFactor * MAN_STATUS_CENTER_X);
-    addY = (zoomFactor * MAN_STATUS_CENTER_Y);
+    addX = MAN_STATUS_CENTER_X;
+    addY = MAN_STATUS_CENTER_Y;
     dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
-    addX += (int)(zoomFactor * dbTemp);
+    addX += (int)dbTemp;
     dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
-    addY += (int)(zoomFactor * dbTemp);
+    addY += (int)dbTemp;
   } else if (angle >= BRADIANS_SOUTH && angle < BRADIANS_WEST) {
     angle = BRADIANS_WEST - angle;
     angle = BRADIANS_EAST - angle;
@@ -455,12 +446,12 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
     /* Convert degrees to radians */
     dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
 
-    addX = (zoomFactor * MAN_STATUS_CENTER_X);
-    addY = (zoomFactor * MAN_STATUS_CENTER_Y);
+    addX = MAN_STATUS_CENTER_X;
+    addY = MAN_STATUS_CENTER_Y;
     dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
-    addX -= (int)(zoomFactor * dbTemp);
+    addX -= (int)dbTemp;
     dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
-    addY += (int)(zoomFactor * dbTemp);
+    addY += (int)dbTemp;
   } else {
     angle = (float)BRADIANS_MAX - angle;
     /* Convert bradians to degrees */
@@ -468,25 +459,25 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
     /* Convert degrees to radians */
     dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
 
-    addX = (zoomFactor * MAN_STATUS_CENTER_X);
-    addY = (zoomFactor * MAN_STATUS_CENTER_Y);
+    addX = MAN_STATUS_CENTER_X;
+    addY = MAN_STATUS_CENTER_Y;
     dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
-    addX -= (int)(zoomFactor * dbTemp);
+    addX -= (int)dbTemp;
     dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
-    addY -= (int)(zoomFactor * dbTemp);
+    addY -= (int)dbTemp;
   }
 
   if (needLocking == TRUE) {
     gdk_threads_enter();
   }
-  left = zoomFactor * MAN_STATUS_X;
-  top = (zoomFactor * MAN_STATUS_Y);
-  width = zoomFactor * MAN_STATUS_WIDTH;
-  height = zoomFactor * MAN_STATUS_HEIGHT;
+  left = MAN_STATUS_X;
+  top = MAN_STATUS_Y;
+  width = MAN_STATUS_WIDTH;
+  height = MAN_STATUS_HEIGHT;
   if (lastManX != 0) {
     gdk_draw_line(drawingarea1->window, drawingarea1->style->black_gc,
-                  zoomFactor * MAN_STATUS_CENTER_X + left,
-                  top + zoomFactor * MAN_STATUS_CENTER_Y, lastManX, lastManY);
+                  MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y,
+                  lastManX, lastManY);
   } else {
     gdk_draw_rectangle(drawingarea1->window, drawingarea1->style->black_gc,
                        TRUE, left, top, width, height);
@@ -502,8 +493,8 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
     gdk_draw_arc(drawingarea1->window, drawingarea1->style->white_gc, FALSE,
                  left, top, width, height, 0, 360 * 64);
     gdk_draw_line(drawingarea1->window, drawingarea1->style->white_gc,
-                  zoomFactor * MAN_STATUS_CENTER_X + left,
-                  top + zoomFactor * MAN_STATUS_CENTER_Y, addX, addY);
+                  MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y, addX,
+                  addY);
 
     lastManX = addX;
     lastManY = addY;
@@ -777,14 +768,12 @@ void drawTanks(screenTanks *tks) {
   BYTE my;
   BYTE px; /* Pixel offsets */
   BYTE py;
-  BYTE zoomFactor; /* Scaling Factor */
   BYTE playerNum;  /* Player Number */
 
   count = 1;
   total = screenTanksGetNumEntries(tks);
-  zoomFactor = 1;  // FIXME: windowGetZoomFactor();
-  output.w = zoomFactor * TILE_SIZE_X;
-  output.h = zoomFactor * TILE_SIZE_Y;
+  output.w = TILE_SIZE_X;
+  output.h = TILE_SIZE_Y;
   dest.w = output.w;
   dest.h = output.h;
   while (count <= total) {
@@ -1183,10 +1172,10 @@ void drawTanks(screenTanks *tks) {
     }
 
     /* Output */
-    output.x *= zoomFactor;
-    output.y *= zoomFactor;
-    dest.x = mx * (zoomFactor * TILE_SIZE_X) + (zoomFactor * px);
-    dest.y = my * (zoomFactor * TILE_SIZE_Y) + (zoomFactor * py);
+    output.x *= 1;
+    output.y *= 1;
+    dest.x = mx * TILE_SIZE_X + px;
+    dest.y = my * TILE_SIZE_Y + py;
     px += 2;
     py += 2;
     SDL_BlitSurface(lpTiles, &output, lpBackBuffer, &dest);
@@ -1272,12 +1261,10 @@ void drawLGMs(screenLgm *lgms) {
  *********************************************************/
 void drawNetFailed() {
   SDL_Rect dest; /* Defines the text rectangle */
-  BYTE zoomFactor;
   SDL_Surface *lpTextSurface;
 
-  zoomFactor = 1;  // FIXME windowGetZoomFactor();
-  dest.x = zoomFactor * 3 * TILE_SIZE_X;
-  dest.y = zoomFactor * 8 * TILE_SIZE_Y;
+  dest.x = 3 * TILE_SIZE_X;
+  dest.y = 8 * TILE_SIZE_Y;
   lpTextSurface = TTF_RenderText_Shaded(lpFont, "Network Failed -  Resyncing",
                                         white, black);
   SDL_SetColorKey(lpTextSurface, SDL_SRCCOLORKEY,
@@ -1302,12 +1289,10 @@ void drawNetFailed() {
  *********************************************************/
 void drawPillInView() {
   SDL_Rect dest; /* Defines the text rectangle */
-  BYTE zoomFactor;
   SDL_Surface *lpTextSurface;
 
-  zoomFactor = 1;  // FIXME windowGetZoomFactor();
-  dest.x = zoomFactor * TILE_SIZE_X;
-  dest.y = zoomFactor * MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y;
+  dest.x = TILE_SIZE_X;
+  dest.y = MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y;
   lpTextSurface = TTF_RenderText_Shaded(
       lpFont, langGetText(STR_DRAW_PILLBOXVIEW), white, black);
   SDL_SetColorKey(lpTextSurface, SDL_SRCCOLORKEY,
@@ -1333,13 +1318,11 @@ void drawPillInView() {
  *********************************************************/
 void drawStartDelay(long srtDelay) {
   SDL_Rect src;              /* Used for copying the bases & pills icon in */
-  BYTE zoomFactor;           /* Scaling Factor */
   char str[FILENAME_MAX];    /* Output String */
   char strNum[FILENAME_MAX]; /* Holds the start delay as a string */
   SDL_Surface *lpTextSurface;
   SDL_Rect in;
 
-  zoomFactor = 1;  // FIXME
   SDL_FillRect(lpBackBuffer, nullptr,
                SDL_MapRGB(lpBackBuffer->format, 0, 0, 0));
   /* Prepare the string */
@@ -1349,18 +1332,18 @@ void drawStartDelay(long srtDelay) {
   strcat(str, strNum);
   lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
   if (lpTextSurface) {
-    src.x = zoomFactor * TILE_SIZE_X + 5;
-    src.y = zoomFactor * TILE_SIZE_Y + 5;
+    src.x = TILE_SIZE_X + 5;
+    src.y = TILE_SIZE_Y + 5;
     src.w = lpTextSurface->w;
     src.h = lpTextSurface->h;
     SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &src);
     SDL_UpdateRect(lpBackBuffer, 0, 0, 0, 0);
-    in.x = (zoomFactor * TILE_SIZE_X);
-    in.y = (zoomFactor * TILE_SIZE_Y);
-    in.w = zoomFactor * MAIN_SCREEN_SIZE_X * TILE_SIZE_X;
-    in.h = zoomFactor * MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y;
-    src.x = zoomFactor * MAIN_OFFSET_X;
-    src.y = zoomFactor * MAIN_OFFSET_Y;
+    in.x = TILE_SIZE_X;
+    in.y = TILE_SIZE_Y;
+    in.w = MAIN_SCREEN_SIZE_X * TILE_SIZE_X;
+    in.h = MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y;
+    src.x = MAIN_OFFSET_X;
+    src.y = MAIN_OFFSET_Y;
     src.w = in.w;
     src.h = in.h;
     SDL_BlitSurface(lpBackBuffer, &in, lpScreen, &src);
@@ -1409,7 +1392,6 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
   int outputX; /* X and Y co-ordinates in the tile image */
   int outputY;
   BYTE pos;        /* Current position */
-  BYTE zoomFactor; /* Scaling factor */
   char str[255];   /* Frame Rate Counting Stuff */
   DWORD time;
   bool isPill;   /* Is the square a pill */
@@ -1421,11 +1403,10 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
   x = 0;
   y = 0;
   done = FALSE;
-  zoomFactor = 1;  // FIXME: windowGetZoomFactor();
-  in.w = zoomFactor * TILE_SIZE_X;
-  in.h = zoomFactor * TILE_SIZE_Y;
-  output.w = zoomFactor * TILE_SIZE_X;
-  output.h = zoomFactor * TILE_SIZE_Y;
+  in.w = TILE_SIZE_X;
+  in.h = TILE_SIZE_Y;
+  output.w = TILE_SIZE_X;
+  output.h = TILE_SIZE_Y;
   str[0] = '\0';
   if (srtDelay > 0) {
     /* Waiting for game to start. Draw coutdown */
@@ -1463,14 +1444,14 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
     /* Draw the map block */
     in.x = outputX;
     in.y = outputY;
-    output.x = x * zoomFactor * TILE_SIZE_X;
-    output.y = y * zoomFactor * TILE_SIZE_Y;
+    output.x = x * TILE_SIZE_X;
+    output.y = y * TILE_SIZE_Y;
     SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
 
     /* Draw Mines */
     if ((screenIsMine(mineView, x, y)) == TRUE) {
-      in.x = zoomFactor * MINE_X;
-      in.y = zoomFactor * MINE_Y;
+      in.x = MINE_X;
+      in.y = MINE_Y;
       SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
     }
 
@@ -1479,9 +1460,8 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
       labelNum = screenPillNumPos(x, y);
       sprintf(str, "%d", (labelNum - 1));
       lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
-      textOutput.x =
-          (zoomFactor * x * TILE_SIZE_X) + zoomFactor * LABEL_OFFSET_X;
-      textOutput.y = (zoomFactor * y * TILE_SIZE_Y);
+      textOutput.x = (x * TILE_SIZE_X) + LABEL_OFFSET_X;
+      textOutput.y = (y * TILE_SIZE_Y);
       textOutput.w = lpTextSurface->w;
       textOutput.h = lpTextSurface->h;
       SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &textOutput);
@@ -1492,9 +1472,8 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
       labelNum = screenBaseNumPos(x, y);
       sprintf(str, "%d", (labelNum - 1));
       lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
-      textOutput.x =
-          (zoomFactor * x * TILE_SIZE_X) + zoomFactor * LABEL_OFFSET_X;
-      textOutput.y = (zoomFactor * y * TILE_SIZE_Y);
+      textOutput.x = (x * TILE_SIZE_X) + LABEL_OFFSET_X;
+      textOutput.y = (y * TILE_SIZE_Y);
       textOutput.w = lpTextSurface->w;
       textOutput.h = lpTextSurface->h;
       SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &textOutput);
@@ -1521,38 +1500,38 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
 
   /* Draw Gunsight */
   if (gs->mapX != NO_GUNSIGHT) {
-    in.x = zoomFactor * GUNSIGHT_X;
-    in.w = zoomFactor * TILE_SIZE_X;
-    in.y = zoomFactor * GUNSIGHT_Y;
-    in.h = zoomFactor * TILE_SIZE_Y;
+    in.x = GUNSIGHT_X;
+    in.w = TILE_SIZE_X;
+    in.y = GUNSIGHT_Y;
+    in.h = TILE_SIZE_Y;
     output.x = (gs->mapX) * TILE_SIZE_X + (gs->pixelX);
     output.y = (gs->mapY) * TILE_SIZE_Y + (gs->pixelY);
-    output.w = zoomFactor * TILE_SIZE_X;
-    output.h = zoomFactor * TILE_SIZE_Y;
+    output.w = TILE_SIZE_X;
+    output.h = TILE_SIZE_Y;
     SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
   }
 
   /* Draw the Cursor Square if required */
   if (useCursor == TRUE) {
-    in.x = zoomFactor * MOUSE_SQUARE_X;
-    in.w = zoomFactor * TILE_SIZE_X;
-    in.y = zoomFactor * MOUSE_SQUARE_Y;
-    in.h = zoomFactor * TILE_SIZE_Y;
-    output.x = cursorLeft * zoomFactor * TILE_SIZE_X;
-    output.y = cursorTop * zoomFactor * TILE_SIZE_Y;
-    output.w = zoomFactor * TILE_SIZE_X;
-    output.h = zoomFactor * TILE_SIZE_X;
+    in.x = MOUSE_SQUARE_X;
+    in.w = TILE_SIZE_X;
+    in.y = MOUSE_SQUARE_Y;
+    in.h = TILE_SIZE_Y;
+    output.x = cursorLeft * TILE_SIZE_X;
+    output.y = cursorTop * TILE_SIZE_Y;
+    output.w = TILE_SIZE_X;
+    output.h = TILE_SIZE_X;
     SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
   }
 
   /* Copy the back buffer to the window */
   SDL_UpdateRect(lpBackBuffer, 0, 0, 0, 0);
-  in.x = (zoomFactor * TILE_SIZE_X) + edgeX;
-  in.y = (zoomFactor * TILE_SIZE_Y) + edgeY;
-  in.w = zoomFactor * MAIN_SCREEN_SIZE_X * TILE_SIZE_X;
-  in.h = zoomFactor * MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y;
-  output.x = (zoomFactor * MAIN_OFFSET_X);
-  output.y = (zoomFactor * MAIN_OFFSET_Y);
+  in.x = TILE_SIZE_X + edgeX;
+  in.y = TILE_SIZE_Y + edgeY;
+  in.w = MAIN_SCREEN_SIZE_X * TILE_SIZE_X;
+  in.h = MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y;
+  output.x = MAIN_OFFSET_X;
+  output.y = MAIN_OFFSET_Y;
   output.w = in.w;
   output.h = in.h;
 
@@ -1612,7 +1591,6 @@ bool drawBackground(int width, int height) {
     return FALSE;
   }
   returnValue = FALSE;
-  // zoomFactor = 1; //FIXME: windowGetZoomFactor();
   fp = fopen(fileName, "wb");
   fwrite(buff, 168778, 1, fp);
   fflush(fp);
@@ -1647,17 +1625,15 @@ bool drawBackground(int width, int height) {
 void drawSetBasesStatusClear(void) {
   SDL_Rect src;    /* Used for copying the bases & pills icon in */
   SDL_Rect dest;   /* Used for copying the bases & pills icon in */
-  BYTE zoomFactor; /* Scaling Factor */
 
-  zoomFactor = 1;  // FIXME: windowGetZoomFactor();
-  src.x = zoomFactor * BASE_GOOD_X;
-  src.y = zoomFactor * BASE_GOOD_Y;
-  src.w = zoomFactor * TILE_SIZE_X;
-  src.h = zoomFactor * TILE_SIZE_Y;
-  dest.x = zoomFactor * STATUS_BASES_MIDDLE_ICON_X;
-  dest.y = zoomFactor * STATUS_BASES_MIDDLE_ICON_Y;
-  dest.w = zoomFactor * TILE_SIZE_X;
-  dest.h = zoomFactor * TILE_SIZE_Y;
+  src.x = BASE_GOOD_X;
+  src.y = BASE_GOOD_Y;
+  src.w = TILE_SIZE_X;
+  src.h = TILE_SIZE_Y;
+  dest.x = STATUS_BASES_MIDDLE_ICON_X;
+  dest.y = STATUS_BASES_MIDDLE_ICON_Y;
+  dest.w = TILE_SIZE_X;
+  dest.h = TILE_SIZE_Y;
   SDL_FillRect(lpBasesStatus, nullptr,
                SDL_MapRGB(lpBasesStatus->format, 0, 0, 0));
   SDL_BlitSurface(lpTiles, &src, lpBasesStatus, &dest);
@@ -1677,17 +1653,15 @@ void drawSetBasesStatusClear(void) {
 void drawSetPillsStatusClear(void) {
   SDL_Rect src;    /* Used for copying the bases & pills icon in */
   SDL_Rect dest;   /* Used for copying the bases & pills icon in */
-  BYTE zoomFactor; /* Scaling Factor */
 
-  zoomFactor = 1;  // FIXME: windowGetZoomFactor();
-  src.x = zoomFactor * PILL_GOOD15_X;
-  src.y = zoomFactor * PILL_GOOD15_Y;
-  src.w = zoomFactor * TILE_SIZE_X;
-  src.h = zoomFactor * TILE_SIZE_Y;
-  dest.y = zoomFactor * STATUS_PILLS_MIDDLE_ICON_Y;
-  dest.x = zoomFactor * STATUS_PILLS_MIDDLE_ICON_X;
-  dest.w = zoomFactor * TILE_SIZE_X;
-  dest.h = zoomFactor * TILE_SIZE_Y;
+  src.x = PILL_GOOD15_X;
+  src.y = PILL_GOOD15_Y;
+  src.w = TILE_SIZE_X;
+  src.h = TILE_SIZE_Y;
+  dest.y = STATUS_PILLS_MIDDLE_ICON_Y;
+  dest.x = STATUS_PILLS_MIDDLE_ICON_X;
+  dest.w = TILE_SIZE_X;
+  dest.h = TILE_SIZE_Y;
   SDL_FillRect(lpPillsStatus, nullptr,
                SDL_MapRGB(lpPillsStatus->format, 0, 0, 0));
   SDL_BlitSurface(lpTiles, &src, lpPillsStatus, &dest);
@@ -1707,17 +1681,15 @@ void drawSetPillsStatusClear(void) {
 void drawSetTanksStatusClear(void) {
   SDL_Rect src;    /* Used for copying the bases & pills icon in */
   SDL_Rect dest;   /* Used for copying the bases & pills icon in */
-  BYTE zoomFactor; /* Scaling Factor */
 
-  zoomFactor = 1;  // FIXME: windowGetZoomFactor();
-  src.x = zoomFactor * TANK_SELF_0_X;
-  src.y = zoomFactor * TANK_SELF_0_Y;
-  src.w = zoomFactor * TILE_SIZE_X;
-  src.h = zoomFactor * TILE_SIZE_Y;
-  dest.y = zoomFactor * STATUS_TANKS_MIDDLE_ICON_Y;
-  dest.x = zoomFactor * STATUS_TANKS_MIDDLE_ICON_X;
-  dest.w = zoomFactor * TILE_SIZE_X;
-  dest.h = zoomFactor * TILE_SIZE_Y;
+  src.x = TANK_SELF_0_X;
+  src.y = TANK_SELF_0_Y;
+  src.w = TILE_SIZE_X;
+  src.h = TILE_SIZE_Y;
+  dest.y = STATUS_TANKS_MIDDLE_ICON_Y;
+  dest.x = STATUS_TANKS_MIDDLE_ICON_X;
+  dest.w = TILE_SIZE_X;
+  dest.h = TILE_SIZE_Y;
   SDL_FillRect(lpTankStatus, nullptr,
                SDL_MapRGB(lpTankStatus->format, 0, 0, 0));
   SDL_BlitSurface(lpTiles, &src, lpTankStatus, &dest);
@@ -2358,54 +2330,51 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
 void drawSelectIndentsOn(buildSelect value, int xValue, int yValue) {
   SDL_Rect src;    /* The src square on the tile file to retrieve */
   SDL_Rect dest;   /* The dest square to draw it */
-  BYTE zoomFactor; /* Scaling factor */
-
-  zoomFactor = 1;  // FIXME windowGetZoomFactor();
 
   /* Set the co-ords of the tile file to get */
-  src.x = zoomFactor * INDENT_ON_X;
-  src.y = zoomFactor * INDENT_ON_Y;
-  src.w = zoomFactor * BS_ITEM_SIZE_X;
-  src.h = zoomFactor * BS_ITEM_SIZE_Y;
+  src.x = INDENT_ON_X;
+  src.y = INDENT_ON_Y;
+  src.w = BS_ITEM_SIZE_X;
+  src.h = BS_ITEM_SIZE_Y;
 
   /* Modify the offset to allow for the indents */
   dest.x = xValue;
   dest.y = yValue;
   switch (value) {
     case BsTrees:
-      dest.x += (zoomFactor * BS_TREE_OFFSET_X);
-      dest.y += (zoomFactor * BS_TREE_OFFSET_Y);
+      dest.x += BS_TREE_OFFSET_X;
+      dest.y += BS_TREE_OFFSET_Y;
       break;
     case BsRoad:
-      dest.x += (zoomFactor * BS_ROAD_OFFSET_X);
-      dest.y += (zoomFactor * BS_ROAD_OFFSET_Y);
+      dest.x += BS_ROAD_OFFSET_X;
+      dest.y += BS_ROAD_OFFSET_Y;
       break;
     case BsBuilding:
-      dest.x += (zoomFactor * BS_BUILDING_OFFSET_X);
-      dest.y += (zoomFactor * BS_BUILDING_OFFSET_Y);
+      dest.x += BS_BUILDING_OFFSET_X;
+      dest.y += BS_BUILDING_OFFSET_Y;
       break;
     case BsPillbox:
-      dest.x += (zoomFactor * BS_PILLBOX_OFFSET_X);
-      dest.y += (zoomFactor * BS_PILLBOX_OFFSET_Y);
+      dest.x += BS_PILLBOX_OFFSET_X;
+      dest.y += BS_PILLBOX_OFFSET_Y;
       break;
     default:
       /* BsMine:*/
-      dest.x += (zoomFactor * BS_MINE_OFFSET_X);
-      dest.y += (zoomFactor * BS_MINE_OFFSET_Y);
+      dest.x += BS_MINE_OFFSET_X;
+      dest.y += BS_MINE_OFFSET_Y;
       break;
   }
-  dest.w = zoomFactor * BS_ITEM_SIZE_X;
-  dest.h = zoomFactor * BS_ITEM_SIZE_Y;
+  dest.w = BS_ITEM_SIZE_X;
+  dest.h = BS_ITEM_SIZE_Y;
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
 
   /* Set the co-ords of the tile file to get */
-  src.x = zoomFactor * INDENT_DOT_ON_X;
-  src.y = zoomFactor * INDENT_DOT_ON_Y;
-  src.w = zoomFactor * BS_DOT_ITEM_SIZE_X;
-  src.h = zoomFactor * BS_DOT_ITEM_SIZE_Y;
+  src.x = INDENT_DOT_ON_X;
+  src.y = INDENT_DOT_ON_Y;
+  src.w = BS_DOT_ITEM_SIZE_X;
+  src.h = BS_DOT_ITEM_SIZE_Y;
 
   /* Draw the dot */
   /* Modify the offset to allow for the indents */
@@ -2413,30 +2382,30 @@ void drawSelectIndentsOn(buildSelect value, int xValue, int yValue) {
   dest.y = yValue;
   switch (value) {
     case BsTrees:
-      dest.x += (zoomFactor * BS_DOT_TREE_OFFSET_X);
-      dest.y += (zoomFactor * BS_DOT_TREE_OFFSET_Y);
+      dest.x += BS_DOT_TREE_OFFSET_X;
+      dest.y += BS_DOT_TREE_OFFSET_Y;
       break;
     case BsRoad:
-      dest.x += (zoomFactor * BS_DOT_ROAD_OFFSET_X);
-      dest.y += (zoomFactor * BS_DOT_ROAD_OFFSET_Y);
+      dest.x += BS_DOT_ROAD_OFFSET_X;
+      dest.y += BS_DOT_ROAD_OFFSET_Y;
       break;
     case BsBuilding:
-      dest.x += (zoomFactor * BS_DOT_BUILDING_OFFSET_X);
-      dest.y += (zoomFactor * BS_DOT_BUILDING_OFFSET_Y);
+      dest.x += BS_DOT_BUILDING_OFFSET_X;
+      dest.y += BS_DOT_BUILDING_OFFSET_Y;
       break;
     case BsPillbox:
-      dest.x += (zoomFactor * BS_DOT_PILLBOX_OFFSET_X);
-      dest.y += (zoomFactor * BS_DOT_PILLBOX_OFFSET_Y);
+      dest.x += BS_DOT_PILLBOX_OFFSET_X;
+      dest.y += BS_DOT_PILLBOX_OFFSET_Y;
       break;
     default:
       /* BsMine:*/
-      dest.x += (zoomFactor * BS_DOT_MINE_OFFSET_X);
-      dest.y += (zoomFactor * BS_DOT_MINE_OFFSET_Y);
+      dest.x += BS_DOT_MINE_OFFSET_X;
+      dest.y += BS_DOT_MINE_OFFSET_Y;
       break;
   }
 
-  dest.w = zoomFactor * BS_DOT_ITEM_SIZE_X;
-  dest.h = zoomFactor * BS_DOT_ITEM_SIZE_Y;
+  dest.w = BS_DOT_ITEM_SIZE_X;
+  dest.h = BS_DOT_ITEM_SIZE_Y;
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
@@ -2461,54 +2430,51 @@ void drawSelectIndentsOn(buildSelect value, int xValue, int yValue) {
 void drawSelectIndentsOff(buildSelect value, int xValue, int yValue) {
   SDL_Rect src;    /* The src square on the tile file to retrieve */
   SDL_Rect dest;   /* The dest square to draw it */
-  BYTE zoomFactor; /* Scaling factor */
-
-  zoomFactor = 1;  // FIXME windowGetZoomFactor();
 
   /* Set the co-ords of the tile file to get */
-  src.x = zoomFactor * INDENT_OFF_X;
-  src.y = zoomFactor * INDENT_OFF_Y;
-  src.w = zoomFactor * BS_ITEM_SIZE_X;
-  src.h = zoomFactor * BS_ITEM_SIZE_Y;
+  src.x = INDENT_OFF_X;
+  src.y = INDENT_OFF_Y;
+  src.w = BS_ITEM_SIZE_X;
+  src.h = BS_ITEM_SIZE_Y;
 
   /* Modify the offset to allow for the indents */
   dest.x = xValue;
   dest.y = yValue;
   switch (value) {
     case BsTrees:
-      dest.x += (zoomFactor * BS_TREE_OFFSET_X);
-      dest.y += (zoomFactor * BS_TREE_OFFSET_Y);
+      dest.x += BS_TREE_OFFSET_X;
+      dest.y += BS_TREE_OFFSET_Y;
       break;
     case BsRoad:
-      dest.x += (zoomFactor * BS_ROAD_OFFSET_X);
-      dest.y += (zoomFactor * BS_ROAD_OFFSET_Y);
+      dest.x += BS_ROAD_OFFSET_X;
+      dest.y += BS_ROAD_OFFSET_Y;
       break;
     case BsBuilding:
-      dest.x += (zoomFactor * BS_BUILDING_OFFSET_X);
-      dest.y += (zoomFactor * BS_BUILDING_OFFSET_Y);
+      dest.x += BS_BUILDING_OFFSET_X;
+      dest.y += BS_BUILDING_OFFSET_Y;
       break;
     case BsPillbox:
-      dest.x += (zoomFactor * BS_PILLBOX_OFFSET_X);
-      dest.y += (zoomFactor * BS_PILLBOX_OFFSET_Y);
+      dest.x += BS_PILLBOX_OFFSET_X;
+      dest.y += BS_PILLBOX_OFFSET_Y;
       break;
     default:
       /* BsMine:*/
-      dest.x += (zoomFactor * BS_MINE_OFFSET_X);
-      dest.y += (zoomFactor * BS_MINE_OFFSET_Y);
+      dest.x += BS_MINE_OFFSET_X;
+      dest.y += BS_MINE_OFFSET_Y;
       break;
   }
-  dest.w = zoomFactor * BS_ITEM_SIZE_X;
-  dest.h = zoomFactor * BS_ITEM_SIZE_Y;
+  dest.w = BS_ITEM_SIZE_X;
+  dest.h = BS_ITEM_SIZE_Y;
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
 
   /* Set the co-ords of the tile file to get */
-  src.x = zoomFactor * INDENT_DOT_OFF_X;
-  src.y = zoomFactor * INDENT_DOT_OFF_Y;
-  src.w = zoomFactor * BS_DOT_ITEM_SIZE_X;
-  src.h = zoomFactor * BS_DOT_ITEM_SIZE_Y;
+  src.x = INDENT_DOT_OFF_X;
+  src.y = INDENT_DOT_OFF_Y;
+  src.w = BS_DOT_ITEM_SIZE_X;
+  src.h = BS_DOT_ITEM_SIZE_Y;
 
   /* Draw the dot */
   /* Modify the offset to allow for the indents */
@@ -2516,30 +2482,30 @@ void drawSelectIndentsOff(buildSelect value, int xValue, int yValue) {
   dest.y = yValue;
   switch (value) {
     case BsTrees:
-      dest.x += (zoomFactor * BS_DOT_TREE_OFFSET_X);
-      dest.y += (zoomFactor * BS_DOT_TREE_OFFSET_Y);
+      dest.x += BS_DOT_TREE_OFFSET_X;
+      dest.y += BS_DOT_TREE_OFFSET_Y;
       break;
     case BsRoad:
-      dest.x += (zoomFactor * BS_DOT_ROAD_OFFSET_X);
-      dest.y += (zoomFactor * BS_DOT_ROAD_OFFSET_Y);
+      dest.x += BS_DOT_ROAD_OFFSET_X;
+      dest.y += BS_DOT_ROAD_OFFSET_Y;
       break;
     case BsBuilding:
-      dest.x += (zoomFactor * BS_DOT_BUILDING_OFFSET_X);
-      dest.y += (zoomFactor * BS_DOT_BUILDING_OFFSET_Y);
+      dest.x += BS_DOT_BUILDING_OFFSET_X;
+      dest.y += BS_DOT_BUILDING_OFFSET_Y;
       break;
     case BsPillbox:
-      dest.x += (zoomFactor * BS_DOT_PILLBOX_OFFSET_X);
-      dest.y += (zoomFactor * BS_DOT_PILLBOX_OFFSET_Y);
+      dest.x += BS_DOT_PILLBOX_OFFSET_X;
+      dest.y += BS_DOT_PILLBOX_OFFSET_Y;
       break;
     default:
       /* BsMine:*/
-      dest.x += (zoomFactor * BS_DOT_MINE_OFFSET_X);
-      dest.y += (zoomFactor * BS_DOT_MINE_OFFSET_Y);
+      dest.x += BS_DOT_MINE_OFFSET_X;
+      dest.y += BS_DOT_MINE_OFFSET_Y;
       break;
   }
 
-  dest.w = zoomFactor * BS_DOT_ITEM_SIZE_X;
-  dest.h = zoomFactor * BS_DOT_ITEM_SIZE_Y;
+  dest.w = BS_DOT_ITEM_SIZE_X;
+  dest.h = BS_DOT_ITEM_SIZE_Y;
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
@@ -2685,11 +2651,9 @@ void drawMessages(int xValue, int yValue, const char *top, const char *bottom) {
  *  justBlack - TRUE if we want a black screen
  *********************************************************/
 void drawDownloadScreen(bool justBlack) {
-  BYTE zoomFactor; /* scaling factor */
   SDL_Rect output; /* Output RECT */
   SDL_Rect in;
 
-  zoomFactor = 1;  // FIXME windowGetZoomFactor();
   /* Fill the area black */
   SDL_FillRect(lpBackBuffer, nullptr,
                SDL_MapRGB(lpBackBuffer->format, 0, 0, 0));
@@ -2705,12 +2669,12 @@ void drawDownloadScreen(bool justBlack) {
 
   /* Copy the back buffer to the window */
   SDL_UpdateRect(lpBackBuffer, 0, 0, 0, 0);
-  in.x = (zoomFactor * TILE_SIZE_X) + 2;
-  in.y = (zoomFactor * TILE_SIZE_Y) + 1;
-  in.w = zoomFactor * MAIN_SCREEN_SIZE_X * TILE_SIZE_X;
-  in.h = zoomFactor * MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y;
-  output.x = (zoomFactor * MAIN_OFFSET_X);
-  output.y = zoomFactor * MAIN_OFFSET_Y;
+  in.x = TILE_SIZE_X + 2;
+  in.y = TILE_SIZE_Y + 1;
+  in.w = MAIN_SCREEN_SIZE_X * TILE_SIZE_X;
+  in.h = MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y;
+  output.x = MAIN_OFFSET_X;
+  output.y = MAIN_OFFSET_Y;
   output.w = in.w;
   output.h = in.h;
 
@@ -2774,409 +2738,408 @@ void drawKillsDeaths(int xValue, int yValue, int kills, int deaths) {
  *  remove the giant switch statement every drawing loop
  *
  *ARGUMENTS:
- *  zoomFactor - The scaling factor
  *********************************************************/
-void drawSetupArrays(BYTE zoomFactor) {
-  drawPosX[DEEP_SEA_SOLID] = zoomFactor * DEEP_SEA_SOLID_X;
-  drawPosY[DEEP_SEA_SOLID] = zoomFactor * DEEP_SEA_SOLID_Y;
-  drawPosX[DEEP_SEA_CORN1] = zoomFactor * DEEP_SEA_CORN1_X;
-  drawPosY[DEEP_SEA_CORN1] = zoomFactor * DEEP_SEA_CORN1_Y;
-  drawPosX[DEEP_SEA_CORN2] = zoomFactor * DEEP_SEA_CORN2_X;
-  drawPosY[DEEP_SEA_CORN2] = zoomFactor * DEEP_SEA_CORN2_Y;
-  drawPosX[DEEP_SEA_CORN3] = zoomFactor * DEEP_SEA_CORN3_X;
-  drawPosY[DEEP_SEA_CORN3] = zoomFactor * DEEP_SEA_CORN3_Y;
-  drawPosX[DEEP_SEA_CORN4] = zoomFactor * DEEP_SEA_CORN4_X;
-  drawPosY[DEEP_SEA_CORN4] = zoomFactor * DEEP_SEA_CORN4_Y;
-  drawPosX[DEEP_SEA_SIDE1] = zoomFactor * DEEP_SEA_SIDE1_X;
-  drawPosY[DEEP_SEA_SIDE1] = zoomFactor * DEEP_SEA_SIDE1_Y;
-  drawPosX[DEEP_SEA_SIDE2] = zoomFactor * DEEP_SEA_SIDE2_X;
-  drawPosY[DEEP_SEA_SIDE2] = zoomFactor * DEEP_SEA_SIDE2_Y;
-  drawPosX[DEEP_SEA_SIDE3] = zoomFactor * DEEP_SEA_SIDE3_X;
-  drawPosY[DEEP_SEA_SIDE3] = zoomFactor * DEEP_SEA_SIDE3_Y;
-  drawPosX[DEEP_SEA_SIDE4] = zoomFactor * DEEP_SEA_SIDE4_X;
-  drawPosY[DEEP_SEA_SIDE4] = zoomFactor * DEEP_SEA_SIDE4_Y;
+void drawSetupArrays() {
+  drawPosX[DEEP_SEA_SOLID] = DEEP_SEA_SOLID_X;
+  drawPosY[DEEP_SEA_SOLID] = DEEP_SEA_SOLID_Y;
+  drawPosX[DEEP_SEA_CORN1] = DEEP_SEA_CORN1_X;
+  drawPosY[DEEP_SEA_CORN1] = DEEP_SEA_CORN1_Y;
+  drawPosX[DEEP_SEA_CORN2] = DEEP_SEA_CORN2_X;
+  drawPosY[DEEP_SEA_CORN2] = DEEP_SEA_CORN2_Y;
+  drawPosX[DEEP_SEA_CORN3] = DEEP_SEA_CORN3_X;
+  drawPosY[DEEP_SEA_CORN3] = DEEP_SEA_CORN3_Y;
+  drawPosX[DEEP_SEA_CORN4] = DEEP_SEA_CORN4_X;
+  drawPosY[DEEP_SEA_CORN4] = DEEP_SEA_CORN4_Y;
+  drawPosX[DEEP_SEA_SIDE1] = DEEP_SEA_SIDE1_X;
+  drawPosY[DEEP_SEA_SIDE1] = DEEP_SEA_SIDE1_Y;
+  drawPosX[DEEP_SEA_SIDE2] = DEEP_SEA_SIDE2_X;
+  drawPosY[DEEP_SEA_SIDE2] = DEEP_SEA_SIDE2_Y;
+  drawPosX[DEEP_SEA_SIDE3] = DEEP_SEA_SIDE3_X;
+  drawPosY[DEEP_SEA_SIDE3] = DEEP_SEA_SIDE3_Y;
+  drawPosX[DEEP_SEA_SIDE4] = DEEP_SEA_SIDE4_X;
+  drawPosY[DEEP_SEA_SIDE4] = DEEP_SEA_SIDE4_Y;
 
-  drawPosX[BUILD_SINGLE] = zoomFactor * BUILD_SINGLE_X;
-  drawPosY[BUILD_SINGLE] = zoomFactor * BUILD_SINGLE_Y;
-  drawPosX[BUILD_SOLID] = zoomFactor * BUILD_SOLID_X;
-  drawPosY[BUILD_SOLID] = zoomFactor * BUILD_SOLID_Y;
-  drawPosX[BUILD_CORNER1] = zoomFactor * BUILD_CORNER1_X;
-  drawPosY[BUILD_CORNER1] = zoomFactor * BUILD_CORNER1_Y;
-  drawPosX[BUILD_CORNER2] = zoomFactor * BUILD_CORNER2_X;
-  drawPosY[BUILD_CORNER2] = zoomFactor * BUILD_CORNER2_Y;
-  drawPosX[BUILD_CORNER3] = zoomFactor * BUILD_CORNER3_X;
-  drawPosY[BUILD_CORNER3] = zoomFactor * BUILD_CORNER3_Y;
-  drawPosX[BUILD_CORNER4] = zoomFactor * BUILD_CORNER4_X;
-  drawPosY[BUILD_CORNER4] = zoomFactor * BUILD_CORNER4_Y;
-  drawPosX[BUILD_L1] = zoomFactor * BUILD_L1_X;
-  drawPosY[BUILD_L1] = zoomFactor * BUILD_L1_Y;
-  drawPosX[BUILD_L2] = zoomFactor * BUILD_L2_X;
-  drawPosY[BUILD_L2] = zoomFactor * BUILD_L2_Y;
-  drawPosX[BUILD_L3] = zoomFactor * BUILD_L3_X;
-  drawPosY[BUILD_L3] = zoomFactor * BUILD_L3_Y;
-  drawPosX[BUILD_L4] = zoomFactor * BUILD_L4_X;
-  drawPosY[BUILD_L4] = zoomFactor * BUILD_L4_Y;
-  drawPosX[BUILD_T1] = zoomFactor * BUILD_T1_X;
-  drawPosY[BUILD_T1] = zoomFactor * BUILD_T1_Y;
-  drawPosX[BUILD_T2] = zoomFactor * BUILD_T2_X;
-  drawPosY[BUILD_T2] = zoomFactor * BUILD_T2_Y;
-  drawPosX[BUILD_T3] = zoomFactor * BUILD_T3_X;
-  drawPosY[BUILD_T3] = zoomFactor * BUILD_T3_Y;
-  drawPosX[BUILD_T4] = zoomFactor * BUILD_T4_X;
-  drawPosY[BUILD_T4] = zoomFactor * BUILD_T4_Y;
-  drawPosX[BUILD_HORZ] = zoomFactor * BUILD_HORZ_X;
-  drawPosY[BUILD_HORZ] = zoomFactor * BUILD_HORZ_Y;
-  drawPosX[BUILD_VERT] = zoomFactor * BUILD_VERT_X;
-  drawPosY[BUILD_VERT] = zoomFactor * BUILD_VERT_Y;
-  drawPosX[BUILD_VERTEND1] = zoomFactor * BUILD_VERTEND1_X;
-  drawPosY[BUILD_VERTEND1] = zoomFactor * BUILD_VERTEND1_Y;
-  drawPosX[BUILD_VERTEND2] = zoomFactor * BUILD_VERTEND2_X;
-  drawPosY[BUILD_VERTEND2] = zoomFactor * BUILD_VERTEND2_Y;
-  drawPosX[BUILD_HORZEND1] = zoomFactor * BUILD_HORZEND1_X;
-  drawPosY[BUILD_HORZEND1] = zoomFactor * BUILD_HORZEND1_Y;
-  drawPosX[BUILD_HORZEND2] = zoomFactor * BUILD_HORZEND2_X;
-  drawPosY[BUILD_HORZEND2] = zoomFactor * BUILD_HORZEND2_Y;
-  drawPosX[BUILD_CROSS] = zoomFactor * BUILD_CROSS_X;
-  drawPosY[BUILD_CROSS] = zoomFactor * BUILD_CROSS_Y;
-  drawPosX[BUILD_SIDE1] = zoomFactor * BUILD_SIDE1_X;
-  drawPosY[BUILD_SIDE1] = zoomFactor * BUILD_SIDE1_Y;
-  drawPosX[BUILD_SIDE2] = zoomFactor * BUILD_SIDE2_X;
-  drawPosY[BUILD_SIDE2] = zoomFactor * BUILD_SIDE2_Y;
-  drawPosX[BUILD_SIDE3] = zoomFactor * BUILD_SIDE3_X;
-  drawPosY[BUILD_SIDE3] = zoomFactor * BUILD_SIDE3_Y;
-  drawPosX[BUILD_SIDE4] = zoomFactor * BUILD_SIDE4_X;
-  drawPosY[BUILD_SIDE4] = zoomFactor * BUILD_SIDE4_Y;
-  drawPosX[BUILD_SIDECORN1] = zoomFactor * BUILD_SIDECORN1_X;
-  drawPosY[BUILD_SIDECORN1] = zoomFactor * BUILD_SIDECORN1_Y;
-  drawPosX[BUILD_SIDECORN2] = zoomFactor * BUILD_SIDECORN2_X;
-  drawPosY[BUILD_SIDECORN2] = zoomFactor * BUILD_SIDECORN2_Y;
-  drawPosX[BUILD_SIDECORN3] = zoomFactor * BUILD_SIDECORN3_X;
-  drawPosY[BUILD_SIDECORN3] = zoomFactor * BUILD_SIDECORN3_Y;
-  drawPosX[BUILD_SIDECORN4] = zoomFactor * BUILD_SIDECORN4_X;
-  drawPosY[BUILD_SIDECORN4] = zoomFactor * BUILD_SIDECORN4_Y;
-  drawPosX[BUILD_SIDECORN5] = zoomFactor * BUILD_SIDECORN5_X;
-  drawPosY[BUILD_SIDECORN5] = zoomFactor * BUILD_SIDECORN5_Y;
-  drawPosX[BUILD_SIDECORN6] = zoomFactor * BUILD_SIDECORN6_X;
-  drawPosY[BUILD_SIDECORN6] = zoomFactor * BUILD_SIDECORN6_Y;
-  drawPosX[BUILD_SIDECORN7] = zoomFactor * BUILD_SIDECORN7_X;
-  drawPosY[BUILD_SIDECORN7] = zoomFactor * BUILD_SIDECORN7_Y;
-  drawPosX[BUILD_SIDECORN8] = zoomFactor * BUILD_SIDECORN8_X;
-  drawPosY[BUILD_SIDECORN8] = zoomFactor * BUILD_SIDECORN8_Y;
-  drawPosX[BUILD_SIDECORN9] = zoomFactor * BUILD_SIDECORN9_X;
-  drawPosY[BUILD_SIDECORN9] = zoomFactor * BUILD_SIDECORN9_Y;
-  drawPosX[BUILD_SIDECORN10] = zoomFactor * BUILD_SIDECORN10_X;
-  drawPosY[BUILD_SIDECORN10] = zoomFactor * BUILD_SIDECORN10_Y;
-  drawPosX[BUILD_SIDECORN11] = zoomFactor * BUILD_SIDECORN11_X;
-  drawPosY[BUILD_SIDECORN11] = zoomFactor * BUILD_SIDECORN11_Y;
-  drawPosX[BUILD_SIDECORN12] = zoomFactor * BUILD_SIDECORN12_X;
-  drawPosY[BUILD_SIDECORN12] = zoomFactor * BUILD_SIDECORN12_Y;
-  drawPosX[BUILD_SIDECORN13] = zoomFactor * BUILD_SIDECORN13_X;
-  drawPosY[BUILD_SIDECORN13] = zoomFactor * BUILD_SIDECORN13_Y;
-  drawPosX[BUILD_SIDECORN14] = zoomFactor * BUILD_SIDECORN14_X;
-  drawPosY[BUILD_SIDECORN14] = zoomFactor * BUILD_SIDECORN14_Y;
-  drawPosX[BUILD_SIDECORN15] = zoomFactor * BUILD_SIDECORN15_X;
-  drawPosY[BUILD_SIDECORN15] = zoomFactor * BUILD_SIDECORN15_Y;
-  drawPosX[BUILD_SIDECORN16] = zoomFactor * BUILD_SIDECORN16_X;
-  drawPosY[BUILD_SIDECORN16] = zoomFactor * BUILD_SIDECORN16_Y;
-  drawPosX[BUILD_TWIST1] = zoomFactor * BUILD_TWIST1_X;
-  drawPosY[BUILD_TWIST1] = zoomFactor * BUILD_TWIST1_Y;
-  drawPosX[BUILD_TWIST2] = zoomFactor * BUILD_TWIST2_X;
-  drawPosY[BUILD_TWIST2] = zoomFactor * BUILD_TWIST2_Y;
-  drawPosX[BUILD_MOST1] = zoomFactor * BUILD_MOST1_X;
-  drawPosY[BUILD_MOST1] = zoomFactor * BUILD_MOST1_Y;
-  drawPosX[BUILD_MOST2] = zoomFactor * BUILD_MOST2_X;
-  drawPosY[BUILD_MOST2] = zoomFactor * BUILD_MOST2_Y;
-  drawPosX[BUILD_MOST3] = zoomFactor * BUILD_MOST3_X;
-  drawPosY[BUILD_MOST3] = zoomFactor * BUILD_MOST3_Y;
-  drawPosX[BUILD_MOST4] = zoomFactor * BUILD_MOST4_X;
-  drawPosY[BUILD_MOST4] = zoomFactor * BUILD_MOST4_Y;
+  drawPosX[BUILD_SINGLE] = BUILD_SINGLE_X;
+  drawPosY[BUILD_SINGLE] = BUILD_SINGLE_Y;
+  drawPosX[BUILD_SOLID] = BUILD_SOLID_X;
+  drawPosY[BUILD_SOLID] = BUILD_SOLID_Y;
+  drawPosX[BUILD_CORNER1] = BUILD_CORNER1_X;
+  drawPosY[BUILD_CORNER1] = BUILD_CORNER1_Y;
+  drawPosX[BUILD_CORNER2] = BUILD_CORNER2_X;
+  drawPosY[BUILD_CORNER2] = BUILD_CORNER2_Y;
+  drawPosX[BUILD_CORNER3] = BUILD_CORNER3_X;
+  drawPosY[BUILD_CORNER3] = BUILD_CORNER3_Y;
+  drawPosX[BUILD_CORNER4] = BUILD_CORNER4_X;
+  drawPosY[BUILD_CORNER4] = BUILD_CORNER4_Y;
+  drawPosX[BUILD_L1] = BUILD_L1_X;
+  drawPosY[BUILD_L1] = BUILD_L1_Y;
+  drawPosX[BUILD_L2] = BUILD_L2_X;
+  drawPosY[BUILD_L2] = BUILD_L2_Y;
+  drawPosX[BUILD_L3] = BUILD_L3_X;
+  drawPosY[BUILD_L3] = BUILD_L3_Y;
+  drawPosX[BUILD_L4] = BUILD_L4_X;
+  drawPosY[BUILD_L4] = BUILD_L4_Y;
+  drawPosX[BUILD_T1] = BUILD_T1_X;
+  drawPosY[BUILD_T1] = BUILD_T1_Y;
+  drawPosX[BUILD_T2] = BUILD_T2_X;
+  drawPosY[BUILD_T2] = BUILD_T2_Y;
+  drawPosX[BUILD_T3] = BUILD_T3_X;
+  drawPosY[BUILD_T3] = BUILD_T3_Y;
+  drawPosX[BUILD_T4] = BUILD_T4_X;
+  drawPosY[BUILD_T4] = BUILD_T4_Y;
+  drawPosX[BUILD_HORZ] = BUILD_HORZ_X;
+  drawPosY[BUILD_HORZ] = BUILD_HORZ_Y;
+  drawPosX[BUILD_VERT] = BUILD_VERT_X;
+  drawPosY[BUILD_VERT] = BUILD_VERT_Y;
+  drawPosX[BUILD_VERTEND1] = BUILD_VERTEND1_X;
+  drawPosY[BUILD_VERTEND1] = BUILD_VERTEND1_Y;
+  drawPosX[BUILD_VERTEND2] = BUILD_VERTEND2_X;
+  drawPosY[BUILD_VERTEND2] = BUILD_VERTEND2_Y;
+  drawPosX[BUILD_HORZEND1] = BUILD_HORZEND1_X;
+  drawPosY[BUILD_HORZEND1] = BUILD_HORZEND1_Y;
+  drawPosX[BUILD_HORZEND2] = BUILD_HORZEND2_X;
+  drawPosY[BUILD_HORZEND2] = BUILD_HORZEND2_Y;
+  drawPosX[BUILD_CROSS] = BUILD_CROSS_X;
+  drawPosY[BUILD_CROSS] = BUILD_CROSS_Y;
+  drawPosX[BUILD_SIDE1] = BUILD_SIDE1_X;
+  drawPosY[BUILD_SIDE1] = BUILD_SIDE1_Y;
+  drawPosX[BUILD_SIDE2] = BUILD_SIDE2_X;
+  drawPosY[BUILD_SIDE2] = BUILD_SIDE2_Y;
+  drawPosX[BUILD_SIDE3] = BUILD_SIDE3_X;
+  drawPosY[BUILD_SIDE3] = BUILD_SIDE3_Y;
+  drawPosX[BUILD_SIDE4] = BUILD_SIDE4_X;
+  drawPosY[BUILD_SIDE4] = BUILD_SIDE4_Y;
+  drawPosX[BUILD_SIDECORN1] = BUILD_SIDECORN1_X;
+  drawPosY[BUILD_SIDECORN1] = BUILD_SIDECORN1_Y;
+  drawPosX[BUILD_SIDECORN2] = BUILD_SIDECORN2_X;
+  drawPosY[BUILD_SIDECORN2] = BUILD_SIDECORN2_Y;
+  drawPosX[BUILD_SIDECORN3] = BUILD_SIDECORN3_X;
+  drawPosY[BUILD_SIDECORN3] = BUILD_SIDECORN3_Y;
+  drawPosX[BUILD_SIDECORN4] = BUILD_SIDECORN4_X;
+  drawPosY[BUILD_SIDECORN4] = BUILD_SIDECORN4_Y;
+  drawPosX[BUILD_SIDECORN5] = BUILD_SIDECORN5_X;
+  drawPosY[BUILD_SIDECORN5] = BUILD_SIDECORN5_Y;
+  drawPosX[BUILD_SIDECORN6] = BUILD_SIDECORN6_X;
+  drawPosY[BUILD_SIDECORN6] = BUILD_SIDECORN6_Y;
+  drawPosX[BUILD_SIDECORN7] = BUILD_SIDECORN7_X;
+  drawPosY[BUILD_SIDECORN7] = BUILD_SIDECORN7_Y;
+  drawPosX[BUILD_SIDECORN8] = BUILD_SIDECORN8_X;
+  drawPosY[BUILD_SIDECORN8] = BUILD_SIDECORN8_Y;
+  drawPosX[BUILD_SIDECORN9] = BUILD_SIDECORN9_X;
+  drawPosY[BUILD_SIDECORN9] = BUILD_SIDECORN9_Y;
+  drawPosX[BUILD_SIDECORN10] = BUILD_SIDECORN10_X;
+  drawPosY[BUILD_SIDECORN10] = BUILD_SIDECORN10_Y;
+  drawPosX[BUILD_SIDECORN11] = BUILD_SIDECORN11_X;
+  drawPosY[BUILD_SIDECORN11] = BUILD_SIDECORN11_Y;
+  drawPosX[BUILD_SIDECORN12] = BUILD_SIDECORN12_X;
+  drawPosY[BUILD_SIDECORN12] = BUILD_SIDECORN12_Y;
+  drawPosX[BUILD_SIDECORN13] = BUILD_SIDECORN13_X;
+  drawPosY[BUILD_SIDECORN13] = BUILD_SIDECORN13_Y;
+  drawPosX[BUILD_SIDECORN14] = BUILD_SIDECORN14_X;
+  drawPosY[BUILD_SIDECORN14] = BUILD_SIDECORN14_Y;
+  drawPosX[BUILD_SIDECORN15] = BUILD_SIDECORN15_X;
+  drawPosY[BUILD_SIDECORN15] = BUILD_SIDECORN15_Y;
+  drawPosX[BUILD_SIDECORN16] = BUILD_SIDECORN16_X;
+  drawPosY[BUILD_SIDECORN16] = BUILD_SIDECORN16_Y;
+  drawPosX[BUILD_TWIST1] = BUILD_TWIST1_X;
+  drawPosY[BUILD_TWIST1] = BUILD_TWIST1_Y;
+  drawPosX[BUILD_TWIST2] = BUILD_TWIST2_X;
+  drawPosY[BUILD_TWIST2] = BUILD_TWIST2_Y;
+  drawPosX[BUILD_MOST1] = BUILD_MOST1_X;
+  drawPosY[BUILD_MOST1] = BUILD_MOST1_Y;
+  drawPosX[BUILD_MOST2] = BUILD_MOST2_X;
+  drawPosY[BUILD_MOST2] = BUILD_MOST2_Y;
+  drawPosX[BUILD_MOST3] = BUILD_MOST3_X;
+  drawPosY[BUILD_MOST3] = BUILD_MOST3_Y;
+  drawPosX[BUILD_MOST4] = BUILD_MOST4_X;
+  drawPosY[BUILD_MOST4] = BUILD_MOST4_Y;
 
-  drawPosX[RIVER_END1] = zoomFactor * RIVER_END1_X;
-  drawPosY[RIVER_END1] = zoomFactor * RIVER_END1_Y;
-  drawPosX[RIVER_END2] = zoomFactor * RIVER_END2_X;
-  drawPosY[RIVER_END2] = zoomFactor * RIVER_END2_Y;
-  drawPosX[RIVER_END3] = zoomFactor * RIVER_END3_X;
-  drawPosY[RIVER_END3] = zoomFactor * RIVER_END3_Y;
-  drawPosX[RIVER_END4] = zoomFactor * RIVER_END4_X;
-  drawPosY[RIVER_END4] = zoomFactor * RIVER_END4_Y;
-  drawPosX[RIVER_SOLID] = zoomFactor * RIVER_SOLID_X;
-  drawPosY[RIVER_SOLID] = zoomFactor * RIVER_SOLID_Y;
-  drawPosX[RIVER_SURROUND] = zoomFactor * RIVER_SURROUND_X;
-  drawPosY[RIVER_SURROUND] = zoomFactor * RIVER_SURROUND_Y;
-  drawPosX[RIVER_SIDE1] = zoomFactor * RIVER_SIDE1_X;
-  drawPosY[RIVER_SIDE1] = zoomFactor * RIVER_SIDE1_Y;
-  drawPosX[RIVER_SIDE2] = zoomFactor * RIVER_SIDE2_X;
-  drawPosY[RIVER_SIDE2] = zoomFactor * RIVER_SIDE2_Y;
-  drawPosX[RIVER_ONESIDE1] = zoomFactor * RIVER_ONESIDE1_X;
-  drawPosY[RIVER_ONESIDE1] = zoomFactor * RIVER_ONESIDE1_Y;
-  drawPosX[RIVER_ONESIDE2] = zoomFactor * RIVER_ONESIDE2_X;
-  drawPosY[RIVER_ONESIDE2] = zoomFactor * RIVER_ONESIDE2_Y;
-  drawPosX[RIVER_ONESIDE3] = zoomFactor * RIVER_ONESIDE3_X;
-  drawPosY[RIVER_ONESIDE3] = zoomFactor * RIVER_ONESIDE3_Y;
-  drawPosX[RIVER_ONESIDE4] = zoomFactor * RIVER_ONESIDE4_X;
-  drawPosY[RIVER_ONESIDE4] = zoomFactor * RIVER_ONESIDE4_Y;
-  drawPosX[RIVER_CORN1] = zoomFactor * RIVER_CORN1_X;
-  drawPosY[RIVER_CORN1] = zoomFactor * RIVER_CORN1_Y;
-  drawPosX[RIVER_CORN2] = zoomFactor * RIVER_CORN2_X;
-  drawPosY[RIVER_CORN2] = zoomFactor * RIVER_CORN2_Y;
-  drawPosX[RIVER_CORN3] = zoomFactor * RIVER_CORN3_X;
-  drawPosY[RIVER_CORN3] = zoomFactor * RIVER_CORN3_Y;
-  drawPosX[RIVER_CORN4] = zoomFactor * RIVER_CORN4_X;
-  drawPosY[RIVER_CORN4] = zoomFactor * RIVER_CORN4_Y;
+  drawPosX[RIVER_END1] = RIVER_END1_X;
+  drawPosY[RIVER_END1] = RIVER_END1_Y;
+  drawPosX[RIVER_END2] = RIVER_END2_X;
+  drawPosY[RIVER_END2] = RIVER_END2_Y;
+  drawPosX[RIVER_END3] = RIVER_END3_X;
+  drawPosY[RIVER_END3] = RIVER_END3_Y;
+  drawPosX[RIVER_END4] = RIVER_END4_X;
+  drawPosY[RIVER_END4] = RIVER_END4_Y;
+  drawPosX[RIVER_SOLID] = RIVER_SOLID_X;
+  drawPosY[RIVER_SOLID] = RIVER_SOLID_Y;
+  drawPosX[RIVER_SURROUND] = RIVER_SURROUND_X;
+  drawPosY[RIVER_SURROUND] = RIVER_SURROUND_Y;
+  drawPosX[RIVER_SIDE1] = RIVER_SIDE1_X;
+  drawPosY[RIVER_SIDE1] = RIVER_SIDE1_Y;
+  drawPosX[RIVER_SIDE2] = RIVER_SIDE2_X;
+  drawPosY[RIVER_SIDE2] = RIVER_SIDE2_Y;
+  drawPosX[RIVER_ONESIDE1] = RIVER_ONESIDE1_X;
+  drawPosY[RIVER_ONESIDE1] = RIVER_ONESIDE1_Y;
+  drawPosX[RIVER_ONESIDE2] = RIVER_ONESIDE2_X;
+  drawPosY[RIVER_ONESIDE2] = RIVER_ONESIDE2_Y;
+  drawPosX[RIVER_ONESIDE3] = RIVER_ONESIDE3_X;
+  drawPosY[RIVER_ONESIDE3] = RIVER_ONESIDE3_Y;
+  drawPosX[RIVER_ONESIDE4] = RIVER_ONESIDE4_X;
+  drawPosY[RIVER_ONESIDE4] = RIVER_ONESIDE4_Y;
+  drawPosX[RIVER_CORN1] = RIVER_CORN1_X;
+  drawPosY[RIVER_CORN1] = RIVER_CORN1_Y;
+  drawPosX[RIVER_CORN2] = RIVER_CORN2_X;
+  drawPosY[RIVER_CORN2] = RIVER_CORN2_Y;
+  drawPosX[RIVER_CORN3] = RIVER_CORN3_X;
+  drawPosY[RIVER_CORN3] = RIVER_CORN3_Y;
+  drawPosX[RIVER_CORN4] = RIVER_CORN4_X;
+  drawPosY[RIVER_CORN4] = RIVER_CORN4_Y;
 
-  drawPosX[SWAMP] = zoomFactor * SWAMP_X;
-  drawPosY[SWAMP] = zoomFactor * SWAMP_Y;
-  drawPosX[CRATER] = zoomFactor * CRATER_X;
-  drawPosY[CRATER] = zoomFactor * CRATER_Y;
+  drawPosX[SWAMP] = SWAMP_X;
+  drawPosY[SWAMP] = SWAMP_Y;
+  drawPosX[CRATER] = CRATER_X;
+  drawPosY[CRATER] = CRATER_Y;
 
-  drawPosX[ROAD_CORNER1] = zoomFactor * ROAD_CORNER1_X;
-  drawPosY[ROAD_CORNER1] = zoomFactor * ROAD_CORNER1_Y;
-  drawPosX[ROAD_CORNER2] = zoomFactor * ROAD_CORNER2_X;
-  drawPosY[ROAD_CORNER2] = zoomFactor * ROAD_CORNER2_Y;
-  drawPosX[ROAD_CORNER3] = zoomFactor * ROAD_CORNER3_X;
-  drawPosY[ROAD_CORNER3] = zoomFactor * ROAD_CORNER3_Y;
-  drawPosX[ROAD_CORNER4] = zoomFactor * ROAD_CORNER4_X;
-  drawPosY[ROAD_CORNER4] = zoomFactor * ROAD_CORNER4_Y;
-  drawPosX[ROAD_CORNER5] = zoomFactor * ROAD_CORNER5_X;
-  drawPosY[ROAD_CORNER5] = zoomFactor * ROAD_CORNER5_Y;
-  drawPosX[ROAD_CORNER6] = zoomFactor * ROAD_CORNER6_X;
-  drawPosY[ROAD_CORNER6] = zoomFactor * ROAD_CORNER6_Y;
-  drawPosX[ROAD_CORNER7] = zoomFactor * ROAD_CORNER7_X;
-  drawPosY[ROAD_CORNER7] = zoomFactor * ROAD_CORNER7_Y;
-  drawPosX[ROAD_CORNER8] = zoomFactor * ROAD_CORNER8_X;
-  drawPosY[ROAD_CORNER8] = zoomFactor * ROAD_CORNER8_Y;
+  drawPosX[ROAD_CORNER1] = ROAD_CORNER1_X;
+  drawPosY[ROAD_CORNER1] = ROAD_CORNER1_Y;
+  drawPosX[ROAD_CORNER2] = ROAD_CORNER2_X;
+  drawPosY[ROAD_CORNER2] = ROAD_CORNER2_Y;
+  drawPosX[ROAD_CORNER3] = ROAD_CORNER3_X;
+  drawPosY[ROAD_CORNER3] = ROAD_CORNER3_Y;
+  drawPosX[ROAD_CORNER4] = ROAD_CORNER4_X;
+  drawPosY[ROAD_CORNER4] = ROAD_CORNER4_Y;
+  drawPosX[ROAD_CORNER5] = ROAD_CORNER5_X;
+  drawPosY[ROAD_CORNER5] = ROAD_CORNER5_Y;
+  drawPosX[ROAD_CORNER6] = ROAD_CORNER6_X;
+  drawPosY[ROAD_CORNER6] = ROAD_CORNER6_Y;
+  drawPosX[ROAD_CORNER7] = ROAD_CORNER7_X;
+  drawPosY[ROAD_CORNER7] = ROAD_CORNER7_Y;
+  drawPosX[ROAD_CORNER8] = ROAD_CORNER8_X;
+  drawPosY[ROAD_CORNER8] = ROAD_CORNER8_Y;
 
-  drawPosX[ROAD_SIDE1] = zoomFactor * ROAD_SIDE1_X;
-  drawPosY[ROAD_SIDE1] = zoomFactor * ROAD_SIDE1_Y;
-  drawPosX[ROAD_SIDE2] = zoomFactor * ROAD_SIDE2_X;
-  drawPosY[ROAD_SIDE2] = zoomFactor * ROAD_SIDE2_Y;
-  drawPosX[ROAD_SIDE3] = zoomFactor * ROAD_SIDE3_X;
-  drawPosY[ROAD_SIDE3] = zoomFactor * ROAD_SIDE3_Y;
-  drawPosX[ROAD_SIDE4] = zoomFactor * ROAD_SIDE4_X;
-  drawPosY[ROAD_SIDE4] = zoomFactor * ROAD_SIDE4_Y;
-  drawPosX[ROAD_SOLID] = zoomFactor * ROAD_SOLID_X;
-  drawPosY[ROAD_SOLID] = zoomFactor * ROAD_SOLID_Y;
-  drawPosX[ROAD_CROSS] = zoomFactor * ROAD_CROSS_X;
-  drawPosY[ROAD_CROSS] = zoomFactor * ROAD_CROSS_Y;
-  drawPosX[ROAD_T1] = zoomFactor * ROAD_T1_X;
-  drawPosY[ROAD_T1] = zoomFactor * ROAD_T1_Y;
-  drawPosX[ROAD_T2] = zoomFactor * ROAD_T2_X;
-  drawPosY[ROAD_T2] = zoomFactor * ROAD_T2_Y;
-  drawPosX[ROAD_T3] = zoomFactor * ROAD_T3_X;
-  drawPosY[ROAD_T3] = zoomFactor * ROAD_T3_Y;
-  drawPosX[ROAD_T4] = zoomFactor * ROAD_T4_X;
-  drawPosY[ROAD_T4] = zoomFactor * ROAD_T4_Y;
-  drawPosX[ROAD_HORZ] = zoomFactor * ROAD_HORZ_X;
-  drawPosY[ROAD_HORZ] = zoomFactor * ROAD_HORZ_Y;
-  drawPosX[ROAD_VERT] = zoomFactor * ROAD_VERT_X;
-  drawPosY[ROAD_VERT] = zoomFactor * ROAD_VERT_Y;
-  drawPosX[ROAD_WATER1] = zoomFactor * ROAD_WATER1_X;
-  drawPosY[ROAD_WATER1] = zoomFactor * ROAD_WATER1_Y;
-  drawPosX[ROAD_WATER2] = zoomFactor * ROAD_WATER2_X;
-  drawPosY[ROAD_WATER2] = zoomFactor * ROAD_WATER2_Y;
-  drawPosX[ROAD_WATER3] = zoomFactor * ROAD_WATER3_X;
-  drawPosY[ROAD_WATER3] = zoomFactor * ROAD_WATER3_Y;
-  drawPosX[ROAD_WATER4] = zoomFactor * ROAD_WATER4_X;
-  drawPosY[ROAD_WATER4] = zoomFactor * ROAD_WATER4_Y;
-  drawPosX[ROAD_WATER5] = zoomFactor * ROAD_WATER5_X;
-  drawPosY[ROAD_WATER5] = zoomFactor * ROAD_WATER5_Y;
-  drawPosX[ROAD_WATER6] = zoomFactor * ROAD_WATER6_X;
-  drawPosY[ROAD_WATER6] = zoomFactor * ROAD_WATER6_Y;
-  drawPosX[ROAD_WATER7] = zoomFactor * ROAD_WATER7_X;
-  drawPosY[ROAD_WATER7] = zoomFactor * ROAD_WATER7_Y;
-  drawPosX[ROAD_WATER8] = zoomFactor * ROAD_WATER8_X;
-  drawPosY[ROAD_WATER8] = zoomFactor * ROAD_WATER8_Y;
-  drawPosX[ROAD_WATER9] = zoomFactor * ROAD_WATER9_X;
-  drawPosY[ROAD_WATER9] = zoomFactor * ROAD_WATER9_Y;
-  drawPosX[ROAD_WATER10] = zoomFactor * ROAD_WATER10_X;
-  drawPosY[ROAD_WATER10] = zoomFactor * ROAD_WATER10_Y;
-  drawPosX[ROAD_WATER11] = zoomFactor * ROAD_WATER11_X;
-  drawPosY[ROAD_WATER11] = zoomFactor * ROAD_WATER11_Y;
+  drawPosX[ROAD_SIDE1] = ROAD_SIDE1_X;
+  drawPosY[ROAD_SIDE1] = ROAD_SIDE1_Y;
+  drawPosX[ROAD_SIDE2] = ROAD_SIDE2_X;
+  drawPosY[ROAD_SIDE2] = ROAD_SIDE2_Y;
+  drawPosX[ROAD_SIDE3] = ROAD_SIDE3_X;
+  drawPosY[ROAD_SIDE3] = ROAD_SIDE3_Y;
+  drawPosX[ROAD_SIDE4] = ROAD_SIDE4_X;
+  drawPosY[ROAD_SIDE4] = ROAD_SIDE4_Y;
+  drawPosX[ROAD_SOLID] = ROAD_SOLID_X;
+  drawPosY[ROAD_SOLID] = ROAD_SOLID_Y;
+  drawPosX[ROAD_CROSS] = ROAD_CROSS_X;
+  drawPosY[ROAD_CROSS] = ROAD_CROSS_Y;
+  drawPosX[ROAD_T1] = ROAD_T1_X;
+  drawPosY[ROAD_T1] = ROAD_T1_Y;
+  drawPosX[ROAD_T2] = ROAD_T2_X;
+  drawPosY[ROAD_T2] = ROAD_T2_Y;
+  drawPosX[ROAD_T3] = ROAD_T3_X;
+  drawPosY[ROAD_T3] = ROAD_T3_Y;
+  drawPosX[ROAD_T4] = ROAD_T4_X;
+  drawPosY[ROAD_T4] = ROAD_T4_Y;
+  drawPosX[ROAD_HORZ] = ROAD_HORZ_X;
+  drawPosY[ROAD_HORZ] = ROAD_HORZ_Y;
+  drawPosX[ROAD_VERT] = ROAD_VERT_X;
+  drawPosY[ROAD_VERT] = ROAD_VERT_Y;
+  drawPosX[ROAD_WATER1] = ROAD_WATER1_X;
+  drawPosY[ROAD_WATER1] = ROAD_WATER1_Y;
+  drawPosX[ROAD_WATER2] = ROAD_WATER2_X;
+  drawPosY[ROAD_WATER2] = ROAD_WATER2_Y;
+  drawPosX[ROAD_WATER3] = ROAD_WATER3_X;
+  drawPosY[ROAD_WATER3] = ROAD_WATER3_Y;
+  drawPosX[ROAD_WATER4] = ROAD_WATER4_X;
+  drawPosY[ROAD_WATER4] = ROAD_WATER4_Y;
+  drawPosX[ROAD_WATER5] = ROAD_WATER5_X;
+  drawPosY[ROAD_WATER5] = ROAD_WATER5_Y;
+  drawPosX[ROAD_WATER6] = ROAD_WATER6_X;
+  drawPosY[ROAD_WATER6] = ROAD_WATER6_Y;
+  drawPosX[ROAD_WATER7] = ROAD_WATER7_X;
+  drawPosY[ROAD_WATER7] = ROAD_WATER7_Y;
+  drawPosX[ROAD_WATER8] = ROAD_WATER8_X;
+  drawPosY[ROAD_WATER8] = ROAD_WATER8_Y;
+  drawPosX[ROAD_WATER9] = ROAD_WATER9_X;
+  drawPosY[ROAD_WATER9] = ROAD_WATER9_Y;
+  drawPosX[ROAD_WATER10] = ROAD_WATER10_X;
+  drawPosY[ROAD_WATER10] = ROAD_WATER10_Y;
+  drawPosX[ROAD_WATER11] = ROAD_WATER11_X;
+  drawPosY[ROAD_WATER11] = ROAD_WATER11_Y;
 
-  drawPosX[PILL_EVIL_15] = zoomFactor * PILL_EVIL15_X;
-  drawPosY[PILL_EVIL_15] = zoomFactor * PILL_EVIL15_Y;
-  drawPosX[PILL_EVIL_14] = zoomFactor * PILL_EVIL14_X;
-  drawPosY[PILL_EVIL_14] = zoomFactor * PILL_EVIL14_Y;
-  drawPosX[PILL_EVIL_13] = zoomFactor * PILL_EVIL13_X;
-  drawPosY[PILL_EVIL_13] = zoomFactor * PILL_EVIL13_Y;
-  drawPosX[PILL_EVIL_12] = zoomFactor * PILL_EVIL12_X;
-  drawPosY[PILL_EVIL_12] = zoomFactor * PILL_EVIL12_Y;
-  drawPosX[PILL_EVIL_11] = zoomFactor * PILL_EVIL11_X;
-  drawPosY[PILL_EVIL_11] = zoomFactor * PILL_EVIL11_Y;
-  drawPosX[PILL_EVIL_10] = zoomFactor * PILL_EVIL10_X;
-  drawPosY[PILL_EVIL_10] = zoomFactor * PILL_EVIL10_Y;
-  drawPosX[PILL_EVIL_9] = zoomFactor * PILL_EVIL9_X;
-  drawPosY[PILL_EVIL_9] = zoomFactor * PILL_EVIL9_Y;
-  drawPosX[PILL_EVIL_8] = zoomFactor * PILL_EVIL8_X;
-  drawPosY[PILL_EVIL_8] = zoomFactor * PILL_EVIL8_Y;
-  drawPosX[PILL_EVIL_7] = zoomFactor * PILL_EVIL7_X;
-  drawPosY[PILL_EVIL_7] = zoomFactor * PILL_EVIL7_Y;
-  drawPosX[PILL_EVIL_6] = zoomFactor * PILL_EVIL6_X;
-  drawPosY[PILL_EVIL_6] = zoomFactor * PILL_EVIL6_Y;
-  drawPosX[PILL_EVIL_5] = zoomFactor * PILL_EVIL5_X;
-  drawPosY[PILL_EVIL_5] = zoomFactor * PILL_EVIL5_Y;
-  drawPosX[PILL_EVIL_4] = zoomFactor * PILL_EVIL4_X;
-  drawPosY[PILL_EVIL_4] = zoomFactor * PILL_EVIL4_Y;
-  drawPosX[PILL_EVIL_3] = zoomFactor * PILL_EVIL3_X;
-  drawPosY[PILL_EVIL_3] = zoomFactor * PILL_EVIL3_Y;
-  drawPosX[PILL_EVIL_2] = zoomFactor * PILL_EVIL2_X;
-  drawPosY[PILL_EVIL_2] = zoomFactor * PILL_EVIL2_Y;
-  drawPosX[PILL_EVIL_1] = zoomFactor * PILL_EVIL1_X;
-  drawPosY[PILL_EVIL_1] = zoomFactor * PILL_EVIL1_Y;
-  drawPosX[PILL_EVIL_0] = zoomFactor * PILL_EVIL0_X;
-  drawPosY[PILL_EVIL_0] = zoomFactor * PILL_EVIL0_Y;
+  drawPosX[PILL_EVIL_15] = PILL_EVIL15_X;
+  drawPosY[PILL_EVIL_15] = PILL_EVIL15_Y;
+  drawPosX[PILL_EVIL_14] = PILL_EVIL14_X;
+  drawPosY[PILL_EVIL_14] = PILL_EVIL14_Y;
+  drawPosX[PILL_EVIL_13] = PILL_EVIL13_X;
+  drawPosY[PILL_EVIL_13] = PILL_EVIL13_Y;
+  drawPosX[PILL_EVIL_12] = PILL_EVIL12_X;
+  drawPosY[PILL_EVIL_12] = PILL_EVIL12_Y;
+  drawPosX[PILL_EVIL_11] = PILL_EVIL11_X;
+  drawPosY[PILL_EVIL_11] = PILL_EVIL11_Y;
+  drawPosX[PILL_EVIL_10] = PILL_EVIL10_X;
+  drawPosY[PILL_EVIL_10] = PILL_EVIL10_Y;
+  drawPosX[PILL_EVIL_9] = PILL_EVIL9_X;
+  drawPosY[PILL_EVIL_9] = PILL_EVIL9_Y;
+  drawPosX[PILL_EVIL_8] = PILL_EVIL8_X;
+  drawPosY[PILL_EVIL_8] = PILL_EVIL8_Y;
+  drawPosX[PILL_EVIL_7] = PILL_EVIL7_X;
+  drawPosY[PILL_EVIL_7] = PILL_EVIL7_Y;
+  drawPosX[PILL_EVIL_6] = PILL_EVIL6_X;
+  drawPosY[PILL_EVIL_6] = PILL_EVIL6_Y;
+  drawPosX[PILL_EVIL_5] = PILL_EVIL5_X;
+  drawPosY[PILL_EVIL_5] = PILL_EVIL5_Y;
+  drawPosX[PILL_EVIL_4] = PILL_EVIL4_X;
+  drawPosY[PILL_EVIL_4] = PILL_EVIL4_Y;
+  drawPosX[PILL_EVIL_3] = PILL_EVIL3_X;
+  drawPosY[PILL_EVIL_3] = PILL_EVIL3_Y;
+  drawPosX[PILL_EVIL_2] = PILL_EVIL2_X;
+  drawPosY[PILL_EVIL_2] = PILL_EVIL2_Y;
+  drawPosX[PILL_EVIL_1] = PILL_EVIL1_X;
+  drawPosY[PILL_EVIL_1] = PILL_EVIL1_Y;
+  drawPosX[PILL_EVIL_0] = PILL_EVIL0_X;
+  drawPosY[PILL_EVIL_0] = PILL_EVIL0_Y;
 
-  drawPosX[PILL_GOOD_15] = zoomFactor * PILL_GOOD15_X;
-  drawPosY[PILL_GOOD_15] = zoomFactor * PILL_GOOD15_Y;
-  drawPosX[PILL_GOOD_14] = zoomFactor * PILL_GOOD14_X;
-  drawPosY[PILL_GOOD_14] = zoomFactor * PILL_GOOD14_Y;
-  drawPosX[PILL_GOOD_13] = zoomFactor * PILL_GOOD13_X;
-  drawPosY[PILL_GOOD_13] = zoomFactor * PILL_GOOD13_Y;
-  drawPosX[PILL_GOOD_12] = zoomFactor * PILL_GOOD12_X;
-  drawPosY[PILL_GOOD_12] = zoomFactor * PILL_GOOD12_Y;
-  drawPosX[PILL_GOOD_11] = zoomFactor * PILL_GOOD11_X;
-  drawPosY[PILL_GOOD_11] = zoomFactor * PILL_GOOD11_Y;
-  drawPosX[PILL_GOOD_10] = zoomFactor * PILL_GOOD10_X;
-  drawPosY[PILL_GOOD_10] = zoomFactor * PILL_GOOD10_Y;
-  drawPosX[PILL_GOOD_9] = zoomFactor * PILL_GOOD9_X;
-  drawPosY[PILL_GOOD_9] = zoomFactor * PILL_GOOD9_Y;
-  drawPosX[PILL_GOOD_8] = zoomFactor * PILL_GOOD8_X;
-  drawPosY[PILL_GOOD_8] = zoomFactor * PILL_GOOD8_Y;
-  drawPosX[PILL_GOOD_7] = zoomFactor * PILL_GOOD7_X;
-  drawPosY[PILL_GOOD_7] = zoomFactor * PILL_GOOD7_Y;
-  drawPosX[PILL_GOOD_6] = zoomFactor * PILL_GOOD6_X;
-  drawPosY[PILL_GOOD_6] = zoomFactor * PILL_GOOD6_Y;
-  drawPosX[PILL_GOOD_5] = zoomFactor * PILL_GOOD5_X;
-  drawPosY[PILL_GOOD_5] = zoomFactor * PILL_GOOD5_Y;
-  drawPosX[PILL_GOOD_4] = zoomFactor * PILL_GOOD4_X;
-  drawPosY[PILL_GOOD_4] = zoomFactor * PILL_GOOD4_Y;
-  drawPosX[PILL_GOOD_3] = zoomFactor * PILL_GOOD3_X;
-  drawPosY[PILL_GOOD_3] = zoomFactor * PILL_GOOD3_Y;
-  drawPosX[PILL_GOOD_2] = zoomFactor * PILL_GOOD2_X;
-  drawPosY[PILL_GOOD_2] = zoomFactor * PILL_GOOD2_Y;
-  drawPosX[PILL_GOOD_1] = zoomFactor * PILL_GOOD1_X;
-  drawPosY[PILL_GOOD_1] = zoomFactor * PILL_GOOD1_Y;
-  drawPosX[PILL_GOOD_0] = zoomFactor * PILL_GOOD0_X;
-  drawPosY[PILL_GOOD_0] = zoomFactor * PILL_GOOD0_Y;
+  drawPosX[PILL_GOOD_15] = PILL_GOOD15_X;
+  drawPosY[PILL_GOOD_15] = PILL_GOOD15_Y;
+  drawPosX[PILL_GOOD_14] = PILL_GOOD14_X;
+  drawPosY[PILL_GOOD_14] = PILL_GOOD14_Y;
+  drawPosX[PILL_GOOD_13] = PILL_GOOD13_X;
+  drawPosY[PILL_GOOD_13] = PILL_GOOD13_Y;
+  drawPosX[PILL_GOOD_12] = PILL_GOOD12_X;
+  drawPosY[PILL_GOOD_12] = PILL_GOOD12_Y;
+  drawPosX[PILL_GOOD_11] = PILL_GOOD11_X;
+  drawPosY[PILL_GOOD_11] = PILL_GOOD11_Y;
+  drawPosX[PILL_GOOD_10] = PILL_GOOD10_X;
+  drawPosY[PILL_GOOD_10] = PILL_GOOD10_Y;
+  drawPosX[PILL_GOOD_9] = PILL_GOOD9_X;
+  drawPosY[PILL_GOOD_9] = PILL_GOOD9_Y;
+  drawPosX[PILL_GOOD_8] = PILL_GOOD8_X;
+  drawPosY[PILL_GOOD_8] = PILL_GOOD8_Y;
+  drawPosX[PILL_GOOD_7] = PILL_GOOD7_X;
+  drawPosY[PILL_GOOD_7] = PILL_GOOD7_Y;
+  drawPosX[PILL_GOOD_6] = PILL_GOOD6_X;
+  drawPosY[PILL_GOOD_6] = PILL_GOOD6_Y;
+  drawPosX[PILL_GOOD_5] = PILL_GOOD5_X;
+  drawPosY[PILL_GOOD_5] = PILL_GOOD5_Y;
+  drawPosX[PILL_GOOD_4] = PILL_GOOD4_X;
+  drawPosY[PILL_GOOD_4] = PILL_GOOD4_Y;
+  drawPosX[PILL_GOOD_3] = PILL_GOOD3_X;
+  drawPosY[PILL_GOOD_3] = PILL_GOOD3_Y;
+  drawPosX[PILL_GOOD_2] = PILL_GOOD2_X;
+  drawPosY[PILL_GOOD_2] = PILL_GOOD2_Y;
+  drawPosX[PILL_GOOD_1] = PILL_GOOD1_X;
+  drawPosY[PILL_GOOD_1] = PILL_GOOD1_Y;
+  drawPosX[PILL_GOOD_0] = PILL_GOOD0_X;
+  drawPosY[PILL_GOOD_0] = PILL_GOOD0_Y;
 
-  drawPosX[BASE_GOOD] = zoomFactor * BASE_GOOD_X;
-  drawPosY[BASE_GOOD] = zoomFactor * BASE_GOOD_Y;
-  drawPosX[BASE_NEUTRAL] = zoomFactor * BASE_NEUTRAL_X;
-  drawPosY[BASE_NEUTRAL] = zoomFactor * BASE_NEUTRAL_Y;
-  drawPosX[BASE_EVIL] = zoomFactor * BASE_EVIL_X;
-  drawPosY[BASE_EVIL] = zoomFactor * BASE_EVIL_Y;
+  drawPosX[BASE_GOOD] = BASE_GOOD_X;
+  drawPosY[BASE_GOOD] = BASE_GOOD_Y;
+  drawPosX[BASE_NEUTRAL] = BASE_NEUTRAL_X;
+  drawPosY[BASE_NEUTRAL] = BASE_NEUTRAL_Y;
+  drawPosX[BASE_EVIL] = BASE_EVIL_X;
+  drawPosY[BASE_EVIL] = BASE_EVIL_Y;
 
-  drawPosX[FOREST] = zoomFactor * FOREST_X;
-  drawPosY[FOREST] = zoomFactor * FOREST_Y;
-  drawPosX[FOREST_SINGLE] = zoomFactor * FOREST_SINGLE_X;
-  drawPosY[FOREST_SINGLE] = zoomFactor * FOREST_SINGLE_Y;
-  drawPosX[FOREST_BR] = zoomFactor * FOREST_BR_X;
-  drawPosY[FOREST_BR] = zoomFactor * FOREST_BR_Y;
-  drawPosX[FOREST_BL] = zoomFactor * FOREST_BL_X;
-  drawPosY[FOREST_BL] = zoomFactor * FOREST_BL_Y;
-  drawPosX[FOREST_AR] = zoomFactor * FOREST_AR_X;
-  drawPosY[FOREST_AR] = zoomFactor * FOREST_AR_Y;
-  drawPosX[FOREST_AL] = zoomFactor * FOREST_AL_X;
-  drawPosY[FOREST_AL] = zoomFactor * FOREST_AL_Y;
-  drawPosX[FOREST_ABOVE] = zoomFactor * FOREST_ABOVE_X;
-  drawPosY[FOREST_ABOVE] = zoomFactor * FOREST_ABOVE_Y;
-  drawPosX[FOREST_BELOW] = zoomFactor * FOREST_BELOW_X;
-  drawPosY[FOREST_BELOW] = zoomFactor * FOREST_BELOW_Y;
-  drawPosX[FOREST_LEFT] = zoomFactor * FOREST_LEFT_X;
-  drawPosY[FOREST_LEFT] = zoomFactor * FOREST_LEFT_Y;
-  drawPosX[FOREST_RIGHT] = zoomFactor * FOREST_RIGHT_X;
-  drawPosY[FOREST_RIGHT] = zoomFactor * FOREST_RIGHT_Y;
+  drawPosX[FOREST] = FOREST_X;
+  drawPosY[FOREST] = FOREST_Y;
+  drawPosX[FOREST_SINGLE] = FOREST_SINGLE_X;
+  drawPosY[FOREST_SINGLE] = FOREST_SINGLE_Y;
+  drawPosX[FOREST_BR] = FOREST_BR_X;
+  drawPosY[FOREST_BR] = FOREST_BR_Y;
+  drawPosX[FOREST_BL] = FOREST_BL_X;
+  drawPosY[FOREST_BL] = FOREST_BL_Y;
+  drawPosX[FOREST_AR] = FOREST_AR_X;
+  drawPosY[FOREST_AR] = FOREST_AR_Y;
+  drawPosX[FOREST_AL] = FOREST_AL_X;
+  drawPosY[FOREST_AL] = FOREST_AL_Y;
+  drawPosX[FOREST_ABOVE] = FOREST_ABOVE_X;
+  drawPosY[FOREST_ABOVE] = FOREST_ABOVE_Y;
+  drawPosX[FOREST_BELOW] = FOREST_BELOW_X;
+  drawPosY[FOREST_BELOW] = FOREST_BELOW_Y;
+  drawPosX[FOREST_LEFT] = FOREST_LEFT_X;
+  drawPosY[FOREST_LEFT] = FOREST_LEFT_Y;
+  drawPosX[FOREST_RIGHT] = FOREST_RIGHT_X;
+  drawPosY[FOREST_RIGHT] = FOREST_RIGHT_Y;
 
-  drawPosX[RUBBLE] = zoomFactor * RUBBLE_X;
-  drawPosY[RUBBLE] = zoomFactor * RUBBLE_Y;
-  drawPosX[GRASS] = zoomFactor * GRASS_X;
-  drawPosY[GRASS] = zoomFactor * GRASS_Y;
-  drawPosX[HALFBUILDING] = zoomFactor * SHOT_BUILDING_X;
-  drawPosY[HALFBUILDING] = zoomFactor * SHOT_BUILDING_Y;
+  drawPosX[RUBBLE] = RUBBLE_X;
+  drawPosY[RUBBLE] = RUBBLE_Y;
+  drawPosX[GRASS] = GRASS_X;
+  drawPosY[GRASS] = GRASS_Y;
+  drawPosX[HALFBUILDING] = SHOT_BUILDING_X;
+  drawPosY[HALFBUILDING] = SHOT_BUILDING_Y;
 
-  drawPosX[BOAT_0] = zoomFactor * BOAT0_X;
-  drawPosY[BOAT_0] = zoomFactor * BOAT0_Y;
-  drawPosX[BOAT_1] = zoomFactor * BOAT1_X;
-  drawPosY[BOAT_1] = zoomFactor * BOAT1_Y;
-  drawPosX[BOAT_2] = zoomFactor * BOAT2_X;
-  drawPosY[BOAT_2] = zoomFactor * BOAT2_Y;
-  drawPosX[BOAT_3] = zoomFactor * BOAT3_X;
-  drawPosY[BOAT_3] = zoomFactor * BOAT3_Y;
-  drawPosX[BOAT_4] = zoomFactor * BOAT4_X;
-  drawPosY[BOAT_4] = zoomFactor * BOAT4_Y;
-  drawPosX[BOAT_5] = zoomFactor * BOAT5_X;
-  drawPosY[BOAT_5] = zoomFactor * BOAT5_Y;
-  drawPosX[BOAT_6] = zoomFactor * BOAT6_X;
-  drawPosY[BOAT_6] = zoomFactor * BOAT6_Y;
-  drawPosX[BOAT_7] = zoomFactor * BOAT7_X;
-  drawPosY[BOAT_7] = zoomFactor * BOAT7_Y;
+  drawPosX[BOAT_0] = BOAT0_X;
+  drawPosY[BOAT_0] = BOAT0_Y;
+  drawPosX[BOAT_1] = BOAT1_X;
+  drawPosY[BOAT_1] = BOAT1_Y;
+  drawPosX[BOAT_2] = BOAT2_X;
+  drawPosY[BOAT_2] = BOAT2_Y;
+  drawPosX[BOAT_3] = BOAT3_X;
+  drawPosY[BOAT_3] = BOAT3_Y;
+  drawPosX[BOAT_4] = BOAT4_X;
+  drawPosY[BOAT_4] = BOAT4_Y;
+  drawPosX[BOAT_5] = BOAT5_X;
+  drawPosY[BOAT_5] = BOAT5_Y;
+  drawPosX[BOAT_6] = BOAT6_X;
+  drawPosY[BOAT_6] = BOAT6_Y;
+  drawPosX[BOAT_7] = BOAT7_X;
+  drawPosY[BOAT_7] = BOAT7_Y;
 
   /* Draw Tank frames */
 
   /* Do I want to do this?
-  drawTankPosX[TANK_SELF_0] = zoomFactor * TANK_SELF_0_X;
-  drawTankPosY[TANK_SELF_0] = zoomFactor * TANK_SELF_0_Y;
-  drawTankPosX[TANK_SELF_1] = zoomFactor * TANK_SELF_1_X;
-  drawTankPosY[TANK_SELF_1] = zoomFactor * TANK_SELF_1_Y;
-  drawTankPosX[TANK_SELF_2] = zoomFactor * TANK_SELF_2_X;
-  drawTankPosY[TANK_SELF_2] = zoomFactor * TANK_SELF_2_Y;
-  drawTankPosX[TANK_SELF_3] = zoomFactor * TANK_SELF_3_X;
-  drawTankPosY[TANK_SELF_3] = zoomFactor * TANK_SELF_3_Y;
-  drawTankPosX[TANK_SELF_4] = zoomFactor * TANK_SELF_4_X;
-  drawTankPosY[TANK_SELF_4] = zoomFactor * TANK_SELF_4_Y;
-  drawTankPosX[TANK_SELF_5] = zoomFactor * TANK_SELF_5_X;
-  drawTankPosY[TANK_SELF_5] = zoomFactor * TANK_SELF_5_Y;
-  drawTankPosX[TANK_SELF_6] = zoomFactor * TANK_SELF_6_X;
-  drawTankPosY[TANK_SELF_6] = zoomFactor * TANK_SELF_6_Y;
-  drawTankPosX[TANK_SELF_7] = zoomFactor * TANK_SELF_7_X;
-  drawTankPosY[TANK_SELF_7] = zoomFactor * TANK_SELF_7_Y;
-  drawTankPosX[TANK_SELF_8] = zoomFactor * TANK_SELF_8_X;
-  drawTankPosY[TANK_SELF_8] = zoomFactor * TANK_SELF_8_Y;
-  drawTankPosX[TANK_SELF_9] = zoomFactor * TANK_SELF_9_X;
-  drawTankPosY[TANK_SELF_9] = zoomFactor * TANK_SELF_9_Y;
-  drawTankPosX[TANK_SELF_10] = zoomFactor * TANK_SELF_10_X;
-  drawTankPosY[TANK_SELF_10] = zoomFactor * TANK_SELF_10_Y;
-  drawTankPosX[TANK_SELF_11] = zoomFactor * TANK_SELF_11_X;
-  drawTankPosY[TANK_SELF_11] = zoomFactor * TANK_SELF_11_Y;
-  drawTankPosX[TANK_SELF_12] = zoomFactor * TANK_SELF_12_X;
-  drawTankPosY[TANK_SELF_12] = zoomFactor * TANK_SELF_12_Y;
-  drawTankPosX[TANK_SELF_13] = zoomFactor * TANK_SELF_13_X;
-  drawTankPosY[TANK_SELF_13] = zoomFactor * TANK_SELF_13_Y;
-  drawTankPosX[TANK_SELF_14] = zoomFactor * TANK_SELF_14_X;
-  drawTankPosY[TANK_SELF_14] = zoomFactor * TANK_SELF_14_Y;
-  drawTankPosX[TANK_SELF_15] = zoomFactor * TANK_SELF_15_X;
-  drawTankPosY[TANK_SELF_15] = zoomFactor * TANK_SELF_15_Y;
+  drawTankPosX[TANK_SELF_0] =  TANK_SELF_0_X;
+  drawTankPosY[TANK_SELF_0] =  TANK_SELF_0_Y;
+  drawTankPosX[TANK_SELF_1] =  TANK_SELF_1_X;
+  drawTankPosY[TANK_SELF_1] =  TANK_SELF_1_Y;
+  drawTankPosX[TANK_SELF_2] =  TANK_SELF_2_X;
+  drawTankPosY[TANK_SELF_2] =  TANK_SELF_2_Y;
+  drawTankPosX[TANK_SELF_3] =  TANK_SELF_3_X;
+  drawTankPosY[TANK_SELF_3] =  TANK_SELF_3_Y;
+  drawTankPosX[TANK_SELF_4] =  TANK_SELF_4_X;
+  drawTankPosY[TANK_SELF_4] =  TANK_SELF_4_Y;
+  drawTankPosX[TANK_SELF_5] =  TANK_SELF_5_X;
+  drawTankPosY[TANK_SELF_5] =  TANK_SELF_5_Y;
+  drawTankPosX[TANK_SELF_6] =  TANK_SELF_6_X;
+  drawTankPosY[TANK_SELF_6] =  TANK_SELF_6_Y;
+  drawTankPosX[TANK_SELF_7] =  TANK_SELF_7_X;
+  drawTankPosY[TANK_SELF_7] =  TANK_SELF_7_Y;
+  drawTankPosX[TANK_SELF_8] =  TANK_SELF_8_X;
+  drawTankPosY[TANK_SELF_8] =  TANK_SELF_8_Y;
+  drawTankPosX[TANK_SELF_9] =  TANK_SELF_9_X;
+  drawTankPosY[TANK_SELF_9] =  TANK_SELF_9_Y;
+  drawTankPosX[TANK_SELF_10] =  TANK_SELF_10_X;
+  drawTankPosY[TANK_SELF_10] =  TANK_SELF_10_Y;
+  drawTankPosX[TANK_SELF_11] =  TANK_SELF_11_X;
+  drawTankPosY[TANK_SELF_11] =  TANK_SELF_11_Y;
+  drawTankPosX[TANK_SELF_12] =  TANK_SELF_12_X;
+  drawTankPosY[TANK_SELF_12] =  TANK_SELF_12_Y;
+  drawTankPosX[TANK_SELF_13] =  TANK_SELF_13_X;
+  drawTankPosY[TANK_SELF_13] =  TANK_SELF_13_Y;
+  drawTankPosX[TANK_SELF_14] =  TANK_SELF_14_X;
+  drawTankPosY[TANK_SELF_14] =  TANK_SELF_14_Y;
+  drawTankPosX[TANK_SELF_15] =  TANK_SELF_15_X;
+  drawTankPosY[TANK_SELF_15] =  TANK_SELF_15_Y;
 
-  drawTankPosX[TANK_SELFBOAT_0] = zoomFactor * TANK_SELFBOAT_0_X;
-  drawTankPosY[TANK_SELFBOAT_0] = zoomFactor * TANK_SELFBOAT_0_Y;
-  drawTankPosX[TANK_SELFBOAT_1] = zoomFactor * TANK_SELFBOAT_1_X;
-  drawTankPosY[TANK_SELFBOAT_1] = zoomFactor * TANK_SELFBOAT_1_Y;
-  drawTankPosX[TANK_SELFBOAT_2] = zoomFactor * TANK_SELFBOAT_2_X;
-  drawTankPosY[TANK_SELFBOAT_2] = zoomFactor * TANK_SELFBOAT_2_Y;
-  drawTankPosX[TANK_SELFBOAT_3] = zoomFactor * TANK_SELFBOAT_3_X;
-  drawTankPosY[TANK_SELFBOAT_3] = zoomFactor * TANK_SELFBOAT_3_Y;
-  drawTankPosX[TANK_SELFBOAT_4] = zoomFactor * TANK_SELFBOAT_4_X;
-  drawTankPosY[TANK_SELFBOAT_4] = zoomFactor * TANK_SELFBOAT_4_Y;
-  drawTankPosX[TANK_SELFBOAT_5] = zoomFactor * TANK_SELFBOAT_5_X;
-  drawTankPosY[TANK_SELFBOAT_5] = zoomFactor * TANK_SELFBOAT_5_Y;
-  drawTankPosX[TANK_SELFBOAT_6] = zoomFactor * TANK_SELFBOAT_6_X;
-  drawTankPosY[TANK_SELFBOAT_6] = zoomFactor * TANK_SELFBOAT_6_Y;
-  drawTankPosX[TANK_SELFBOAT_7] = zoomFactor * TANK_SELFBOAT_7_X;
-  drawTankPosY[TANK_SELFBOAT_7] = zoomFactor * TANK_SELFBOAT_7_Y;
-  drawTankPosX[TANK_SELFBOAT_8] = zoomFactor * TANK_SELFBOAT_8_X;
-  drawTankPosY[TANK_SELFBOAT_8] = zoomFactor * TANK_SELFBOAT_8_Y;
-  drawTankPosX[TANK_SELFBOAT_9] = zoomFactor * TANK_SELFBOAT_9_X;
-  drawTankPosY[TANK_SELFBOAT_9] = zoomFactor * TANK_SELFBOAT_9_Y;
-  drawTankPosX[TANK_SELFBOAT_10] = zoomFactor * TANK_SELFBOAT_10_X;
-  drawTankPosY[TANK_SELFBOAT_10] = zoomFactor * TANK_SELFBOAT_10_Y;
-  drawTankPosX[TANK_SELFBOAT_11] = zoomFactor * TANK_SELFBOAT_11_X;
-  drawTankPosY[TANK_SELFBOAT_11] = zoomFactor * TANK_SELFBOAT_11_Y;
-  drawTankPosX[TANK_SELFBOAT_12] = zoomFactor * TANK_SELFBOAT_12_X;
-  drawTankPosY[TANK_SELFBOAT_12] = zoomFactor * TANK_SELFBOAT_12_Y;
-  drawTankPosX[TANK_SELFBOAT_13] = zoomFactor * TANK_SELFBOAT_13_X;
-  drawTankPosY[TANK_SELFBOAT_13] = zoomFactor * TANK_SELFBOAT_13_Y;
-  drawTankPosX[TANK_SELFBOAT_14] = zoomFactor * TANK_SELFBOAT_14_X;
-  drawTankPosY[TANK_SELFBOAT_14] = zoomFactor * TANK_SELFBOAT_14_Y;
-  drawTankPosX[TANK_SELFBOAT_15] = zoomFactor * TANK_SELFBOAT_15_X;
-  drawTankPosY[TANK_SELFBOAT_15] = zoomFactor * TANK_SELFBOAT_15_Y; */
+  drawTankPosX[TANK_SELFBOAT_0] =  TANK_SELFBOAT_0_X;
+  drawTankPosY[TANK_SELFBOAT_0] =  TANK_SELFBOAT_0_Y;
+  drawTankPosX[TANK_SELFBOAT_1] =  TANK_SELFBOAT_1_X;
+  drawTankPosY[TANK_SELFBOAT_1] =  TANK_SELFBOAT_1_Y;
+  drawTankPosX[TANK_SELFBOAT_2] =  TANK_SELFBOAT_2_X;
+  drawTankPosY[TANK_SELFBOAT_2] =  TANK_SELFBOAT_2_Y;
+  drawTankPosX[TANK_SELFBOAT_3] =  TANK_SELFBOAT_3_X;
+  drawTankPosY[TANK_SELFBOAT_3] =  TANK_SELFBOAT_3_Y;
+  drawTankPosX[TANK_SELFBOAT_4] =  TANK_SELFBOAT_4_X;
+  drawTankPosY[TANK_SELFBOAT_4] =  TANK_SELFBOAT_4_Y;
+  drawTankPosX[TANK_SELFBOAT_5] =  TANK_SELFBOAT_5_X;
+  drawTankPosY[TANK_SELFBOAT_5] =  TANK_SELFBOAT_5_Y;
+  drawTankPosX[TANK_SELFBOAT_6] =  TANK_SELFBOAT_6_X;
+  drawTankPosY[TANK_SELFBOAT_6] =  TANK_SELFBOAT_6_Y;
+  drawTankPosX[TANK_SELFBOAT_7] =  TANK_SELFBOAT_7_X;
+  drawTankPosY[TANK_SELFBOAT_7] =  TANK_SELFBOAT_7_Y;
+  drawTankPosX[TANK_SELFBOAT_8] =  TANK_SELFBOAT_8_X;
+  drawTankPosY[TANK_SELFBOAT_8] =  TANK_SELFBOAT_8_Y;
+  drawTankPosX[TANK_SELFBOAT_9] =  TANK_SELFBOAT_9_X;
+  drawTankPosY[TANK_SELFBOAT_9] =  TANK_SELFBOAT_9_Y;
+  drawTankPosX[TANK_SELFBOAT_10] =  TANK_SELFBOAT_10_X;
+  drawTankPosY[TANK_SELFBOAT_10] =  TANK_SELFBOAT_10_Y;
+  drawTankPosX[TANK_SELFBOAT_11] =  TANK_SELFBOAT_11_X;
+  drawTankPosY[TANK_SELFBOAT_11] =  TANK_SELFBOAT_11_Y;
+  drawTankPosX[TANK_SELFBOAT_12] =  TANK_SELFBOAT_12_X;
+  drawTankPosY[TANK_SELFBOAT_12] =  TANK_SELFBOAT_12_Y;
+  drawTankPosX[TANK_SELFBOAT_13] =  TANK_SELFBOAT_13_X;
+  drawTankPosY[TANK_SELFBOAT_13] =  TANK_SELFBOAT_13_Y;
+  drawTankPosX[TANK_SELFBOAT_14] =  TANK_SELFBOAT_14_X;
+  drawTankPosY[TANK_SELFBOAT_14] =  TANK_SELFBOAT_14_Y;
+  drawTankPosX[TANK_SELFBOAT_15] =  TANK_SELFBOAT_15_X;
+  drawTankPosY[TANK_SELFBOAT_15] =  TANK_SELFBOAT_15_Y; */
 }
