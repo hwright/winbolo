@@ -33,6 +33,14 @@ struct ManStatus {
   TURNTYPE angle;
 };
 
+// Conslidated tank status struct
+struct TankSupply {
+  uint8_t shells = 0;
+  uint8_t mines = 0;
+  uint8_t armor = 0;
+  uint8_t trees = 0;
+};
+
 // The interface which a frontend must implement
 class Frontend {
  public:
@@ -41,12 +49,8 @@ class Frontend {
   // Called when the tanks status bars need to be updated
   //
   // ARGUMENTS:
-  //  shells  - Number of shells
-  //  mines   - Number of mines
-  //  armour  - Amount of armour
-  //  trees   - Amount of trees
-  virtual void updateTankStatusBars(uint8_t shells, uint8_t mines,
-                                    uint8_t armour, uint8_t trees) = 0;
+  //  status  - The tank status struct
+  virtual void updateTankSupplyBars(TankSupply tank_status) = 0;
 
   // Called when the tanks status bars need to be updated
   //

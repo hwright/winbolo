@@ -89,12 +89,13 @@ const char *DIALOG_BOX_TITLE = "LinBolo";
 
 }  // namespace
 
-void LinuxFrontend::updateTankStatusBars(uint8_t shells, uint8_t mines,
-                                         uint8_t armour, uint8_t trees) {
+void LinuxFrontend::updateTankSupplyBars(TankSupply tank_supply) {
+  tank_supply_ = std::move(tank_supply);
   uint64_t tick;
 
   tick = SDL_GetTicks();
-  drawStatusTankBars(0, 0, shells, mines, armour, trees);
+  drawStatusTankBars(0, 0, tank_supply_.shells, tank_supply_.mines,
+                     tank_supply_.armor, tank_supply_.trees);
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 

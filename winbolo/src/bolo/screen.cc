@@ -3513,8 +3513,10 @@ void screenSetTankStartPosition(BYTE xValue, BYTE yValue, TURNTYPE angle,
     numTrees = TANK_FULL_TREES;
   }
   tankSetStats(&mytk, numShells, numMines, TANK_FULL_ARMOUR, numTrees);
-  frontend->updateTankStatusBars(numShells, numMines, TANK_FULL_ARMOUR,
-                                 numTrees);
+  frontend->updateTankSupplyBars(bolo::TankSupply{.shells = numShells,
+                                                  .mines = numMines,
+                                                  .armor = TANK_FULL_ARMOUR,
+                                                  .trees = numTrees});
   screenTankView();
   clientSetInStartFind(false);
 }

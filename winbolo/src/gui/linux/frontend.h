@@ -24,8 +24,7 @@ namespace bolo {
 
 class LinuxFrontend : public Frontend {
  public:
-  void updateTankStatusBars(uint8_t shells, uint8_t mines, uint8_t armour,
-                            uint8_t trees) override;
+  void updateTankSupplyBars(TankSupply tank_supply) override;
   void updateBaseStatusBars(uint8_t shells, uint8_t mines,
                             uint8_t armour) override;
   void playSound(sndEffects value) override;
@@ -51,6 +50,9 @@ class LinuxFrontend : public Frontend {
   void showGunsight(bool isShown) override;
   void redrawAll(void) override {}
   bool tutorial(BYTE pos) override;
+
+ private:
+  TankSupply tank_supply_;
 };
 
 }  // namespace bolo
