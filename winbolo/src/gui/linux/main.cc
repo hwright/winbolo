@@ -196,7 +196,7 @@ void brainHandlerRun(GtkWidget *hWnd);
 void brainsHandlerSet(GtkWidget *hWnd, bool enabled);
 
 void gameFrontCloseServer();
-int frameRateTime = (int)(MILLISECONDS / FRAME_RATE_60) - 1;
+static const int frameRateTime = (int)(MILLISECONDS / FRAME_RATE_60) - 1;
 
 extern int timerGameInfo;
 extern int sysInfoTimer;
@@ -233,7 +233,6 @@ gint windowclose(GtkWidget *widget, gpointer gdata) {
     SDL_RemoveTimer(timerGameID);
     timerGameID = nullptr;
   }
-  frameRateTime = 0;
   usleep(2500);
   if (timerFrameID != nullptr) {
     SDL_RemoveTimer(timerFrameID);
@@ -1385,8 +1384,6 @@ int main(int argc, char **argv) {
   isQuiting ^= 1;
 
   while (isQuiting == FALSE) {
-    frameRateTime = (int)(MILLISECONDS / FRAME_RATE_60) - 1;
-
     gameFrontGetPrefs(&keys, &useAutoslow, &useAutohide);
     dialogOpening = dialogOpeningCreate();
     gtk_widget_show(dialogOpening);

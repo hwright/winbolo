@@ -36,7 +36,6 @@ extern char messageBody2[16 * 1024];
 extern char messageTitle2[256];
 extern char messageBody3[16 * 1024];
 extern char messageTitle3[256];
-extern int frameRateTime;
 extern uint8_t numMessages;
 extern bool isInMenu;
 extern bool hideMainView;
@@ -172,7 +171,6 @@ void LinuxFrontend::manStatus(bool isDead, TURNTYPE angle) {
 void LinuxFrontend::manClear(void) { drawSetManClear(); }
 
 void LinuxFrontend::gameOver(void) {
-  frameRateTime = 0;
   SDL_RemoveTimer(timerGameID);
   SDL_RemoveTimer(timerFrameID);
   strcpy(messageTitle, "LinBolo");
@@ -694,7 +692,6 @@ bool LinuxFrontend::tutorial(BYTE pos) {
           numMessages = 1;
           returnValue = true;
           upTo++;
-          frameRateTime = 0;
           SDL_RemoveTimer(timerGameID);
         }
         break;
