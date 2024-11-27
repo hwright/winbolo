@@ -28,7 +28,7 @@
 #define EXPLOSIONS_H
 
 #include "global.h"
-#include "screenbullet.h"
+#include "screentypes.h"
 
 #define IsEmpty(list) ((list) == NULL)
 #define NonEmpty(list) (!IsEmpty(list))

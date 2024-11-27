@@ -28,7 +28,7 @@
 #define SHELLS_H
 
 #include "global.h"
-#include "screenbullet.h"
+#include "screentypes.h"
 #include "types.h"
 #include "util.h"
 

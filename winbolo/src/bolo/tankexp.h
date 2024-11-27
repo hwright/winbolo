@@ -29,7 +29,7 @@
 
 #include "global.h"
 #include "lgm.h"
-#include "screenbullet.h"
+#include "screentypes.h"
 
 #define IsEmpty(list) ((list) == NULL)
 #define NonEmpty(list) (!IsEmpty(list))

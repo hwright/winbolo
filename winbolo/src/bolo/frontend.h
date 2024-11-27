@@ -22,11 +22,10 @@
 
 #include "global.h"
 #include "screen.h"
-#include "screenbullet.h"
-#include "screengunsight.h"
 #include "screenlgm.h"
 #include "screenmines.h"
 #include "screentank.h"
+#include "screentypes.h"
 #include "sound_effects.h"
 #include "types.h"
 

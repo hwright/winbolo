@@ -30,7 +30,7 @@
 #include "global.h"
 #include "rubble.h"
 #include "screen.h"
-#include "screenbullet.h"
+#include "screentypes.h"
 
 /*********************************************************
  *NAME:          explosionsCreate

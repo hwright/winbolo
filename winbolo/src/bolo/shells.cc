@@ -45,7 +45,7 @@
 #include "players.h"
 #include "rubble.h"
 #include "screen.h"
-#include "screenbullet.h"
+#include "screentypes.h"
 #include "sounddist.h"
 #include "swamp.h"
 #include "tank.h"
