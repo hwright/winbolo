@@ -32,6 +32,7 @@
 #include "bolo_map.h"
 #include "global.h"
 #include "pillbox.h"
+#include "screengunsight.h"
 #include "shells.h"
 #include "starts.h"
 #include "types.h"
@@ -467,13 +468,8 @@ bool tankIsGunsightShow(tank *value);
  *
  *ARGUMENTS:
  *  value  - Pointer to the tank structure
- *  xMap   - Pointer to hold Map X Co-ord
- *  yMap   - Pointer to hold Map X Co-ord
- *  xPixel - Pointer to hold X Pixel
- *  yPixel - Pointer to hold Y Pixel
  *********************************************************/
-void tankGetGunsight(tank *value, BYTE *xMap, BYTE *yMap, BYTE *xPixel,
-                     BYTE *yPixel);
+bolo::ScreenGunsight tankGetGunsight(tank *value);
 
 /*********************************************************
  *NAME:          tankGunsightIncrease

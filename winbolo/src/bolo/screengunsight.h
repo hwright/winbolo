@@ -13,11 +13,21 @@
  * GNU General Public License for more details.
  */
 
-/* Defines the gunsight position on the screen */
-/* If turned off mapX is set to NO_GUNSIGHT */
-typedef struct {
-  int mapX;
-  BYTE mapY;
-  BYTE pixelX;
-  BYTE pixelY;
-} screenGunsight;
+// Defines the gunsight position on the screen
+
+#ifndef _SCREENGUNSIGHT_H
+#define _SCREENGUNSIGHT_H
+
+#include "types.h"
+
+namespace bolo {
+
+struct ScreenGunsight {
+  MapPoint pos = {.x = 0, .y = 0};
+  uint8_t pixelX = 0;
+  uint8_t pixelY = 0;
+};
+
+}  // namespace bolo
+
+#endif

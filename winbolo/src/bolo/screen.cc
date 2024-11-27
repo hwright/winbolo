@@ -317,11 +317,9 @@ void screenUpdate(updateType value) {
   BYTE y;
   BYTE px; /* Pixel X and Y co-ords of the tank */
   BYTE py;
-  screenGunsight gs;
   screenBullets sBullets;
   screenLgm lgms;
   screenTanks scnTnk;
-  BYTE gsX;
   netStatus ns;
   BYTE oldXOffset = xOffset;
   BYTE oldYOffset = yOffset;
@@ -446,6 +444,8 @@ void screenUpdate(updateType value) {
   }
 
   if (value == redraw) {
+    std::optional<bolo::ScreenGunsight> gs = std::nullopt;
+
     /* Prepare the tanks */
     screenTanksPrepare(&scnTnk, &mytk, xOffset,
                        (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X), yOffset,
@@ -455,20 +455,17 @@ void screenUpdate(updateType value) {
                      (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1), yOffset,
                      (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
     if (tankIsGunsightShow(&mytk)) {
-      tankGetGunsight(&mytk, &gsX, &(gs.mapY), &(gs.pixelX), &(gs.pixelY));
-      gs.mapX = gsX;
+      gs = tankGetGunsight(&mytk);
 
-      if (gs.mapX >= xOffset &&
-          gs.mapX < (xOffset + MAIN_BACK_BUFFER_SIZE_X - 1) &&
-          gs.mapY >= yOffset &&
-          gs.mapY < (yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1)) {
-        gs.mapX -= xOffset;
-        gs.mapY -= yOffset;
+      if (gs->pos.x >= xOffset &&
+          gs->pos.x < (xOffset + MAIN_BACK_BUFFER_SIZE_X - 1) &&
+          gs->pos.y >= yOffset &&
+          gs->pos.y < (yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1)) {
+        gs->pos.x -= xOffset;
+        gs->pos.y -= yOffset;
       } else {
-        gs.mapX = NO_GUNSIGHT;
+        gs = std::nullopt;
       }
-    } else {
-      gs.mapX = NO_GUNSIGHT;
     }
 
     shellsCalcScreenBullets(&myshs, &sBullets, xOffset,
@@ -483,8 +480,9 @@ void screenUpdate(updateType value) {
                                  (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
                                  yOffset,
                                  (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    frontend->drawMainScreen(&view, &mineView, &scnTnk, &gs, &sBullets, &lgms,
-                             gmeStartDelay, inPillView, &mytk, 0, 0);
+    frontend->drawMainScreen(&view, &mineView, &scnTnk, std::move(gs),
+                             &sBullets, &lgms, gmeStartDelay, inPillView, &mytk,
+                             0, 0);
   }
   screenBulletsDestroy(&sBullets);
   screenLgmDestroy(&lgms);
@@ -957,10 +955,6 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
 
   BYTE ngs; /* Network status */
 
-  BYTE tmx; /* Get the tanks gunsight */
-  BYTE tmy;
-  BYTE pmx;
-  BYTE pmy;
   lgm *test;
 
   ngs = netGetStatus();
@@ -1019,12 +1013,12 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
   tankUpdate(&mytk, &mymp, &mybs, &mypb, &myshs, &myss, tb, tankShoot, isBrain);
 
   if (tankGetSpeed(&mytk) > 0) {
-    tankGetGunsight(&mytk, &tmx, &tmy, &pmx, &pmy);
+    bolo::ScreenGunsight gs = tankGetGunsight(&mytk);
     if (!inPillView) {
       int oldXOffset = xOffset;
       int oldYOffset = yOffset;
       if (scrollUpdate(&mypb, &xOffset, &yOffset, (tankGetScreenMX(&mytk)),
-                       (tankGetScreenMY(&mytk)), true, tmx, tmy,
+                       (tankGetScreenMY(&mytk)), true, gs.pos.x, gs.pos.y,
                        (tankGetSpeed(&mytk)), (tankGetArmour(&mytk)),
                        (TURNTYPE)(tankGetTravelAngel(&mytk)), false)) {
         {

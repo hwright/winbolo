@@ -111,7 +111,8 @@ void LinuxFrontend::playSound(sndEffects value) {
 }
 
 void LinuxFrontend::drawMainScreen(screen *value, screenMines *mineView,
-                                   screenTanks *tks, screenGunsight *gs,
+                                   screenTanks *tks,
+                                   std::optional<ScreenGunsight> gunsight,
                                    screenBullets *sBullet, screenLgm *lgms,
                                    long srtDelay, bool isPillView, tank *tank,
                                    int edgeX, int edgeY) {
@@ -120,9 +121,9 @@ void LinuxFrontend::drawMainScreen(screen *value, screenMines *mineView,
   bool showCursor;
 
   showCursor = screenGetCursorPos(&cursorX, &cursorY);
-  ::drawMainScreen(value, mineView, tks, gs, sBullet, lgms, showPillLabels,
-                   showBaseLabels, srtDelay, isPillView, edgeX, edgeY,
-                   showCursor, cursorX, cursorY);
+  ::drawMainScreen(value, mineView, tks, std::move(gunsight), sBullet, lgms,
+                   showPillLabels, showBaseLabels, srtDelay, isPillView, edgeX,
+                   edgeY, showCursor, cursorX, cursorY);
 }
 
 void LinuxFrontend::statusPillbox(uint8_t pillNum, pillAlliance pb) {

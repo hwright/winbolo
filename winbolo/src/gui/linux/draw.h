@@ -131,10 +131,11 @@ void drawLGMs(screenLgm *lgms);
  *  cursorTop      - Cursor Top position
  *********************************************************/
 void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
-                    screenGunsight *gs, screenBullets *sBullets,
-                    screenLgm *lgms, bool showPillLabels, bool showBaseLabels,
-                    long srtDelay, bool isPillView, int edgeX, int edgeY,
-                    bool useCursor, BYTE cursorLeft, BYTE cursorTop);
+                    std::optional<bolo::ScreenGunsight> gunsight,
+                    screenBullets *sBullets, screenLgm *lgms,
+                    bool showPillLabels, bool showBaseLabels, long srtDelay,
+                    bool isPillView, int edgeX, int edgeY, bool useCursor,
+                    BYTE cursorLeft, BYTE cursorTop);
 
 /*********************************************************
  *NAME:          drawBackground
