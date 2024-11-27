@@ -83,12 +83,6 @@ static std::shared_mutex llfMutex;
 #define SCREEN_SIZE_Y 325
 /* Frame Rates */
 /* Numbers slightly off because of timer innacuracies */
-#define FRAME_RATE_10 19
-#define FRAME_RATE_12 23
-#define FRAME_RATE_15 28
-#define FRAME_RATE_20 37
-#define FRAME_RATE_30 55
-#define FRAME_RATE_50 82
 #define FRAME_RATE_60 111
 #define STR_PLAYER_LEN 2
 
@@ -202,7 +196,7 @@ void brainHandlerRun(GtkWidget *hWnd);
 void brainsHandlerSet(GtkWidget *hWnd, bool enabled);
 
 void gameFrontCloseServer();
-int frameRateTime = (int)(MILLISECONDS / FRAME_RATE_30) - 1;
+int frameRateTime = (int)(MILLISECONDS / FRAME_RATE_60) - 1;
 
 extern int timerGameInfo;
 extern int sysInfoTimer;
@@ -368,9 +362,7 @@ gint windowGetFocus(GtkWidget *widget, gpointer data) {
 }
 
 /* The frame rate */
-int frameRate = FRAME_RATE_10;
-/* Time between frame updates based on Frame rate */
-// int frameRateTime = (int) (MILLISECONDS / FRAME_RATE_30) - 1;
+int frameRate = FRAME_RATE_60;
 
 int drawGetFrameRate();
 
@@ -1393,7 +1385,7 @@ int main(int argc, char **argv) {
   isQuiting ^= 1;
 
   while (isQuiting == FALSE) {
-    frameRateTime = (int)(MILLISECONDS / FRAME_RATE_30) - 1;
+    frameRateTime = (int)(MILLISECONDS / FRAME_RATE_60) - 1;
 
     gameFrontGetPrefs(&keys, &useAutoslow, &useAutohide);
     dialogOpening = dialogOpeningCreate();
@@ -1605,8 +1597,6 @@ bool gameFrontGetPrefs(keyItems *keys, bool *useAutoslow, bool *useAutohide) {
   gameFrontTrackerEnabled = YESNO_TO_TRUEFALSE(buff[0]);
 
   /* Menu Items */
-  buff = prefs.get("MENU", "Frame Rate").value_or(itoa(FRAME_RATE_30));
-  frameRate = std::stoi(buff);
   buff = prefs.get("MENU", "Show Gunsight").value_or("No");
   showGunsight = YESNO_TO_TRUEFALSE(buff[0]);
   buff = prefs.get("MENU", "Sound Effects").value_or("Yes");
@@ -1734,7 +1724,6 @@ void gameFrontPutPrefs(keyItems *keys) {
   prefs.set("TRACKER", "Enabled", TRUEFALSE_TO_STR(gameFrontTrackerEnabled));
 
   /* Menu Items */
-  prefs.set("MENU", "Frame Rate", itoa(frameRate));
   prefs.set("MENU", "Show Gunsight", TRUEFALSE_TO_STR(showGunsight));
   prefs.set("MENU", "Sound Effects", TRUEFALSE_TO_STR(soundEffects));
 
@@ -1867,48 +1856,6 @@ void on_network_information1_activate(GtkMenuItem *menuitem,
 void on_exit1_activate(GtkMenuItem *menuitem, gpointer user_data) {
   isQuiting = TRUE;
   windowclose(window, nullptr);
-}
-
-void on_4_activate(GtkMenuItem *menuitem, gpointer user_data) {
-  /* 60 FPS */
-  frameRate = FRAME_RATE_60;
-  frameRateTime = (int)(MILLISECONDS / FRAME_RATE_60) - 1;
-}
-
-void on_8_activate(GtkMenuItem *menuitem, gpointer user_data) {
-  /* 50 FPS */
-  frameRate = FRAME_RATE_50;
-  frameRateTime = (int)(MILLISECONDS / FRAME_RATE_50) - 1;
-}
-
-void on_10_activate(GtkMenuItem *menuitem, gpointer user_data) {
-  /* 30 FPS */
-  frameRate = FRAME_RATE_30;
-  frameRateTime = (int)(MILLISECONDS / FRAME_RATE_30) - 1;
-}
-
-void on_11_activate(GtkMenuItem *menuitem, gpointer user_data) {
-  /* 20 FPS */
-  frameRate = FRAME_RATE_20;
-  frameRateTime = (int)(MILLISECONDS / FRAME_RATE_20) - 1;
-}
-
-void on_12_activate(GtkMenuItem *menuitem, gpointer user_data) {
-  /* 15 FPS */
-  frameRate = FRAME_RATE_15;
-  frameRateTime = (int)(MILLISECONDS / FRAME_RATE_15) - 1;
-}
-
-void on_13_activate(GtkMenuItem *menuitem, gpointer user_data) {
-  /* 12 FPS */
-  frameRate = FRAME_RATE_12;
-  frameRateTime = (int)(MILLISECONDS / FRAME_RATE_12) - 1;
-}
-
-void on_14_activate(GtkMenuItem *menuitem, gpointer user_data) {
-  /* 10 FPS */
-  frameRate = FRAME_RATE_10;
-  frameRateTime = (int)(MILLISECONDS / FRAME_RATE_10) - 1;
 }
 
 void on_window_size1_activate(GtkMenuItem *menuitem, gpointer user_data) {}
@@ -2226,17 +2173,6 @@ void menus(GtkWidget *window) {
   GtkWidget *edit1;
   GtkWidget *edit1_menu;
   // GtkAccelGroup *edit1_menu_accels;
-  GtkWidget *frame_rate1;
-  GtkWidget *frame_rate1_menu;
-  // GtkAccelGroup *frame_rate1_menu_accels;
-  GSList *_2_group = nullptr;
-  GtkWidget *_4;
-  GtkWidget *_8;
-  GtkWidget *_10;
-  GtkWidget *_11;
-  GtkWidget *_12;
-  GtkWidget *_13;
-  GtkWidget *_14;
   GtkWidget *window_size1;
   GtkWidget *window_size1_menu;
   // GtkAccelGroup *window_size1_menu_accels;
@@ -2406,79 +2342,6 @@ void menus(GtkWidget *window) {
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(edit1), edit1_menu);
   /*edit1_menu_accels =*/gtk_menu_ensure_uline_accel_group(
       GTK_MENU(edit1_menu));
-
-  frame_rate1 = gtk_menu_item_new_with_label("Frame Rate");
-  gtk_widget_ref(frame_rate1);
-  gtk_object_set_data_full(GTK_OBJECT(window), "frame_rate1", frame_rate1,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(frame_rate1);
-  gtk_container_add(GTK_CONTAINER(edit1_menu), frame_rate1);
-
-  frame_rate1_menu = gtk_menu_new();
-  gtk_widget_ref(frame_rate1_menu);
-  gtk_object_set_data_full(GTK_OBJECT(window), "frame_rate1_menu",
-                           frame_rate1_menu,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_menu_item_set_submenu(GTK_MENU_ITEM(frame_rate1), frame_rate1_menu);
-  /*frame_rate1_menu_accels =*/gtk_menu_ensure_uline_accel_group(
-      GTK_MENU(frame_rate1_menu));
-
-  _4 = gtk_radio_menu_item_new_with_label(_2_group, "60");
-  _2_group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(_4));
-  gtk_widget_ref(_4);
-  gtk_object_set_data_full(GTK_OBJECT(window), "_4", _4,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(_4);
-  gtk_container_add(GTK_CONTAINER(frame_rate1_menu), _4);
-  gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_4), TRUE);
-
-  _8 = gtk_radio_menu_item_new_with_label(_2_group, "50");
-  _2_group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(_8));
-  gtk_widget_ref(_8);
-  gtk_object_set_data_full(GTK_OBJECT(window), "_8", _8,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(_8);
-  gtk_container_add(GTK_CONTAINER(frame_rate1_menu), _8);
-
-  _10 = gtk_radio_menu_item_new_with_label(_2_group, "30");
-  _2_group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(_10));
-  gtk_widget_ref(_10);
-  gtk_object_set_data_full(GTK_OBJECT(window), "_10", _10,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(_10);
-  gtk_container_add(GTK_CONTAINER(frame_rate1_menu), _10);
-
-  _11 = gtk_radio_menu_item_new_with_label(_2_group, "20");
-  _2_group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(_11));
-  gtk_widget_ref(_11);
-  gtk_object_set_data_full(GTK_OBJECT(window), "_11", _11,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(_11);
-  gtk_container_add(GTK_CONTAINER(frame_rate1_menu), _11);
-
-  _12 = gtk_radio_menu_item_new_with_label(_2_group, "15");
-  _2_group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(_12));
-  gtk_widget_ref(_12);
-  gtk_object_set_data_full(GTK_OBJECT(window), "_12", _12,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(_12);
-  gtk_container_add(GTK_CONTAINER(frame_rate1_menu), _12);
-
-  _13 = gtk_radio_menu_item_new_with_label(_2_group, "12");
-  _2_group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(_13));
-  gtk_widget_ref(_13);
-  gtk_object_set_data_full(GTK_OBJECT(window), "_13", _13,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(_13);
-  gtk_container_add(GTK_CONTAINER(frame_rate1_menu), _13);
-
-  _14 = gtk_radio_menu_item_new_with_label(_2_group, "10");
-  _2_group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(_14));
-  gtk_widget_ref(_14);
-  gtk_object_set_data_full(GTK_OBJECT(window), "_14", _14,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(_14);
-  gtk_container_add(GTK_CONTAINER(frame_rate1_menu), _14);
 
   window_size1 = gtk_menu_item_new_with_label("Window Size");
   gtk_widget_ref(window_size1);
@@ -3079,30 +2942,6 @@ void menus(GtkWidget *window) {
       break;
   }
 
-  switch (frameRate) {
-    case FRAME_RATE_10:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_14), TRUE);
-      break;
-    case FRAME_RATE_12:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_13), TRUE);
-      break;
-    case FRAME_RATE_15:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_12), TRUE);
-      break;
-    case FRAME_RATE_20:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_11), TRUE);
-      break;
-    case FRAME_RATE_30:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_10), TRUE);
-      break;
-    case FRAME_RATE_50:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_8), TRUE);
-      break;
-    case FRAME_RATE_60:
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_4), TRUE);
-      break;
-  }
-
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(show_gunsight1),
                                  showGunsight);
   gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(automatic_scrolling1),
@@ -3144,20 +2983,6 @@ void menus(GtkWidget *window) {
                      nullptr);
   gtk_signal_connect(GTK_OBJECT(exit1), "activate",
                      GTK_SIGNAL_FUNC(on_exit1_activate), nullptr);
-  gtk_signal_connect(GTK_OBJECT(_4), "activate", GTK_SIGNAL_FUNC(on_4_activate),
-                     nullptr);
-  gtk_signal_connect(GTK_OBJECT(_8), "activate", GTK_SIGNAL_FUNC(on_8_activate),
-                     nullptr);
-  gtk_signal_connect(GTK_OBJECT(_10), "activate",
-                     GTK_SIGNAL_FUNC(on_10_activate), nullptr);
-  gtk_signal_connect(GTK_OBJECT(_11), "activate",
-                     GTK_SIGNAL_FUNC(on_11_activate), nullptr);
-  gtk_signal_connect(GTK_OBJECT(_12), "activate",
-                     GTK_SIGNAL_FUNC(on_12_activate), nullptr);
-  gtk_signal_connect(GTK_OBJECT(_13), "activate",
-                     GTK_SIGNAL_FUNC(on_13_activate), nullptr);
-  gtk_signal_connect(GTK_OBJECT(_14), "activate",
-                     GTK_SIGNAL_FUNC(on_14_activate), nullptr);
   gtk_signal_connect(GTK_OBJECT(window_size1), "activate",
                      GTK_SIGNAL_FUNC(on_window_size1_activate), nullptr);
   gtk_signal_connect(GTK_OBJECT(normal1), "activate",
