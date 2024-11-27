@@ -667,8 +667,8 @@ bool tankIsGunsightShow(tank *value) { return (*value)->showSight; }
  *  xPixel - Pointer to hold X Pixel
  *  yPixel - Pointer to hold Y Pixel
  *********************************************************/
-screenGunsight tankGetGunsight(tank *value) {
-  screenGunsight returnValue;
+bolo::ScreenGunsight tankGetGunsight(tank *value) {
+  bolo::ScreenGunsight returnValue;
   WORLD x;
   WORLD y;
   WORLD conv;
@@ -686,11 +686,11 @@ screenGunsight tankGetGunsight(tank *value) {
 
     conv = x;
     conv >>= TANK_SHIFT_MAPSIZE;
-    returnValue.mapX = (BYTE)conv;
+    returnValue.pos.x = (BYTE)conv;
 
     conv = y;
     conv >>= TANK_SHIFT_MAPSIZE;
-    returnValue.mapY = (BYTE)conv;
+    returnValue.pos.y = (BYTE)conv;
 
     conv = x;
     conv <<= TANK_SHIFT_MAPSIZE;
@@ -702,11 +702,6 @@ screenGunsight tankGetGunsight(tank *value) {
     conv <<= TANK_SHIFT_MAPSIZE;
     conv >>= TANK_SHIFT_PIXELSIZE;
     returnValue.pixelY = (BYTE)conv;
-  } else {
-    returnValue.mapX = 0;
-    returnValue.mapY = 0;
-    returnValue.pixelX = 0;
-    returnValue.pixelY = 0;
   }
 
   return returnValue;

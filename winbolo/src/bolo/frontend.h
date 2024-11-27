@@ -18,6 +18,8 @@
 #ifndef _FRONTEND_H
 #define _FRONTEND_H
 
+#include <optional>
+
 #include "global.h"
 #include "screen.h"
 #include "screenbullet.h"
@@ -75,7 +77,8 @@ class Frontend {
   //  edgeX      - X Offset for smooth scrolling
   //  edgeY      - Y Offset for smooth scrolling
   virtual void drawMainScreen(screen *value, screenMines *mineView,
-                              screenTanks *tks, screenGunsight *gs,
+                              screenTanks *tks,
+                              std::optional<ScreenGunsight> gunsight,
                               screenBullets *sBullet, screenLgm *lgms,
                               long srtDelay, bool isPillView, tank *tank,
                               int edgeX, int edgeY) = 0;

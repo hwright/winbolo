@@ -65,9 +65,6 @@ typedef unsigned long DWORD;
 #define MSG_NETWORK 3
 #define MSG_NETSTATUS 4
 
-/* Flag to indicate no gunsight is to be drawn */
-#define NO_GUNSIGHT -1
-
 /* Number of squares a tank must be in to see it in the forests */
 #define MIN_SIGHT_DISTANCE_LEFT -1
 #define MIN_SIGHT_DISTANCE_RIGHT 1

@@ -469,7 +469,7 @@ bool tankIsGunsightShow(tank *value);
  *ARGUMENTS:
  *  value  - Pointer to the tank structure
  *********************************************************/
-screenGunsight tankGetGunsight(tank *value);
+bolo::ScreenGunsight tankGetGunsight(tank *value);
 
 /*********************************************************
  *NAME:          tankGunsightIncrease

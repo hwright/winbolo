@@ -1380,10 +1380,11 @@ void drawStartDelay(long srtDelay) {
  *  cursorTop      - Cursor Top position
  *********************************************************/
 void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
-                    screenGunsight *gs, screenBullets *sBullets,
-                    screenLgm *lgms, bool showPillLabels, bool showBaseLabels,
-                    long srtDelay, bool isPillView, int edgeX, int edgeY,
-                    bool useCursor, BYTE cursorLeft, BYTE cursorTop) {
+                    std::optional<bolo::ScreenGunsight> gunsight,
+                    screenBullets *sBullets, screenLgm *lgms,
+                    bool showPillLabels, bool showBaseLabels, long srtDelay,
+                    bool isPillView, int edgeX, int edgeY, bool useCursor,
+                    BYTE cursorLeft, BYTE cursorTop) {
   SDL_Rect output;     /* Output Rectangle */
   SDL_Rect textOutput; /* Text Output Rect */
   bool done;           /* Finished Looping */
@@ -1499,13 +1500,13 @@ void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
   drawLGMs(lgms);
 
   /* Draw Gunsight */
-  if (gs->mapX != NO_GUNSIGHT) {
+  if (gunsight.has_value()) {
     in.x = GUNSIGHT_X;
     in.w = TILE_SIZE_X;
     in.y = GUNSIGHT_Y;
     in.h = TILE_SIZE_Y;
-    output.x = (gs->mapX) * TILE_SIZE_X + (gs->pixelX);
-    output.y = (gs->mapY) * TILE_SIZE_Y + (gs->pixelY);
+    output.x = (gunsight->pos.x) * TILE_SIZE_X + (gunsight->pixelX);
+    output.y = (gunsight->pos.y) * TILE_SIZE_Y + (gunsight->pixelY);
     output.w = TILE_SIZE_X;
     output.h = TILE_SIZE_Y;
     SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
