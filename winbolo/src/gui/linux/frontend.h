@@ -24,6 +24,9 @@ namespace bolo {
 
 class LinuxFrontend : public Frontend {
  public:
+  // TODO: Parameterize this by the number of bases.
+  LinuxFrontend();
+
   void updateTankSupplyBars(TankSupply tank_supply) override;
   void updateBaseSupplyBars(BaseSupply base_supply) override;
   void playSound(sndEffects value) override;
@@ -53,6 +56,30 @@ class LinuxFrontend : public Frontend {
  private:
   TankSupply tank_supply_;
   BaseSupply base_supply_;
+
+  std::vector<baseAlliance> base_status_;
+  std::vector<tankAlliance> tank_status_;
+  std::vector<pillAlliance> pill_status_;
+
+  std::optional<ScreenGunsight> gunsight_;
+  ScreenBulletList screen_bullet_list_;
+  ScreenLgmList screen_lgm_list_;
+  ScreenTankList screen_tank_list_;
+  ScreenTiles screen_tiles_;
+
+  int kills_ = 0;
+  int deaths_ = 0;
+  int edgeX_ = 0;
+  int edgeY_ = 0;
+
+  long srtDelay_;
+  bool isPillView_;
+
+  std::string top_message_;
+  std::string bottom_message_;
+
+  std::optional<ManStatus> man_status_;
+  buildSelect build_select_;
 };
 
 }  // namespace bolo

@@ -89,6 +89,11 @@ const char *DIALOG_BOX_TITLE = "LinBolo";
 
 }  // namespace
 
+LinuxFrontend::LinuxFrontend()
+    : base_status_(MAX_BASES, baseNeutral),
+      tank_status_(MAX_TANKS, bolo::tankAlliance::tankNone),
+      pill_status_(MAX_PILLS, pillNeutral) {}
+
 void LinuxFrontend::updateTankSupplyBars(TankSupply tank_supply) {
   tank_supply_ = std::move(tank_supply);
   uint64_t tick;
@@ -118,17 +123,29 @@ void LinuxFrontend::drawMainScreen(ScreenTiles tiles, ScreenTankList tks,
                                    ScreenBulletList sBullet, ScreenLgmList lgms,
                                    long srtDelay, bool isPillView, int edgeX,
                                    int edgeY) {
+  gunsight_ = gunsight;
+  screen_bullet_list_ = std::move(sBullet);
+  screen_lgm_list_ = std::move(lgms);
+  screen_tank_list_ = std::move(tks);
+  screen_tiles_ = std::move(tiles);
+  edgeX_ = edgeX;
+  edgeY_ = edgeY;
+  srtDelay_ = srtDelay;
+  isPillView_ = isPillView;
+
   uint8_t cursorX;
   uint8_t cursorY;
   bool showCursor;
 
   showCursor = screenGetCursorPos(&cursorX, &cursorY);
-  ::drawMainScreen(tiles, tks, std::move(gunsight), sBullet, lgms,
-                   showPillLabels, showBaseLabels, srtDelay, isPillView, edgeX,
-                   edgeY, showCursor, cursorX, cursorY);
+  ::drawMainScreen(screen_tiles_, screen_tank_list_, std::move(gunsight),
+                   screen_bullet_list_, screen_lgm_list_, showPillLabels,
+                   showBaseLabels, srtDelay, isPillView, edgeX, edgeY,
+                   showCursor, cursorX, cursorY);
 }
 
 void LinuxFrontend::statusPillbox(uint8_t pillNum, pillAlliance pb) {
+  pill_status_[pillNum] = pb;
   uint64_t tick = SDL_GetTicks();
   drawStatusPillbox(pillNum, pb, showPillLabels);
   drawCopyPillsStatus();
@@ -136,6 +153,7 @@ void LinuxFrontend::statusPillbox(uint8_t pillNum, pillAlliance pb) {
 }
 
 void LinuxFrontend::statusTank(uint8_t tankNum, tankAlliance ts) {
+  tank_status_[tankNum] = ts;
   uint64_t tick = SDL_GetTicks();
   drawStatusTank(tankNum, ts);
   drawCopyTanksStatus();
@@ -143,6 +161,7 @@ void LinuxFrontend::statusTank(uint8_t tankNum, tankAlliance ts) {
 }
 
 void LinuxFrontend::statusBase(uint8_t baseNum, baseAlliance bs) {
+  base_status_[baseNum] = bs;
   uint64_t tick = SDL_GetTicks();
   drawStatusBase(baseNum, bs, showBaseLabels);
   drawCopyBasesStatus();
@@ -150,20 +169,28 @@ void LinuxFrontend::statusBase(uint8_t baseNum, baseAlliance bs) {
 }
 
 void LinuxFrontend::messages(std::string_view top, std::string_view bottom) {
+  top_message_ = top;
+  bottom_message_ = bottom;
+
   uint64_t tick = SDL_GetTicks();
   frameMutexWaitFor();
-  drawMessages(0, 0, std::string(top).c_str(), std::string(bottom).c_str());
+  drawMessages(0, 0, top_message_.c_str(), bottom_message_.c_str());
   frameMutexRelease();
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 
 void LinuxFrontend::killsDeaths(int kills, int deaths) {
+  kills_ = kills;
+  deaths_ = deaths;
+
   uint64_t tick = SDL_GetTicks();
   drawKillsDeaths(0, 0, kills, deaths);
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 
 void LinuxFrontend::setManStatus(std::optional<ManStatus> status) {
+  man_status_ = status;
+
   if (status.has_value()) {
     uint64_t tick = SDL_GetTicks();
     frameMutexWaitFor();
@@ -368,6 +395,7 @@ void LinuxFrontend::drawDownload(bool justBlack) {
 }
 
 void LinuxFrontend::selectIndent(buildSelect old_val, buildSelect new_val) {
+  build_select_ = new_val;
   drawSelectIndentsOff(old_val, 0, 0);
   drawSelectIndentsOn(new_val, 0, 0);
 }
