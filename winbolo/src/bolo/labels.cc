@@ -79,45 +79,19 @@ void labelSetTankLength(labelLen isLengthShort) {
  *********************************************************/
 void labelSetLabelOwnTank(bool labelOwn) { labelOwnTank = labelOwn; }
 
-/*********************************************************
- *NAME:          labelMakeMessage
- *AUTHOR:        John Morrison
- *CREATION DATE:  2/2/99
- *LAST MODIFIED:  2/2/99
- *PURPOSE:
- *  Makes a message label from the parameters given
- *
- *ARGUMENTS:
- *  res  - Holds the resultant string
- *  name - The tank name
- *  loc  - The location of the tank
- *********************************************************/
-void labelMakeMessage(char *res, char *name, char *loc) {
-  res[0] = '\0';
+std::string labelMakeMessage(std::string_view name, std::string_view loc) {
+  std::string res;
   if (labelMessage != lblNone) {
-    strcat(res, name);
+    res = name;
     if (labelMessage == lblLong) {
-      strcat(res, LABEL_AT_SYMBOL);
-      strcat(res, loc);
+      res.append(std::format("@{}", loc));
     }
   }
+  return res;
 }
 
-/*********************************************************
- *NAME:          labelMakeTankLabel
- *AUTHOR:        John Morrison
- *CREATION DATE:  2/2/99
- *LAST MODIFIED:  2/2/99
- *PURPOSE:
- *  Makes a tank label from the parameters given
- *
- *ARGUMENTS:
- *  res   - Holds the resultant string
- *  name  - The tank name
- *  loc   - The location of the tank
- *  isOwn - Is this tank your own
- *********************************************************/
-std::string labelMakeTankLabel(char *name, char *loc, bool isOwn) {
+std::string labelMakeTankLabel(std::string_view name, std::string_view loc,
+                               bool isOwn) {
   std::string res;
   if (labelTankLabel != lblNone && (!isOwn || (isOwn && labelOwnTank))) {
     res = name;

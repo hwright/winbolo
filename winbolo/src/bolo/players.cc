@@ -192,11 +192,13 @@ bool playersSetPlayerName(players *plrs, BYTE playerNum, char *playerName) {
       returnValue = true;
       /* Make Message */
       if (playerNum == (*plrs)->myPlayerNum) {
-        labelMakeMessage(label, (*plrs)->item[playerNum].playerName,
-                         langGetText(MESSAGE_THIS_COMPUTER));
+        strcpy(label, labelMakeMessage((*plrs)->item[playerNum].playerName,
+                                       langGetText(MESSAGE_THIS_COMPUTER))
+                          .c_str());
       } else {
-        labelMakeMessage(label, (*plrs)->item[playerNum].playerName,
-                         (*plrs)->item[playerNum].location);
+        strcpy(label, labelMakeMessage((*plrs)->item[playerNum].playerName,
+                                       (*plrs)->item[playerNum].location)
+                          .c_str());
       }
       std::string messageStr = std::format(
           "\"{}\"{}{}\"", label, langGetText(MESSAGE_CHANGENAME), playerName);
@@ -529,14 +531,16 @@ void playersMakeMessageName(players *plrs, BYTE playerNum, char *dest) {
 
   label[0] = '\0';
   if (playerNum == (*plrs)->myPlayerNum) {
-    labelMakeMessage(label, (*plrs)->item[playerNum].playerName,
-                     langGetText(MESSAGE_THIS_COMPUTER));
+    strcpy(label, labelMakeMessage((*plrs)->item[playerNum].playerName,
+                                   langGetText(MESSAGE_THIS_COMPUTER))
+                      .c_str());
     strcpy(dest, label);
   } else if (!(*plrs)->item[playerNum].inUse) {
     strcpy(dest, NO_TANK);
   } else {
-    labelMakeMessage(label, (*plrs)->item[playerNum].playerName,
-                     (*plrs)->item[playerNum].location);
+    strcpy(label, labelMakeMessage((*plrs)->item[playerNum].playerName,
+                                   (*plrs)->item[playerNum].location)
+                      .c_str());
     strcpy(dest, label);
   }
 }
