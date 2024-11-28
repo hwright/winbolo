@@ -1540,8 +1540,9 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx,
       }
       /* Process message */
       playersGetPlayerName(screenGetPlayers(), (*lgman)->playerNum, playerName);
-      labelMakeMessage(messageStr, playerName,
-                       langGetText(MESSAGE_THIS_COMPUTER));
+      strcpy(messageStr,
+             labelMakeMessage(playerName, langGetText(MESSAGE_THIS_COMPUTER))
+                 .c_str());
       strcat(messageStr, langGetText(MESSAGE_LGM_DEAD));
       messageAdd(bolo::messageType::newsWire, langGetText(MESSAGE_NEWSWIRE),
                  messageStr);

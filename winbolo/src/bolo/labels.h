@@ -27,11 +27,11 @@
 #ifndef LABELS_H
 #define LABELS_H
 
+#include <string>
+#include <string_view>
+
 #include "global.h"
 #include "screen.h"
-
-/* The @ Symbol */
-#define LABEL_AT_SYMBOL "@\0"
 
 /* Prototypes */
 
@@ -74,35 +74,20 @@ void labelSetTankLength(labelLen isLengthShort);
  *********************************************************/
 void labelSetLabelOwnTank(bool labelOwn);
 
-/*********************************************************
- *NAME:          labelMakeMessage
- *AUTHOR:        John Morrison
- *CREATION DATE:  2/2/99
- *LAST MODIFIED:  2/2/99
- *PURPOSE:
- *  Makes a message label from the parameters given
- *
- *ARGUMENTS:
- *  res  - Holds the resultant string
- *  name - The tank name
- *  loc  - The location of the tank
- *********************************************************/
-void labelMakeMessage(char *res, char *name, char *loc);
+// Make a message label from the parameters given
+//
+// ARGUMENTS:
+//  name - The tank name
+//  loc  - The location of the tank
+std::string labelMakeMessage(std::string_view name, std::string_view loc);
 
-/*********************************************************
- *NAME:          labelMakeTankLabel
- *AUTHOR:        John Morrison
- *CREATION DATE:  2/2/99
- *LAST MODIFIED:  2/2/99
- *PURPOSE:
- *  Makes a tank label from the parameters given
- *
- *ARGUMENTS:
- *  res   - Holds the resultant string
- *  name  - The tank name
- *  loc   - The location of the tank
- *  isOwn - Is this tank your own
- *********************************************************/
-std::string labelMakeTankLabel(char *name, char *loc, bool isOwn);
+// Make a message label from the parameters given
+//
+// ARGUMENTS:
+//  name - The tank name
+//  loc  - The location of the tank
+//  isOwn - Is this tank your own
+std::string labelMakeTankLabel(std::string_view name, std::string_view loc,
+                               bool isOwn);
 
 #endif /* LABELS_H */

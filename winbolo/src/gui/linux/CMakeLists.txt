@@ -41,7 +41,6 @@ add_executable(linbolo
                ../../bolo/debug_file_output.cc
                ../../bolo/explosions.cc
                ../../bolo/gametype.cc
-               ../../bolo/labels.cc
                ../../bolo/lgm.cc
                ../../bolo/log.cc
                ../../bolo/mathWinbolo.cc
