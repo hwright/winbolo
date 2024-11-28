@@ -110,13 +110,12 @@ void LinuxFrontend::playSound(sndEffects value) {
   }
 }
 
-void LinuxFrontend::drawMainScreen(screen *value, screenMines *mineView,
-                                   bolo::ScreenTankList tks,
+void LinuxFrontend::drawMainScreen(screen *value, ScreenMines mineView,
+                                   ScreenTankList tks,
                                    std::optional<ScreenGunsight> gunsight,
-                                   bolo::ScreenBulletList sBullet,
-                                   bolo::ScreenLgmList lgms, long srtDelay,
-                                   bool isPillView, tank *tank, int edgeX,
-                                   int edgeY) {
+                                   ScreenBulletList sBullet, ScreenLgmList lgms,
+                                   long srtDelay, bool isPillView, tank *tank,
+                                   int edgeX, int edgeY) {
   uint8_t cursorX;
   uint8_t cursorY;
   bool showCursor;

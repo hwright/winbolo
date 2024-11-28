@@ -1337,7 +1337,7 @@ void drawStartDelay(long srtDelay) {
  *  cursorLeft     - Cursor left position
  *  cursorTop      - Cursor Top position
  *********************************************************/
-void drawMainScreen(screen *value, screenMines *mineView,
+void drawMainScreen(screen *value, const bolo::ScreenMines &mineView,
                     const bolo::ScreenTankList &tks,
                     const std::optional<bolo::ScreenGunsight> &gunsight,
                     const bolo::ScreenBulletList &sBullets,
@@ -1410,7 +1410,7 @@ void drawMainScreen(screen *value, screenMines *mineView,
     SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
 
     /* Draw Mines */
-    if ((screenIsMine(mineView, x, y)) == TRUE) {
+    if (mineView[x][y]) {
       in.x = MINE_X;
       in.y = MINE_Y;
       SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);

@@ -88,7 +88,7 @@ Morrison <john@winbolo.com>          \0" */
 /* Module Level Variables */
 
 static screen view = nullptr;
-static screenMines mineView = nullptr;
+static std::optional<bolo::ScreenMines> mineView;
 static map mymp = nullptr;
 static bases mybs = nullptr;
 static pillboxes mypb = nullptr;
@@ -228,9 +228,7 @@ void screenSetup(gameType game, std::unique_ptr<bolo::Frontend> frontend_input,
 
   frontend = frontend_input.release();
   view = new screenObj;
-  mineView = new screenMineObj;
-  /*  messageAdd(globalMessage, BOLO_VERSION_STRING, OLD_BOLO_COPYRIGHT_STRING);
-    messageAdd(globalMessage, BOLO_VERSION_STRING,NEW_BOLO_COPYRIGHT_STRING); */
+  mineView.emplace();
 
   inStart = true;
   screenGameRunning = true;
@@ -279,15 +277,12 @@ void screenDestroy() {
   if (view != nullptr) {
     delete view;
   }
-  if (mineView != nullptr) {
-    delete mineView;
-  }
+  mineView = std::nullopt;
   if (brainBuildInfo != nullptr) {
     delete brainBuildInfo;
     brainBuildInfo = nullptr;
   }
   view = nullptr;
-  mineView = nullptr;
   mymp = nullptr;
   mybs = nullptr;
   mypb = nullptr;
@@ -475,7 +470,7 @@ void screenUpdate(updateType value) {
                                  (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
                                  yOffset,
                                  (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    frontend->drawMainScreen(&view, &mineView, std::move(scnTnk), std::move(gs),
+    frontend->drawMainScreen(&view, *mineView, std::move(scnTnk), std::move(gs),
                              std::move(sBullets), std::move(lgms),
                              gmeStartDelay, inPillView, &mytk, 0, 0);
   }
@@ -501,30 +496,6 @@ BYTE screenGetPos(screen *value, BYTE xValue, BYTE yValue) {
 
   if (xValue < MAIN_BACK_BUFFER_SIZE_X && yValue < MAIN_BACK_BUFFER_SIZE_Y) {
     returnValue = (*value)->screenItem[xValue][yValue];
-  }
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          screenIsMine
- *AUTHOR:        John Morrison
- *CREATION DATE: 6/11/98
- *LAST MODIFIED: 6/11/98
- *PURPOSE:
- *  Returns if a square on the screen should have a mine
- *  drawn on it.
- *  If value is out of range returns false
- *
- *ARGUMENTS:
- *  value  - Pointer to the screenMines structure
- *  xValue - The X co-ordinate
- *  yValue - The Y co-ordinate
- *********************************************************/
-bool screenIsMine(screenMines *value, BYTE xValue, BYTE yValue) {
-  bool returnValue = false; /* Value to return */
-
-  if (xValue <= MAIN_SCREEN_SIZE_X && yValue <= MAIN_SCREEN_SIZE_Y) {
-    returnValue = ((*value)->mineItem[xValue][yValue]);
   }
   return returnValue;
 }
@@ -583,7 +554,7 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
   BYTE below;
   BYTE belowRight;
 
-  (*mineView).mineItem[scrX][scrY] = false;
+  (*mineView)[scrX][scrY] = false;
   /* Set up Items */
   if (pillsExistPos(&mypb, xValue, yValue)) {
     returnValue = pillsGetScreenHealth(&mypb, xValue, yValue);
@@ -619,19 +590,19 @@ BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
     // terrain back to its correct value.
     if (currentPos >= HALFBUILDING + MINE_SUBTRACT && currentPos != DEEP_SEA) {
       screenGetMines()->removeItem(MapPoint{.x = xValue, .y = yValue});
-      (*mineView).mineItem[scrX][scrY] = false;
+      (*mineView)[scrX][scrY] = false;
       currentPos = currentPos - MINE_SUBTRACT;
       mapSetPos(&mymp, xValue, yValue, currentPos, true, true);
     }
     if (mapIsMine(&mymp, xValue, yValue)) {
       if (clientMines->existPos(MapPoint{.x = xValue, .y = yValue})) {
-        (*mineView).mineItem[scrX][scrY] = true;
+        (*mineView)[scrX][scrY] = true;
       }
       if (currentPos != DEEP_SEA) {
         currentPos = currentPos - MINE_SUBTRACT;
       }
     } else {
-      (*mineView).mineItem[scrX][scrY] = false;
+      (*mineView)[scrX][scrY] = false;
     }
 
     if (basesExistPos(&mybs, (BYTE)(xValue - 1), (BYTE)(yValue - 1))) {
@@ -2051,7 +2022,7 @@ void screenNetSetupTankGo() {
 
   for (count = 0; count < MAIN_BACK_BUFFER_SIZE_X; count++) {
     for (count2 = 0; count2 < MAIN_BACK_BUFFER_SIZE_Y; count2++) {
-      (*mineView).mineItem[count][count2] = false;
+      (*mineView)[count][count2] = false;
     }
   }
 

@@ -91,6 +91,9 @@ struct ScreenTankList {
 // The tank type relative to ourselves, good, neutral or evil
 enum class tankAlliance { tankNone, tankSelf, tankAllie, tankEvil };
 
+using ScreenMines = std::array<std::array<bool, MAIN_BACK_BUFFER_SIZE_X>,
+                               MAIN_BACK_BUFFER_SIZE_Y>;
+
 }  // namespace bolo
 
 #endif
