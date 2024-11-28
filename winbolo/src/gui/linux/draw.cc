@@ -46,7 +46,7 @@
 #include "../../bolo/backend.h"
 #include "../../bolo/global.h"
 #include "../../bolo/network.h"
-#include "../../bolo/screenlgm.h"
+#include "../../bolo/screentypes.h"
 #include "../../bolo/tilenum.h"
 #include "../../gui/lang.h"
 #include "../../gui/linresource.h"

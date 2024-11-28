@@ -29,8 +29,8 @@
 
 #include "allience.h"
 #include "global.h"
-#include "screenlgm.h"
 #include "screentank.h"
+#include "screentypes.h"
 
 /* Defines */
 

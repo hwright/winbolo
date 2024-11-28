@@ -22,7 +22,6 @@
 
 #include "global.h"
 #include "screen.h"
-#include "screenlgm.h"
 #include "screenmines.h"
 #include "screentank.h"
 #include "screentypes.h"

@@ -70,7 +70,6 @@ Morrison <john@winbolo.com>          \0" */
 #include "rubble.h"
 #include "screenbrainmap.h"
 #include "screencalc.h"
-#include "screenlgm.h"
 #include "screentank.h"
 #include "screentypes.h"
 #include "scroll.h"

@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,17 +13,7 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Screen LGM
- *Filename:      screenLgm.c
- *Author:        John Morrison
- *Creation Date: 19/2/99
- *Last Modified: 26/11/99
- *Purpose:
- *  Responsable for Lgms on the screen
- *********************************************************/
-
-#include "screenlgm.h"
+#include "screentypes.h"
 
 #include "backend.h"
 #include "global.h"
