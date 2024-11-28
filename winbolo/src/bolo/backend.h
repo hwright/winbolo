@@ -43,7 +43,6 @@
 #include "netmt.h"
 #include "netpnb.h"
 #include "rubble.h"
-#include "screentank.h"
 #include "screentypes.h"
 #include "swamp.h"
 #include "tankexp.h"

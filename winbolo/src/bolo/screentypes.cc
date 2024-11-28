@@ -15,11 +15,18 @@
 
 #include "screentypes.h"
 
+#include "../gui/lang.h"
 #include "backend.h"
 #include "global.h"
+#include "labels.h"
 #include "lgm.h"
 #include "players.h"
 #include "screen.h"
+#ifdef _WIN32
+#include "../gui/resource.h"
+#else
+#include "../gui/linresource.h"
+#endif
 
 namespace bolo {
 
@@ -41,6 +48,44 @@ void ScreenLgmList::prepare(uint8_t leftPos, uint8_t rightPos, uint8_t top,
   }
   playersMakeScreenLgm(screenGetPlayers(), this, leftPos, rightPos, top,
                        bottom);
+}
+
+void ScreenTankList::prepare(tank *tnk, uint8_t leftPos, uint8_t rightPos,
+                             uint8_t top, uint8_t bottom) {
+  uint8_t x; /* X and Y map pos of it */
+  uint8_t y;
+
+  numTanksScreen = 0;
+
+  x = tankGetScreenMX(tnk);
+  y = tankGetScreenMY(tnk);
+
+  if (x >= leftPos && x <= rightPos && y >= top && y <= bottom) {
+    numTanksScreen = 1;
+    std::string label;
+
+    // Get the tank's names
+    if (tankGetArmour(tnk) <= TANK_FULL_ARMOUR) {
+      char playerName[PLAYER_NAME_LEN] = "\0";  // Player Name
+      playersGetPlayerName(screenGetPlayers(),
+                           playersGetSelf(screenGetPlayers()), playerName);
+      label = labelMakeTankLabel(playerName, langGetText(MESSAGE_THIS_COMPUTER),
+                                 true);
+    }
+
+    tanks.emplace_back(
+        ScreenTank{.pos = MapPoint{.x = static_cast<uint8_t>(x - leftPos),
+                                   .y = static_cast<uint8_t>(y - top)},
+                   .px = tankGetScreenPX(tnk),
+                   .py = tankGetScreenPY(tnk),
+                   .frame = tankGetFrame(tnk),
+                   .playerNum = playersGetSelf(screenGetPlayers()),
+                   .playerName = label});
+  }
+
+  // Add the rest of the tanks as required
+  playersMakeScreenTanks(screenGetPlayers(), this, leftPos, rightPos, top,
+                         bottom);
 }
 
 }  // namespace bolo

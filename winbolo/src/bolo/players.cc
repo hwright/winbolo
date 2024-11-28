@@ -42,7 +42,6 @@
 #include "messages.h"
 #include "network.h"
 #include "screen.h"
-#include "screentank.h"
 #include "screentypes.h"
 #include "tank.h"
 #include "tilenum.h"

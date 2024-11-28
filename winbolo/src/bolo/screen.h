@@ -42,7 +42,6 @@
 #include "netpnb.h"
 #include "players.h"
 #include "rubble.h"
-#include "screentank.h"
 #include "screentypes.h"
 #include "swamp.h"
 #include "tankexp.h"
