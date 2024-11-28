@@ -29,7 +29,8 @@ class LinuxFrontend : public Frontend {
   void updateBaseStatusBars(uint8_t shells, uint8_t mines,
                             uint8_t armour) override;
   void playSound(sndEffects value) override;
-  void drawMainScreen(screen *value, ScreenMines mineView, ScreenTankList tks,
+  void drawMainScreen(ScreenTiles tiles, ScreenMines mineView,
+                      ScreenTankList tks,
                       std::optional<ScreenGunsight> gunsight,
                       ScreenBulletList sBullet, ScreenLgmList lgms,
                       long srtDelay, bool isPillView, tank *tank, int edgeX,

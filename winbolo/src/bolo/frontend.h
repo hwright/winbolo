@@ -72,7 +72,7 @@ class Frontend {
   //  tank       - Pointer to the player's tank structure
   //  edgeX      - X Offset for smooth scrolling
   //  edgeY      - Y Offset for smooth scrolling
-  virtual void drawMainScreen(screen *value, ScreenMines mineView,
+  virtual void drawMainScreen(ScreenTiles tiles, ScreenMines mineView,
                               ScreenTankList tks,
                               std::optional<ScreenGunsight> gunsight,
                               ScreenBulletList sBullets, ScreenLgmList lgms,

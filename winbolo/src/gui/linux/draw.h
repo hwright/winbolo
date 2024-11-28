@@ -130,7 +130,8 @@ void drawLGMs(const bolo::ScreenLgmList &lgms);
  *  cursorLeft     - Cursor left position
  *  cursorTop      - Cursor Top position
  *********************************************************/
-void drawMainScreen(screen *value, const bolo::ScreenMines &mineView,
+void drawMainScreen(const bolo::ScreenTiles &tiles,
+                    const bolo::ScreenMines &mineView,
                     const bolo::ScreenTankList &tks,
                     const std::optional<bolo::ScreenGunsight> &gunsight,
                     const bolo::ScreenBulletList &sBullets,

@@ -87,7 +87,7 @@ Morrison <john@winbolo.com>          \0" */
 
 /* Module Level Variables */
 
-static screen view = nullptr;
+static std::optional<bolo::ScreenTiles> tiles;
 static std::optional<bolo::ScreenMines> mineView;
 static map mymp = nullptr;
 static bases mybs = nullptr;
@@ -227,7 +227,7 @@ void screenSetup(gameType game, std::unique_ptr<bolo::Frontend> frontend_input,
   brainBuildInfo->action = 0;
 
   frontend = frontend_input.release();
-  view = new screenObj;
+  tiles.emplace();
   mineView.emplace();
 
   inStart = true;
@@ -274,15 +274,12 @@ void screenDestroy() {
   if (frontend != nullptr) {
     delete frontend;
   }
-  if (view != nullptr) {
-    delete view;
-  }
+  tiles = std::nullopt;
   mineView = std::nullopt;
   if (brainBuildInfo != nullptr) {
     delete brainBuildInfo;
     brainBuildInfo = nullptr;
   }
-  view = nullptr;
   mymp = nullptr;
   mybs = nullptr;
   mypb = nullptr;
@@ -470,34 +467,12 @@ void screenUpdate(updateType value) {
                                  (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
                                  yOffset,
                                  (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    frontend->drawMainScreen(&view, *mineView, std::move(scnTnk), std::move(gs),
-                             std::move(sBullets), std::move(lgms),
-                             gmeStartDelay, inPillView, &mytk, 0, 0);
+    frontend->drawMainScreen(*tiles, *mineView, std::move(scnTnk),
+                             std::move(gs), std::move(sBullets),
+                             std::move(lgms), gmeStartDelay, inPillView, &mytk,
+                             0, 0);
   }
   b = false;
-}
-
-/*********************************************************
- *NAME:          screenGetPos
- *AUTHOR:        John Morrison
- *CREATION DATE: 28/10/98
- *LAST MODIFIED: 30/12/2008
- *PURPOSE:
- *  Gets the value of a square in the structure
- *  Return RIVER if out of range
- *
- *ARGUMENTS:
- *  value  - Pointer to the screen structure
- *  xValue - The X co-ordinate
- *  yValue - The Y co-ordinate
- *********************************************************/
-BYTE screenGetPos(screen *value, BYTE xValue, BYTE yValue) {
-  BYTE returnValue = RIVER; /* Value to return */
-
-  if (xValue < MAIN_BACK_BUFFER_SIZE_X && yValue < MAIN_BACK_BUFFER_SIZE_Y) {
-    returnValue = (*value)->screenItem[xValue][yValue];
-  }
-  return returnValue;
 }
 
 /*********************************************************
@@ -518,7 +493,7 @@ void screenUpdateView(updateType value) {
 
   for (count = 0; count < MAIN_BACK_BUFFER_SIZE_X; count++) {
     for (count2 = 0; count2 < MAIN_BACK_BUFFER_SIZE_Y; count2++) {
-      (*view).screenItem[count][count2] = screenCalcSquare(
+      (*tiles)[count][count2] = screenCalcSquare(
           (BYTE)(count + xOffset), (BYTE)(count2 + yOffset), count, count2);
       screenBrainMapSetPos(
           (BYTE)(count + xOffset), (BYTE)(count2 + yOffset),

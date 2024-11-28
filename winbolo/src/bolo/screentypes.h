@@ -96,6 +96,9 @@ enum class tankAlliance { tankNone, tankSelf, tankAllie, tankEvil };
 using ScreenMines =
     std::array<std::bitset<MAIN_BACK_BUFFER_SIZE_X>, MAIN_BACK_BUFFER_SIZE_Y>;
 
+using ScreenTiles = std::array<std::array<BYTE, MAIN_BACK_BUFFER_SIZE_X>,
+                               MAIN_BACK_BUFFER_SIZE_Y>;
+
 }  // namespace bolo
 
 #endif

@@ -46,12 +46,6 @@
 #include "swamp.h"
 #include "tankexp.h"
 
-/* The screen object - Details what tiles are on the screen*/
-typedef struct screenObj *screen;
-struct screenObj {
-  BYTE screenItem[MAIN_BACK_BUFFER_SIZE_X][MAIN_BACK_BUFFER_SIZE_Y];
-};
-
 /* Prototypes */
 
 /*********************************************************
