@@ -103,6 +103,6 @@ void labelMakeMessage(char *res, char *name, char *loc);
  *  loc   - The location of the tank
  *  isOwn - Is this tank your own
  *********************************************************/
-void labelMakeTankLabel(char *res, char *name, char *loc, bool isOwn);
+std::string labelMakeTankLabel(char *name, char *loc, bool isOwn);
 
 #endif /* LABELS_H */

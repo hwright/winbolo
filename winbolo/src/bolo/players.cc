@@ -42,7 +42,6 @@
 #include "messages.h"
 #include "network.h"
 #include "screen.h"
-#include "screentank.h"
 #include "screentypes.h"
 #include "tank.h"
 #include "tilenum.h"
@@ -556,18 +555,16 @@ void playersMakeMessageName(players *plrs, BYTE playerNum, char *dest) {
  * dest       - Destination string
  *********************************************************/
 void playersMakeScreenName(players *plrs, BYTE playerNum, char *dest) {
-  char label[FILENAME_MAX]; /* Used to hold the string made by label */
-
-  label[0] = '\0';
   if ((*plrs)->item[playerNum].inUse) {
     if (playerNum == (*plrs)->myPlayerNum) {
-      labelMakeTankLabel(label, (*plrs)->item[playerNum].playerName,
-                         langGetText(MESSAGE_THIS_COMPUTER), true);
+      strcpy(dest, labelMakeTankLabel((*plrs)->item[playerNum].playerName,
+                                      langGetText(MESSAGE_THIS_COMPUTER), true)
+                       .c_str());
     } else {
-      labelMakeTankLabel(label, (*plrs)->item[playerNum].playerName,
-                         (*plrs)->item[playerNum].location, false);
+      strcpy(dest, labelMakeTankLabel((*plrs)->item[playerNum].playerName,
+                                      (*plrs)->item[playerNum].location, false)
+                       .c_str());
     }
-    strcpy(dest, label);
   }
 }
 
@@ -684,23 +681,20 @@ bool playersNameTaken(players *plrs, char *checkName) {
  * plrs - Pointer to the players object
  * playerNum - Player number to check
  *********************************************************/
-tankAlliance playersScreenAllience(players *plrs, BYTE playerNum) {
-  tankAlliance returnValue; /* Value to return */
-
-  returnValue = tankNone;
+bolo::tankAlliance playersScreenAllience(players *plrs, BYTE playerNum) {
   if (playerNum < MAX_TANKS) {
     if (!(*plrs)->item[playerNum].inUse) {
-      returnValue = tankNone;
+      return bolo::tankAlliance::tankNone;
     } else if (playerNum == (*plrs)->myPlayerNum) {
-      returnValue = tankSelf;
+      return bolo::tankAlliance::tankSelf;
     } else if (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie),
                              playerNum)) {
-      returnValue = tankAllie;
+      return bolo::tankAlliance::tankAllie;
     } else {
-      returnValue = tankEvil;
+      return bolo::tankAlliance::tankEvil;
     }
   }
-  return returnValue;
+  return bolo::tankAlliance::tankNone;
 }
 
 /*********************************************************
@@ -719,8 +713,9 @@ tankAlliance playersScreenAllience(players *plrs, BYTE playerNum) {
  * top      - top bound
  * bottom   - Bottom bound
  *********************************************************/
-void playersMakeScreenTanks(players *plrs, screenTanks *value, BYTE leftPos,
-                            BYTE rightPos, BYTE top, BYTE bottom) {
+void playersMakeScreenTanks(players *plrs, bolo::ScreenTankList *value,
+                            BYTE leftPos, BYTE rightPos, BYTE top,
+                            BYTE bottom) {
   char playerName[FILENAME_MAX]; /* Holds playername/location info */
   WORLD conv;                    /* Used in conversion */
   WORLD conv2;
@@ -808,8 +803,14 @@ void playersMakeScreenTanks(players *plrs, screenTanks *value, BYTE leftPos,
           } else {
             frame += TANK_EVIL_ADD;
           }
-          screenTanksAddItem(value, (BYTE)(mx - leftPos), (BYTE)(my - top), px,
-                             py, frame, count, playerName);
+          value->tanks.push_back(bolo::ScreenTank{
+              .pos = MapPoint{.x = static_cast<uint8_t>(mx - leftPos),
+                              .y = static_cast<uint8_t>(my - top)},
+              .px = px,
+              .py = py,
+              .frame = frame,
+              .playerNum = count,
+              .playerName = playerName});
         }
       }
     }
@@ -1138,7 +1139,8 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
     (*plrs)->playerBrainNames[playerNum][0] = '\0';
     if (!threadsGetContext()) {
       screenGetFrontend()->clearPlayer((playerNumbers)playerNum);
-      screenGetFrontend()->statusTank((BYTE)(playerNum + 1), tankNone);
+      screenGetFrontend()->statusTank((BYTE)(playerNum + 1),
+                                      bolo::tankAlliance::tankNone);
       screenGetFrontend()->setPlayerCheckState((playerNumbers)playerNum, false);
     }
     /* Make a message about it */

@@ -690,7 +690,7 @@ Draws the tank label if required.
 *  px  - Tank pixel offset
 *  py  - Tank pixel offset
 *********************************************************/
-void drawTankLabel(char *str, int mx, int my, BYTE px, BYTE py) {
+void drawTankLabel(const char *str, int mx, int my, BYTE px, BYTE py) {
   int len;       /* Length of the string */
   SDL_Rect dest; /* Defines the text rectangle */
   BYTE zf;
@@ -742,30 +742,16 @@ void drawTankLabel(char *str, int mx, int my, BYTE px, BYTE py) {
  *ARGUMENTS:
  *  tks - The screen Tanks data structure
  *********************************************************/
-void drawTanks(screenTanks *tks) {
+void drawTanks(const bolo::ScreenTankList &tks) {
   SDL_Rect output; /* Source Rectangle */
   SDL_Rect dest;
-  BYTE count; /* Looping Variable */
-  BYTE total; /* Total number of tanks on the screen */
-  /* Current tank Stuff */
-  char playerName[PLAYER_NAME_LEN]; /* Player name */
-  BYTE frame;                       /* Frame id */
-  BYTE mx;                          /* Map X and Y Co-ords */
-  BYTE my;
-  BYTE px; /* Pixel offsets */
-  BYTE py;
-  BYTE playerNum;  /* Player Number */
 
-  count = 1;
-  total = screenTanksGetNumEntries(tks);
   output.w = TILE_SIZE_X;
   output.h = TILE_SIZE_Y;
   dest.w = output.w;
   dest.h = output.h;
-  while (count <= total) {
-    screenTanksGetItem(tks, count, &mx, &my, &px, &py, &frame, &playerNum,
-                       playerName);
-    switch (frame) {
+  for (const auto &tank : tks.tanks) {
+    switch (tank.frame) {
       case TANK_SELF_0:
         output.x = TANK_SELF_0_X;
         output.y = TANK_SELF_0_Y;
@@ -1160,14 +1146,12 @@ void drawTanks(screenTanks *tks) {
     /* Output */
     output.x *= 1;
     output.y *= 1;
-    dest.x = mx * TILE_SIZE_X + px;
-    dest.y = my * TILE_SIZE_Y + py;
-    px += 2;
-    py += 2;
+    dest.x = tank.pos.x * TILE_SIZE_X + tank.px;
+    dest.y = tank.pos.y * TILE_SIZE_Y + tank.py;
     SDL_BlitSurface(lpTiles, &output, lpBackBuffer, &dest);
     /* Output the label */
-    drawTankLabel(playerName, mx, my, px, py);
-    count++;
+    drawTankLabel(tank.playerName.c_str(), tank.pos.x, tank.pos.y, tank.px + 2,
+                  tank.py + 2);
   }
 }
 
@@ -1353,7 +1337,8 @@ void drawStartDelay(long srtDelay) {
  *  cursorLeft     - Cursor left position
  *  cursorTop      - Cursor Top position
  *********************************************************/
-void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
+void drawMainScreen(screen *value, screenMines *mineView,
+                    const bolo::ScreenTankList &tks,
                     const std::optional<bolo::ScreenGunsight> &gunsight,
                     const bolo::ScreenBulletList &sBullets,
                     const bolo::ScreenLgmList &lgms, bool showPillLabels,
@@ -2048,105 +2033,101 @@ void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
  *  tankNum - The tank number to draw (1-16)
  *  ta      - The allience of the pillbox
  *********************************************************/
-void drawStatusTank(BYTE tankNum, tankAlliance ta) {
+void drawStatusTank(BYTE tankNum, bolo::tankAlliance ta) {
   SDL_Rect src;  /* The src square on the tile file to retrieve */
   SDL_Rect dest; /* The dest square to draw it */
-  BYTE zf;       /* Scaling factor */
 
-  zf = 1;  // FIXME: windowGetZoomFactor();
-  src.w = zf * STATUS_ITEM_SIZE_X;
-  src.h = zf * STATUS_ITEM_SIZE_Y;
+  src.w = STATUS_ITEM_SIZE_X;
+  src.h = STATUS_ITEM_SIZE_Y;
 
   /* Set the co-ords of the tile file to get */
   switch (ta) {
-    case tankNone:
-      src.x = zf * STATUS_TANK_NONE_X;
-      src.y = zf * STATUS_TANK_NONE_Y;
+    case bolo::tankAlliance::tankNone:
+      src.x = STATUS_TANK_NONE_X;
+      src.y = STATUS_TANK_NONE_Y;
       break;
-    case tankSelf:
-      src.x = zf * STATUS_TANK_SELF_X;
-      src.y = zf * STATUS_TANK_SELF_Y;
+    case bolo::tankAlliance::tankSelf:
+      src.x = STATUS_TANK_SELF_X;
+      src.y = STATUS_TANK_SELF_Y;
       break;
-    case tankAllie:
-      src.x = zf * STATUS_TANK_GOOD_X;
-      src.y = zf * STATUS_TANK_GOOD_Y;
+    case bolo::tankAlliance::tankAllie:
+      src.x = STATUS_TANK_GOOD_X;
+      src.y = STATUS_TANK_GOOD_Y;
       break;
-    default:
-      /* tankEvil */
-      src.x = zf * STATUS_TANK_EVIL_X;
-      src.y = zf * STATUS_TANK_EVIL_Y;
+    case bolo::tankAlliance::tankEvil:
+      src.x = STATUS_TANK_EVIL_X;
+      src.y = STATUS_TANK_EVIL_Y;
       break;
   }
   /* Modify the offset to allow for the indents */
   switch (tankNum) {
     case TANK_1:
-      dest.x = (zf * STATUS_TANKS_1_X);
-      dest.y = (zf * STATUS_TANKS_1_Y);
+      dest.x = STATUS_TANKS_1_X;
+      dest.y = STATUS_TANKS_1_Y;
       break;
     case TANK_2:
-      dest.x = (zf * STATUS_TANKS_2_X);
-      dest.y = (zf * STATUS_TANKS_2_Y);
+      dest.x = STATUS_TANKS_2_X;
+      dest.y = STATUS_TANKS_2_Y;
       break;
     case TANK_3:
-      dest.x = (zf * STATUS_TANKS_3_X);
-      dest.y = (zf * STATUS_TANKS_3_Y);
+      dest.x = STATUS_TANKS_3_X;
+      dest.y = STATUS_TANKS_3_Y;
       break;
     case TANK_4:
-      dest.x = (zf * STATUS_TANKS_4_X);
-      dest.y = (zf * STATUS_TANKS_4_Y);
+      dest.x = STATUS_TANKS_4_X;
+      dest.y = STATUS_TANKS_4_Y;
       break;
     case TANK_5:
-      dest.x = (zf * STATUS_TANKS_5_X);
-      dest.y = (zf * STATUS_TANKS_5_Y);
+      dest.x = STATUS_TANKS_5_X;
+      dest.y = STATUS_TANKS_5_Y;
       break;
     case TANK_6:
-      dest.x = (zf * STATUS_TANKS_6_X);
-      dest.y = (zf * STATUS_TANKS_6_Y);
+      dest.x = STATUS_TANKS_6_X;
+      dest.y = STATUS_TANKS_6_Y;
       break;
     case TANK_7:
-      dest.x = (zf * STATUS_TANKS_7_X);
-      dest.y = (zf * STATUS_TANKS_7_Y);
+      dest.x = STATUS_TANKS_7_X;
+      dest.y = STATUS_TANKS_7_Y;
       break;
     case TANK_8:
-      dest.x = (zf * STATUS_TANKS_8_X);
-      dest.y = (zf * STATUS_TANKS_8_Y);
+      dest.x = STATUS_TANKS_8_X;
+      dest.y = STATUS_TANKS_8_Y;
       break;
     case TANK_9:
-      dest.x = (zf * STATUS_TANKS_9_X);
-      dest.y = (zf * STATUS_TANKS_9_Y);
+      dest.x = STATUS_TANKS_9_X;
+      dest.y = STATUS_TANKS_9_Y;
       break;
     case TANK_10:
-      dest.x = (zf * STATUS_TANKS_10_X);
-      dest.y = (zf * STATUS_TANKS_10_Y);
+      dest.x = STATUS_TANKS_10_X;
+      dest.y = STATUS_TANKS_10_Y;
       break;
     case TANK_11:
-      dest.x = (zf * STATUS_TANKS_11_X);
-      dest.y = (zf * STATUS_TANKS_11_Y);
+      dest.x = STATUS_TANKS_11_X;
+      dest.y = STATUS_TANKS_11_Y;
       break;
     case TANK_12:
-      dest.x = (zf * STATUS_TANKS_12_X);
-      dest.y = (zf * STATUS_TANKS_12_Y);
+      dest.x = STATUS_TANKS_12_X;
+      dest.y = STATUS_TANKS_12_Y;
       break;
     case TANK_13:
-      dest.x = (zf * STATUS_TANKS_13_X);
-      dest.y = (zf * STATUS_TANKS_13_Y);
+      dest.x = STATUS_TANKS_13_X;
+      dest.y = STATUS_TANKS_13_Y;
       break;
     case TANK_14:
-      dest.x = (zf * STATUS_TANKS_14_X);
-      dest.y = (zf * STATUS_TANKS_14_Y);
+      dest.x = STATUS_TANKS_14_X;
+      dest.y = STATUS_TANKS_14_Y;
       break;
     case TANK_15:
-      dest.x = (zf * STATUS_TANKS_15_X);
-      dest.y = (zf * STATUS_TANKS_15_Y);
+      dest.x = STATUS_TANKS_15_X;
+      dest.y = STATUS_TANKS_15_Y;
       break;
-    default:
-      /* TANK_16:*/
-      dest.x = (zf * STATUS_TANKS_16_X);
-      dest.y = (zf * STATUS_TANKS_16_Y);
+    case TANK_16:
+      dest.x = STATUS_TANKS_16_X;
+      dest.y = STATUS_TANKS_16_Y;
   }
 
-  dest.w = zf * STATUS_ITEM_SIZE_X;
-  dest.h = zf * STATUS_ITEM_SIZE_Y;
+  dest.w = STATUS_ITEM_SIZE_X;
+  dest.h = STATUS_ITEM_SIZE_Y;
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpTankStatus, &dest);
@@ -2508,7 +2489,6 @@ void drawRedrawAll(int width, int height, buildSelect value,
                    bool showPillsStatus, bool showBasesStatus) {
   BYTE total;  /* Total number of elements */
   BYTE count;  /* Looping Variable */
-  BYTE ba;     /* Base, tanks and pill Alliences */
   BYTE shells; /* Tank amounts */
   BYTE mines;
   BYTE armour;
@@ -2529,7 +2509,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
   clientMutexWaitFor();
   total = screenNumBases();
   for (count = 1; count <= total; count++) {
-    ba = screenBaseAlliance(count);
+    BYTE ba = screenBaseAlliance(count);
     drawStatusBase(count, (baseAlliance)ba, showBasesStatus);
   }
   clientMutexRelease();
@@ -2539,7 +2519,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
   drawSetPillsStatusClear();
   total = screenNumPills();
   for (count = 1; count <= total; count++) {
-    ba = screenPillAlliance(count);
+    BYTE ba = screenPillAlliance(count);
     drawStatusPillbox(count, (pillAlliance)ba, showPillsStatus);
   }
   clientMutexRelease();
@@ -2550,8 +2530,8 @@ void drawRedrawAll(int width, int height, buildSelect value,
   clientMutexWaitFor();
   total = screenGetNumPlayers();
   for (count = 1; count <= MAX_TANKS; count++) {
-    ba = screenTankAlliance(count);
-    drawStatusTank(count, (tankAlliance)ba);
+    bolo::tankAlliance ba = screenTankAlliance(count);
+    drawStatusTank(count, ba);
   }
   clientMutexRelease();
   drawCopyTanksStatus();

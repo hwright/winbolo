@@ -111,7 +111,7 @@ void LinuxFrontend::playSound(sndEffects value) {
 }
 
 void LinuxFrontend::drawMainScreen(screen *value, screenMines *mineView,
-                                   screenTanks *tks,
+                                   bolo::ScreenTankList tks,
                                    std::optional<ScreenGunsight> gunsight,
                                    bolo::ScreenBulletList sBullet,
                                    bolo::ScreenLgmList lgms, long srtDelay,

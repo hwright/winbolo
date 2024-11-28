@@ -56,7 +56,6 @@ add_executable(linbolo
                ../../bolo/screen.cc
                ../../bolo/screenbrainmap.cc
                ../../bolo/screencalc.cc
-               ../../bolo/screentank.cc
                ../../bolo/screentypes.cc
                ../../bolo/scroll.cc
                ../../bolo/shells.cc

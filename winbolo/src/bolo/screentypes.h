@@ -18,6 +18,7 @@
 #ifndef _SCREENTYPES_H
 #define _SCREENTYPES_H
 
+#include <string>
 #include <vector>
 
 #include "types.h"
@@ -60,6 +61,35 @@ struct ScreenLgmList {
   //  bottom - Bottom bounds of the screen
   void prepare(uint8_t leftPos, uint8_t rightPos, uint8_t top, uint8_t bottom);
 };
+
+struct ScreenTank {
+  // The map coordinate it is on
+  MapPoint pos;
+  uint8_t px;         // The pixel offset from the left it is on
+  uint8_t py;         // The pixel offset from the top it is on
+  uint8_t frame;      // The direction it is facing
+  uint8_t playerNum;  // The player Number
+  std::string playerName;
+};
+
+struct ScreenTankList {
+  uint8_t numTanksScreen;  // The number of tanks on screen
+  std::vector<ScreenTank> tanks;
+
+  //  Prepare the screenTanks data structure prior to  displaying
+  //
+  // ARGUMENTS:
+  //  tnk      - Pointer to your tank data structure
+  //  leftPos  - Left bounds of the screen
+  //  rightPos - Right bounds of the screen
+  //  top      - Top bounds of the screen
+  //  bottom   - Bottom bounds of the screen
+  void prepare(tank *tnk, uint8_t leftPos, uint8_t rightPos, uint8_t top,
+               uint8_t bottom);
+};
+
+// The tank type relative to ourselves, good, neutral or evil
+enum class tankAlliance { tankNone, tankSelf, tankAllie, tankEvil };
 
 }  // namespace bolo
 

@@ -43,7 +43,6 @@
 #include "netmt.h"
 #include "netpnb.h"
 #include "rubble.h"
-#include "screentank.h"
 #include "screentypes.h"
 #include "swamp.h"
 #include "tankexp.h"
@@ -288,7 +287,7 @@ pillAlliance screenPillAlliance(BYTE pillNum);
  *ARGUMENTS:
  *  fileName - path and filename to save
  *********************************************************/
-tankAlliance screenTankAlliance(BYTE playerNum);
+bolo::tankAlliance screenTankAlliance(BYTE playerNum);
 
 /*********************************************************
  *NAME:          screenGetTankStats

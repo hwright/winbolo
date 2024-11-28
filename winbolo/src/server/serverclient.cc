@@ -253,31 +253,6 @@ void screenCheckTankMineDamage(BYTE mx, BYTE my) { return; }
 netStatus netGetStatus(void) { return netFailed; }
 
 /*********************************************************
- *NAME:          screenTanksAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/2/98
- *LAST MODIFIED: 18/2/98
- *PURPOSE:
- *  Adds a data set for a specific tank
- *
- *ARGUMENTS:
- *  value      - Pointer to the screenBullets data structure
- *  mx         - X co-ord of the map position
- *  my         - Y co-ord of the map position
- *  px         - X pixel offset
- *  py         - Y pixel offset
- *  frame      - Frame identifer of the tank
- *  playerName - String to hold the player name
- *********************************************************/
-void screenTanksAddItem(screenTanks *value, BYTE mx, BYTE my, BYTE px, BYTE py,
-                        BYTE frame, BYTE playerNum, char *playerName) {
-  // This code should never be called by the server.
-  messageAdd(bolo::messageType::global,
-             "DANGEROUS: screenTanksAddItem - Something MUST go here", "");
-  return;
-}
-
-/*********************************************************
  *NAME:          netRemovePlayer
  *AUTHOR:        John Morrison
  *CREATION DATE: 21/3/99

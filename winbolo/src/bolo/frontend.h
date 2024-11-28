@@ -23,7 +23,6 @@
 #include "global.h"
 #include "screen.h"
 #include "screenmines.h"
-#include "screentank.h"
 #include "screentypes.h"
 #include "sound_effects.h"
 #include "types.h"
@@ -75,7 +74,7 @@ class Frontend {
   //  edgeX      - X Offset for smooth scrolling
   //  edgeY      - Y Offset for smooth scrolling
   virtual void drawMainScreen(screen *value, screenMines *mineView,
-                              screenTanks *tks,
+                              ScreenTankList tks,
                               std::optional<ScreenGunsight> gunsight,
                               ScreenBulletList sBullets, ScreenLgmList lgms,
                               long srtDelay, bool isPillView, tank *tank,

@@ -88,7 +88,7 @@ void drawShells(const bolo::ScreenBulletList &sBullets);
  *ARGUMENTS:
  *  tks - The screen Tanks data structure
  *********************************************************/
-void drawTanks(screenTanks *tks);
+void drawTanks(const bolo::ScreenTankList &tks);
 
 /*********************************************************
  *NAME:          drawLgms
@@ -130,7 +130,8 @@ void drawLGMs(const bolo::ScreenLgmList &lgms);
  *  cursorLeft     - Cursor left position
  *  cursorTop      - Cursor Top position
  *********************************************************/
-void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
+void drawMainScreen(screen *value, screenMines *mineView,
+                    const bolo::ScreenTankList &tks,
                     const std::optional<bolo::ScreenGunsight> &gunsight,
                     const bolo::ScreenBulletList &sBullets,
                     const bolo::ScreenLgmList &lgms, bool showPillLabels,
@@ -275,7 +276,7 @@ void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels);
  *  tankNum - The tank number to draw (1-16)
  *  ta      - The allience of the pillbox
  *********************************************************/
-void drawStatusTank(BYTE tankNum, tankAlliance ta);
+void drawStatusTank(BYTE tankNum, bolo::tankAlliance ta);
 
 /*********************************************************
  *NAME:          drawStatusTankBars
