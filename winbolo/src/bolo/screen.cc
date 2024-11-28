@@ -165,6 +165,25 @@ namespace {
 
 const int MESSAGE_SCROLL_TIME = 4; /* Was 5 prior to 1.09 */
 
+// Get the view area tile map
+bolo::ScreenTiles screenGetTiles() {
+  bolo::ScreenTiles temp_tiles;
+
+  for (int x = 0; x < MAIN_BACK_BUFFER_SIZE_X; ++x) {
+    for (int y = 0; y < MAIN_BACK_BUFFER_SIZE_Y; ++y) {
+      temp_tiles[x][y] =
+          screenCalcSquare((BYTE)(x + xOffset), (BYTE)(y + yOffset), x, y);
+      screenBrainMapSetPos(
+          (BYTE)(x + xOffset), (BYTE)(y + yOffset),
+          mapGetPos(&mymp, (BYTE)(x + xOffset), (BYTE)(y + yOffset)),
+          clientMines->existPos(
+              MapPoint{.x = (BYTE)(x + xOffset), .y = (BYTE)(y + yOffset)}));
+    }
+  }
+
+  return temp_tiles;
+}
+
 }
 
 /*********************************************************
@@ -313,7 +332,7 @@ void screenUpdate(updateType value) {
 
   if (needScreenReCalc) {
     needScreenReCalc = false;
-    screenUpdateView();
+    tiles = screenGetTiles();
   }
   if (b) {
     return;
@@ -473,34 +492,6 @@ void screenUpdate(updateType value) {
                              0, 0);
   }
   b = false;
-}
-
-/*********************************************************
- *NAME:          screenUpdateView
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/10/98
- *LAST MODIFIED: 29/10/98
- *PURPOSE:
- *  Updates the values in the view area
- *
- *ARGUMENTS:
- * value - The update type (Helps in optimisations)
- *********************************************************/
-void screenUpdateView() {
-  BYTE count; /* Looping Variables */
-  BYTE count2;
-
-  for (count = 0; count < MAIN_BACK_BUFFER_SIZE_X; count++) {
-    for (count2 = 0; count2 < MAIN_BACK_BUFFER_SIZE_Y; count2++) {
-      (*tiles)[count][count2] = screenCalcSquare(
-          (BYTE)(count + xOffset), (BYTE)(count2 + yOffset), count, count2);
-      screenBrainMapSetPos(
-          (BYTE)(count + xOffset), (BYTE)(count2 + yOffset),
-          mapGetPos(&mymp, (BYTE)(count + xOffset), (BYTE)(count2 + yOffset)),
-          clientMines->existPos(MapPoint{.x = (BYTE)(count + xOffset),
-                                         .y = (BYTE)(count2 + yOffset)}));
-    }
-  }
 }
 
 /*********************************************************
@@ -740,7 +731,7 @@ bool screenLoadMap(std::istream &input, const char *name, gameType game,
     strcpy(mapName, name);
     utilStripNameReplace(playerName);
     screenSetupTank(playerName);
-    screenUpdateView();
+    tiles = screenGetTiles();
     basesClearMines(&mybs, &mymp);
 
   } else {

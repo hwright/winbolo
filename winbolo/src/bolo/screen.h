@@ -49,18 +49,6 @@
 /* Prototypes */
 
 /*********************************************************
- *NAME:          screenUpdateView
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/10/98
- *LAST MODIFIED:  4/11/98
- *PURPOSE:
- *  Updates the values in the view area
- *
- *ARGUMENTS:
- *********************************************************/
-void screenUpdateView();
-
-/*********************************************************
  *NAME:          screenCalcSquare
  *AUTHOR:        John Morrison
  *CREATION DATE: 29/10/98
