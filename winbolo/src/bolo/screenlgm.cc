@@ -32,167 +32,26 @@
 #include "players.h"
 #include "screen.h"
 
-/* Prototypes */
+namespace bolo {
 
-/*********************************************************
- *NAME:          screenLgmCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/99
- *LAST MODIFIED: 19/2/99
- *PURPOSE:
- *  Sets up the screen lgms data structure
- *
- *ARGUMENTS:
- *  value - New item to create
- *********************************************************/
-void screenLgmCreate(screenLgm *value) { (*value) = nullptr; }
-
-/*********************************************************
- *NAME:          screenLgmPrepare
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/99
- *LAST MODIFIED: 19/2/99
- *PURPOSE:
- *  Prepares the screenLgms data structure prior to
- *  displaying
- *
- *ARGUMENTS:
- *  value    - Pointer to the screenLgm data structure
- *  leftPos  - Left bounds of the screen
- *  rightPos - Right bounds of the screen
- *  top      - Top bounds of the screen
- *  bottom   - Bottom bounds of the screen
- *********************************************************/
-void screenLgmPrepare(screenLgm *value, BYTE leftPos, BYTE rightPos, BYTE top,
-                      BYTE bottom) {
-  BYTE mx; /* THIS lgm if on screen */
-  BYTE my;
-  BYTE px;
-  BYTE py;
-  BYTE frame;
+void ScreenLgmList::prepare(uint8_t leftPos, uint8_t rightPos, uint8_t top,
+                            uint8_t bottom) {
+  uint8_t mx; /* THIS lgm if on screen */
+  uint8_t my;
+  uint8_t px;
+  uint8_t py;
+  uint8_t frame;
 
   if (lgmOnScreen(screenGetLgmFromPlayerNum(playersGetSelf(screenGetPlayers())),
                   leftPos, rightPos, top, bottom)) {
     lgmGetScreenCoords(
         screenGetLgmFromPlayerNum(playersGetSelf(screenGetPlayers())), leftPos,
         top, &mx, &my, &px, &py, &frame);
-    screenLgmAddItem(value, mx, my, px, py, frame);
+    lgms_.push_back(ScreenLgm{
+        .pos = MapPoint{.x = mx, .y = my}, .px = px, .py = py, .frame = frame});
   }
-  playersMakeScreenLgm(screenGetPlayers(), value, leftPos, rightPos, top,
+  playersMakeScreenLgm(screenGetPlayers(), this, leftPos, rightPos, top,
                        bottom);
 }
 
-/*********************************************************
- *NAME:          screenLgmGetNumEntries
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/99
- *LAST MODIFIED: 19/2/99
- *PURPOSE:
- *  Returns the number of elements in the data structure
- *
- *ARGUMENTS:
- *  value - Pointer to the screenLgm data structure
- *********************************************************/
-BYTE screenLgmGetNumEntries(screenLgm *value) {
-  BYTE returnValue; /* Value to return */
-  screenLgm q;
-
-  returnValue = 0;
-  q = *value;
-  while (NonEmpty(q)) {
-    returnValue++;
-    q = ScreenLgmsTail(q);
-  }
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          screenLgmDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/99
- *LAST MODIFIED: 19/2/99
- *PURPOSE:
- *  Destroys and frees memory for the data structure
- *
- *ARGUMENTS:
- *  value - Pointer to the screenLgm data structure
- *********************************************************/
-void screenLgmDestroy(screenLgm *value) {
-  screenLgm q;
-
-  while (NonEmpty(*value)) {
-    q = *value;
-    (*value) = ScreenLgmsTail(q);
-    delete q;
-  }
-}
-
-/*********************************************************
- *NAME:          screenLgmAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/98
- *LAST MODIFIED: 19/2/98
- *PURPOSE:
- *  Adds a data set for a specific lgm
- *
- *ARGUMENTS:
- *  value      - Pointer to the screenBullets data structure
- *  mx         - X co-ord of the map position
- *  my         - Y co-ord of the map position
- *  px         - X pixel offset
- *  py         - Y pixel offset
- *  frame      - Frame identifer of the tank
- *********************************************************/
-void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
-                      BYTE frame) {
-  screenLgm q;
-
-  q = new screenLgmObj;
-  q->mx = mx;
-  q->my = my;
-  q->px = px;
-  q->py = py;
-  q->frame = frame;
-  q->next = (*value);
-  (*value) = q;
-}
-
-/*********************************************************
- *NAME:          screenLgmGetItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/98
- *LAST MODIFIED: 19/2/98
- *PURPOSE:
- *  Gets data for a specific item
- *
- *ARGUMENTS:
- *  value      - Pointer to the screenLgm data structure
- *  itemNum    - The item number to get
- *  mx         - X co-ord of the map position
- *  my         - Y co-ord of the map position
- *  px         - X pixel offset
- *  py         - Y pixel offset
- *  frame      - Frame identifer of the LGM
- *********************************************************/
-void screenLgmGetItem(screenLgm *value, BYTE itemNum, BYTE *mx, BYTE *my,
-                      BYTE *px, BYTE *py, BYTE *frame) {
-  BYTE count; /* Looping variable */
-  screenLgm q;
-
-  count = 1;
-  q = *value;
-
-  while (count < itemNum && NonEmpty(q)) {
-    count++;
-    q = ScreenLgmsTail(q);
-  }
-  if (q != nullptr) {
-    *mx = q->mx;
-    *my = q->my;
-    *px = q->px;
-    *py = q->py;
-    *frame = q->frame;
-  } else {
-    // FIXME
-  }
-}
+}  // namespace bolo

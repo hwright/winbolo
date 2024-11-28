@@ -41,113 +41,29 @@
 
 /* Type structure */
 
-typedef struct screenLgmObj *screenLgm;
-struct screenLgmObj {
-  screenLgm next; /* Next item */
-  BYTE mx;        /* The map x co-ordinate it is on */
-  BYTE my;        /* The map y co-ordinate it is on */
-  BYTE px;        /* The pixel offset from the left it is on */
-  BYTE py;        /* The pixel offset from the top it is on */
-  BYTE frame;     /* The direction it is facing */
+namespace bolo {
+
+struct ScreenLgm {
+  // The map co-ordinate it is on
+  MapPoint pos;
+  uint8_t px;     // The pixel offset from the left it is on
+  uint8_t py;     // The pixel offset from the top it is on
+  uint8_t frame;  // The direction it is facing
 };
 
-/* Prototypes */
+struct ScreenLgmList {
+  std::vector<ScreenLgm> lgms_;
 
-/*********************************************************
- *NAME:          screenLgmCreate
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/99
- *LAST MODIFIED: 19/2/99
- *PURPOSE:
- *  Sets up the screen lgms data structure
- *
- *ARGUMENTS:
- *  value - New item to create
- *********************************************************/
-void screenLgmCreate(screenLgm *value);
+  //  Prepares the screenLgms data structure prior to displaying
+  //
+  // ARGUMENTS:
+  //  leftPos   - Left bounds of the screen
+  //  rightPos  - Right bounds of the screen
+  //  top    - Top bounds of the screen
+  //  bottom - Bottom bounds of the screen
+  void prepare(uint8_t leftPos, uint8_t rightPos, uint8_t top, uint8_t bottom);
+};
 
-/*********************************************************
- *NAME:          screenLgmPrepare
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/99
- *LAST MODIFIED: 19/2/99
- *PURPOSE:
- *  Prepares the screenLgms data structure prior to
- *  displaying
- *
- *ARGUMENTS:
- *  value  - Pointer to the screenLgm data structure
- *  leftPos   - Left bounds of the screen
- *  rightPos  - Right bounds of the screen
- *  top    - Top bounds of the screen
- *  bottom - Bottom bounds of the screen
- *********************************************************/
-void screenLgmPrepare(screenLgm *value, BYTE leftPos, BYTE rightPos, BYTE top,
-                      BYTE bottom);
-
-/*********************************************************
- *NAME:          screenLgmGetNumEntries
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/99
- *LAST MODIFIED: 19/2/99
- *PURPOSE:
- *  Returns the number of elements in the data structure
- *
- *ARGUMENTS:
- *  value - Pointer to the screenLgm data structure
- *********************************************************/
-BYTE screenLgmGetNumEntries(screenLgm *value);
-
-/*********************************************************
- *NAME:          screenLgmDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/99
- *LAST MODIFIED: 19/2/99
- *PURPOSE:
- *  Destroys and frees memory for the data structure
- *
- *ARGUMENTS:
- *  value - Pointer to the screenLgm data structure
- *********************************************************/
-void screenLgmDestroy(screenLgm *value);
-
-/*********************************************************
- *NAME:          screenLgmAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/98
- *LAST MODIFIED: 19/2/98
- *PURPOSE:
- *  Adds a data set for a specific lgm
- *
- *ARGUMENTS:
- *  value      - Pointer to the screenBullets data structure
- *  mx         - X co-ord of the map position
- *  my         - Y co-ord of the map position
- *  px         - X pixel offset
- *  py         - Y pixel offset
- *  frame      - Frame identifer of the tank
- *********************************************************/
-void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
-                      BYTE frame);
-
-/*********************************************************
- *NAME:          screenLgmGetItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/98
- *LAST MODIFIED: 19/2/98
- *PURPOSE:
- *  Gets data for a specific item
- *
- *ARGUMENTS:
- *  value      - Pointer to the screenLgm data structure
- *  itemNum    - The item number to get
- *  mx         - X co-ord of the map position
- *  my         - Y co-ord of the map position
- *  px         - X pixel offset
- *  py         - Y pixel offset
- *  frame      - Frame identifer of the LGM
- *********************************************************/
-void screenLgmGetItem(screenLgm *value, BYTE itemNum, BYTE *mx, BYTE *my,
-                      BYTE *px, BYTE *py, BYTE *frame);
+}  // namespace bolo
 
 #endif /* SCREENLGMS_H */

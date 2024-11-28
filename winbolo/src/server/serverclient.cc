@@ -23,27 +23,6 @@
 #include "servernet.h"
 
 /*********************************************************
- *NAME:          screenLgmAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 19/2/98
- *LAST MODIFIED: 19/2/98
- *PURPOSE:
- *  Adds a data set for a specific lgm
- *
- *ARGUMENTS:
- *  value      - Pointer to the screenBullets data structure
- *  mx         - X co-ord of the map position
- *  my         - Y co-ord of the map position
- *  px         - X pixel offset
- *  py         - Y pixel offset
- *  frame      - Frame identifer of the tank
- *********************************************************/
-void screenLgmAddItem(screenLgm *value, BYTE mx, BYTE my, BYTE px, BYTE py,
-                      BYTE frame) {
-  return;
-}
-
-/*********************************************************
  *NAME:          screenReCalc
  *AUTHOR:        John Morrison
  *CREATION DATE: 30/12/98
