@@ -114,7 +114,7 @@ void LinuxFrontend::drawMainScreen(screen *value, screenMines *mineView,
                                    screenTanks *tks,
                                    std::optional<ScreenGunsight> gunsight,
                                    bolo::ScreenBulletList sBullet,
-                                   screenLgm *lgms, long srtDelay,
+                                   bolo::ScreenLgmList lgms, long srtDelay,
                                    bool isPillView, tank *tank, int edgeX,
                                    int edgeY) {
   uint8_t cursorX;

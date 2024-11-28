@@ -40,6 +40,27 @@ struct ScreenBullet {
 
 using ScreenBulletList = std::vector<ScreenBullet>;
 
+struct ScreenLgm {
+  // The map co-ordinate it is on
+  MapPoint pos;
+  uint8_t px;     // The pixel offset from the left it is on
+  uint8_t py;     // The pixel offset from the top it is on
+  uint8_t frame;  // The direction it is facing
+};
+
+struct ScreenLgmList {
+  std::vector<ScreenLgm> lgms_;
+
+  //  Prepares the screenLgms data structure prior to displaying
+  //
+  // ARGUMENTS:
+  //  leftPos   - Left bounds of the screen
+  //  rightPos  - Right bounds of the screen
+  //  top    - Top bounds of the screen
+  //  bottom - Bottom bounds of the screen
+  void prepare(uint8_t leftPos, uint8_t rightPos, uint8_t top, uint8_t bottom);
+};
+
 }  // namespace bolo
 
 #endif

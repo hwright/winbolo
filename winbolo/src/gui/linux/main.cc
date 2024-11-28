@@ -32,7 +32,7 @@
 #include "../../bolo/backend.h"
 #include "../../bolo/global.h"
 #include "../../bolo/network.h"
-#include "../../bolo/screenlgm.h"
+#include "../../bolo/screentypes.h"
 #include "../positions.h"
 #include "SDL.h"
 #include "boloicon.xpm"

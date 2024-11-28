@@ -22,7 +22,6 @@
 
 #include "global.h"
 #include "screen.h"
-#include "screenlgm.h"
 #include "screenmines.h"
 #include "screentank.h"
 #include "screentypes.h"
@@ -78,7 +77,7 @@ class Frontend {
   virtual void drawMainScreen(screen *value, screenMines *mineView,
                               screenTanks *tks,
                               std::optional<ScreenGunsight> gunsight,
-                              ScreenBulletList sBullets, screenLgm *lgms,
+                              ScreenBulletList sBullets, ScreenLgmList lgms,
                               long srtDelay, bool isPillView, tank *tank,
                               int edgeX, int edgeY) = 0;
 

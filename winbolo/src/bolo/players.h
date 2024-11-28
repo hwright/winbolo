@@ -29,8 +29,8 @@
 
 #include "allience.h"
 #include "global.h"
-#include "screenlgm.h"
 #include "screentank.h"
+#include "screentypes.h"
 
 /* Defines */
 
@@ -441,8 +441,8 @@ void playersMakeScreenTanks(players *plrs, screenTanks *value, BYTE leftPos,
  * top      - top bound
  * bottom   - Bottom bound
  *********************************************************/
-void playersMakeScreenLgm(players *plrs, screenLgm *value, BYTE leftPos,
-                          BYTE rightPos, BYTE top, BYTE bottom);
+void playersMakeScreenLgm(players *plrs, bolo::ScreenLgmList *value,
+                          BYTE leftPos, BYTE rightPos, BYTE top, BYTE bottom);
 
 /*********************************************************
  *NAME:          playersGetNumPlayers

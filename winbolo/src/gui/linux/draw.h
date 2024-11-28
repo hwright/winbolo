@@ -101,7 +101,7 @@ void drawTanks(screenTanks *tks);
  *ARGUMENTS:
  *  lgms - The screenLgm data structure
  *********************************************************/
-void drawLGMs(screenLgm *lgms);
+void drawLGMs(const bolo::ScreenLgmList &lgms);
 
 /*********************************************************
  *NAME:          drawMainScreen
@@ -132,10 +132,11 @@ void drawLGMs(screenLgm *lgms);
  *********************************************************/
 void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
                     const std::optional<bolo::ScreenGunsight> &gunsight,
-                    const bolo::ScreenBulletList &sBullets, screenLgm *lgms,
-                    bool showPillLabels, bool showBaseLabels, long srtDelay,
-                    bool isPillView, int edgeX, int edgeY, bool useCursor,
-                    BYTE cursorLeft, BYTE cursorTop);
+                    const bolo::ScreenBulletList &sBullets,
+                    const bolo::ScreenLgmList &lgms, bool showPillLabels,
+                    bool showBaseLabels, long srtDelay, bool isPillView,
+                    int edgeX, int edgeY, bool useCursor, BYTE cursorLeft,
+                    BYTE cursorTop);
 
 /*********************************************************
  *NAME:          drawBackground

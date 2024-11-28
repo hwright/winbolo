@@ -42,8 +42,8 @@
 #include "messages.h"
 #include "network.h"
 #include "screen.h"
-#include "screenlgm.h"
 #include "screentank.h"
+#include "screentypes.h"
 #include "tank.h"
 #include "tilenum.h"
 #include "util.h"
@@ -832,8 +832,8 @@ void playersMakeScreenTanks(players *plrs, screenTanks *value, BYTE leftPos,
  * top      - top bound
  * bottom   - Bottom bound
  *********************************************************/
-void playersMakeScreenLgm(players *plrs, screenLgm *value, BYTE leftPos,
-                          BYTE rightPos, BYTE top, BYTE bottom) {
+void playersMakeScreenLgm(players *plrs, bolo::ScreenLgmList *value,
+                          BYTE leftPos, BYTE rightPos, BYTE top, BYTE bottom) {
   WORLD wx;
   WORLD wy;
   WORLD conv; /* Used in conversion */
@@ -867,11 +867,14 @@ void playersMakeScreenLgm(players *plrs, screenLgm *value, BYTE leftPos,
         if ((*plrs)->item[count].lgmFrame == LGM_HELICOPTER_FRAME ||
             !screenIsItemInTrees(wx, wy) ||
             (conv < MIN_TREEHIDE_DIST && conv2 < MIN_TREEHIDE_DIST)) {
-          screenLgmAddItem(
-              value, (BYTE)((*plrs)->item[count].lgmMapX - leftPos),
-              (BYTE)((*plrs)->item[count].lgmMapY - top),
-              (*plrs)->item[count].lgmPixelX, (*plrs)->item[count].lgmPixelY,
-              (*plrs)->item[count].lgmFrame);
+          value->lgms_.push_back(bolo::ScreenLgm{
+              .pos = MapPoint{.x = static_cast<uint8_t>(
+                                  (*plrs)->item[count].lgmMapX - leftPos),
+                              .y = static_cast<uint8_t>(
+                                  (*plrs)->item[count].lgmMapY - top)},
+              .px = (*plrs)->item[count].lgmPixelX,
+              .py = (*plrs)->item[count].lgmPixelY,
+              .frame = (*plrs)->item[count].lgmFrame});
         }
       }
     }

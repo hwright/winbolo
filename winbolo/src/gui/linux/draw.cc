@@ -46,7 +46,7 @@
 #include "../../bolo/backend.h"
 #include "../../bolo/global.h"
 #include "../../bolo/network.h"
-#include "../../bolo/screenlgm.h"
+#include "../../bolo/screentypes.h"
 #include "../../bolo/tilenum.h"
 #include "../../gui/lang.h"
 #include "../../gui/linresource.h"
@@ -1182,52 +1182,40 @@ void drawTanks(screenTanks *tks) {
  *ARGUMENTS:
  *  lgms - The screenLgm data structure
  *********************************************************/
-void drawLGMs(screenLgm *lgms) {
-  BYTE total; /* Total number to draw */
-  BYTE frame; /* Current LGM screen info */
-  BYTE mx;
-  BYTE my;
-  BYTE px;
-  BYTE py;
+void drawLGMs(const bolo::ScreenLgmList &lgms) {
   SDL_Rect output; /* Source Rectangle */
   SDL_Rect dest;   /* Destination rect */
-  BYTE count;      /* Looping variable */
-  BYTE zf;         /* Zoom factor */
 
-  total = screenLgmGetNumEntries(lgms);
-  zf = 1;  // FIXME: windowGetZoomFactor();
-
-  for (count = 1; count <= total; count++) {
-    screenLgmGetItem(lgms, count, &mx, &my, &px, &py, &frame);
-    switch (frame) {
+  for (const auto &lgm : lgms.lgms_) {
+    switch (lgm.frame) {
       case LGM0:
-        output.x = zf * LGM0_X;
-        output.y = zf * LGM0_Y;
-        output.w = zf * LGM_WIDTH;
-        output.h = zf * LGM_HEIGHT;
+        output.x = LGM0_X;
+        output.y = LGM0_Y;
+        output.w = LGM_WIDTH;
+        output.h = LGM_HEIGHT;
         break;
       case LGM1:
-        output.x = zf * LGM1_X;
-        output.y = zf * LGM1_Y;
-        output.w = zf * LGM_WIDTH;
-        output.h = zf * LGM_HEIGHT;
+        output.x = LGM1_X;
+        output.y = LGM1_Y;
+        output.w = LGM_WIDTH;
+        output.h = LGM_HEIGHT;
         break;
       case LGM2:
-        output.x = zf * LGM2_X;
-        output.y = zf * LGM2_Y;
-        output.w = zf * LGM_WIDTH;
-        output.h = zf * LGM_HEIGHT;
+        output.x = LGM2_X;
+        output.y = LGM2_Y;
+        output.w = LGM_WIDTH;
+        output.h = LGM_HEIGHT;
         break;
       default:
         /* LGM3 - Helicopter */
-        output.x = zf * LGM_HELICOPTER_X;
-        output.y = zf * LGM_HELICOPTER_Y;
-        output.w = zf * TILE_SIZE_X;
-        output.h = zf * TILE_SIZE_Y;
+        output.x = LGM_HELICOPTER_X;
+        output.y = LGM_HELICOPTER_Y;
+        output.w = TILE_SIZE_X;
+        output.h = TILE_SIZE_Y;
         break;
     }
-    dest.x = (zf * mx * TILE_SIZE_X) + (zf * px);
-    dest.y = (zf * my * TILE_SIZE_Y) + (zf * py);
+    dest.x = (lgm.pos.x * TILE_SIZE_X) + lgm.px;
+    dest.y = (lgm.pos.y * TILE_SIZE_Y) + lgm.py;
     dest.w = output.w;
     dest.h = output.h;
     SDL_BlitSurface(lpTiles, &output, lpBackBuffer, &dest);
@@ -1367,10 +1355,11 @@ void drawStartDelay(long srtDelay) {
  *********************************************************/
 void drawMainScreen(screen *value, screenMines *mineView, screenTanks *tks,
                     const std::optional<bolo::ScreenGunsight> &gunsight,
-                    const bolo::ScreenBulletList &sBullets, screenLgm *lgms,
-                    bool showPillLabels, bool showBaseLabels, long srtDelay,
-                    bool isPillView, int edgeX, int edgeY, bool useCursor,
-                    BYTE cursorLeft, BYTE cursorTop) {
+                    const bolo::ScreenBulletList &sBullets,
+                    const bolo::ScreenLgmList &lgms, bool showPillLabels,
+                    bool showBaseLabels, long srtDelay, bool isPillView,
+                    int edgeX, int edgeY, bool useCursor, BYTE cursorLeft,
+                    BYTE cursorTop) {
   SDL_Rect output;     /* Output Rectangle */
   SDL_Rect textOutput; /* Text Output Rect */
   bool done;           /* Finished Looping */

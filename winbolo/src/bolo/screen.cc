@@ -70,7 +70,6 @@ Morrison <john@winbolo.com>          \0" */
 #include "rubble.h"
 #include "screenbrainmap.h"
 #include "screencalc.h"
-#include "screenlgm.h"
 #include "screentank.h"
 #include "screentypes.h"
 #include "scroll.h"
@@ -317,7 +316,6 @@ void screenUpdate(updateType value) {
   BYTE y;
   BYTE px; /* Pixel X and Y co-ords of the tank */
   BYTE py;
-  screenLgm lgms;
   screenTanks scnTnk;
   netStatus ns;
   BYTE oldXOffset = xOffset;
@@ -356,7 +354,7 @@ void screenUpdate(updateType value) {
     //    cursorPosY++;
   }
 
-  screenLgmCreate(&lgms);
+  bolo::ScreenLgmList lgms;
   bolo::ScreenBulletList sBullets;
   screenTanksCreate(&scnTnk);
 
@@ -450,9 +448,9 @@ void screenUpdate(updateType value) {
                        (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X), yOffset,
                        (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y));
     /* Prepare the lgms */
-    screenLgmPrepare(&lgms, xOffset,
-                     (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1), yOffset,
-                     (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
+    lgms.prepare(
+        xOffset, static_cast<uint8_t>(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
+        yOffset, static_cast<uint8_t>(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
     if (tankIsGunsightShow(&mytk)) {
       gs = tankGetGunsight(&mytk);
 
@@ -480,10 +478,9 @@ void screenUpdate(updateType value) {
                                  yOffset,
                                  (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
     frontend->drawMainScreen(&view, &mineView, &scnTnk, std::move(gs),
-                             std::move(sBullets), &lgms, gmeStartDelay,
-                             inPillView, &mytk, 0, 0);
+                             std::move(sBullets), std::move(lgms),
+                             gmeStartDelay, inPillView, &mytk, 0, 0);
   }
-  screenLgmDestroy(&lgms);
   screenTanksDestroy(&scnTnk);
   b = false;
 }
