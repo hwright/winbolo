@@ -146,23 +146,6 @@ void screenUpdate(updateType value);
 BYTE screenGetPos(screen *value, BYTE xValue, BYTE yValue);
 
 /*********************************************************
- *NAME:          screenIsMine
- *AUTHOR:        John Morrison
- *CREATION DATE: 6/11/98
- *LAST MODIFIED: 6/11/98
- *PURPOSE:
- *  Returns if a square on the screen should have a mine
- *  drawn on it.
- *  If value is out of range returns FALSE
- *
- *ARGUMENTS:
- *  value  - Pointer to the screenMines structure
- *  xValue - The X co-ordinate
- *  yValue - The Y co-ordinate
- *********************************************************/
-bool screenIsMine(screenMines *value, BYTE xValue, BYTE yValue);
-
-/*********************************************************
  *NAME:          screenLoadMap
  *AUTHOR:        John Morrison
  *CREATION DATE: 29/10/98

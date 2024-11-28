@@ -22,7 +22,6 @@
 
 #include "global.h"
 #include "screen.h"
-#include "screenmines.h"
 #include "screentypes.h"
 #include "sound_effects.h"
 #include "types.h"
@@ -73,7 +72,7 @@ class Frontend {
   //  tank       - Pointer to the player's tank structure
   //  edgeX      - X Offset for smooth scrolling
   //  edgeY      - Y Offset for smooth scrolling
-  virtual void drawMainScreen(screen *value, screenMines *mineView,
+  virtual void drawMainScreen(screen *value, ScreenMines mineView,
                               ScreenTankList tks,
                               std::optional<ScreenGunsight> gunsight,
                               ScreenBulletList sBullets, ScreenLgmList lgms,
