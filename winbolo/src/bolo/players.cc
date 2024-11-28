@@ -556,18 +556,16 @@ void playersMakeMessageName(players *plrs, BYTE playerNum, char *dest) {
  * dest       - Destination string
  *********************************************************/
 void playersMakeScreenName(players *plrs, BYTE playerNum, char *dest) {
-  char label[FILENAME_MAX]; /* Used to hold the string made by label */
-
-  label[0] = '\0';
   if ((*plrs)->item[playerNum].inUse) {
     if (playerNum == (*plrs)->myPlayerNum) {
-      labelMakeTankLabel(label, (*plrs)->item[playerNum].playerName,
-                         langGetText(MESSAGE_THIS_COMPUTER), true);
+      strcpy(dest, labelMakeTankLabel((*plrs)->item[playerNum].playerName,
+                                      langGetText(MESSAGE_THIS_COMPUTER), true)
+                       .c_str());
     } else {
-      labelMakeTankLabel(label, (*plrs)->item[playerNum].playerName,
-                         (*plrs)->item[playerNum].location, false);
+      strcpy(dest, labelMakeTankLabel((*plrs)->item[playerNum].playerName,
+                                      (*plrs)->item[playerNum].location, false)
+                       .c_str());
     }
-    strcpy(dest, label);
   }
 }
 

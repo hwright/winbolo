@@ -28,6 +28,8 @@
 
 #include <string.h>
 
+#include <format>
+
 #include "global.h"
 
 static bool labelOwnTank = true;           /* Should own tank be labeled? */
@@ -115,13 +117,13 @@ void labelMakeMessage(char *res, char *name, char *loc) {
  *  loc   - The location of the tank
  *  isOwn - Is this tank your own
  *********************************************************/
-void labelMakeTankLabel(char *res, char *name, char *loc, bool isOwn) {
-  res[0] = '\0';
+std::string labelMakeTankLabel(char *name, char *loc, bool isOwn) {
+  std::string res;
   if (labelTankLabel != lblNone && (!isOwn || (isOwn && labelOwnTank))) {
-    strcat(res, name);
+    res = name;
     if (labelTankLabel == lblLong) {
-      strcat(res, LABEL_AT_SYMBOL);
-      strcat(res, loc);
+      res.append(std::format("@{}", loc));
     }
   }
+  return res;
 }
