@@ -313,7 +313,7 @@ void screenUpdate(updateType value) {
 
   if (needScreenReCalc) {
     needScreenReCalc = false;
-    screenUpdateView((updateType)0);
+    screenUpdateView();
   }
   if (b) {
     return;
@@ -486,8 +486,7 @@ void screenUpdate(updateType value) {
  *ARGUMENTS:
  * value - The update type (Helps in optimisations)
  *********************************************************/
-void screenUpdateView(updateType value) {
-  /* NOTE: value UNUSED */
+void screenUpdateView() {
   BYTE count; /* Looping Variables */
   BYTE count2;
 
@@ -741,7 +740,7 @@ bool screenLoadMap(std::istream &input, const char *name, gameType game,
     strcpy(mapName, name);
     utilStripNameReplace(playerName);
     screenSetupTank(playerName);
-    screenUpdateView(redraw);
+    screenUpdateView();
     basesClearMines(&mybs, &mymp);
 
   } else {

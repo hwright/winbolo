@@ -57,9 +57,8 @@
  *  Updates the values in the view area
  *
  *ARGUMENTS:
- * value - The update type (Helps in optimisations)
  *********************************************************/
-void screenUpdateView(updateType value);
+void screenUpdateView();
 
 /*********************************************************
  *NAME:          screenCalcSquare
