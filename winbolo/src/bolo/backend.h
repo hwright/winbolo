@@ -288,7 +288,7 @@ pillAlliance screenPillAlliance(BYTE pillNum);
  *ARGUMENTS:
  *  fileName - path and filename to save
  *********************************************************/
-tankAlliance screenTankAlliance(BYTE playerNum);
+bolo::tankAlliance screenTankAlliance(BYTE playerNum);
 
 /*********************************************************
  *NAME:          screenGetTankStats

@@ -404,7 +404,7 @@ bool playersNameTaken(players *plrs, char *checkName);
  * plrs - Pointer to the players object
  * playerNum - Player number to check
  *********************************************************/
-tankAlliance playersScreenAllience(players *plrs, BYTE playerNum);
+bolo::tankAlliance playersScreenAllience(players *plrs, BYTE playerNum);
 
 /*********************************************************
  *NAME:          playersMakeScreenTanks
@@ -422,8 +422,8 @@ tankAlliance playersScreenAllience(players *plrs, BYTE playerNum);
  * top      - top bound
  * bottom   - Bottom bound
  *********************************************************/
-void playersMakeScreenTanks(players *plrs, screenTanks *value, BYTE leftPos,
-                            BYTE rightPos, BYTE top, BYTE bottom);
+void playersMakeScreenTanks(players *plrs, bolo::ScreenTankList *value,
+                            BYTE leftPos, BYTE rightPos, BYTE top, BYTE bottom);
 
 /*********************************************************
  *NAME:          playersMakeScreenLgm

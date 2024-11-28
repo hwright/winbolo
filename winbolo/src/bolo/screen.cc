@@ -316,7 +316,6 @@ void screenUpdate(updateType value) {
   BYTE y;
   BYTE px; /* Pixel X and Y co-ords of the tank */
   BYTE py;
-  screenTanks scnTnk;
   netStatus ns;
   BYTE oldXOffset = xOffset;
   BYTE oldYOffset = yOffset;
@@ -356,7 +355,7 @@ void screenUpdate(updateType value) {
 
   bolo::ScreenLgmList lgms;
   bolo::ScreenBulletList sBullets;
-  screenTanksCreate(&scnTnk);
+  bolo::ScreenTankList scnTnk;
 
   switch (value) {
     case redraw:
@@ -444,9 +443,9 @@ void screenUpdate(updateType value) {
     std::optional<bolo::ScreenGunsight> gs = std::nullopt;
 
     /* Prepare the tanks */
-    screenTanksPrepare(&scnTnk, &mytk, xOffset,
-                       (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X), yOffset,
-                       (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y));
+    scnTnk.prepare(
+        &mytk, xOffset, static_cast<uint8_t>(xOffset + MAIN_BACK_BUFFER_SIZE_X),
+        yOffset, static_cast<uint8_t>(yOffset + MAIN_BACK_BUFFER_SIZE_Y));
     /* Prepare the lgms */
     lgms.prepare(
         xOffset, static_cast<uint8_t>(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
@@ -477,11 +476,10 @@ void screenUpdate(updateType value) {
                                  (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
                                  yOffset,
                                  (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    frontend->drawMainScreen(&view, &mineView, &scnTnk, std::move(gs),
+    frontend->drawMainScreen(&view, &mineView, std::move(scnTnk), std::move(gs),
                              std::move(sBullets), std::move(lgms),
                              gmeStartDelay, inPillView, &mytk, 0, 0);
   }
-  screenTanksDestroy(&scnTnk);
   b = false;
 }
 
@@ -1840,7 +1838,7 @@ bool screenSaveMap(char *fileName) {
  *ARGUMENTS:
  *  fileName - path and filename to save
  *********************************************************/
-tankAlliance screenTankAlliance(BYTE playerNum) {
+bolo::tankAlliance screenTankAlliance(BYTE playerNum) {
   return playersScreenAllience(screenGetPlayers(), (BYTE)(playerNum - 1));
 }
 
