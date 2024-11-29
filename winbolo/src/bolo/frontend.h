@@ -154,6 +154,13 @@ class Frontend {
   //  isChecked - Is the item checked
   virtual void setPlayerCheckState(playerNumbers value, bool isChecked) = 0;
 
+  // Selected the appropriate indent
+  //
+  // ARGUMENTS:
+  //  old_val  - The previous value
+  //  new_val  - The current value
+  virtual void selectIndent(buildSelect old_val, buildSelect new_val) = 0;
+
   // Request to enable/disable the request alliance menu item
   //
   // ARGUMENTS:

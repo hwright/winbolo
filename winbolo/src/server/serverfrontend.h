@@ -44,6 +44,7 @@ class ServerFrontend : public Frontend {
   void setPlayer(playerNumbers value, std::string_view str) override {}
   void drawDownload(bool justBlack) override {}
   void setPlayerCheckState(playerNumbers value, bool isChecked) override {}
+  void selectIndent(buildSelect, buildSelect) override {}
   void enableRequestAllyMenu(bool enabled) override {}
   void enableLeaveAllyMenu(bool enabled) override {}
   void showGunsight(bool isShown) override {}

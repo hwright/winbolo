@@ -222,4 +222,6 @@ typedef enum { left, right, up, down } updateType;
 
 typedef enum { aiNone, aiYes, aiYesAdvantage } aiType;
 
+typedef enum { BsTrees, BsRoad, BsBuilding, BsPillbox, BsMine } buildSelect;
+
 #endif

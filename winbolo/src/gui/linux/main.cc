@@ -404,8 +404,8 @@ Uint32 windowGameTimer(Uint32 interval, void *param) {
             llf.used = FALSE;
           }
           if (llf.changeUsed == TRUE) {
-            drawSelectIndentsOff((buildSelect)llf.old_val, 0, 0);
-            drawSelectIndentsOn((buildSelect)llf.new_val, 0, 0);
+            screenGetFrontend()->selectIndent((buildSelect)llf.old_val,
+                                              (buildSelect)llf.new_val);
             llf.changeUsed = FALSE;
           }
           screenGameTick(tb, isShoot, brainRunning);
