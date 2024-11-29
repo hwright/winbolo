@@ -165,14 +165,178 @@ namespace {
 
 const int MESSAGE_SCROLL_TIME = 4; /* Was 5 prior to 1.09 */
 
+// Calculate the terrain type for a given location
+//
+// ARGUMENTS:
+//  xValue - The x co-ordinate
+//  yValue - The y co-ordinate
+uint8_t screenCalcSquare(MapPoint pos, BYTE scrX, BYTE scrY) {
+  baseAlliance ba; /* The allience of a base */
+  BYTE currentPos;
+  BYTE aboveLeft;
+  BYTE above;
+  BYTE aboveRight;
+  BYTE leftPos;
+  BYTE rightPos;
+  BYTE belowLeft;
+  BYTE below;
+  BYTE belowRight;
+
+  (*mineView)[scrX][scrY] = false;
+  /* Set up Items */
+  if (pillsExistPos(&mypb, pos)) {
+    return pillsGetScreenHealth(&mypb, pos.x, pos.y);
+  } else if (basesExistPos(&mybs, pos)) {
+    ba = basesGetAlliancePos(&mybs, pos.x, pos.y);
+    switch (ba) {
+      case baseOwnGood:
+        return BASE_GOOD;
+      case baseAllieGood:
+        return BASE_GOOD;
+      case baseNeutral:
+        return BASE_NEUTRAL;
+      case baseDead:
+        if (basesAmOwner(&mybs, playersGetSelf(screenGetPlayers()), pos.x,
+                         pos.y)) {
+          return BASE_GOOD;
+        } else {
+          return BASE_EVIL;
+        }
+      case baseEvil:
+        return BASE_EVIL;
+    }
+  } else {
+    currentPos = mapGetPos(&mymp, pos.x, pos.y);
+    // this is a invisiwall check, if there is supposed to be a mine here, but
+    // its a building, thats impossible, so, remove the mine and reset the
+    // terrain back to its correct value.
+    if (currentPos >= HALFBUILDING + MINE_SUBTRACT && currentPos != DEEP_SEA) {
+      screenGetMines()->removeItem(pos);
+      (*mineView)[scrX][scrY] = false;
+      currentPos = currentPos - MINE_SUBTRACT;
+      mapSetPos(&mymp, pos.x, pos.y, currentPos, true, true);
+    }
+    if (mapIsMine(&mymp, pos.x, pos.y)) {
+      if (clientMines->existPos(pos)) {
+        (*mineView)[scrX][scrY] = true;
+      }
+      if (currentPos != DEEP_SEA) {
+        currentPos = currentPos - MINE_SUBTRACT;
+      }
+    } else {
+      (*mineView)[scrX][scrY] = false;
+    }
+
+    if (basesExistPos(&mybs, pos.NW())) {
+      aboveLeft = ROAD;
+    } else {
+      aboveLeft = mapGetPos(&mymp, pos.NW());
+      if (aboveLeft >= MINE_START && aboveLeft <= MINE_END) {
+        aboveLeft = aboveLeft - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.N())) {
+      above = ROAD;
+    } else {
+      above = mapGetPos(&mymp, pos.N());
+      if (above >= MINE_START && above <= MINE_END) {
+        above = above - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.NE())) {
+      aboveRight = ROAD;
+    } else {
+      aboveRight = mapGetPos(&mymp, pos.NE());
+      if (aboveRight >= MINE_START && aboveRight <= MINE_END) {
+        aboveRight = aboveRight - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.W())) {
+      leftPos = ROAD;
+    } else {
+      leftPos = mapGetPos(&mymp, pos.W());
+      if (leftPos >= MINE_START && leftPos <= MINE_END) {
+        leftPos = leftPos - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.E())) {
+      rightPos = ROAD;
+    } else {
+      rightPos = mapGetPos(&mymp, pos.E());
+      if (rightPos >= MINE_START && rightPos <= MINE_END) {
+        rightPos = rightPos - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.SW())) {
+      belowLeft = ROAD;
+    } else {
+      belowLeft = mapGetPos(&mymp, pos.SW());
+      if (belowLeft >= MINE_START && belowLeft <= MINE_END) {
+        belowLeft = belowLeft - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.S())) {
+      below = ROAD;
+    } else {
+      below = mapGetPos(&mymp, pos.S());
+      if (below >= MINE_START && below <= MINE_END) {
+        below = below - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.SE())) {
+      belowRight = ROAD;
+    } else {
+      belowRight = mapGetPos(&mymp, pos.SE());
+      if (belowRight >= MINE_START && belowRight <= MINE_END) {
+        belowRight = belowRight - MINE_SUBTRACT;
+      }
+    }
+
+    switch (currentPos) {
+      case ROAD:
+        return screenCalcRoad(aboveLeft, above, aboveRight, leftPos, rightPos,
+                              belowLeft, below, belowRight);
+      case BUILDING:
+        return screenCalcBuilding(aboveLeft, above, aboveRight, leftPos,
+                                  rightPos, belowLeft, below, belowRight);
+      case FOREST:
+        return screenCalcForest(aboveLeft, above, aboveRight, leftPos, rightPos,
+                                belowLeft, below, belowRight);
+      case RIVER:
+        return screenCalcRiver(aboveLeft, above, aboveRight, leftPos, rightPos,
+                               belowLeft, below, belowRight);
+      case DEEP_SEA:
+        return screenCalcDeepSea(aboveLeft, above, aboveRight, leftPos,
+                                 rightPos, belowLeft, below, belowRight);
+      case BOAT:
+        return screenCalcBoat(aboveLeft, above, aboveRight, leftPos, rightPos,
+                              belowLeft, below, belowRight);
+      case CRATER:
+        return screenCalcCrater(aboveLeft, above, aboveRight, leftPos, rightPos,
+                                belowLeft, below, belowRight);
+      default:
+        return currentPos;
+    }
+  }
+}
+
 // Get the view area tile map
 bolo::ScreenTiles screenGetTiles() {
   bolo::ScreenTiles temp_tiles;
 
-  for (int x = 0; x < MAIN_BACK_BUFFER_SIZE_X; ++x) {
-    for (int y = 0; y < MAIN_BACK_BUFFER_SIZE_Y; ++y) {
+  for (uint8_t x = 0; x < MAIN_BACK_BUFFER_SIZE_X; ++x) {
+    for (uint8_t y = 0; y < MAIN_BACK_BUFFER_SIZE_Y; ++y) {
       temp_tiles[x][y] =
-          screenCalcSquare((BYTE)(x + xOffset), (BYTE)(y + yOffset), x, y);
+          screenCalcSquare(MapPoint{.x = static_cast<uint8_t>(x + xOffset),
+                                    .y = static_cast<uint8_t>(y + yOffset)},
+                           x, y);
       screenBrainMapSetPos(
           (BYTE)(x + xOffset), (BYTE)(y + yOffset),
           mapGetPos(&mymp, (BYTE)(x + xOffset), (BYTE)(y + yOffset)),
@@ -492,192 +656,6 @@ void screenUpdate(updateType value) {
                              0, 0);
   }
   b = false;
-}
-
-/*********************************************************
- *NAME:          screenCalcSquare
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/10/98
- *LAST MODIFIED: 30/01/02
- *PURPOSE:
- *  Calculates the terrain type for a given location
- *
- *ARGUMENTS:
- *  xValue - The x co-ordinate
- *  yValue - The y co-ordinate
- *********************************************************/
-BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
-  baseAlliance ba;  /* The allience of a base */
-  BYTE returnValue; /* Value to return */
-  BYTE currentPos;
-  BYTE aboveLeft;
-  BYTE above;
-  BYTE aboveRight;
-  BYTE leftPos;
-  BYTE rightPos;
-  BYTE belowLeft;
-  BYTE below;
-  BYTE belowRight;
-
-  (*mineView)[scrX][scrY] = false;
-  /* Set up Items */
-  if (pillsExistPos(&mypb, xValue, yValue)) {
-    returnValue = pillsGetScreenHealth(&mypb, xValue, yValue);
-  } else if (basesExistPos(&mybs, xValue, yValue)) {
-    ba = basesGetAlliancePos(&mybs, xValue, yValue);
-    switch (ba) {
-      case baseOwnGood:
-        returnValue = BASE_GOOD;
-        break;
-      case baseAllieGood:
-        returnValue = BASE_GOOD;
-        break;
-      case baseNeutral:
-        returnValue = BASE_NEUTRAL;
-        break;
-      case baseDead:
-        if (basesAmOwner(&mybs, playersGetSelf(screenGetPlayers()), xValue,
-                         yValue)) {
-          returnValue = BASE_GOOD;
-        } else {
-          returnValue = BASE_EVIL;
-        }
-        break;
-      case baseEvil:
-      default:
-        /* Base Evil */
-        returnValue = BASE_EVIL;
-    }
-  } else {
-    currentPos = mapGetPos(&mymp, xValue, yValue);
-    // this is a invisiwall check, if there is supposed to be a mine here, but
-    // its a building, thats impossible, so, remove the mine and reset the
-    // terrain back to its correct value.
-    if (currentPos >= HALFBUILDING + MINE_SUBTRACT && currentPos != DEEP_SEA) {
-      screenGetMines()->removeItem(MapPoint{.x = xValue, .y = yValue});
-      (*mineView)[scrX][scrY] = false;
-      currentPos = currentPos - MINE_SUBTRACT;
-      mapSetPos(&mymp, xValue, yValue, currentPos, true, true);
-    }
-    if (mapIsMine(&mymp, xValue, yValue)) {
-      if (clientMines->existPos(MapPoint{.x = xValue, .y = yValue})) {
-        (*mineView)[scrX][scrY] = true;
-      }
-      if (currentPos != DEEP_SEA) {
-        currentPos = currentPos - MINE_SUBTRACT;
-      }
-    } else {
-      (*mineView)[scrX][scrY] = false;
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue - 1), (BYTE)(yValue - 1))) {
-      aboveLeft = ROAD;
-    } else {
-      aboveLeft = mapGetPos(&mymp, (BYTE)(xValue - 1), (BYTE)(yValue - 1));
-      if (aboveLeft >= MINE_START && aboveLeft <= MINE_END) {
-        aboveLeft = aboveLeft - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, xValue, (BYTE)(yValue - 1))) {
-      above = ROAD;
-    } else {
-      above = mapGetPos(&mymp, xValue, (BYTE)(yValue - 1));
-      if (above >= MINE_START && above <= MINE_END) {
-        above = above - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue + 1), (BYTE)(yValue - 1))) {
-      aboveRight = ROAD;
-    } else {
-      aboveRight = mapGetPos(&mymp, (BYTE)(xValue + 1), (BYTE)(yValue - 1));
-      if (aboveRight >= MINE_START && aboveRight <= MINE_END) {
-        aboveRight = aboveRight - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue - 1), yValue)) {
-      leftPos = ROAD;
-    } else {
-      leftPos = mapGetPos(&mymp, (BYTE)(xValue - 1), yValue);
-      if (leftPos >= MINE_START && leftPos <= MINE_END) {
-        leftPos = leftPos - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue + 1), yValue)) {
-      rightPos = ROAD;
-    } else {
-      rightPos = mapGetPos(&mymp, (BYTE)(xValue + 1), yValue);
-      if (rightPos >= MINE_START && rightPos <= MINE_END) {
-        rightPos = rightPos - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue - 1), (BYTE)(yValue + 1))) {
-      belowLeft = ROAD;
-    } else {
-      belowLeft = mapGetPos(&mymp, (BYTE)(xValue - 1), (BYTE)(yValue + 1));
-      if (belowLeft >= MINE_START && belowLeft <= MINE_END) {
-        belowLeft = belowLeft - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, xValue, (BYTE)(yValue + 1))) {
-      below = ROAD;
-    } else {
-      below = mapGetPos(&mymp, xValue, (BYTE)(yValue + 1));
-      if (below >= MINE_START && below <= MINE_END) {
-        below = below - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue + 1), (BYTE)(yValue + 1))) {
-      belowRight = ROAD;
-    } else {
-      belowRight = mapGetPos(&mymp, (BYTE)(xValue + 1), (BYTE)(yValue + 1));
-      if (belowRight >= MINE_START && belowRight <= MINE_END) {
-        belowRight = belowRight - MINE_SUBTRACT;
-      }
-    }
-
-    switch (currentPos) {
-      case ROAD:
-        returnValue = screenCalcRoad(aboveLeft, above, aboveRight, leftPos,
-                                     rightPos, belowLeft, below, belowRight);
-        break;
-      case BUILDING:
-        returnValue =
-            screenCalcBuilding(aboveLeft, above, aboveRight, leftPos, rightPos,
-                               belowLeft, below, belowRight);
-        break;
-      case FOREST:
-        returnValue = screenCalcForest(aboveLeft, above, aboveRight, leftPos,
-                                       rightPos, belowLeft, below, belowRight);
-        break;
-      case RIVER:
-        returnValue = screenCalcRiver(aboveLeft, above, aboveRight, leftPos,
-                                      rightPos, belowLeft, below, belowRight);
-        break;
-      case DEEP_SEA:
-        returnValue = screenCalcDeepSea(aboveLeft, above, aboveRight, leftPos,
-                                        rightPos, belowLeft, below, belowRight);
-        break;
-      case BOAT:
-        returnValue = screenCalcBoat(aboveLeft, above, aboveRight, leftPos,
-                                     rightPos, belowLeft, below, belowRight);
-        break;
-      case CRATER:
-        returnValue = screenCalcCrater(aboveLeft, above, aboveRight, leftPos,
-                                       rightPos, belowLeft, below, belowRight);
-        break;
-      default:
-        returnValue = currentPos;
-        break;
-    }
-  }
-  return returnValue;
 }
 
 /*********************************************************

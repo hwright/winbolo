@@ -49,20 +49,6 @@
 /* Prototypes */
 
 /*********************************************************
- *NAME:          screenCalcSquare
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/10/98
- *LAST MODIFIED: 29/10/98
- *PURPOSE:
- *  Calculates the terrain type for a given location
- *
- *ARGUMENTS:
- *  xValue - The x co-ordinate
- *  yValue - The y co-ordinate
- *********************************************************/
-BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY);
-
-/*********************************************************
  *NAME:          screenReCalc
  *AUTHOR:        John Morrison
  *CREATION DATE: 30/12/98
