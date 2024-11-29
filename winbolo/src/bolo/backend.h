@@ -67,15 +67,6 @@ typedef unsigned long DWORD;
 #define MIN_SIGHT_DISTANCE_LEFT -1
 #define MIN_SIGHT_DISTANCE_RIGHT 1
 
-/* Type definitions */
-
-#ifndef _BUILDSELECT_ENUM
-#define _BUILDSELECT_ENUM
-
-/* The type of building operation currently being selected */
-typedef enum { BsTrees, BsRoad, BsBuilding, BsPillbox, BsMine } buildSelect;
-#endif
-
 #ifdef __cplusplus
 extern "C" {
 #endif
