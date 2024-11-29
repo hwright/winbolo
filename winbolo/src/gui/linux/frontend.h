@@ -39,8 +39,7 @@ class LinuxFrontend : public Frontend {
   void statusBase(uint8_t baseNum, baseAlliance bs) override;
   void messages(std::string_view top, std::string_view bottom) override;
   void killsDeaths(int kills, int deaths) override;
-  void manStatus(bool isDead, TURNTYPE angle) override;
-  void manClear(void) override;
+  void setManStatus(std::optional<ManStatus> status) override;
   void gameOver(void) override;
   void clearPlayer(playerNumbers value) override;
   void setPlayer(playerNumbers value, std::string_view str) override;

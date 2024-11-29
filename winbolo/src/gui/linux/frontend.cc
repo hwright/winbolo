@@ -160,15 +160,17 @@ void LinuxFrontend::killsDeaths(int kills, int deaths) {
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 
-void LinuxFrontend::manStatus(bool isDead, TURNTYPE angle) {
-  uint64_t tick = SDL_GetTicks();
-  frameMutexWaitFor();
-  drawSetManStatus(isDead, angle, TRUE);
-  frameMutexRelease();
-  dwSysFrame += (SDL_GetTicks() - tick);
+void LinuxFrontend::setManStatus(std::optional<ManStatus> status) {
+  if (status.has_value()) {
+    uint64_t tick = SDL_GetTicks();
+    frameMutexWaitFor();
+    drawSetManStatus(status->is_dead, status->angle, TRUE);
+    frameMutexRelease();
+    dwSysFrame += (SDL_GetTicks() - tick);
+  } else {
+    drawSetManClear();
+  }
 }
-
-void LinuxFrontend::manClear(void) { drawSetManClear(); }
 
 void LinuxFrontend::gameOver(void) {
   SDL_RemoveTimer(timerGameID);
