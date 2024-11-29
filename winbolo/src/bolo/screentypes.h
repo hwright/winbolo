@@ -93,10 +93,13 @@ struct ScreenTankList {
 // The tank type relative to ourselves, good, neutral or evil
 enum class tankAlliance { tankNone, tankSelf, tankAllie, tankEvil };
 
-using ScreenMines =
-    std::array<std::bitset<MAIN_BACK_BUFFER_SIZE_X>, MAIN_BACK_BUFFER_SIZE_Y>;
+// The terrain/mine combination for each displayed tile on the map.
+struct MapTile {
+  uint8_t terrain;
+  bool has_mine;
+};
 
-using ScreenTiles = std::array<std::array<BYTE, MAIN_BACK_BUFFER_SIZE_X>,
+using ScreenTiles = std::array<std::array<MapTile, MAIN_BACK_BUFFER_SIZE_X>,
                                MAIN_BACK_BUFFER_SIZE_Y>;
 
 }  // namespace bolo

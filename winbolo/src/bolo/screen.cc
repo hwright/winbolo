@@ -87,7 +87,6 @@ Morrison <john@winbolo.com>          \0" */
 
 /* Module Level Variables */
 
-static std::optional<bolo::ScreenMines> mineView;
 static map mymp = nullptr;
 static bases mybs = nullptr;
 static pillboxes mypb = nullptr;
@@ -162,12 +161,13 @@ namespace {
 
 const int MESSAGE_SCROLL_TIME = 4; /* Was 5 prior to 1.09 */
 
-// Calculate the terrain type for a given location
+// Calculate the terrain type and whether or not a mine exists for a given
+// location
 //
 // ARGUMENTS:
 //  xValue - The x co-ordinate
 //  yValue - The y co-ordinate
-uint8_t screenCalcSquare(MapPoint pos, BYTE scrX, BYTE scrY) {
+bolo::MapTile screenCalcSquare(MapPoint pos, BYTE scrX, BYTE scrY) {
   baseAlliance ba; /* The allience of a base */
   BYTE currentPos;
   BYTE aboveLeft;
@@ -179,49 +179,50 @@ uint8_t screenCalcSquare(MapPoint pos, BYTE scrX, BYTE scrY) {
   BYTE below;
   BYTE belowRight;
 
-  (*mineView)[scrX][scrY] = false;
   /* Set up Items */
   if (pillsExistPos(&mypb, pos)) {
-    return pillsGetScreenHealth(&mypb, pos.x, pos.y);
+    return bolo::MapTile{.terrain = pillsGetScreenHealth(&mypb, pos.x, pos.y),
+                         .has_mine = false};
   } else if (basesExistPos(&mybs, pos)) {
     ba = basesGetAlliancePos(&mybs, pos.x, pos.y);
     switch (ba) {
       case baseOwnGood:
-        return BASE_GOOD;
+        return bolo::MapTile{.terrain = BASE_GOOD, .has_mine = false};
       case baseAllieGood:
-        return BASE_GOOD;
+        return bolo::MapTile{.terrain = BASE_GOOD, .has_mine = false};
       case baseNeutral:
-        return BASE_NEUTRAL;
+        return bolo::MapTile{.terrain = BASE_NEUTRAL, .has_mine = false};
       case baseDead:
         if (basesAmOwner(&mybs, playersGetSelf(screenGetPlayers()), pos.x,
                          pos.y)) {
-          return BASE_GOOD;
+          return bolo::MapTile{.terrain = BASE_GOOD, .has_mine = false};
         } else {
-          return BASE_EVIL;
+          return bolo::MapTile{.terrain = BASE_EVIL, .has_mine = false};
         }
       case baseEvil:
-        return BASE_EVIL;
+        return bolo::MapTile{.terrain = BASE_EVIL, .has_mine = false};
     }
   } else {
+    bool has_mine = false;
     currentPos = mapGetPos(&mymp, pos.x, pos.y);
     // this is a invisiwall check, if there is supposed to be a mine here, but
     // its a building, thats impossible, so, remove the mine and reset the
     // terrain back to its correct value.
     if (currentPos >= HALFBUILDING + MINE_SUBTRACT && currentPos != DEEP_SEA) {
       screenGetMines()->removeItem(pos);
-      (*mineView)[scrX][scrY] = false;
       currentPos = currentPos - MINE_SUBTRACT;
+      has_mine = false;
       mapSetPos(&mymp, pos.x, pos.y, currentPos, true, true);
     }
     if (mapIsMine(&mymp, pos.x, pos.y)) {
       if (clientMines->existPos(pos)) {
-        (*mineView)[scrX][scrY] = true;
+        has_mine = true;
       }
       if (currentPos != DEEP_SEA) {
         currentPos = currentPos - MINE_SUBTRACT;
       }
     } else {
-      (*mineView)[scrX][scrY] = false;
+      has_mine = false;
     }
 
     if (basesExistPos(&mybs, pos.NW())) {
@@ -298,28 +299,42 @@ uint8_t screenCalcSquare(MapPoint pos, BYTE scrX, BYTE scrY) {
 
     switch (currentPos) {
       case ROAD:
-        return screenCalcRoad(aboveLeft, above, aboveRight, leftPos, rightPos,
-                              belowLeft, below, belowRight);
+        return bolo::MapTile{
+            .terrain = screenCalcRoad(aboveLeft, above, aboveRight, leftPos,
+                                      rightPos, belowLeft, below, belowRight),
+            .has_mine = has_mine};
       case BUILDING:
-        return screenCalcBuilding(aboveLeft, above, aboveRight, leftPos,
-                                  rightPos, belowLeft, below, belowRight);
+        return bolo::MapTile{.terrain = screenCalcBuilding(
+                                 aboveLeft, above, aboveRight, leftPos,
+                                 rightPos, belowLeft, below, belowRight),
+                             .has_mine = has_mine};
       case FOREST:
-        return screenCalcForest(aboveLeft, above, aboveRight, leftPos, rightPos,
-                                belowLeft, below, belowRight);
+        return bolo::MapTile{
+            .terrain = screenCalcForest(aboveLeft, above, aboveRight, leftPos,
+                                        rightPos, belowLeft, below, belowRight),
+            .has_mine = has_mine};
       case RIVER:
-        return screenCalcRiver(aboveLeft, above, aboveRight, leftPos, rightPos,
-                               belowLeft, below, belowRight);
+        return bolo::MapTile{
+            .terrain = screenCalcRiver(aboveLeft, above, aboveRight, leftPos,
+                                       rightPos, belowLeft, below, belowRight),
+            .has_mine = has_mine};
       case DEEP_SEA:
-        return screenCalcDeepSea(aboveLeft, above, aboveRight, leftPos,
-                                 rightPos, belowLeft, below, belowRight);
+        return bolo::MapTile{.terrain = screenCalcDeepSea(
+                                 aboveLeft, above, aboveRight, leftPos,
+                                 rightPos, belowLeft, below, belowRight),
+                             .has_mine = has_mine};
       case BOAT:
-        return screenCalcBoat(aboveLeft, above, aboveRight, leftPos, rightPos,
-                              belowLeft, below, belowRight);
+        return bolo::MapTile{
+            .terrain = screenCalcBoat(aboveLeft, above, aboveRight, leftPos,
+                                      rightPos, belowLeft, below, belowRight),
+            .has_mine = has_mine};
       case CRATER:
-        return screenCalcCrater(aboveLeft, above, aboveRight, leftPos, rightPos,
-                                belowLeft, below, belowRight);
+        return bolo::MapTile{
+            .terrain = screenCalcCrater(aboveLeft, above, aboveRight, leftPos,
+                                        rightPos, belowLeft, below, belowRight),
+            .has_mine = has_mine};
       default:
-        return currentPos;
+        return bolo::MapTile{.terrain = currentPos, .has_mine = has_mine};
     }
   }
 }
@@ -344,7 +359,6 @@ bolo::ScreenTiles screenGetTiles() {
 
   return tiles;
 }
-
 }
 
 /*********************************************************
@@ -406,7 +420,6 @@ void screenSetup(gameType game, std::unique_ptr<bolo::Frontend> frontend_input,
   brainBuildInfo->action = 0;
 
   frontend = frontend_input.release();
-  mineView.emplace();
 
   inStart = true;
   screenGameRunning = true;
@@ -452,7 +465,6 @@ void screenDestroy() {
   if (frontend != nullptr) {
     delete frontend;
   }
-  mineView = std::nullopt;
   if (brainBuildInfo != nullptr) {
     delete brainBuildInfo;
     brainBuildInfo = nullptr;
@@ -645,7 +657,7 @@ void screenRedraw() {
                                (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
                                yOffset,
                                (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-  frontend->drawMainScreen(tiles, *mineView, std::move(scnTnk), std::move(gs),
+  frontend->drawMainScreen(tiles, std::move(scnTnk), std::move(gs),
                            std::move(sBullets), std::move(lgms), gmeStartDelay,
                            inPillView, &mytk, 0, 0);
 }
@@ -1915,8 +1927,6 @@ void screenNetSetupTankGo() {
   BYTE x; /* Things to pass to get the player start position */
   BYTE y;
   TURNTYPE dir;
-  BYTE count; /* Looping variables */
-  BYTE count2;
 
   clientSetInStartFind(true);
   startsGetStart(&myss, &x, &y, &dir, screenGetTankPlayer(&mytk));
@@ -1929,12 +1939,6 @@ void screenNetSetupTankGo() {
   tankSetWorld(&mytk, wx, wy, dir, true);
   screenCenterTank();
   clientSetInStartFind(false);
-
-  for (count = 0; count < MAIN_BACK_BUFFER_SIZE_X; count++) {
-    for (count2 = 0; count2 < MAIN_BACK_BUFFER_SIZE_Y; count2++) {
-      (*mineView)[count][count2] = false;
-    }
-  }
 }
 
 /*********************************************************

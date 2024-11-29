@@ -29,7 +29,7 @@ class ServerFrontend : public Frontend {
 
   void playSound(sndEffects value) override {}
 
-  void drawMainScreen(ScreenTiles, ScreenMines, ScreenTankList,
+  void drawMainScreen(ScreenTiles, ScreenTankList,
                       std::optional<ScreenGunsight>, ScreenBulletList,
                       ScreenLgmList, long, bool, tank *, int, int) override {}
 

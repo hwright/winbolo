@@ -1338,7 +1338,6 @@ void drawStartDelay(long srtDelay) {
  *  cursorTop      - Cursor Top position
  *********************************************************/
 void drawMainScreen(const bolo::ScreenTiles &tiles,
-                    const bolo::ScreenMines &mineView,
                     const bolo::ScreenTankList &tks,
                     const std::optional<bolo::ScreenGunsight> &gunsight,
                     const bolo::ScreenBulletList &sBullets,
@@ -1376,7 +1375,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
     return;
   }
   while (done == FALSE) {
-    pos = tiles[x][y];
+    pos = tiles[x][y].terrain;
     isPill = FALSE;
     isBase = FALSE;
     outputX = drawPosX[pos];
@@ -1411,7 +1410,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
     SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
 
     /* Draw Mines */
-    if (mineView[x][y]) {
+    if (tiles[x][y].has_mine) {
       in.x = MINE_X;
       in.y = MINE_Y;
       SDL_BlitSurface(lpTiles, &in, lpBackBuffer, &output);
