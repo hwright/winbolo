@@ -527,13 +527,7 @@ void screenUpdate(updateType value) {
     //    cursorPosY++;
   }
 
-  bolo::ScreenLgmList lgms;
-  bolo::ScreenBulletList sBullets;
-  bolo::ScreenTankList scnTnk;
-
   switch (value) {
-    case redraw:
-      break;
     case left:
       /* Left button Pressed */
       if (!inPillView) {
@@ -612,50 +606,65 @@ void screenUpdate(updateType value) {
       needScreenReCalc = true;
       break;
   }
-
-  if (value == redraw) {
-    std::optional<bolo::ScreenGunsight> gs = std::nullopt;
-
-    /* Prepare the tanks */
-    scnTnk.prepare(
-        &mytk, xOffset, static_cast<uint8_t>(xOffset + MAIN_BACK_BUFFER_SIZE_X),
-        yOffset, static_cast<uint8_t>(yOffset + MAIN_BACK_BUFFER_SIZE_Y));
-    /* Prepare the lgms */
-    lgms.prepare(
-        xOffset, static_cast<uint8_t>(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
-        yOffset, static_cast<uint8_t>(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    if (tankIsGunsightShow(&mytk)) {
-      gs = tankGetGunsight(&mytk);
-
-      if (gs->pos.x >= xOffset &&
-          gs->pos.x < (xOffset + MAIN_BACK_BUFFER_SIZE_X - 1) &&
-          gs->pos.y >= yOffset &&
-          gs->pos.y < (yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1)) {
-        gs->pos.x -= xOffset;
-        gs->pos.y -= yOffset;
-      } else {
-        gs = std::nullopt;
-      }
-    }
-
-    shellsCalcScreenBullets(&myshs, &sBullets, xOffset,
-                            (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
-                            yOffset,
-                            (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    explosionsCalcScreenBullets(&clientExpl, &sBullets, xOffset,
-                                (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
-                                yOffset,
-                                (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    tkExplosionCalcScreenBullets(&clientTankExplosions, &sBullets, xOffset,
-                                 (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
-                                 yOffset,
-                                 (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    frontend->drawMainScreen(*tiles, *mineView, std::move(scnTnk),
-                             std::move(gs), std::move(sBullets),
-                             std::move(lgms), gmeStartDelay, inPillView, &mytk,
-                             0, 0);
-  }
   b = false;
+}
+
+void screenRedraw() {
+  if (needScreenReCalc) {
+    needScreenReCalc = false;
+    tiles = screenGetTiles();
+  }
+  netStatus ns = netGetStatus();
+  if (ns != netRunning && ns != netFailed) {
+    frontend->drawDownload(false);
+    return;
+  }
+  if (inStart) {
+    frontend->drawDownload(true);
+    return;
+  }
+
+  bolo::ScreenLgmList lgms;
+  bolo::ScreenBulletList sBullets;
+  bolo::ScreenTankList scnTnk;
+  std::optional<bolo::ScreenGunsight> gs = std::nullopt;
+
+  /* Prepare the tanks */
+  scnTnk.prepare(
+      &mytk, xOffset, static_cast<uint8_t>(xOffset + MAIN_BACK_BUFFER_SIZE_X),
+      yOffset, static_cast<uint8_t>(yOffset + MAIN_BACK_BUFFER_SIZE_Y));
+  /* Prepare the lgms */
+  lgms.prepare(
+      xOffset, static_cast<uint8_t>(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
+      yOffset, static_cast<uint8_t>(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
+  if (tankIsGunsightShow(&mytk)) {
+    gs = tankGetGunsight(&mytk);
+
+    if (gs->pos.x >= xOffset &&
+        gs->pos.x < (xOffset + MAIN_BACK_BUFFER_SIZE_X - 1) &&
+        gs->pos.y >= yOffset &&
+        gs->pos.y < (yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1)) {
+      gs->pos.x -= xOffset;
+      gs->pos.y -= yOffset;
+    } else {
+      gs = std::nullopt;
+    }
+  }
+
+  shellsCalcScreenBullets(
+      &myshs, &sBullets, xOffset, (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
+      yOffset, (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
+  explosionsCalcScreenBullets(&clientExpl, &sBullets, xOffset,
+                              (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
+                              yOffset,
+                              (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
+  tkExplosionCalcScreenBullets(&clientTankExplosions, &sBullets, xOffset,
+                               (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
+                               yOffset,
+                               (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
+  frontend->drawMainScreen(*tiles, *mineView, std::move(scnTnk), std::move(gs),
+                           std::move(sBullets), std::move(lgms), gmeStartDelay,
+                           inPillView, &mytk, 0, 0);
 }
 
 /*********************************************************

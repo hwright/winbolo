@@ -129,6 +129,9 @@ void screenDestroy();
  *********************************************************/
 void screenUpdate(updateType value);
 
+// Calls the frontend redraw function
+void screenRedraw();
+
 /*********************************************************
  *NAME:          screenLoadMap
  *AUTHOR:        John Morrison
