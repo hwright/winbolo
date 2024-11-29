@@ -28,6 +28,11 @@
 
 namespace bolo {
 
+struct ManStatus {
+  bool is_dead;
+  TURNTYPE angle;
+};
+
 // The interface which a frontend must implement
 class Frontend {
  public:
@@ -117,10 +122,7 @@ class Frontend {
   // ARGUMENTS:
   //  isDead - Is the man dead
   //  angle  - The angle the man is facing
-  virtual void manStatus(bool isDead, TURNTYPE angle) = 0;
-
-  // Clears the man status (ie man is in tank)
-  virtual void manClear(void) = 0;
+  virtual void setManStatus(std::optional<ManStatus> status) = 0;
 
   // Time limit is up. The game is over
   virtual void gameOver(void) = 0;

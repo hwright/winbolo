@@ -218,8 +218,9 @@ void lgmUpdate(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
       tankGetWorld(tnk, &wx, &wy);
       /* Multiplayer game but just a client */
       if (!threadsGetContext()) {
-        screenGetFrontend()->manStatus(
-            false, utilCalcAngle((*lgman)->x, (*lgman)->y, wx, wy));
+        screenGetFrontend()->setManStatus(bolo::ManStatus{
+            .is_dead = false,
+            .angle = utilCalcAngle((*lgman)->x, (*lgman)->y, wx, wy)});
       }
     }
   }
@@ -732,7 +733,8 @@ void lgmMoveAway(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
       utilCalcAngle((*lgman)->x, (*lgman)->y, (*lgman)->destX, (*lgman)->destY);
   frontAngle = utilCalcAngle((*lgman)->x, (*lgman)->y, newmx, newmy);
   if (!threadsGetContext()) {
-    screenGetFrontend()->manStatus(false, frontAngle);
+    screenGetFrontend()->setManStatus(
+        bolo::ManStatus{.is_dead = false, .angle = frontAngle});
   }
   conv = (*lgman)->x;
   conv >>= TANK_SHIFT_MAPSIZE;
@@ -852,7 +854,8 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
   angle = utilCalcAngle((*lgman)->x, (*lgman)->y, newmx, newmy);
 
   if (!threadsGetContext()) {
-    screenGetFrontend()->manStatus(false, angle);
+    screenGetFrontend()->setManStatus(
+        bolo::ManStatus{.is_dead = false, .angle = angle});
   }
 
   conv = (*lgman)->x;
@@ -1023,7 +1026,7 @@ void lgmReturn(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk) {
         } */
     lgmBackInTank(lgman, mp, pb, bs, tnk, true);
     if (!threadsGetContext()) {
-      screenGetFrontend()->manClear();
+      screenGetFrontend()->setManStatus(std::nullopt);
     }
   }
 }
@@ -1519,7 +1522,8 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx,
       (*lgman)->y <<= TANK_SHIFT_MAPSIZE;
       (*lgman)->y += MAP_SQUARE_MIDDLE;
       if (!threadsGetContext()) {
-        screenGetFrontend()->manStatus(true, 0.0f);
+        screenGetFrontend()->setManStatus(
+            bolo::ManStatus{.is_dead = true, .angle = 0.0f});
       }
 
       /* Log it */
@@ -1986,7 +1990,7 @@ void lgmNetBackInTank(lgm *lgman, map *mp, pillboxes *pb, bases *bs, tank *tnk,
   lgmBackInTank(lgman, mp, pb, bs, tnk, true);
 
   if (!threadsGetContext()) {
-    screenGetFrontend()->manClear();
+    screenGetFrontend()->setManStatus(std::nullopt);
   }
 }
 
@@ -2067,11 +2071,12 @@ void lgmSetIsDead(lgm *lgman, bool isDead) {
     (*lgman)->x = 0;
     (*lgman)->y = 0;
     if (!threadsGetContext()) {
-      screenGetFrontend()->manStatus(true, 0.0f);
+      screenGetFrontend()->setManStatus(
+          bolo::ManStatus{.is_dead = true, .angle = 0.0f});
     }
   } else {
     if (!threadsGetContext()) {
-      screenGetFrontend()->manClear();
+      screenGetFrontend()->setManStatus(std::nullopt);
     }
   }
 }
