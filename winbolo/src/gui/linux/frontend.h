@@ -44,6 +44,7 @@ class LinuxFrontend : public Frontend {
   void clearPlayer(playerNumbers value) override;
   void setPlayer(playerNumbers value, std::string_view str) override;
   void drawDownload(bool justBlack) override;
+  void selectIndent(buildSelect old_val, buildSelect new_val) override;
   void setPlayerCheckState(playerNumbers value, bool isChecked) override;
   void enableRequestAllyMenu(bool enabled) override;
   void enableLeaveAllyMenu(bool enabled) override;

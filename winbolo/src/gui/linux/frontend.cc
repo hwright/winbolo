@@ -364,6 +364,11 @@ void LinuxFrontend::drawDownload(bool justBlack) {
   }
 }
 
+void LinuxFrontend::selectIndent(buildSelect old_val, buildSelect new_val) {
+  drawSelectIndentsOff(old_val, 0, 0);
+  drawSelectIndentsOn(new_val, 0, 0);
+}
+
 void LinuxFrontend::setPlayerCheckState(playerNumbers value, bool isChecked) {
   isInMenu = true;
   switch (value) {
