@@ -62,7 +62,6 @@ class Frontend {
   //
   // ARGUMENTS:
   //  value      - Pointer to the sceen structure
-  //  mineView   - Pointer to the screen mine structure
   //  tks        - Pointer to the screen tank structure
   //  gs         - pointer to the screen gunsight structure
   //  lgms       - Pointer to the screen builder structure
@@ -72,8 +71,7 @@ class Frontend {
   //  tank       - Pointer to the player's tank structure
   //  edgeX      - X Offset for smooth scrolling
   //  edgeY      - Y Offset for smooth scrolling
-  virtual void drawMainScreen(screen *value, ScreenMines mineView,
-                              ScreenTankList tks,
+  virtual void drawMainScreen(ScreenTiles tiles, ScreenTankList tks,
                               std::optional<ScreenGunsight> gunsight,
                               ScreenBulletList sBullets, ScreenLgmList lgms,
                               long srtDelay, bool isPillView, tank *tank,

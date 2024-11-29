@@ -113,7 +113,6 @@ void drawLGMs(const bolo::ScreenLgmList &lgms);
  *
  *ARGUMENTS:
  *  value    - Pointer to the sceen structure
- *  mineView - Pointer to the screen mines structure
  *  tks      - Pointer to the screen tank structure
  *  gs       - Pointer to the screen gunsight structure
  *  sBullets - The screen Bullets structure
@@ -130,7 +129,7 @@ void drawLGMs(const bolo::ScreenLgmList &lgms);
  *  cursorLeft     - Cursor left position
  *  cursorTop      - Cursor Top position
  *********************************************************/
-void drawMainScreen(screen *value, const bolo::ScreenMines &mineView,
+void drawMainScreen(const bolo::ScreenTiles &tiles,
                     const bolo::ScreenTankList &tks,
                     const std::optional<bolo::ScreenGunsight> &gunsight,
                     const bolo::ScreenBulletList &sBullets,

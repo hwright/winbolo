@@ -468,7 +468,7 @@ Uint32 windowFrameRateTimer(Uint32 interval, void *param) {
     if ((int)(tick - oldFrameTick) >= frameRateTime) {
       frameMutexWaitFor();
       clientMutexWaitFor();
-      screenUpdate(redraw);
+      screenRedraw();
       clientMutexRelease();
       frameMutexRelease();
       oldFrameTick = timeGetTime();

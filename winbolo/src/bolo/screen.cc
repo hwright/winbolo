@@ -87,8 +87,6 @@ Morrison <john@winbolo.com>          \0" */
 
 /* Module Level Variables */
 
-static screen view = nullptr;
-static std::optional<bolo::ScreenMines> mineView;
 static map mymp = nullptr;
 static bases mybs = nullptr;
 static pillboxes mypb = nullptr;
@@ -133,8 +131,6 @@ static time_t timeStart;
 /* Are we running? */
 static bool screenGameRunning = false;
 
-static bool needScreenReCalc = false;
-
 /* Whether computer tanks are allowed */
 static aiType allowComputerTanks = aiNone;
 
@@ -165,6 +161,204 @@ namespace {
 
 const int MESSAGE_SCROLL_TIME = 4; /* Was 5 prior to 1.09 */
 
+// Calculate the terrain type and whether or not a mine exists for a given
+// location
+//
+// ARGUMENTS:
+//  xValue - The x co-ordinate
+//  yValue - The y co-ordinate
+bolo::MapTile screenCalcSquare(MapPoint pos, BYTE scrX, BYTE scrY) {
+  baseAlliance ba; /* The allience of a base */
+  BYTE currentPos;
+  BYTE aboveLeft;
+  BYTE above;
+  BYTE aboveRight;
+  BYTE leftPos;
+  BYTE rightPos;
+  BYTE belowLeft;
+  BYTE below;
+  BYTE belowRight;
+
+  /* Set up Items */
+  if (pillsExistPos(&mypb, pos)) {
+    return bolo::MapTile{.terrain = pillsGetScreenHealth(&mypb, pos.x, pos.y),
+                         .has_mine = false};
+  } else if (basesExistPos(&mybs, pos)) {
+    ba = basesGetAlliancePos(&mybs, pos.x, pos.y);
+    switch (ba) {
+      case baseOwnGood:
+        return bolo::MapTile{.terrain = BASE_GOOD, .has_mine = false};
+      case baseAllieGood:
+        return bolo::MapTile{.terrain = BASE_GOOD, .has_mine = false};
+      case baseNeutral:
+        return bolo::MapTile{.terrain = BASE_NEUTRAL, .has_mine = false};
+      case baseDead:
+        if (basesAmOwner(&mybs, playersGetSelf(screenGetPlayers()), pos.x,
+                         pos.y)) {
+          return bolo::MapTile{.terrain = BASE_GOOD, .has_mine = false};
+        } else {
+          return bolo::MapTile{.terrain = BASE_EVIL, .has_mine = false};
+        }
+      case baseEvil:
+        return bolo::MapTile{.terrain = BASE_EVIL, .has_mine = false};
+    }
+  } else {
+    bool has_mine = false;
+    currentPos = mapGetPos(&mymp, pos.x, pos.y);
+    // this is a invisiwall check, if there is supposed to be a mine here, but
+    // its a building, thats impossible, so, remove the mine and reset the
+    // terrain back to its correct value.
+    if (currentPos >= HALFBUILDING + MINE_SUBTRACT && currentPos != DEEP_SEA) {
+      screenGetMines()->removeItem(pos);
+      currentPos = currentPos - MINE_SUBTRACT;
+      has_mine = false;
+      mapSetPos(&mymp, pos.x, pos.y, currentPos, true, true);
+    }
+    if (mapIsMine(&mymp, pos.x, pos.y)) {
+      if (clientMines->existPos(pos)) {
+        has_mine = true;
+      }
+      if (currentPos != DEEP_SEA) {
+        currentPos = currentPos - MINE_SUBTRACT;
+      }
+    } else {
+      has_mine = false;
+    }
+
+    if (basesExistPos(&mybs, pos.NW())) {
+      aboveLeft = ROAD;
+    } else {
+      aboveLeft = mapGetPos(&mymp, pos.NW());
+      if (aboveLeft >= MINE_START && aboveLeft <= MINE_END) {
+        aboveLeft = aboveLeft - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.N())) {
+      above = ROAD;
+    } else {
+      above = mapGetPos(&mymp, pos.N());
+      if (above >= MINE_START && above <= MINE_END) {
+        above = above - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.NE())) {
+      aboveRight = ROAD;
+    } else {
+      aboveRight = mapGetPos(&mymp, pos.NE());
+      if (aboveRight >= MINE_START && aboveRight <= MINE_END) {
+        aboveRight = aboveRight - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.W())) {
+      leftPos = ROAD;
+    } else {
+      leftPos = mapGetPos(&mymp, pos.W());
+      if (leftPos >= MINE_START && leftPos <= MINE_END) {
+        leftPos = leftPos - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.E())) {
+      rightPos = ROAD;
+    } else {
+      rightPos = mapGetPos(&mymp, pos.E());
+      if (rightPos >= MINE_START && rightPos <= MINE_END) {
+        rightPos = rightPos - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.SW())) {
+      belowLeft = ROAD;
+    } else {
+      belowLeft = mapGetPos(&mymp, pos.SW());
+      if (belowLeft >= MINE_START && belowLeft <= MINE_END) {
+        belowLeft = belowLeft - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.S())) {
+      below = ROAD;
+    } else {
+      below = mapGetPos(&mymp, pos.S());
+      if (below >= MINE_START && below <= MINE_END) {
+        below = below - MINE_SUBTRACT;
+      }
+    }
+
+    if (basesExistPos(&mybs, pos.SE())) {
+      belowRight = ROAD;
+    } else {
+      belowRight = mapGetPos(&mymp, pos.SE());
+      if (belowRight >= MINE_START && belowRight <= MINE_END) {
+        belowRight = belowRight - MINE_SUBTRACT;
+      }
+    }
+
+    switch (currentPos) {
+      case ROAD:
+        return bolo::MapTile{
+            .terrain = screenCalcRoad(aboveLeft, above, aboveRight, leftPos,
+                                      rightPos, belowLeft, below, belowRight),
+            .has_mine = has_mine};
+      case BUILDING:
+        return bolo::MapTile{.terrain = screenCalcBuilding(
+                                 aboveLeft, above, aboveRight, leftPos,
+                                 rightPos, belowLeft, below, belowRight),
+                             .has_mine = has_mine};
+      case FOREST:
+        return bolo::MapTile{
+            .terrain = screenCalcForest(aboveLeft, above, aboveRight, leftPos,
+                                        rightPos, belowLeft, below, belowRight),
+            .has_mine = has_mine};
+      case RIVER:
+        return bolo::MapTile{
+            .terrain = screenCalcRiver(aboveLeft, above, aboveRight, leftPos,
+                                       rightPos, belowLeft, below, belowRight),
+            .has_mine = has_mine};
+      case DEEP_SEA:
+        return bolo::MapTile{.terrain = screenCalcDeepSea(
+                                 aboveLeft, above, aboveRight, leftPos,
+                                 rightPos, belowLeft, below, belowRight),
+                             .has_mine = has_mine};
+      case BOAT:
+        return bolo::MapTile{
+            .terrain = screenCalcBoat(aboveLeft, above, aboveRight, leftPos,
+                                      rightPos, belowLeft, below, belowRight),
+            .has_mine = has_mine};
+      case CRATER:
+        return bolo::MapTile{
+            .terrain = screenCalcCrater(aboveLeft, above, aboveRight, leftPos,
+                                        rightPos, belowLeft, below, belowRight),
+            .has_mine = has_mine};
+      default:
+        return bolo::MapTile{.terrain = currentPos, .has_mine = has_mine};
+    }
+  }
+}
+
+// Get the view area tile map
+bolo::ScreenTiles screenGetTiles() {
+  bolo::ScreenTiles tiles;
+
+  for (uint8_t x = 0; x < MAIN_BACK_BUFFER_SIZE_X; ++x) {
+    for (uint8_t y = 0; y < MAIN_BACK_BUFFER_SIZE_Y; ++y) {
+      tiles[x][y] =
+          screenCalcSquare(MapPoint{.x = static_cast<uint8_t>(x + xOffset),
+                                    .y = static_cast<uint8_t>(y + yOffset)},
+                           x, y);
+      screenBrainMapSetPos(
+          (BYTE)(x + xOffset), (BYTE)(y + yOffset),
+          mapGetPos(&mymp, (BYTE)(x + xOffset), (BYTE)(y + yOffset)),
+          clientMines->existPos(
+              MapPoint{.x = (BYTE)(x + xOffset), .y = (BYTE)(y + yOffset)}));
+    }
+  }
+
+  return tiles;
+}
 }
 
 /*********************************************************
@@ -192,7 +386,6 @@ void screenSetup(gameType game, std::unique_ptr<bolo::Frontend> frontend_input,
   clientMines.emplace(hiddenMines);
   gmeStartDelay = srtDelay;
   gmeLength = gmeLen;
-  needScreenReCalc = false;
   cursorPosX = -1;
   cursorPosY = -1;
 
@@ -227,8 +420,6 @@ void screenSetup(gameType game, std::unique_ptr<bolo::Frontend> frontend_input,
   brainBuildInfo->action = 0;
 
   frontend = frontend_input.release();
-  view = new screenObj;
-  mineView.emplace();
 
   inStart = true;
   screenGameRunning = true;
@@ -274,15 +465,10 @@ void screenDestroy() {
   if (frontend != nullptr) {
     delete frontend;
   }
-  if (view != nullptr) {
-    delete view;
-  }
-  mineView = std::nullopt;
   if (brainBuildInfo != nullptr) {
     delete brainBuildInfo;
     brainBuildInfo = nullptr;
   }
-  view = nullptr;
   mymp = nullptr;
   mybs = nullptr;
   mypb = nullptr;
@@ -314,10 +500,6 @@ void screenUpdate(updateType value) {
   BYTE oldXOffset = xOffset;
   BYTE oldYOffset = yOffset;
 
-  if (needScreenReCalc) {
-    needScreenReCalc = false;
-    screenUpdateView((updateType)0);
-  }
   if (b) {
     return;
   }
@@ -347,13 +529,7 @@ void screenUpdate(updateType value) {
     //    cursorPosY++;
   }
 
-  bolo::ScreenLgmList lgms;
-  bolo::ScreenBulletList sBullets;
-  bolo::ScreenTankList scnTnk;
-
   switch (value) {
-    case redraw:
-      break;
     case left:
       /* Left button Pressed */
       if (!inPillView) {
@@ -371,7 +547,6 @@ void screenUpdate(updateType value) {
       } else {
         screenPillView(-1, 0);
       }
-      needScreenReCalc = true;
       break;
     case right:
       /* Right button Pressed */
@@ -391,7 +566,6 @@ void screenUpdate(updateType value) {
       } else {
         screenPillView(1, 0);
       }
-      needScreenReCalc = true;
       break;
     case up:
       /* Up button Pressed */
@@ -409,7 +583,6 @@ void screenUpdate(updateType value) {
       } else {
         screenPillView(0, -1);
       }
-      needScreenReCalc = true;
       break;
     case down:
     default:
@@ -429,290 +602,64 @@ void screenUpdate(updateType value) {
       } else {
         screenPillView(0, 1);
       }
-      needScreenReCalc = true;
       break;
-  }
-
-  if (value == redraw) {
-    std::optional<bolo::ScreenGunsight> gs = std::nullopt;
-
-    /* Prepare the tanks */
-    scnTnk.prepare(
-        &mytk, xOffset, static_cast<uint8_t>(xOffset + MAIN_BACK_BUFFER_SIZE_X),
-        yOffset, static_cast<uint8_t>(yOffset + MAIN_BACK_BUFFER_SIZE_Y));
-    /* Prepare the lgms */
-    lgms.prepare(
-        xOffset, static_cast<uint8_t>(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
-        yOffset, static_cast<uint8_t>(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    if (tankIsGunsightShow(&mytk)) {
-      gs = tankGetGunsight(&mytk);
-
-      if (gs->pos.x >= xOffset &&
-          gs->pos.x < (xOffset + MAIN_BACK_BUFFER_SIZE_X - 1) &&
-          gs->pos.y >= yOffset &&
-          gs->pos.y < (yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1)) {
-        gs->pos.x -= xOffset;
-        gs->pos.y -= yOffset;
-      } else {
-        gs = std::nullopt;
-      }
-    }
-
-    shellsCalcScreenBullets(&myshs, &sBullets, xOffset,
-                            (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
-                            yOffset,
-                            (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    explosionsCalcScreenBullets(&clientExpl, &sBullets, xOffset,
-                                (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
-                                yOffset,
-                                (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    tkExplosionCalcScreenBullets(&clientTankExplosions, &sBullets, xOffset,
-                                 (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
-                                 yOffset,
-                                 (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-    frontend->drawMainScreen(&view, *mineView, std::move(scnTnk), std::move(gs),
-                             std::move(sBullets), std::move(lgms),
-                             gmeStartDelay, inPillView, &mytk, 0, 0);
   }
   b = false;
 }
 
-/*********************************************************
- *NAME:          screenGetPos
- *AUTHOR:        John Morrison
- *CREATION DATE: 28/10/98
- *LAST MODIFIED: 30/12/2008
- *PURPOSE:
- *  Gets the value of a square in the structure
- *  Return RIVER if out of range
- *
- *ARGUMENTS:
- *  value  - Pointer to the screen structure
- *  xValue - The X co-ordinate
- *  yValue - The Y co-ordinate
- *********************************************************/
-BYTE screenGetPos(screen *value, BYTE xValue, BYTE yValue) {
-  BYTE returnValue = RIVER; /* Value to return */
-
-  if (xValue < MAIN_BACK_BUFFER_SIZE_X && yValue < MAIN_BACK_BUFFER_SIZE_Y) {
-    returnValue = (*value)->screenItem[xValue][yValue];
+void screenRedraw() {
+  netStatus ns = netGetStatus();
+  if (ns != netRunning && ns != netFailed) {
+    frontend->drawDownload(false);
+    return;
   }
-  return returnValue;
-}
+  if (inStart) {
+    frontend->drawDownload(true);
+    return;
+  }
 
-/*********************************************************
- *NAME:          screenUpdateView
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/10/98
- *LAST MODIFIED: 29/10/98
- *PURPOSE:
- *  Updates the values in the view area
- *
- *ARGUMENTS:
- * value - The update type (Helps in optimisations)
- *********************************************************/
-void screenUpdateView(updateType value) {
-  /* NOTE: value UNUSED */
-  BYTE count; /* Looping Variables */
-  BYTE count2;
+  bolo::ScreenTiles tiles = screenGetTiles();
+  bolo::ScreenLgmList lgms;
+  bolo::ScreenBulletList sBullets;
+  bolo::ScreenTankList scnTnk;
+  std::optional<bolo::ScreenGunsight> gs = std::nullopt;
 
-  for (count = 0; count < MAIN_BACK_BUFFER_SIZE_X; count++) {
-    for (count2 = 0; count2 < MAIN_BACK_BUFFER_SIZE_Y; count2++) {
-      (*view).screenItem[count][count2] = screenCalcSquare(
-          (BYTE)(count + xOffset), (BYTE)(count2 + yOffset), count, count2);
-      screenBrainMapSetPos(
-          (BYTE)(count + xOffset), (BYTE)(count2 + yOffset),
-          mapGetPos(&mymp, (BYTE)(count + xOffset), (BYTE)(count2 + yOffset)),
-          clientMines->existPos(MapPoint{.x = (BYTE)(count + xOffset),
-                                         .y = (BYTE)(count2 + yOffset)}));
+  /* Prepare the tanks */
+  scnTnk.prepare(
+      &mytk, xOffset, static_cast<uint8_t>(xOffset + MAIN_BACK_BUFFER_SIZE_X),
+      yOffset, static_cast<uint8_t>(yOffset + MAIN_BACK_BUFFER_SIZE_Y));
+  /* Prepare the lgms */
+  lgms.prepare(
+      xOffset, static_cast<uint8_t>(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
+      yOffset, static_cast<uint8_t>(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
+  if (tankIsGunsightShow(&mytk)) {
+    gs = tankGetGunsight(&mytk);
+
+    if (gs->pos.x >= xOffset &&
+        gs->pos.x < (xOffset + MAIN_BACK_BUFFER_SIZE_X - 1) &&
+        gs->pos.y >= yOffset &&
+        gs->pos.y < (yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1)) {
+      gs->pos.x -= xOffset;
+      gs->pos.y -= yOffset;
+    } else {
+      gs = std::nullopt;
     }
   }
-}
 
-/*********************************************************
- *NAME:          screenCalcSquare
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/10/98
- *LAST MODIFIED: 30/01/02
- *PURPOSE:
- *  Calculates the terrain type for a given location
- *
- *ARGUMENTS:
- *  xValue - The x co-ordinate
- *  yValue - The y co-ordinate
- *********************************************************/
-BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY) {
-  baseAlliance ba;  /* The allience of a base */
-  BYTE returnValue; /* Value to return */
-  BYTE currentPos;
-  BYTE aboveLeft;
-  BYTE above;
-  BYTE aboveRight;
-  BYTE leftPos;
-  BYTE rightPos;
-  BYTE belowLeft;
-  BYTE below;
-  BYTE belowRight;
-
-  (*mineView)[scrX][scrY] = false;
-  /* Set up Items */
-  if (pillsExistPos(&mypb, xValue, yValue)) {
-    returnValue = pillsGetScreenHealth(&mypb, xValue, yValue);
-  } else if (basesExistPos(&mybs, xValue, yValue)) {
-    ba = basesGetAlliancePos(&mybs, xValue, yValue);
-    switch (ba) {
-      case baseOwnGood:
-        returnValue = BASE_GOOD;
-        break;
-      case baseAllieGood:
-        returnValue = BASE_GOOD;
-        break;
-      case baseNeutral:
-        returnValue = BASE_NEUTRAL;
-        break;
-      case baseDead:
-        if (basesAmOwner(&mybs, playersGetSelf(screenGetPlayers()), xValue,
-                         yValue)) {
-          returnValue = BASE_GOOD;
-        } else {
-          returnValue = BASE_EVIL;
-        }
-        break;
-      case baseEvil:
-      default:
-        /* Base Evil */
-        returnValue = BASE_EVIL;
-    }
-  } else {
-    currentPos = mapGetPos(&mymp, xValue, yValue);
-    // this is a invisiwall check, if there is supposed to be a mine here, but
-    // its a building, thats impossible, so, remove the mine and reset the
-    // terrain back to its correct value.
-    if (currentPos >= HALFBUILDING + MINE_SUBTRACT && currentPos != DEEP_SEA) {
-      screenGetMines()->removeItem(MapPoint{.x = xValue, .y = yValue});
-      (*mineView)[scrX][scrY] = false;
-      currentPos = currentPos - MINE_SUBTRACT;
-      mapSetPos(&mymp, xValue, yValue, currentPos, true, true);
-    }
-    if (mapIsMine(&mymp, xValue, yValue)) {
-      if (clientMines->existPos(MapPoint{.x = xValue, .y = yValue})) {
-        (*mineView)[scrX][scrY] = true;
-      }
-      if (currentPos != DEEP_SEA) {
-        currentPos = currentPos - MINE_SUBTRACT;
-      }
-    } else {
-      (*mineView)[scrX][scrY] = false;
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue - 1), (BYTE)(yValue - 1))) {
-      aboveLeft = ROAD;
-    } else {
-      aboveLeft = mapGetPos(&mymp, (BYTE)(xValue - 1), (BYTE)(yValue - 1));
-      if (aboveLeft >= MINE_START && aboveLeft <= MINE_END) {
-        aboveLeft = aboveLeft - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, xValue, (BYTE)(yValue - 1))) {
-      above = ROAD;
-    } else {
-      above = mapGetPos(&mymp, xValue, (BYTE)(yValue - 1));
-      if (above >= MINE_START && above <= MINE_END) {
-        above = above - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue + 1), (BYTE)(yValue - 1))) {
-      aboveRight = ROAD;
-    } else {
-      aboveRight = mapGetPos(&mymp, (BYTE)(xValue + 1), (BYTE)(yValue - 1));
-      if (aboveRight >= MINE_START && aboveRight <= MINE_END) {
-        aboveRight = aboveRight - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue - 1), yValue)) {
-      leftPos = ROAD;
-    } else {
-      leftPos = mapGetPos(&mymp, (BYTE)(xValue - 1), yValue);
-      if (leftPos >= MINE_START && leftPos <= MINE_END) {
-        leftPos = leftPos - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue + 1), yValue)) {
-      rightPos = ROAD;
-    } else {
-      rightPos = mapGetPos(&mymp, (BYTE)(xValue + 1), yValue);
-      if (rightPos >= MINE_START && rightPos <= MINE_END) {
-        rightPos = rightPos - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue - 1), (BYTE)(yValue + 1))) {
-      belowLeft = ROAD;
-    } else {
-      belowLeft = mapGetPos(&mymp, (BYTE)(xValue - 1), (BYTE)(yValue + 1));
-      if (belowLeft >= MINE_START && belowLeft <= MINE_END) {
-        belowLeft = belowLeft - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, xValue, (BYTE)(yValue + 1))) {
-      below = ROAD;
-    } else {
-      below = mapGetPos(&mymp, xValue, (BYTE)(yValue + 1));
-      if (below >= MINE_START && below <= MINE_END) {
-        below = below - MINE_SUBTRACT;
-      }
-    }
-
-    if (basesExistPos(&mybs, (BYTE)(xValue + 1), (BYTE)(yValue + 1))) {
-      belowRight = ROAD;
-    } else {
-      belowRight = mapGetPos(&mymp, (BYTE)(xValue + 1), (BYTE)(yValue + 1));
-      if (belowRight >= MINE_START && belowRight <= MINE_END) {
-        belowRight = belowRight - MINE_SUBTRACT;
-      }
-    }
-
-    switch (currentPos) {
-      case ROAD:
-        returnValue = screenCalcRoad(aboveLeft, above, aboveRight, leftPos,
-                                     rightPos, belowLeft, below, belowRight);
-        break;
-      case BUILDING:
-        returnValue =
-            screenCalcBuilding(aboveLeft, above, aboveRight, leftPos, rightPos,
-                               belowLeft, below, belowRight);
-        break;
-      case FOREST:
-        returnValue = screenCalcForest(aboveLeft, above, aboveRight, leftPos,
-                                       rightPos, belowLeft, below, belowRight);
-        break;
-      case RIVER:
-        returnValue = screenCalcRiver(aboveLeft, above, aboveRight, leftPos,
-                                      rightPos, belowLeft, below, belowRight);
-        break;
-      case DEEP_SEA:
-        returnValue = screenCalcDeepSea(aboveLeft, above, aboveRight, leftPos,
-                                        rightPos, belowLeft, below, belowRight);
-        break;
-      case BOAT:
-        returnValue = screenCalcBoat(aboveLeft, above, aboveRight, leftPos,
-                                     rightPos, belowLeft, below, belowRight);
-        break;
-      case CRATER:
-        returnValue = screenCalcCrater(aboveLeft, above, aboveRight, leftPos,
-                                       rightPos, belowLeft, below, belowRight);
-        break;
-      default:
-        returnValue = currentPos;
-        break;
-    }
-  }
-  return returnValue;
+  shellsCalcScreenBullets(
+      &myshs, &sBullets, xOffset, (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
+      yOffset, (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
+  explosionsCalcScreenBullets(&clientExpl, &sBullets, xOffset,
+                              (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
+                              yOffset,
+                              (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
+  tkExplosionCalcScreenBullets(&clientTankExplosions, &sBullets, xOffset,
+                               (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
+                               yOffset,
+                               (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
+  frontend->drawMainScreen(tiles, std::move(scnTnk), std::move(gs),
+                           std::move(sBullets), std::move(lgms), gmeStartDelay,
+                           inPillView, &mytk, 0, 0);
 }
 
 /*********************************************************
@@ -766,7 +713,6 @@ bool screenLoadMap(std::istream &input, const char *name, gameType game,
     strcpy(mapName, name);
     utilStripNameReplace(playerName);
     screenSetupTank(playerName);
-    screenUpdateView(redraw);
     basesClearMines(&mybs, &mymp);
 
   } else {
@@ -1001,8 +947,6 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
             moveMousePointer(up);
           }
         }
-
-        screenReCalc();
       }
     }
   }
@@ -1193,23 +1137,6 @@ void screenGunsightRange(bool increase) {
 void screenSetGunsight(bool shown) { tankSetGunsight(&mytk, shown); }
 
 /*********************************************************
- *NAME:          screenReCalc
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Recalculates the screen data
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void screenReCalc(void) {
-  if (!threadsGetContext()) {
-    needScreenReCalc = true;
-  }
-}
-
-/*********************************************************
  *NAME:          screenGetMessages
  *AUTHOR:        John Morrison
  *CREATION DATE: 3/1/99
@@ -1244,7 +1171,6 @@ void clientCenterTank() {
     /* Tank isn't dead */
     scrollCenterObject(&xOffset, &yOffset, (tankGetMX(&mytk)),
                        (tankGetMY(&mytk)));
-    screenReCalc();
   }
 }
 
@@ -1708,14 +1634,12 @@ void screenPillView(int horz, int vert) {
     if (pillsCheckView(&mypb, pillViewX, pillViewY)) {
       inPillView = true;
       scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
-      screenReCalc();
     } else {
       result = pillsGetNextView(&mypb, &pillViewX, &pillViewY, false);
       if (result) {
         /* Center on the object */
         inPillView = true;
         scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
-        screenReCalc();
       } else {
         inPillView = false;
       }
@@ -1728,12 +1652,10 @@ void screenPillView(int horz, int vert) {
       } else {
         /* Center on the object */
         scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
-        screenReCalc();
       }
     } else {
       if (pillsMoveView(&mypb, &pillViewX, &pillViewY, horz, vert)) {
         scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
-        screenReCalc();
       }
     }
   }
@@ -2005,8 +1927,6 @@ void screenNetSetupTankGo() {
   BYTE x; /* Things to pass to get the player start position */
   BYTE y;
   TURNTYPE dir;
-  BYTE count; /* Looping variables */
-  BYTE count2;
 
   clientSetInStartFind(true);
   startsGetStart(&myss, &x, &y, &dir, screenGetTankPlayer(&mytk));
@@ -2019,14 +1939,6 @@ void screenNetSetupTankGo() {
   tankSetWorld(&mytk, wx, wy, dir, true);
   screenCenterTank();
   clientSetInStartFind(false);
-
-  for (count = 0; count < MAIN_BACK_BUFFER_SIZE_X; count++) {
-    for (count2 = 0; count2 < MAIN_BACK_BUFFER_SIZE_Y; count2++) {
-      (*mineView)[count][count2] = false;
-    }
-  }
-
-  screenReCalc();
 }
 
 /*********************************************************
@@ -2351,7 +2263,6 @@ void screenExtractMapData(BYTE *buff, BYTE len, BYTE yPos) {
       mapNetIncomingItem(&mymp, mx, my, terrain);
     }
   }
-  screenReCalc();
 }
 
 /*********************************************************
@@ -3150,7 +3061,6 @@ void screenExtractBrainInfo(BrainInfo *value) {
         pillViewX = p.x;
         pillViewY = p.y;
         scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
-        screenReCalc();
       }
     }
   }

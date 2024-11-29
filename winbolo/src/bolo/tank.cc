@@ -921,7 +921,6 @@ tankHit tankIsTankHit(tank *value, map *mp, pillboxes *pb, bases *bs, WORLD x,
       tankRegisterChangeByte(value, CRC_ONBOAT_OFFSET, false);
       (*value)->speed = 0;
       tankRegisterChangeFloat(value, CRC_SPEED_OFFSET, 0);
-      screenReCalc();
     }
 
     /*
@@ -1375,7 +1374,6 @@ void tankMoveOnBoat(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
                           EXPLOSION_START);
 
         soundDist(bolo::sndEffects::shotBuildingNear, newbmx, newbmy);
-        screenReCalc();
       } else if (boatExitSquare != BUILDING && boatExitSquare != HALFBUILDING) {
         if (mapGetPos(mp, bmx, bmy) == RIVER) {
           if (!threadsGetContext()) {
@@ -1386,7 +1384,6 @@ void tankMoveOnBoat(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
         }
         (*value)->onBoat = false;
         tankRegisterChangeByte(value, CRC_ONBOAT_OFFSET, false);
-        screenReCalc();
       }
       /* OK We have successfully left the boat */
       if (!(*value)->onBoat) {
@@ -1568,7 +1565,6 @@ void tankMoveOnLand(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
         (*value)->onBoat = true;
         tankRegisterChangeByte(value, CRC_ONBOAT_OFFSET, true);
       }
-      screenReCalc();
     }
 
     /* Check for hit mine */
@@ -1652,7 +1648,6 @@ void tankMoveOnLand(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
             screenGetFrontend()->statusBase(baseNum,
                                             (basesGetStatusNum(bs, baseNum)));
           }
-          screenReCalc();
         }
       }
     }
@@ -1841,7 +1836,6 @@ void tankCheckPillCapture(tank *value, pillboxes *pb) {
           pillNum = PILL_NOT_FOUND;
         }
       }
-      screenReCalc();
     }
   }
 }
@@ -1952,7 +1946,6 @@ void tankDropPills(tank *value, map *mp, pillboxes *pb, bases *bs) {
         //        delete q;
       }
     }
-    screenReCalc();
   }
   //  if (threadsGetContext() == false && netGetType() != netSingle) {
   //    pillsExplicitDrop(pb, screenGetTankPlayer(value));
@@ -2292,7 +2285,6 @@ void tankLayMine(tank *value, map *mp, pillboxes *pb, bases *bs) {
               (*value)->shells, (*value)->mines, 0, (*value)->trees);
         }
       }
-      screenReCalc();
     }
   }
 }
@@ -2378,8 +2370,6 @@ void tankMineDamage(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE mx,
             (*value)->shells, (*value)->mines, 0, (*value)->trees);
       }
     }
-
-    screenReCalc();
   }
 }
 
@@ -2398,58 +2388,34 @@ void tankMineDamage(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE mx,
  *  my    - Map Y Co-ordinate
  *********************************************************/
 void tankNearMines(map *mp, BYTE mx, BYTE my) {
-  bool needRecalc; /* Is a screen recalc required */
   MapPoint pos = MapPoint{.x = mx, .y = my};
 
-  needRecalc = false;
   if (mapIsMine(mp, mx, my)) {
-    if (!screenGetMines()->addItem(pos)) {
-      needRecalc = true;
-    }
+    screenGetMines()->addItem(pos);
   }
   if (mapIsMine(mp, (BYTE)(mx - 1), (BYTE)(my - 1))) {
-    if (!screenGetMines()->addItem(pos.NW())) {
-      needRecalc = true;
-    }
+    screenGetMines()->addItem(pos.NW());
   }
   if (mapIsMine(mp, (BYTE)(mx - 1), my)) {
-    if (!screenGetMines()->addItem(pos.W())) {
-      needRecalc = true;
-    }
+    screenGetMines()->addItem(pos.W());
   }
   if (mapIsMine(mp, (BYTE)(mx - 1), (BYTE)(my + 1))) {
-    if (!screenGetMines()->addItem(pos.SW())) {
-      needRecalc = true;
-    }
+    screenGetMines()->addItem(pos.SW());
   }
   if (mapIsMine(mp, mx, (BYTE)(my - 1))) {
-    if (!screenGetMines()->addItem(pos.S())) {
-      needRecalc = true;
-    }
+    screenGetMines()->addItem(pos.S());
   }
   if (mapIsMine(mp, mx, (BYTE)(my + 1))) {
-    if (!screenGetMines()->addItem(pos.S())) {
-      needRecalc = true;
-    }
+    screenGetMines()->addItem(pos.S());
   }
   if (mapIsMine(mp, (BYTE)(mx + 1), (BYTE)(my - 1))) {
-    if (!screenGetMines()->addItem(pos.NE())) {
-      needRecalc = true;
-    }
+    screenGetMines()->addItem(pos.NE());
   }
   if (mapIsMine(mp, (BYTE)(mx + 1), my)) {
-    if (!screenGetMines()->addItem(pos.E())) {
-      needRecalc = true;
-    }
+    screenGetMines()->addItem(pos.E());
   }
   if (mapIsMine(mp, (BYTE)(mx + 1), (BYTE)(my + 1))) {
-    if (!screenGetMines()->addItem(pos.SE())) {
-      needRecalc = true;
-    }
-  }
-
-  if (needRecalc) {
-    screenReCalc();
+    screenGetMines()->addItem(pos.SE());
   }
 }
 

@@ -1438,11 +1438,8 @@ void mapNetAdd(map *value, BYTE mx, BYTE my, BYTE terrain, bool needSend) {
  *  bs      - Pointer to the bases strucuture
  *********************************************************/
 void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
-  mapNet q;        /* Used in looping */
-  bool needRedraw; /* Do we need a redraw */
+  mapNet q; /* Used in looping */
   mapNet del;
-
-  needRedraw = false;
 
   q = (*value)->mn;
   while (NonEmpty(q)) {
@@ -1460,7 +1457,6 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
       //        if (q->oldTerrain == CRATER) {
       //          floodAddItem(q->mx, q->my);
       //        }
-      needRedraw = true;
       if (q->prev != nullptr) {
         q->prev->next = q->next;
       } else {
@@ -1490,7 +1486,6 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
       screenBrainMapSetPos(
           q->mx, q->my, (*value)->mapItem[q->mx][q->my],
           screenGetMines()->existPos(MapPoint{.x = q->mx, .y = q->my}));
-      needRedraw = true;
       if (q->prev != nullptr) {
         q->prev->next = q->next;
       } else {
@@ -1508,10 +1503,6 @@ void mapNetUpdate(map *value, pillboxes *pb, bases *bs) {
     } else {
       q = MapNetTail(q);
     }
-  }
-
-  if (needRedraw) {
-    screenReCalc();
   }
 }
 

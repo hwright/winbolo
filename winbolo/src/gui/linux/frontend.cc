@@ -110,8 +110,7 @@ void LinuxFrontend::playSound(sndEffects value) {
   }
 }
 
-void LinuxFrontend::drawMainScreen(screen *value, ScreenMines mineView,
-                                   ScreenTankList tks,
+void LinuxFrontend::drawMainScreen(ScreenTiles tiles, ScreenTankList tks,
                                    std::optional<ScreenGunsight> gunsight,
                                    ScreenBulletList sBullet, ScreenLgmList lgms,
                                    long srtDelay, bool isPillView, tank *tank,
@@ -121,7 +120,7 @@ void LinuxFrontend::drawMainScreen(screen *value, ScreenMines mineView,
   bool showCursor;
 
   showCursor = screenGetCursorPos(&cursorX, &cursorY);
-  ::drawMainScreen(value, mineView, tks, std::move(gunsight), sBullet, lgms,
+  ::drawMainScreen(tiles, tks, std::move(gunsight), sBullet, lgms,
                    showPillLabels, showBaseLabels, srtDelay, isPillView, edgeX,
                    edgeY, showCursor, cursorX, cursorY);
 }

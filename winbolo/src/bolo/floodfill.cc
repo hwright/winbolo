@@ -116,7 +116,6 @@ void FloodFill::checkFill(map *mp, pillboxes *pb, bases *bs, MapPoint pos) {
     if (below == CRATER || below == MINE_CRATER) {
       addItem(pos.S());
     }
-    screenReCalc();
   }
 }
 

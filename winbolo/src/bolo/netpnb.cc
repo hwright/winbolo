@@ -375,6 +375,7 @@ bool netPNBExtractItemClient(netPnbContext *pnbc, map *mp, bases *bs,
                              pillboxes *pb, BYTE event, BYTE itemNum,
                              BYTE owner, BYTE opt1, BYTE opt2, BYTE opt3) {
   pillbox addPill; /* Pill to place if required */
+  // TODO: We can probably remove this
   bool needCalc;   /* Needs a recalc */
   BYTE playerNum;  /* Our player Number */
   tank *tnk;
@@ -636,10 +637,6 @@ bool netPNBExtract(netPnbContext *pnbc, map *mp, bases *bs, pillboxes *pb,
     }
   }
 
-  if (needCalc) {
-    /* Recalc Screen if required */
-    screenReCalc();
-  }
   if (!returnValue) {
     /* Print error */
     messageAdd(bolo::messageType::network, "", "pnb-no");

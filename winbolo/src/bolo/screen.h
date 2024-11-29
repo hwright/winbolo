@@ -46,53 +46,7 @@
 #include "swamp.h"
 #include "tankexp.h"
 
-/* The screen object - Details what tiles are on the screen*/
-typedef struct screenObj *screen;
-struct screenObj {
-  BYTE screenItem[MAIN_BACK_BUFFER_SIZE_X][MAIN_BACK_BUFFER_SIZE_Y];
-};
-
 /* Prototypes */
-
-/*********************************************************
- *NAME:          screenUpdateView
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/10/98
- *LAST MODIFIED:  4/11/98
- *PURPOSE:
- *  Updates the values in the view area
- *
- *ARGUMENTS:
- * value - The update type (Helps in optimisations)
- *********************************************************/
-void screenUpdateView(updateType value);
-
-/*********************************************************
- *NAME:          screenCalcSquare
- *AUTHOR:        John Morrison
- *CREATION DATE: 29/10/98
- *LAST MODIFIED: 29/10/98
- *PURPOSE:
- *  Calculates the terrain type for a given location
- *
- *ARGUMENTS:
- *  xValue - The x co-ordinate
- *  yValue - The y co-ordinate
- *********************************************************/
-BYTE screenCalcSquare(BYTE xValue, BYTE yValue, BYTE scrX, BYTE scrY);
-
-/*********************************************************
- *NAME:          screenReCalc
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Recalculates the screen data
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void screenReCalc(void);
 
 /*********************************************************
  *NAME:          screenCenterTank

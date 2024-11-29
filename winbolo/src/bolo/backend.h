@@ -129,21 +129,8 @@ void screenDestroy();
  *********************************************************/
 void screenUpdate(updateType value);
 
-/*********************************************************
- *NAME:          screenGetPos
- *AUTHOR:        John Morrison
- *CREATION DATE: 28/10/98
- *LAST MODIFIED: 28/10/98
- *PURPOSE:
- *  Gets the value of a square in the structure
- *  Return RIVER if out of range
- *
- *ARGUMENTS:
- *  value  - Pointer to the screen structure
- *  xValue - The X co-ordinate
- *  yValue - The Y co-ordinate
- *********************************************************/
-BYTE screenGetPos(screen *value, BYTE xValue, BYTE yValue);
+// Calls the frontend redraw function
+void screenRedraw();
 
 /*********************************************************
  *NAME:          screenLoadMap

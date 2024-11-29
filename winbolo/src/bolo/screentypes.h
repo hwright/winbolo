@@ -18,6 +18,8 @@
 #ifndef _SCREENTYPES_H
 #define _SCREENTYPES_H
 
+#include <array>
+#include <bitset>
 #include <string>
 #include <vector>
 
@@ -91,7 +93,13 @@ struct ScreenTankList {
 // The tank type relative to ourselves, good, neutral or evil
 enum class tankAlliance { tankNone, tankSelf, tankAllie, tankEvil };
 
-using ScreenMines = std::array<std::array<bool, MAIN_BACK_BUFFER_SIZE_X>,
+// The terrain/mine combination for each displayed tile on the map.
+struct MapTile {
+  uint8_t terrain;
+  bool has_mine;
+};
+
+using ScreenTiles = std::array<std::array<MapTile, MAIN_BACK_BUFFER_SIZE_X>,
                                MAIN_BACK_BUFFER_SIZE_Y>;
 
 }  // namespace bolo

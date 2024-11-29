@@ -218,7 +218,7 @@ struct startsObj {
 
 typedef enum { lblNone, lblShort, lblLong } labelLen;
 
-typedef enum { left, right, up, down, redraw } updateType;
+typedef enum { left, right, up, down } updateType;
 
 typedef enum { aiNone, aiYes, aiYesAdvantage } aiType;
 

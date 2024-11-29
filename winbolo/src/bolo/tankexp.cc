@@ -277,7 +277,6 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs,
         mapSetPos(mp, mx, my, RIVER, false, false);
         soundDist(bolo::sndEffects::shotBuildingNear, mx, my);
       }
-      screenReCalc();
     } else {
       /* Remove from data structure */
       needUpdate = false;
@@ -294,7 +293,6 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs,
           //          if (position->own == true) {
           mapSetPos(mp, mx, my, CRATER, false, false);
           screenGetFloodFill()->addItem(MapPoint({.x = mx, .y = my}));
-          screenReCalc();
           //        }
         }
         count = 1;
@@ -573,7 +571,6 @@ void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb,
     screenGetFloodFill()->addItem(MapPoint{.x = mx, .y = my});
   }
   soundDist(bolo::sndEffects::bigExplosionNear, mx, my);
-  screenReCalc();
 }
 
 /*********************************************************
