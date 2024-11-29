@@ -49,19 +49,6 @@
 /* Prototypes */
 
 /*********************************************************
- *NAME:          screenReCalc
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Recalculates the screen data
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void screenReCalc(void);
-
-/*********************************************************
  *NAME:          screenCenterTank
  *AUTHOR:        John Morrison
  *CREATION DATE: 3/1/99

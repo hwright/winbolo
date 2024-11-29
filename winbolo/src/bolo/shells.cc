@@ -727,10 +727,6 @@ bool shellsCalcCollision(map *mp, pillboxes *pb, tank *tk, bases *bs,
     }
   }
 
-  if (returnValue) {
-    screenReCalc();
-  }
-
   return returnValue;
 }
 

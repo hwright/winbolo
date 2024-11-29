@@ -117,8 +117,6 @@ void MineExplosionTracker::checkFill(map *mp, pillboxes *pb, bases *bs,
     if (terrain >= MINE_START && terrain <= MINE_END) {
       addItem(pos.E());
     }
-
-    screenReCalc();
   }
 }
 

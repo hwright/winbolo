@@ -474,6 +474,7 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
   BYTE itemNum;     /* Item Number */
   BYTE opt1;        /* Optional Data */
   BYTE opt2;
+  // TODO: We can probably remove these.
   bool testCalc; /* Does the screen need a recalc? */
   bool needCalc; /* Does the screen need a recalc? */
   // BYTE id;          /* Item ID */
@@ -513,10 +514,6 @@ bool netMNTExtract(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
         needCalc = testCalc;
       }
     }
-  }
-  /* Recalc Screen if required */
-  if (needCalc) {
-    screenReCalc();
   }
 
   if (!returnValue) {

@@ -1084,7 +1084,6 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
                   bmx, bmy, 0);
         soundDist(bolo::sndEffects::farmingTreeNear, bmx, bmy);
       }
-      screenReCalc();
       break;
     case LGM_ROAD_REQUEST:
       /* HUH?    minesExpAddItem(mp, bmx, bmy); */
@@ -1102,7 +1101,6 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
         soundDist(bolo::sndEffects::manBuildingNear, bmx, bmy);
 
         lgmCheckRemove(terrain, bmx, bmy);
-        screenReCalc();
       }
       break;
     case LGM_BUILDING_REQUEST:
@@ -1119,7 +1117,6 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
         netMNTAdd(screenGetNetMnt(), NMNT_BUILDBUILDING, 0, (*lgman)->playerNum,
                   bmx, bmy);
         lgmCheckRemove(terrain, bmx, bmy);
-        screenReCalc();
       }
       break;
     case LGM_BOAT_REQUEST:
@@ -1128,7 +1125,6 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
         netMNTAdd(screenGetNetMnt(), NMNT_BUILDBOAT, 0, (*lgman)->playerNum,
                   bmx, bmy);
         (*lgman)->numTrees = 0;
-        screenReCalc();
       }
       break;
     case LGM_MINE_REQUEST:
@@ -1147,7 +1143,6 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
           (*lgman)->numMines = 0;
           soundDist(bolo::sndEffects::manLayingMineNear, bmx, bmy);
         }
-        screenReCalc();
       }
       break;
     case LGM_PILL_REQUEST:
@@ -1210,7 +1205,6 @@ void lgmDoWork(lgm *lgman, map *mp, pillboxes *pb, bases *bs) {
       } else {
   */
       lgmCheckRemove(terrain, bmx, bmy);
-      screenReCalc();
       break;
     default:
       /* do nothing */
@@ -1504,7 +1498,6 @@ void lgmDeathCheck(lgm *lgman, map *mp, pillboxes *pb, bases *bs, WORLD wx,
           }
         }
         (*lgman)->numPills = LGM_NO_PILL;
-        screenReCalc();
       }
       screenGetTankWorldFromLgm(lgman, &((*lgman)->destX), &((*lgman)->destY));
 

@@ -87,7 +87,6 @@ Morrison <john@winbolo.com>          \0" */
 
 /* Module Level Variables */
 
-static std::optional<bolo::ScreenTiles> tiles;
 static std::optional<bolo::ScreenMines> mineView;
 static map mymp = nullptr;
 static bases mybs = nullptr;
@@ -132,8 +131,6 @@ static time_t timeStart;
 
 /* Are we running? */
 static bool screenGameRunning = false;
-
-static bool needScreenReCalc = false;
 
 /* Whether computer tanks are allowed */
 static aiType allowComputerTanks = aiNone;
@@ -329,11 +326,11 @@ uint8_t screenCalcSquare(MapPoint pos, BYTE scrX, BYTE scrY) {
 
 // Get the view area tile map
 bolo::ScreenTiles screenGetTiles() {
-  bolo::ScreenTiles temp_tiles;
+  bolo::ScreenTiles tiles;
 
   for (uint8_t x = 0; x < MAIN_BACK_BUFFER_SIZE_X; ++x) {
     for (uint8_t y = 0; y < MAIN_BACK_BUFFER_SIZE_Y; ++y) {
-      temp_tiles[x][y] =
+      tiles[x][y] =
           screenCalcSquare(MapPoint{.x = static_cast<uint8_t>(x + xOffset),
                                     .y = static_cast<uint8_t>(y + yOffset)},
                            x, y);
@@ -345,7 +342,7 @@ bolo::ScreenTiles screenGetTiles() {
     }
   }
 
-  return temp_tiles;
+  return tiles;
 }
 
 }
@@ -375,7 +372,6 @@ void screenSetup(gameType game, std::unique_ptr<bolo::Frontend> frontend_input,
   clientMines.emplace(hiddenMines);
   gmeStartDelay = srtDelay;
   gmeLength = gmeLen;
-  needScreenReCalc = false;
   cursorPosX = -1;
   cursorPosY = -1;
 
@@ -410,7 +406,6 @@ void screenSetup(gameType game, std::unique_ptr<bolo::Frontend> frontend_input,
   brainBuildInfo->action = 0;
 
   frontend = frontend_input.release();
-  tiles.emplace();
   mineView.emplace();
 
   inStart = true;
@@ -457,7 +452,6 @@ void screenDestroy() {
   if (frontend != nullptr) {
     delete frontend;
   }
-  tiles = std::nullopt;
   mineView = std::nullopt;
   if (brainBuildInfo != nullptr) {
     delete brainBuildInfo;
@@ -494,10 +488,6 @@ void screenUpdate(updateType value) {
   BYTE oldXOffset = xOffset;
   BYTE oldYOffset = yOffset;
 
-  if (needScreenReCalc) {
-    needScreenReCalc = false;
-    tiles = screenGetTiles();
-  }
   if (b) {
     return;
   }
@@ -545,7 +535,6 @@ void screenUpdate(updateType value) {
       } else {
         screenPillView(-1, 0);
       }
-      needScreenReCalc = true;
       break;
     case right:
       /* Right button Pressed */
@@ -565,7 +554,6 @@ void screenUpdate(updateType value) {
       } else {
         screenPillView(1, 0);
       }
-      needScreenReCalc = true;
       break;
     case up:
       /* Up button Pressed */
@@ -583,7 +571,6 @@ void screenUpdate(updateType value) {
       } else {
         screenPillView(0, -1);
       }
-      needScreenReCalc = true;
       break;
     case down:
     default:
@@ -603,17 +590,12 @@ void screenUpdate(updateType value) {
       } else {
         screenPillView(0, 1);
       }
-      needScreenReCalc = true;
       break;
   }
   b = false;
 }
 
 void screenRedraw() {
-  if (needScreenReCalc) {
-    needScreenReCalc = false;
-    tiles = screenGetTiles();
-  }
   netStatus ns = netGetStatus();
   if (ns != netRunning && ns != netFailed) {
     frontend->drawDownload(false);
@@ -624,6 +606,7 @@ void screenRedraw() {
     return;
   }
 
+  bolo::ScreenTiles tiles = screenGetTiles();
   bolo::ScreenLgmList lgms;
   bolo::ScreenBulletList sBullets;
   bolo::ScreenTankList scnTnk;
@@ -662,7 +645,7 @@ void screenRedraw() {
                                (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
                                yOffset,
                                (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-  frontend->drawMainScreen(*tiles, *mineView, std::move(scnTnk), std::move(gs),
+  frontend->drawMainScreen(tiles, *mineView, std::move(scnTnk), std::move(gs),
                            std::move(sBullets), std::move(lgms), gmeStartDelay,
                            inPillView, &mytk, 0, 0);
 }
@@ -718,7 +701,6 @@ bool screenLoadMap(std::istream &input, const char *name, gameType game,
     strcpy(mapName, name);
     utilStripNameReplace(playerName);
     screenSetupTank(playerName);
-    tiles = screenGetTiles();
     basesClearMines(&mybs, &mymp);
 
   } else {
@@ -953,8 +935,6 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
             moveMousePointer(up);
           }
         }
-
-        screenReCalc();
       }
     }
   }
@@ -1145,23 +1125,6 @@ void screenGunsightRange(bool increase) {
 void screenSetGunsight(bool shown) { tankSetGunsight(&mytk, shown); }
 
 /*********************************************************
- *NAME:          screenReCalc
- *AUTHOR:        John Morrison
- *CREATION DATE: 30/12/98
- *LAST MODIFIED: 30/12/98
- *PURPOSE:
- *  Recalculates the screen data
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void screenReCalc(void) {
-  if (!threadsGetContext()) {
-    needScreenReCalc = true;
-  }
-}
-
-/*********************************************************
  *NAME:          screenGetMessages
  *AUTHOR:        John Morrison
  *CREATION DATE: 3/1/99
@@ -1196,7 +1159,6 @@ void clientCenterTank() {
     /* Tank isn't dead */
     scrollCenterObject(&xOffset, &yOffset, (tankGetMX(&mytk)),
                        (tankGetMY(&mytk)));
-    screenReCalc();
   }
 }
 
@@ -1660,14 +1622,12 @@ void screenPillView(int horz, int vert) {
     if (pillsCheckView(&mypb, pillViewX, pillViewY)) {
       inPillView = true;
       scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
-      screenReCalc();
     } else {
       result = pillsGetNextView(&mypb, &pillViewX, &pillViewY, false);
       if (result) {
         /* Center on the object */
         inPillView = true;
         scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
-        screenReCalc();
       } else {
         inPillView = false;
       }
@@ -1680,12 +1640,10 @@ void screenPillView(int horz, int vert) {
       } else {
         /* Center on the object */
         scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
-        screenReCalc();
       }
     } else {
       if (pillsMoveView(&mypb, &pillViewX, &pillViewY, horz, vert)) {
         scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
-        screenReCalc();
       }
     }
   }
@@ -1977,8 +1935,6 @@ void screenNetSetupTankGo() {
       (*mineView)[count][count2] = false;
     }
   }
-
-  screenReCalc();
 }
 
 /*********************************************************
@@ -2303,7 +2259,6 @@ void screenExtractMapData(BYTE *buff, BYTE len, BYTE yPos) {
       mapNetIncomingItem(&mymp, mx, my, terrain);
     }
   }
-  screenReCalc();
 }
 
 /*********************************************************
@@ -3102,7 +3057,6 @@ void screenExtractBrainInfo(BrainInfo *value) {
         pillViewX = p.x;
         pillViewY = p.y;
         scrollCenterObject(&xOffset, &yOffset, pillViewX, pillViewY);
-        screenReCalc();
       }
     }
   }
