@@ -54,6 +54,7 @@
 #include "../../lzw/lzw.h"
 #include "../tiles.h"
 #include "SDL.h"
+#include "SDL_image.h"
 #include "SDL_ttf.h"
 #include "background.xph"
 #include "messagebox.h"
@@ -1535,29 +1536,13 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
  *  yValue  - The top position of the window
  *********************************************************/
 bool drawBackground(int width, int height) {
-  bool returnValue;  /* Value to return */
+  bool returnValue = false; /* Value to return */
   SDL_Surface *bg;   /* Background */
   SDL_Rect destRect; /* Copying rect */
-  BYTE *buff;
-  char fileName[FILENAME_MAX];
-  FILE *fp;
-  int ret;
 
-  buff = new BYTE[168778];
-  /* Get tmp file */
-  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX", g_get_tmp_dir());
-  ret = lzwdecoding((char *)B_IMAGE, (char *)buff, 17099);
-  if (ret != 168778) {
-    free(buff);
-    return FALSE;
-  }
-  returnValue = FALSE;
-  fp = fopen(fileName, "wb");
-  fwrite(buff, 168778, 1, fp);
-  fflush(fp);
-  fclose(fp);
-  bg = SDL_LoadBMP(fileName);
-  unlink(fileName);
+  SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
+
+  bg = IMG_LoadPNG_RW(rw);
   if (bg != nullptr) {
     destRect.x = 0;
     destRect.y = 0;
@@ -1569,7 +1554,7 @@ bool drawBackground(int width, int height) {
     }
     SDL_FreeSurface(bg);
   }
-  delete[] buff;
+  SDL_FreeRW(rw);
   return returnValue;
 }
 

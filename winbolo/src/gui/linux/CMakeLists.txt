@@ -89,6 +89,7 @@ target_link_libraries(linbolo PRIVATE
                      ${GTK_LIBRARIES}
                      ${MINIZIP_LIBRARIES}
                      ${SDL_LIBRARIES}
+                     ${SDL_image_LIBRARIES}
                      gmodule
                      gthread)
 
