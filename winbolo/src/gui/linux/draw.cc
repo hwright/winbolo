@@ -110,12 +110,10 @@ namespace {
 // ARGUMENTS:
 bool drawBackground() {
   bool returnValue = false; /* Value to return */
-  SDL_Rect destRect; /* Copying rect */
-
-  destRect.x = 0;
-  destRect.y = 0;
-  destRect.w = lpBackground->w;
-  destRect.h = lpBackground->h;
+  SDL_Rect destRect{.x = 0,
+                    .y = 0,
+                    .w = static_cast<Uint16>(lpBackground->w),
+                    .h = static_cast<Uint16>(lpBackground->h)};
   if (SDL_BlitSurface(lpBackground, nullptr, lpScreen, &destRect) == 0) {
     returnValue = true;
     SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
@@ -143,7 +141,6 @@ bool drawSetup(GtkWidget *appWnd) {
   int ret;          /* Direct Draw Function returns */
   SDL_Rect in;      /* Used for copying the bases & pills icon in */
   SDL_Rect out;     /* Used for copying the bases & pills icon in */
-  SDL_Rect fill;
   SDL_Surface *lpTemp; /* Used temporarily before calling SDL_DisplayFormat() */
   BYTE *buff;
   char fileName[FILENAME_MAX];
@@ -244,10 +241,10 @@ bool drawSetup(GtkWidget *appWnd) {
         returnValue = FALSE;
         MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
       } else {
-        fill.x = 0;
-        fill.y = 0;
-        fill.w = lpBasesStatus->w;
-        fill.h = lpBasesStatus->h;
+        SDL_Rect fill{.x = 0,
+                      .y = 0,
+                      .w = static_cast<Uint16>(lpBasesStatus->w),
+                      .h = static_cast<Uint16>(lpBasesStatus->h)};
         SDL_FillRect(lpBasesStatus, &fill,
                      SDL_MapRGB(lpBasesStatus->format, 0, 0, 0));
         /* Copy in the icon */
@@ -274,10 +271,10 @@ bool drawSetup(GtkWidget *appWnd) {
         MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
       } else {
         /* Fill the surface black */
-        fill.x = 0;
-        fill.y = 0;
-        fill.w = lpPillsStatus->w;
-        fill.h = lpPillsStatus->h;
+        SDL_Rect fill{.x = 0,
+                      .y = 0,
+                      .w = static_cast<Uint16>(lpPillsStatus->w),
+                      .h = static_cast<Uint16>(lpPillsStatus->h)};
         SDL_FillRect(lpPillsStatus, &fill,
                      SDL_MapRGB(lpPillsStatus->format, 0, 0, 0));
         /* Copy in the icon */
@@ -305,10 +302,10 @@ bool drawSetup(GtkWidget *appWnd) {
         MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
       } else {
         /* Fill the surface black */
-        fill.x = 0;
-        fill.y = 0;
-        fill.w = lpTankStatus->w;
-        fill.h = lpTankStatus->h;
+        SDL_Rect fill{.x = 0,
+                      .y = 0,
+                      .w = static_cast<Uint16>(lpTankStatus->w),
+                      .h = static_cast<Uint16>(lpTankStatus->h)};
         SDL_FillRect(lpTankStatus, &fill,
                      SDL_MapRGB(lpTankStatus->format, 0, 0, 0));
         /* Copy in the icon */
@@ -1200,7 +1197,6 @@ void drawTanks(const bolo::ScreenTankList &tks) {
  *********************************************************/
 void drawLGMs(const bolo::ScreenLgmList &lgms) {
   SDL_Rect output; /* Source Rectangle */
-  SDL_Rect dest;   /* Destination rect */
 
   for (const auto &lgm : lgms.lgms_) {
     switch (lgm.frame) {
@@ -1230,10 +1226,10 @@ void drawLGMs(const bolo::ScreenLgmList &lgms) {
         output.h = TILE_SIZE_Y;
         break;
     }
-    dest.x = (lgm.pos.x * TILE_SIZE_X) + lgm.px;
-    dest.y = (lgm.pos.y * TILE_SIZE_Y) + lgm.py;
-    dest.w = output.w;
-    dest.h = output.h;
+    SDL_Rect dest{.x = static_cast<Sint16>((lgm.pos.x * TILE_SIZE_X) + lgm.px),
+                  .y = static_cast<Sint16>((lgm.pos.y * TILE_SIZE_Y) + lgm.py),
+                  .w = output.w,
+                  .h = output.h};
     SDL_BlitSurface(lpTiles, &output, lpBackBuffer, &dest);
   }
 }
@@ -1250,17 +1246,16 @@ void drawLGMs(const bolo::ScreenLgmList &lgms) {
  *
  *********************************************************/
 void drawNetFailed() {
-  SDL_Rect dest; /* Defines the text rectangle */
   SDL_Surface *lpTextSurface;
 
-  dest.x = 3 * TILE_SIZE_X;
-  dest.y = 8 * TILE_SIZE_Y;
   lpTextSurface = TTF_RenderText_Shaded(lpFont, "Network Failed -  Resyncing",
                                         white, black);
   SDL_SetColorKey(lpTextSurface, SDL_SRCCOLORKEY,
                   SDL_MapRGB(lpTextSurface->format, 0, 0, 0));
-  dest.w = lpTextSurface->w;
-  dest.h = lpTextSurface->h;
+  SDL_Rect dest{.x = 3 * TILE_SIZE_X,
+                .y = 8 * TILE_SIZE_Y,
+                .w = static_cast<Uint16>(lpTextSurface->w),
+                .h = static_cast<Uint16>(lpTextSurface->h)};
   /* Output it */
   SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &dest);
   SDL_FreeSurface(lpTextSurface);
@@ -1278,17 +1273,16 @@ void drawNetFailed() {
  *
  *********************************************************/
 void drawPillInView() {
-  SDL_Rect dest; /* Defines the text rectangle */
   SDL_Surface *lpTextSurface;
 
-  dest.x = TILE_SIZE_X;
-  dest.y = MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y;
   lpTextSurface = TTF_RenderText_Shaded(
       lpFont, langGetText(STR_DRAW_PILLBOXVIEW), white, black);
   SDL_SetColorKey(lpTextSurface, SDL_SRCCOLORKEY,
                   SDL_MapRGB(lpTextSurface->format, 0, 0, 0));
-  dest.w = lpTextSurface->w;
-  dest.h = lpTextSurface->h;
+  SDL_Rect dest{.x = TILE_SIZE_X,
+                .y = MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y,
+                .w = static_cast<Uint16>(lpTextSurface->w),
+                .h = static_cast<Uint16>(lpTextSurface->h)};
   /* Output it */
   SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &dest);
   SDL_FreeSurface(lpTextSurface);
@@ -1307,11 +1301,9 @@ void drawPillInView() {
  *  srtDelay - The start delay
  *********************************************************/
 void drawStartDelay(long srtDelay) {
-  SDL_Rect src;              /* Used for copying the bases & pills icon in */
   char str[FILENAME_MAX];    /* Output String */
   char strNum[FILENAME_MAX]; /* Holds the start delay as a string */
   SDL_Surface *lpTextSurface;
-  SDL_Rect in;
 
   SDL_FillRect(lpBackBuffer, nullptr,
                SDL_MapRGB(lpBackBuffer->format, 0, 0, 0));
@@ -1322,16 +1314,16 @@ void drawStartDelay(long srtDelay) {
   strcat(str, strNum);
   lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
   if (lpTextSurface) {
-    src.x = TILE_SIZE_X + 5;
-    src.y = TILE_SIZE_Y + 5;
-    src.w = lpTextSurface->w;
-    src.h = lpTextSurface->h;
+    SDL_Rect src{.x = TILE_SIZE_X + 5,
+                 .y = TILE_SIZE_Y + 5,
+                 .w = static_cast<Uint16>(lpTextSurface->w),
+                 .h = static_cast<Uint16>(lpTextSurface->h)};
     SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &src);
     SDL_UpdateRect(lpBackBuffer, 0, 0, 0, 0);
-    in.x = TILE_SIZE_X;
-    in.y = TILE_SIZE_Y;
-    in.w = MAIN_SCREEN_SIZE_X * TILE_SIZE_X;
-    in.h = MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y;
+    SDL_Rect in{.x = TILE_SIZE_X,
+                .y = TILE_SIZE_Y,
+                .w = MAIN_SCREEN_SIZE_X * TILE_SIZE_X,
+                .h = MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y};
     src.x = MAIN_OFFSET_X;
     src.y = MAIN_OFFSET_Y;
     src.w = in.w;
