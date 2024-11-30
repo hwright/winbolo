@@ -71,6 +71,7 @@
 static SDL_Surface *lpScreen = nullptr;
 static SDL_Surface *lpBackBuffer = nullptr;
 static SDL_Surface *lpTiles = nullptr;
+static SDL_Surface *lpBackground = nullptr;
 static SDL_Surface *lpPillsStatus = nullptr;
 static SDL_Surface *lpBasesStatus = nullptr;
 static SDL_Surface *lpTankStatus = nullptr;
@@ -100,6 +101,31 @@ void clientMutexWaitFor(void);
 void clientMutexRelease(void);
 
 int drawGetFrameRate() { return g_dwFrameTotal; }
+
+namespace {
+
+// Draws the background graphic. Returns if the operation
+// is successful or not.
+//
+// ARGUMENTS:
+//  xValue  - The left position of the window
+//  yValue  - The top position of the window
+bool drawBackground(int width, int height) {
+  bool returnValue = false; /* Value to return */
+  SDL_Rect destRect; /* Copying rect */
+
+  destRect.x = 0;
+  destRect.y = 0;
+  destRect.w = lpBackground->w;
+  destRect.h = lpBackground->h;
+  if (SDL_BlitSurface(lpBackground, nullptr, lpScreen, &destRect) == 0) {
+    returnValue = true;
+    SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
+  }
+  return returnValue;
+}
+
+}
 
 /*********************************************************
  *NAME:          drawSetup
@@ -195,6 +221,17 @@ bool drawSetup(GtkWidget *appWnd) {
   out.h = TILE_SIZE_Y;
   in.w = TILE_SIZE_X;
   in.h = TILE_SIZE_Y;
+
+  // Load the background surface
+  if (returnValue == TRUE) {
+    SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
+    lpBackground = IMG_LoadPNG_RW(rw);
+    if (lpBackground == nullptr) {
+      returnValue = FALSE;
+      MessageBox("Can't load background image", DIALOG_BOX_TITLE);
+    }
+    SDL_FreeRW(rw);
+  }
 
   /* Create the Base status window */
   if (returnValue == TRUE) {
@@ -347,6 +384,10 @@ void drawCleanup(void) {
   if (lpFont != nullptr) {
     TTF_CloseFont(lpFont);
     TTF_Quit();
+  }
+  if (lpBackground != nullptr) {
+    SDL_FreeSurface(lpBackground);
+    lpBackground = nullptr;
   }
   if (lpScreen != nullptr) {
     SDL_FreeSurface(lpScreen);
@@ -1518,44 +1559,6 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
     g_dwFrameTime = SDL_GetTicks();
     g_dwFrameCount = 0;
   }
-}
-
-/*********************************************************
- *NAME:          drawBackground
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/12/98
- *LAST MODIFIED: 20/12/98
- *PURPOSE:
- *  Draws the background graphic. Returns if the operation
- *  is successful or not.
- *
- *ARGUMENTS:
- *  appInst - The application instance
- *  appWnd  - The application Window
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *********************************************************/
-bool drawBackground(int width, int height) {
-  bool returnValue = false; /* Value to return */
-  SDL_Surface *bg;   /* Background */
-  SDL_Rect destRect; /* Copying rect */
-
-  SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
-
-  bg = IMG_LoadPNG_RW(rw);
-  if (bg != nullptr) {
-    destRect.x = 0;
-    destRect.y = 0;
-    destRect.w = bg->w;
-    destRect.h = bg->h;
-    if (SDL_BlitSurface(bg, nullptr, lpScreen, &destRect) == 0) {
-      returnValue = TRUE;
-      SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
-    }
-    SDL_FreeSurface(bg);
-  }
-  SDL_FreeRW(rw);
-  return returnValue;
 }
 
 /*********************************************************
