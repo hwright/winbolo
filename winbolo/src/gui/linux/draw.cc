@@ -108,9 +108,7 @@ namespace {
 // is successful or not.
 //
 // ARGUMENTS:
-//  xValue  - The left position of the window
-//  yValue  - The top position of the window
-bool drawBackground(int width, int height) {
+bool drawBackground() {
   bool returnValue = false; /* Value to return */
   SDL_Rect destRect; /* Copying rect */
 
@@ -124,7 +122,6 @@ bool drawBackground(int width, int height) {
   }
   return returnValue;
 }
-
 }
 
 /*********************************************************
@@ -2491,7 +2488,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
   TURNTYPE lgmAngle;
 
   lpScreen = SDL_SetVideoMode(width, height, 0, 0);
-  drawBackground(width, height);
+  drawBackground();
   drawSelectIndentsOn(value, 0, 0);
   drawSetBasesStatusClear();
   clientMutexWaitFor();
