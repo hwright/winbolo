@@ -2184,10 +2184,7 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
       0; /* Last amount of stuff to save on rendering and flicker */
   static BYTE lastMines = 0;
   static BYTE lastArmour = 0;
-  BYTE zf;      /* Zoom Factor */
   Uint32 color; /* Fill green colour */
-
-  zf = 1;  // FIXME: windowGetZoomFactor();
 
   if (lastShells != shells || lastMines != mines || lastArmour != armour ||
       redraw == TRUE) {
@@ -2201,27 +2198,26 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
       armour = lastArmour;
     }
     /* Make the area black first */
-    fill.y = yValue + (zf * STATUS_BASE_SHELLS);
-    fill.x = xValue + (zf * STATUS_BASE_BARS_LEFT);
-    fill.h = yValue + (zf * STATUS_BASE_MINES) +
-             (zf * STATUS_BASE_BARS_HEIGHT) - fill.y;
-    fill.w = zf * STATUS_BASE_BARS_MAX_WIDTH;
+    fill.y = yValue + STATUS_BASE_SHELLS;
+    fill.x = xValue + STATUS_BASE_BARS_LEFT;
+    fill.h = yValue + STATUS_BASE_MINES + STATUS_BASE_BARS_HEIGHT - fill.y;
+    fill.w = STATUS_BASE_BARS_MAX_WIDTH;
     SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
     if (shells != 0 || mines != 0 || armour != 0) {
       color = SDL_MapRGB(lpScreen->format, 0, 0xFF, 0);
-      dest.x = xValue + (zf * STATUS_BASE_BARS_LEFT);
-      dest.h = zf * STATUS_BASE_BARS_HEIGHT;
+      dest.x = xValue + STATUS_BASE_BARS_LEFT;
+      dest.h = STATUS_BASE_BARS_HEIGHT;
       /* Shells */
-      dest.y = yValue + (zf * STATUS_BASE_SHELLS);
-      dest.w = shells * zf * BAR_BASE_MULTIPLY;
+      dest.y = yValue + STATUS_BASE_SHELLS;
+      dest.w = shells * BAR_BASE_MULTIPLY;
       SDL_FillRect(lpScreen, &dest, color);
       /* Mines */
-      dest.y = yValue + (zf * STATUS_BASE_MINES);
-      dest.w = mines * zf * BAR_BASE_MULTIPLY;
+      dest.y = yValue + STATUS_BASE_MINES;
+      dest.w = mines * BAR_BASE_MULTIPLY;
       SDL_FillRect(lpScreen, &dest, color);
       /* Armour */
-      dest.y = yValue + (zf * STATUS_BASE_ARMOUR);
-      dest.w = armour * zf * BAR_BASE_MULTIPLY;
+      dest.y = yValue + STATUS_BASE_ARMOUR;
+      dest.w = armour * BAR_BASE_MULTIPLY;
       SDL_FillRect(lpScreen, &dest, color);
     }
     SDL_UpdateRects(lpScreen, 1, &fill);
@@ -2528,13 +2524,11 @@ void drawRedrawAll(int width, int height, buildSelect value,
 void drawMessages(int xValue, int yValue, const char *top, const char *bottom) {
   SDL_Surface *lpTextSurface;
   SDL_Rect dest; /* The dest square to draw it */
-  BYTE zf;       /* Scaling factor */
 
-  zf = 1;  // FIXME: windowGetZoomFactor();
   lpTextSurface = TTF_RenderText_Shaded(lpFont, top, white, black);
   if (lpTextSurface) {
-    dest.x = xValue + zf * MESSAGE_LEFT;
-    dest.y = yValue + zf * MESSAGE_TOP;
+    dest.x = xValue + MESSAGE_LEFT;
+    dest.y = yValue + MESSAGE_TOP;
     dest.w = lpTextSurface->w;
     dest.h = lpTextSurface->h;
     SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
@@ -2543,8 +2537,8 @@ void drawMessages(int xValue, int yValue, const char *top, const char *bottom) {
   }
   lpTextSurface = TTF_RenderText_Shaded(lpFont, bottom, white, black);
   if (lpTextSurface) {
-    dest.x = xValue + zf * MESSAGE_LEFT;
-    dest.y = yValue + zf * MESSAGE_TOP + (zf * MESSAGE_TEXT_HEIGHT);
+    dest.x = xValue + MESSAGE_LEFT;
+    dest.y = yValue + MESSAGE_TOP + MESSAGE_TEXT_HEIGHT;
     dest.w = lpTextSurface->w;
     dest.h = lpTextSurface->h;
     SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
@@ -2614,16 +2608,14 @@ void drawDownloadScreen(bool justBlack) {
 void drawKillsDeaths(int xValue, int yValue, int kills, int deaths) {
   SDL_Surface *lpTextSurface;
   SDL_Rect dest; /* The dest square to draw it */
-  BYTE zf;       /* Scaling factor */
   char str[16];  /* Holds the charectors to print */
 
-  zf = 1;  // FIXME: windowGetZoomFactor();
   sprintf(str, "%d", kills);
 
   lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
   if (lpTextSurface) {
-    dest.x = xValue + zf * STATUS_KILLS_LEFT;
-    dest.y = yValue + zf * STATUS_KILLS_TOP + zf;
+    dest.x = xValue + STATUS_KILLS_LEFT;
+    dest.y = yValue + STATUS_KILLS_TOP + 1;
     dest.w = lpTextSurface->w;
     dest.h = lpTextSurface->h;
     SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
@@ -2633,8 +2625,8 @@ void drawKillsDeaths(int xValue, int yValue, int kills, int deaths) {
   sprintf(str, "%d", deaths);
   lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
   if (lpTextSurface) {
-    dest.x = xValue + zf * STATUS_DEATHS_LEFT;
-    dest.y = yValue + zf * STATUS_DEATHS_TOP + zf;
+    dest.x = xValue + STATUS_DEATHS_LEFT;
+    dest.y = yValue + STATUS_DEATHS_TOP + 1;
     dest.w = lpTextSurface->w;
     dest.h = lpTextSurface->h;
     SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
