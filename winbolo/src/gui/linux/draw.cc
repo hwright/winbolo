@@ -160,7 +160,6 @@ bool drawSetup(GtkWidget *appWnd) {
   }
 
   returnValue = TRUE;
-  // lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y , 0, 0);
   lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
   if (lpScreen == nullptr) {
     returnValue = FALSE;
@@ -732,22 +731,16 @@ Draws the tank label if required.
 void drawTankLabel(const char *str, int mx, int my, BYTE px, BYTE py) {
   int len;       /* Length of the string */
   SDL_Rect dest; /* Defines the text rectangle */
-  BYTE zf;
   SDL_Surface *lpTextSurface;
 
-  zf = 1;  // FIXME: windowGetZoomFactor();
-  /*  textRect.left = 0;
-    textRect.right = zf * TANK_LABEL_WIDTH;
-    textRect.top = 0;
-    textRect.bottom = zf * TANK_LABEL_HEIGHT; */
   len = strlen(str);
 
   if (len > 0) {
     /* Draw it on the back buffer */
     lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
     if (lpTextSurface) {
-      dest.x = ((mx + 1) * zf * TILE_SIZE_X) + zf * (px + 1);
-      dest.y = my * zf * TILE_SIZE_Y + zf * py;
+      dest.x = ((mx + 1) * TILE_SIZE_X) + (px + 1);
+      dest.y = my * TILE_SIZE_Y + py;
       dest.w = lpTextSurface->w;
       dest.h = lpTextSurface->h;
       /* Fix displaying off the edge of the screen */
@@ -1656,14 +1649,11 @@ void drawSetTanksStatusClear(void) {
  *********************************************************/
 void drawCopyBasesStatus() {
   SDL_Rect dest; /* Destination location */
-  BYTE zf;       /* Zoom Factor */
 
-  zf = 1;  // FIXME: windowGetZoomFactor();
-
-  dest.x = zf * STATUS_BASES_LEFT;
-  dest.y = zf * STATUS_BASES_TOP;
-  dest.w = zf * STATUS_BASES_WIDTH;
-  dest.h = zf * STATUS_BASES_HEIGHT;
+  dest.x = STATUS_BASES_LEFT;
+  dest.y = STATUS_BASES_TOP;
+  dest.w = STATUS_BASES_WIDTH;
+  dest.h = STATUS_BASES_HEIGHT;
   SDL_BlitSurface(lpBasesStatus, nullptr, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
 }
@@ -1682,14 +1672,11 @@ void drawCopyBasesStatus() {
  * *********************************************************/
 void drawCopyPillsStatus() {
   SDL_Rect dest; /* Destination location */
-  BYTE zf;       /* Zoom Factor */
 
-  zf = 1;  // FIXME: windowGetZoomFactor();
-
-  dest.x = zf * STATUS_PILLS_LEFT;
-  dest.y = zf * STATUS_PILLS_TOP;
-  dest.w = zf * STATUS_PILLS_WIDTH;
-  dest.h = zf * STATUS_PILLS_HEIGHT;
+  dest.x = STATUS_PILLS_LEFT;
+  dest.y = STATUS_PILLS_TOP;
+  dest.w = STATUS_PILLS_WIDTH;
+  dest.h = STATUS_PILLS_HEIGHT;
   SDL_BlitSurface(lpPillsStatus, nullptr, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
 }
@@ -1708,14 +1695,11 @@ void drawCopyPillsStatus() {
  *********************************************************/
 void drawCopyTanksStatus() {
   SDL_Rect dest; /* Destination location */
-  BYTE zf;       /* Zoom Factor */
 
-  zf = 1;  // FIXME: windowGetZoomFactor();
-
-  dest.x = zf * STATUS_TANKS_LEFT;
-  dest.y = zf * STATUS_TANKS_TOP;
-  dest.w = zf * STATUS_TANKS_WIDTH;
-  dest.h = zf * STATUS_TANKS_HEIGHT;
+  dest.x = STATUS_TANKS_LEFT;
+  dest.y = STATUS_TANKS_TOP;
+  dest.w = STATUS_TANKS_WIDTH;
+  dest.h = STATUS_TANKS_HEIGHT;
   SDL_BlitSurface(lpTankStatus, nullptr, lpScreen, &dest);
   SDL_UpdateRects(lpScreen, 1, &dest);
 }
@@ -1736,109 +1720,106 @@ void drawCopyTanksStatus() {
 void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
   SDL_Rect src;  /* The src square on the tile file to retrieve */
   SDL_Rect dest; /* The dest square to draw it */
-  BYTE zf;       /* Scaling factor */
   char str[3];   /* String to output if labels are on */
 
-  zf = 1;  // FIXME: windowGetZoomFactor();
   str[0] = '\0';
 
-  src.w = zf * STATUS_ITEM_SIZE_X;
-  src.h = zf * STATUS_ITEM_SIZE_Y;
+  src.w = STATUS_ITEM_SIZE_X;
+  src.h = STATUS_ITEM_SIZE_Y;
 
   /* Set the co-ords of the tile file to get */
   switch (ba) {
     case baseDead:
-      src.x = zf * STATUS_ITEM_DEAD_X;
-      src.y = zf * STATUS_ITEM_DEAD_Y;
+      src.x = STATUS_ITEM_DEAD_X;
+      src.y = STATUS_ITEM_DEAD_Y;
       break;
     case baseNeutral:
-      src.x = zf * STATUS_BASE_NEUTRAL_X;
-      src.y = zf * STATUS_BASE_NEUTRAL_Y;
+      src.x = STATUS_BASE_NEUTRAL_X;
+      src.y = STATUS_BASE_NEUTRAL_Y;
       break;
     case baseOwnGood:
-      src.x = zf * STATUS_BASE_GOOD_X;
-      src.y = zf * STATUS_BASE_GOOD_Y;
+      src.x = STATUS_BASE_GOOD_X;
+      src.y = STATUS_BASE_GOOD_Y;
       break;
     case baseAllieGood:
-      src.x = zf * STATUS_BASE_ALLIEGOOD_X;
-      src.y = zf * STATUS_BASE_ALLIEGOOD_Y;
+      src.x = STATUS_BASE_ALLIEGOOD_X;
+      src.y = STATUS_BASE_ALLIEGOOD_Y;
       break;
     default:
       /* Base Evil */
-      src.x = zf * STATUS_BASE_EVIL_X;
-      src.y = zf * STATUS_BASE_EVIL_Y;
+      src.x = STATUS_BASE_EVIL_X;
+      src.y = STATUS_BASE_EVIL_Y;
       break;
   }
   /* Modify the offset to allow for the indents */
   switch (baseNum) {
     case BASE_1:
-      dest.x = (zf * STATUS_BASE_1_X);
-      dest.y = (zf * STATUS_BASE_1_Y);
+      dest.x = STATUS_BASE_1_X;
+      dest.y = STATUS_BASE_1_Y;
       break;
     case BASE_2:
-      dest.x = (zf * STATUS_BASE_2_X);
-      dest.y = (zf * STATUS_BASE_2_Y);
+      dest.x = STATUS_BASE_2_X;
+      dest.y = STATUS_BASE_2_Y;
       break;
     case BASE_3:
-      dest.x = (zf * STATUS_BASE_3_X);
-      dest.y = (zf * STATUS_BASE_3_Y);
+      dest.x = STATUS_BASE_3_X;
+      dest.y = STATUS_BASE_3_Y;
       break;
     case BASE_4:
-      dest.x = (zf * STATUS_BASE_4_X);
-      dest.y = (zf * STATUS_BASE_4_Y);
+      dest.x = STATUS_BASE_4_X;
+      dest.y = STATUS_BASE_4_Y;
       break;
     case BASE_5:
-      dest.x = (zf * STATUS_BASE_5_X);
-      dest.y = (zf * STATUS_BASE_5_Y);
+      dest.x = STATUS_BASE_5_X;
+      dest.y = STATUS_BASE_5_Y;
       break;
     case BASE_6:
-      dest.x = (zf * STATUS_BASE_6_X);
-      dest.y = (zf * STATUS_BASE_6_Y);
+      dest.x = STATUS_BASE_6_X;
+      dest.y = STATUS_BASE_6_Y;
       break;
     case BASE_7:
-      dest.x = (zf * STATUS_BASE_7_X);
-      dest.y = (zf * STATUS_BASE_7_Y);
+      dest.x = STATUS_BASE_7_X;
+      dest.y = STATUS_BASE_7_Y;
       break;
     case BASE_8:
-      dest.x = (zf * STATUS_BASE_8_X);
-      dest.y = (zf * STATUS_BASE_8_Y);
+      dest.x = STATUS_BASE_8_X;
+      dest.y = STATUS_BASE_8_Y;
       break;
     case BASE_9:
-      dest.x = (zf * STATUS_BASE_9_X);
-      dest.y = (zf * STATUS_BASE_9_Y);
+      dest.x = STATUS_BASE_9_X;
+      dest.y = STATUS_BASE_9_Y;
       break;
     case BASE_10:
-      dest.x = (zf * STATUS_BASE_10_X);
-      dest.y = (zf * STATUS_BASE_10_Y);
+      dest.x = STATUS_BASE_10_X;
+      dest.y = STATUS_BASE_10_Y;
       break;
     case BASE_11:
-      dest.x = (zf * STATUS_BASE_11_X);
-      dest.y = (zf * STATUS_BASE_11_Y);
+      dest.x = STATUS_BASE_11_X;
+      dest.y = STATUS_BASE_11_Y;
       break;
     case BASE_12:
-      dest.x = (zf * STATUS_BASE_12_X);
-      dest.y = (zf * STATUS_BASE_12_Y);
+      dest.x = STATUS_BASE_12_X;
+      dest.y = STATUS_BASE_12_Y;
       break;
     case BASE_13:
-      dest.x = (zf * STATUS_BASE_13_X);
-      dest.y = (zf * STATUS_BASE_13_Y);
+      dest.x = STATUS_BASE_13_X;
+      dest.y = STATUS_BASE_13_Y;
       break;
     case BASE_14:
-      dest.x = (zf * STATUS_BASE_14_X);
-      dest.y = (zf * STATUS_BASE_14_Y);
+      dest.x = STATUS_BASE_14_X;
+      dest.y = STATUS_BASE_14_Y;
       break;
     case BASE_15:
-      dest.x = (zf * STATUS_BASE_15_X);
-      dest.y = (zf * STATUS_BASE_15_Y);
+      dest.x = STATUS_BASE_15_X;
+      dest.y = STATUS_BASE_15_Y;
       break;
-    default:
-      /* BASE_16:*/
-      dest.x = (zf * STATUS_BASE_16_X);
-      dest.y = (zf * STATUS_BASE_16_Y);
+    case BASE_16:
+      dest.x = STATUS_BASE_16_X;
+      dest.y = STATUS_BASE_16_Y;
   }
 
-  dest.w = zf * STATUS_ITEM_SIZE_X;
-  dest.h = zf * STATUS_ITEM_SIZE_Y;
+  dest.w = STATUS_ITEM_SIZE_X;
+  dest.h = STATUS_ITEM_SIZE_Y;
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpBasesStatus, &dest);
@@ -1874,120 +1855,117 @@ void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
 void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
   SDL_Rect src;  /* The src square on the tile file to retrieve */
   SDL_Rect dest; /* The dest square to draw it */
-  BYTE zf;       /* Scaling factor */
   char str[3];   /* String to output if labels are on */
 
-  zf = 1;  // FIXME: windowGetZoomFactor();
   str[0] = '\0';
-  src.w = zf * STATUS_ITEM_SIZE_X;
-  src.h = zf * STATUS_ITEM_SIZE_Y;
+  src.w = STATUS_ITEM_SIZE_X;
+  src.h = STATUS_ITEM_SIZE_Y;
 
   /* Set the co-ords of the tile file to get */
   switch (pb) {
     case pillDead:
-      src.x = zf * STATUS_ITEM_DEAD_X;
-      src.y = zf * STATUS_ITEM_DEAD_Y;
+      src.x = STATUS_ITEM_DEAD_X;
+      src.y = STATUS_ITEM_DEAD_Y;
       break;
     case pillNeutral:
-      src.x = zf * STATUS_PILLBOX_NEUTRAL_X;
-      src.y = zf * STATUS_PILLBOX_NEUTRAL_Y;
+      src.x = STATUS_PILLBOX_NEUTRAL_X;
+      src.y = STATUS_PILLBOX_NEUTRAL_Y;
       break;
     case pillGood:
-      src.x = zf * STATUS_PILLBOX_GOOD_X;
-      src.y = zf * STATUS_PILLBOX_GOOD_Y;
+      src.x = STATUS_PILLBOX_GOOD_X;
+      src.y = STATUS_PILLBOX_GOOD_Y;
       break;
     case pillAllie:
-      src.x = zf * STATUS_PILLBOX_ALLIEGOOD_X;
-      src.y = zf * STATUS_PILLBOX_ALLIEGOOD_Y;
+      src.x = STATUS_PILLBOX_ALLIEGOOD_X;
+      src.y = STATUS_PILLBOX_ALLIEGOOD_Y;
       break;
     case pillTankGood:
-      src.x = zf * STATUS_PILLBOX_TANKGOOD_X;
-      src.y = zf * STATUS_PILLBOX_TANKGOOD_Y;
+      src.x = STATUS_PILLBOX_TANKGOOD_X;
+      src.y = STATUS_PILLBOX_TANKGOOD_Y;
       break;
     case pillTankAllie:
-      src.x = zf * 272;  // STATUS_PILLBOX_TANKALLIE_X;
-      src.y = zf * 144;  // STATUS_PILLBOX_TANKALLIE_Y +5 ;
+      src.x = 272;  // STATUS_PILLBOX_TANKALLIE_X;
+      src.y = 144;  // STATUS_PILLBOX_TANKALLIE_Y +5 ;
       break;
     case pillTankEvil:
-      src.x = zf * STATUS_PILLBOX_TANKEVIL_X;
-      src.y = zf * STATUS_PILLBOX_TANKEVIL_Y;
+      src.x = STATUS_PILLBOX_TANKEVIL_X;
+      src.y = STATUS_PILLBOX_TANKEVIL_Y;
       break;
     default:
       /* PILLBOX Evil */
-      src.x = zf * STATUS_PILLBOX_EVIL_X;
-      src.y = zf * STATUS_PILLBOX_EVIL_Y;
+      src.x = STATUS_PILLBOX_EVIL_X;
+      src.y = STATUS_PILLBOX_EVIL_Y;
       break;
   }
   /* Modify the offset to allow for the indents */
   switch (pillNum) {
     case PILLBOX_1:
-      dest.x = (zf * STATUS_PILLBOX_1_X);
-      dest.y = (zf * STATUS_PILLBOX_1_Y);
+      dest.x = STATUS_PILLBOX_1_X;
+      dest.y = STATUS_PILLBOX_1_Y;
       break;
     case PILLBOX_2:
-      dest.x = (zf * STATUS_PILLBOX_2_X);
-      dest.y = (zf * STATUS_PILLBOX_2_Y);
+      dest.x = STATUS_PILLBOX_2_X;
+      dest.y = STATUS_PILLBOX_2_Y;
       break;
     case PILLBOX_3:
-      dest.x = (zf * STATUS_PILLBOX_3_X);
-      dest.y = (zf * STATUS_PILLBOX_3_Y);
+      dest.x = STATUS_PILLBOX_3_X;
+      dest.y = STATUS_PILLBOX_3_Y;
       break;
     case PILLBOX_4:
-      dest.x = (zf * STATUS_PILLBOX_4_X);
-      dest.y = (zf * STATUS_PILLBOX_4_Y);
+      dest.x = STATUS_PILLBOX_4_X;
+      dest.y = STATUS_PILLBOX_4_Y;
       break;
     case PILLBOX_5:
-      dest.x = (zf * STATUS_PILLBOX_5_X);
-      dest.y = (zf * STATUS_PILLBOX_5_Y);
+      dest.x = STATUS_PILLBOX_5_X;
+      dest.y = STATUS_PILLBOX_5_Y;
       break;
     case PILLBOX_6:
-      dest.x = (zf * STATUS_PILLBOX_6_X);
-      dest.y = (zf * STATUS_PILLBOX_6_Y);
+      dest.x = STATUS_PILLBOX_6_X;
+      dest.y = STATUS_PILLBOX_6_Y;
       break;
     case PILLBOX_7:
-      dest.x = (zf * STATUS_PILLBOX_7_X);
-      dest.y = (zf * STATUS_PILLBOX_7_Y);
+      dest.x = STATUS_PILLBOX_7_X;
+      dest.y = STATUS_PILLBOX_7_Y;
       break;
     case PILLBOX_8:
-      dest.x = (zf * STATUS_PILLBOX_8_X);
-      dest.y = (zf * STATUS_PILLBOX_8_Y);
+      dest.x = STATUS_PILLBOX_8_X;
+      dest.y = STATUS_PILLBOX_8_Y;
       break;
     case PILLBOX_9:
-      dest.x = (zf * STATUS_PILLBOX_9_X);
-      dest.y = (zf * STATUS_PILLBOX_9_Y);
+      dest.x = STATUS_PILLBOX_9_X;
+      dest.y = STATUS_PILLBOX_9_Y;
       break;
     case PILLBOX_10:
-      dest.x = (zf * STATUS_PILLBOX_10_X);
-      dest.y = (zf * STATUS_PILLBOX_10_Y);
+      dest.x = STATUS_PILLBOX_10_X;
+      dest.y = STATUS_PILLBOX_10_Y;
       break;
     case PILLBOX_11:
-      dest.x = (zf * STATUS_PILLBOX_11_X);
-      dest.y = (zf * STATUS_PILLBOX_11_Y);
+      dest.x = STATUS_PILLBOX_11_X;
+      dest.y = STATUS_PILLBOX_11_Y;
       break;
     case PILLBOX_12:
-      dest.x = (zf * STATUS_PILLBOX_12_X);
-      dest.y = (zf * STATUS_PILLBOX_12_Y);
+      dest.x = STATUS_PILLBOX_12_X;
+      dest.y = STATUS_PILLBOX_12_Y;
       break;
     case PILLBOX_13:
-      dest.x = (zf * STATUS_PILLBOX_13_X);
-      dest.y = (zf * STATUS_PILLBOX_13_Y);
+      dest.x = STATUS_PILLBOX_13_X;
+      dest.y = STATUS_PILLBOX_13_Y;
       break;
     case PILLBOX_14:
-      dest.x = (zf * STATUS_PILLBOX_14_X);
-      dest.y = (zf * STATUS_PILLBOX_14_Y);
+      dest.x = STATUS_PILLBOX_14_X;
+      dest.y = STATUS_PILLBOX_14_Y;
       break;
     case PILLBOX_15:
-      dest.x = (zf * STATUS_PILLBOX_15_X);
-      dest.y = (zf * STATUS_PILLBOX_15_Y);
+      dest.x = STATUS_PILLBOX_15_X;
+      dest.y = STATUS_PILLBOX_15_Y;
       break;
-    default:
-      /* PILLBOX_16:*/
-      dest.x = (zf * STATUS_PILLBOX_16_X);
-      dest.y = (zf * STATUS_PILLBOX_16_Y);
+    case PILLBOX_16:
+      dest.x = STATUS_PILLBOX_16_X;
+      dest.y = STATUS_PILLBOX_16_Y;
   }
 
-  dest.w = zf * STATUS_ITEM_SIZE_X;
-  dest.h = zf * STATUS_ITEM_SIZE_Y;
+  dest.w = STATUS_ITEM_SIZE_X;
+  dest.h = STATUS_ITEM_SIZE_Y;
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpPillsStatus, &dest);
@@ -2139,49 +2117,45 @@ void drawStatusTankBars(int xValue, int yValue, BYTE shells, BYTE mines,
                         BYTE armour, BYTE trees) {
   SDL_Rect dest; /* The dest square to draw it */
   SDL_Rect fill;
-  BYTE zf;      /* Scaling factor */
   Uint32 color; /* Fill green colour */
 
-  zf = 1;  // FIXME: windowGetZoomFactor();
-  dest.w = zf * STATUS_TANK_BARS_WIDTH;
+  dest.w = STATUS_TANK_BARS_WIDTH;
   color = SDL_MapRGB(lpScreen->format, 0, 0xFF, 0);
 
   /* Make the area black first */
-  fill.y = yValue + (zf * STATUS_TANK_BARS_TOP) +
-           (zf * STATUS_TANK_BARS_HEIGHT) - ((zf * BAR_TANK_MULTIPLY) * 40);
-  fill.h = yValue + (zf * STATUS_TANK_BARS_TOP) +
-           (zf * STATUS_TANK_BARS_HEIGHT) - fill.y;
-  fill.x = xValue + (zf * STATUS_TANK_SHELLS);
-  fill.w = xValue + (zf * STATUS_TANK_TREES) + (zf * STATUS_TANK_BARS_WIDTH) -
-           fill.x;
+  fill.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * 40);
+  fill.h = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT - fill.y;
+  fill.x = xValue + STATUS_TANK_SHELLS;
+  fill.w = xValue + STATUS_TANK_TREES + STATUS_TANK_BARS_WIDTH - fill.x;
   SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
 
   /* Shells */
-  dest.y = yValue + (zf * STATUS_TANK_BARS_TOP) +
-           (zf * STATUS_TANK_BARS_HEIGHT) - ((zf * BAR_TANK_MULTIPLY) * shells);
-  dest.x = xValue + (zf * STATUS_TANK_SHELLS);
-  dest.h = zf * BAR_TANK_MULTIPLY * shells;
+  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * shells);
+  dest.x = xValue + STATUS_TANK_SHELLS;
+  dest.h = BAR_TANK_MULTIPLY * shells;
   SDL_FillRect(lpScreen, &dest, color);
 
   /* Mines */
-  dest.y = yValue + (zf * STATUS_TANK_BARS_TOP) +
-           (zf * STATUS_TANK_BARS_HEIGHT) - ((zf * BAR_TANK_MULTIPLY) * mines);
-  dest.x = xValue + (zf * STATUS_TANK_MINES);
-  dest.h = zf * BAR_TANK_MULTIPLY * mines;
+  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * mines);
+  dest.x = xValue + STATUS_TANK_MINES;
+  dest.h = BAR_TANK_MULTIPLY * mines;
   SDL_FillRect(lpScreen, &dest, color);
 
   /* Armour */
-  dest.y = yValue + (zf * STATUS_TANK_BARS_TOP) +
-           (zf * STATUS_TANK_BARS_HEIGHT) - ((zf * BAR_TANK_MULTIPLY) * armour);
-  dest.x = xValue + (zf * STATUS_TANK_ARMOUR);
-  dest.h = zf * BAR_TANK_MULTIPLY * armour;
+  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * armour);
+  dest.x = xValue + STATUS_TANK_ARMOUR;
+  dest.h = BAR_TANK_MULTIPLY * armour;
   SDL_FillRect(lpScreen, &dest, color);
 
   /* Trees */
-  dest.y = yValue + (zf * STATUS_TANK_BARS_TOP) +
-           (zf * STATUS_TANK_BARS_HEIGHT) - ((zf * BAR_TANK_MULTIPLY) * trees);
-  dest.x = xValue + (zf * STATUS_TANK_TREES);
-  dest.h = zf * BAR_TANK_MULTIPLY * trees;
+  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * trees);
+  dest.x = xValue + STATUS_TANK_TREES;
+  dest.h = BAR_TANK_MULTIPLY * trees;
   SDL_FillRect(lpScreen, &dest, color);
 
   SDL_UpdateRects(lpScreen, 1, &fill);
