@@ -139,23 +139,6 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
                     BYTE cursorTop);
 
 /*********************************************************
- *NAME:          drawBackground
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/12/98
- *LAST MODIFIED: 20/12/98
- *PURPOSE:
- *  Draws the background graphic. Returns if the operation
- *  is successful or not.
- *
- *ARGUMENTS:
- *  appInst - The application instance
- *  appWnd  - The application Window
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *********************************************************/
-bool drawBackground(int width, int height);
-
-/*********************************************************
  *NAME:          drawSetBasesStatusClear
  *AUTHOR:        John Morrison
  *CREATION DATE: 23/1/98

@@ -12,6 +12,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(PkgConfig)
 pkg_check_modules(MINIZIP REQUIRED minizip)
 pkg_check_modules(SDL REQUIRED sdl)
+pkg_check_modules(SDL_image REQUIRED SDL_image)
 pkg_check_modules(GTK REQUIRED gtk+)
 
 add_compile_options(-Wall -Wno-missing-braces)
