@@ -607,7 +607,7 @@ void screenUpdate(updateType value) {
   b = false;
 }
 
-void screenRedraw() {
+void screenUpdateTiles() {
   netStatus ns = netGetStatus();
   if (ns != netRunning && ns != netFailed) {
     frontend->drawDownload(false);

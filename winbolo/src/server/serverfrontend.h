@@ -43,7 +43,7 @@ class ServerFrontend : public Frontend {
   void enableRequestAllyMenu(bool enabled) override {}
   void enableLeaveAllyMenu(bool enabled) override {}
   void showGunsight(bool isShown) override {}
-  void redrawAll(void) override {}
+  void drawAll(void) override {}
   bool tutorial(BYTE pos) override { return false; }
 };
 

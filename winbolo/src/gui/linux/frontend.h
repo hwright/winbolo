@@ -50,7 +50,7 @@ class LinuxFrontend : public Frontend {
   void enableRequestAllyMenu(bool enabled) override;
   void enableLeaveAllyMenu(bool enabled) override;
   void showGunsight(bool isShown) override;
-  void redrawAll(void) override {}
+  void drawAll(void) override;
   bool tutorial(BYTE pos) override;
 
  private:
@@ -61,19 +61,24 @@ class LinuxFrontend : public Frontend {
   std::vector<tankAlliance> tank_status_;
   std::vector<pillAlliance> pill_status_;
 
-  std::optional<ScreenGunsight> gunsight_;
-  ScreenBulletList screen_bullet_list_;
-  ScreenLgmList screen_lgm_list_;
-  ScreenTankList screen_tank_list_;
-  ScreenTiles screen_tiles_;
+  struct MainScreenData {
+    std::optional<ScreenGunsight> gunsight_;
+    ScreenBulletList screen_bullet_list_;
+    ScreenLgmList screen_lgm_list_;
+    ScreenTankList screen_tank_list_;
+    ScreenTiles screen_tiles_;
+
+    int edgeX_ = 0;
+    int edgeY_ = 0;
+
+    long srtDelay_;
+    bool isPillView_;
+  };
+
+  std::optional<MainScreenData> main_screen_data_;
 
   int kills_ = 0;
   int deaths_ = 0;
-  int edgeX_ = 0;
-  int edgeY_ = 0;
-
-  long srtDelay_;
-  bool isPillView_;
 
   std::string top_message_;
   std::string bottom_message_;

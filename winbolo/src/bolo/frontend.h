@@ -188,7 +188,7 @@ class Frontend {
   virtual void showGunsight(bool isShown) = 0;
 
   // Force a complete window redraw.
-  virtual void redrawAll(void) = 0;
+  virtual void drawAll(void) = 0;
 
   // Set the front end that we have reached a new position
   //
