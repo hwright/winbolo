@@ -32,7 +32,7 @@ class LinuxFrontend : public Frontend {
   void drawMainScreen(ScreenTiles tiles, ScreenTankList tks,
                       std::optional<ScreenGunsight> gunsight,
                       ScreenBulletList sBullet, ScreenLgmList lgms,
-                      long srtDelay, bool isPillView, tank *tank, int edgeX,
+                      long srtDelay, bool isPillView, int edgeX,
                       int edgeY) override;
   void statusPillbox(uint8_t pillNum, pillAlliance pb) override;
   void statusTank(uint8_t tankNum, tankAlliance ts) override;

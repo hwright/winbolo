@@ -79,8 +79,8 @@ class Frontend {
   virtual void drawMainScreen(ScreenTiles tiles, ScreenTankList tks,
                               std::optional<ScreenGunsight> gunsight,
                               ScreenBulletList sBullets, ScreenLgmList lgms,
-                              long srtDelay, bool isPillView, tank *tank,
-                              int edgeX, int edgeY) = 0;
+                              long srtDelay, bool isPillView, int edgeX,
+                              int edgeY) = 0;
 
   // Set the pillbox status for a particular pillbox
   //

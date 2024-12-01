@@ -31,7 +31,7 @@ class ServerFrontend : public Frontend {
 
   void drawMainScreen(ScreenTiles, ScreenTankList,
                       std::optional<ScreenGunsight>, ScreenBulletList,
-                      ScreenLgmList, long, bool, tank *, int, int) override {}
+                      ScreenLgmList, long, bool, int, int) override {}
 
   void statusPillbox(uint8_t pillNum, pillAlliance pb) override {}
   void statusTank(uint8_t tankNum, tankAlliance ts) override {}

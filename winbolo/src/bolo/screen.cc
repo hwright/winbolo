@@ -659,7 +659,7 @@ void screenRedraw() {
                                (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
   frontend->drawMainScreen(tiles, std::move(scnTnk), std::move(gs),
                            std::move(sBullets), std::move(lgms), gmeStartDelay,
-                           inPillView, &mytk, 0, 0);
+                           inPillView, 0, 0);
 }
 
 /*********************************************************
