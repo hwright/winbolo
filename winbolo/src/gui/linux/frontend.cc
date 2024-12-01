@@ -113,8 +113,8 @@ void LinuxFrontend::playSound(sndEffects value) {
 void LinuxFrontend::drawMainScreen(ScreenTiles tiles, ScreenTankList tks,
                                    std::optional<ScreenGunsight> gunsight,
                                    ScreenBulletList sBullet, ScreenLgmList lgms,
-                                   long srtDelay, bool isPillView, tank *tank,
-                                   int edgeX, int edgeY) {
+                                   long srtDelay, bool isPillView, int edgeX,
+                                   int edgeY) {
   uint8_t cursorX;
   uint8_t cursorY;
   bool showCursor;
