@@ -350,7 +350,14 @@ gint windowGetFocus(GtkWidget *widget, gpointer data) {
   }
   frameMutexWaitFor();
   clientMutexWaitFor();
-  drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, BsLinuxCurrent, FALSE, FALSE);
+  std::vector<baseAlliance> bas;
+  bas.push_back(baseNeutral);
+  BYTE count = screenNumBases();
+  for (int i = 1; i <= count; count++) {
+    bas.push_back(screenBaseAlliance(i));
+  }
+  drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, BsLinuxCurrent, bas, FALSE,
+                FALSE);
   clientMutexRelease();
   frameMutexRelease();
   gdk_key_repeat_disable();

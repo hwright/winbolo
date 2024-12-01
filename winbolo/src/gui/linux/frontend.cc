@@ -137,8 +137,8 @@ void LinuxFrontend::drawAll() {
   showCursor = screenGetCursorPos(&cursorX, &cursorY);
 
   uint64_t tick = SDL_GetTicks();
-  drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, build_select_, showPillLabels,
-                showBaseLabels);
+  drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, build_select_, base_status_,
+                showPillLabels, showBaseLabels);
   if (main_screen_data_.has_value()) {
     ::drawMainScreen(
         main_screen_data_->screen_tiles_, main_screen_data_->screen_tank_list_,

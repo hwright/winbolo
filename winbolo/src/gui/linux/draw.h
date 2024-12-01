@@ -135,18 +135,6 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
                     BYTE cursorTop);
 
 /*********************************************************
- *NAME:          drawSetBasesStatusClear
- *AUTHOR:        John Morrison
- *CREATION DATE: 23/1/98
- *LAST MODIFIED: 23/1/98
- *PURPOSE:
- *  Clears the bases status display.
- *
- *ARGUMENTS:
- *********************************************************/
-void drawSetBasesStatusClear(void);
-
-/*********************************************************
  * *NAME:          drawSetPillsStatusClear
  *AUTHOR:        John Morrison
  *CREATION DATE: 23/1/98
@@ -169,20 +157,6 @@ void drawSetPillsStatusClear(void);
  *ARGUMENTS:
  *********************************************************/
 void drawSetTanksStatusClear(void);
-
-/*********************************************************
- *NAME:          drawCopyBasesStatus
- *AUTHOR:        John Morrison
- *CREATION DATE: 23/1/98
- *LAST MODIFIED: 23/1/98
- *PURPOSE:
- *  Copys the Bases status on to the primary buffer
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *********************************************************/
-void drawCopyBasesStatus();
 
 /*********************************************************
  *NAME:          drawCopyPillsStatus
@@ -211,21 +185,6 @@ void drawCopyPillsStatus();
  *  yValue  - The top position of the window
  *********************************************************/
 void drawCopyTanksStatus();
-
-/*********************************************************
- *NAME:          drawStatusBase
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/12/98
- *LAST MODIFIED: 23/1/99
- *PURPOSE:
- *  Draws the base status for a particular base
- *
- *ARGUMENTS:
- *  baseNum - The base number to draw (1-16)
- *  ba      - The allience of the base
- *  labels  - Should the label be shown
- *********************************************************/
-void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels);
 
 /*********************************************************
  *NAME:          drawStatusPillbox
@@ -295,40 +254,6 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
                         BYTE armour, bool redraw);
 
 /*********************************************************
- *NAME:          drawSelectIndentsOn
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/12/98
- *LAST MODIFIED: 20/12/98
- *PURPOSE:
- *  Draws the indents around the five building selection
- *  graphics on the left based on the buildSelect value.
- *  Draws the red dot as well.
- *
- *ARGUMENTS:
- *  value   - The currently selected build icon
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *********************************************************/
-void drawSelectIndentsOn(buildSelect value, int xValue, int yValue);
-
-/*********************************************************
- *NAME:          drawSelectIndentsOff
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/12/98
- *LAST MODIFIED: 20/12/98
- *PURPOSE:
- *  Draws the indents around the five building selection
- *  graphics off the left based on the buildSelect value.
- *  Draws the red dot as well.
- *
- *ARGUMENTS:
- *  value   - The currently selected build icon
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *********************************************************/
-void drawSelectIndentsOff(buildSelect value, int xValue, int yValue);
-
-/*********************************************************
  *NAME:          drawRedrawAll
  *AUTHOR:        John Morrison
  *CREATION DATE: 20/12/98
@@ -345,7 +270,8 @@ void drawSelectIndentsOff(buildSelect value, int xValue, int yValue);
  *  showBasesStatus - Should the the base status be shown
  *********************************************************/
 void drawRedrawAll(int width, int height, buildSelect value,
-                   bool showPillsStatus, bool showBasesStatus);
+                   const std::vector<baseAlliance> &bas, bool showPillsStatus,
+                   bool showBasesStatus);
 
 /*********************************************************
  *NAME:          drawMessages
