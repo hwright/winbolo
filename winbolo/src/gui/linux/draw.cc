@@ -138,18 +138,14 @@ bool drawBackground() {
  *********************************************************/
 bool drawSetup(GtkWidget *appWnd) {
   bool returnValue; /* Value to return */
-  int ret;          /* Direct Draw Function returns */
   SDL_Rect in;      /* Used for copying the bases & pills icon in */
   SDL_Rect out;     /* Used for copying the bases & pills icon in */
-  SDL_Surface *lpTemp; /* Used temporarily before calling SDL_DisplayFormat() */
-  BYTE *buff;
   char fileName[FILENAME_MAX];
-  FILE *fp;
 
-  buff = new BYTE[80438];
+  BYTE* buff = new BYTE[80438];
   /* Get tmp file */
   snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX", g_get_tmp_dir());
-  ret = lzwdecoding((char *)TILES_IMAGE, (char *)buff, 36499);
+  int ret = lzwdecoding((char *)TILES_IMAGE, (char *)buff, 36499);
   if (ret != 80438) {
     free(buff);
     MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
@@ -165,7 +161,7 @@ bool drawSetup(GtkWidget *appWnd) {
 
   /* Create the back buffer surface */
   if (returnValue == TRUE) {
-    lpTemp = SDL_CreateRGBSurface(
+    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         SDL_HWSURFACE, MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
         MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
@@ -184,7 +180,7 @@ bool drawSetup(GtkWidget *appWnd) {
   /* Create the tile buffer and copy the bitmap into it */
   if (returnValue == TRUE) {
     /* Create the buffer */
-    fp = fopen(fileName, "wb");
+    FILE *fp = fopen(fileName, "wb");
     fwrite(buff, 80438, 1, fp);
     fclose(fp);
     lpTiles = SDL_LoadBMP(fileName);
@@ -228,8 +224,8 @@ bool drawSetup(GtkWidget *appWnd) {
 
   /* Create the Base status window */
   if (returnValue == TRUE) {
-    lpTemp = SDL_CreateRGBSurface(0, STATUS_BASES_WIDTH, STATUS_BASES_HEIGHT,
-                                  16, 0, 0, 0, 0);
+    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
+        0, STATUS_BASES_WIDTH, STATUS_BASES_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
       returnValue = FALSE;
       MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
@@ -258,8 +254,8 @@ bool drawSetup(GtkWidget *appWnd) {
   }
   /* Makes the pills status */
   if (returnValue == TRUE) {
-    lpTemp = SDL_CreateRGBSurface(0, STATUS_PILLS_WIDTH, STATUS_PILLS_HEIGHT,
-                                  16, 0, 0, 0, 0);
+    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
+        0, STATUS_PILLS_WIDTH, STATUS_PILLS_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
       returnValue = FALSE;
       MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
@@ -289,8 +285,8 @@ bool drawSetup(GtkWidget *appWnd) {
 
   /* Makes the tanks status */
   if (returnValue == TRUE) {
-    lpTemp = SDL_CreateRGBSurface(0, STATUS_TANKS_WIDTH, STATUS_TANKS_HEIGHT,
-                                  16, 0, 0, 0, 0);
+    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
+        0, STATUS_TANKS_WIDTH, STATUS_TANKS_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
       returnValue = FALSE;
       MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
