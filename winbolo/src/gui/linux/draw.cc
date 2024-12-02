@@ -67,8 +67,6 @@ static SDL_Surface *lpScreen = nullptr;
 static SDL_Surface *lpBackBuffer = nullptr;
 static SDL_Surface *lpTiles = nullptr;
 static SDL_Surface *lpBackground = nullptr;
-static SDL_Surface *lpPillsStatus = nullptr;
-static SDL_Surface *lpTankStatus = nullptr;
 static TTF_Font *lpFont = nullptr;
 static SDL_Color white = {0xFF, 0xFF, 0xFF, 0};
 static SDL_Color black = {0, 0, 0, 0};
@@ -467,6 +465,257 @@ void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
     sprintf(str, "%d", (baseNum - 1));
   }
 }
+
+/*********************************************************
+ *NAME:          drawStatusPillbox
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 21/12/98
+ *LAST MODIFIED: 23/1/99
+ *PURPOSE:
+ *  Draws the pillbox status for a particular pillbox
+ *
+ *ARGUMENTS:
+ *  pillNum - The tank number to draw (1-16)
+ *  pb      - The allience of the pillbox
+ *  labels  - Should labels be drawn?
+ *********************************************************/
+void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
+  SDL_Rect src;     /* The src square on the tile file to retrieve */
+  SDL_Rect dest;    /* The dest square to draw it */
+  char str[3] = ""; /* String to output if labels are on */
+
+  src.w = STATUS_ITEM_SIZE_X;
+  src.h = STATUS_ITEM_SIZE_Y;
+
+  /* Set the co-ords of the tile file to get */
+  switch (pb) {
+    case pillDead:
+      src.x = STATUS_ITEM_DEAD_X;
+      src.y = STATUS_ITEM_DEAD_Y;
+      break;
+    case pillNeutral:
+      src.x = STATUS_PILLBOX_NEUTRAL_X;
+      src.y = STATUS_PILLBOX_NEUTRAL_Y;
+      break;
+    case pillGood:
+      src.x = STATUS_PILLBOX_GOOD_X;
+      src.y = STATUS_PILLBOX_GOOD_Y;
+      break;
+    case pillAllie:
+      src.x = STATUS_PILLBOX_ALLIEGOOD_X;
+      src.y = STATUS_PILLBOX_ALLIEGOOD_Y;
+      break;
+    case pillTankGood:
+      src.x = STATUS_PILLBOX_TANKGOOD_X;
+      src.y = STATUS_PILLBOX_TANKGOOD_Y;
+      break;
+    case pillTankAllie:
+      src.x = 272;  // STATUS_PILLBOX_TANKALLIE_X;
+      src.y = 144;  // STATUS_PILLBOX_TANKALLIE_Y +5 ;
+      break;
+    case pillTankEvil:
+      src.x = STATUS_PILLBOX_TANKEVIL_X;
+      src.y = STATUS_PILLBOX_TANKEVIL_Y;
+      break;
+    default:
+      /* PILLBOX Evil */
+      src.x = STATUS_PILLBOX_EVIL_X;
+      src.y = STATUS_PILLBOX_EVIL_Y;
+      break;
+  }
+  /* Modify the offset to allow for the indents */
+  switch (pillNum) {
+    case PILLBOX_1:
+      dest.x = STATUS_PILLBOX_1_X;
+      dest.y = STATUS_PILLBOX_1_Y;
+      break;
+    case PILLBOX_2:
+      dest.x = STATUS_PILLBOX_2_X;
+      dest.y = STATUS_PILLBOX_2_Y;
+      break;
+    case PILLBOX_3:
+      dest.x = STATUS_PILLBOX_3_X;
+      dest.y = STATUS_PILLBOX_3_Y;
+      break;
+    case PILLBOX_4:
+      dest.x = STATUS_PILLBOX_4_X;
+      dest.y = STATUS_PILLBOX_4_Y;
+      break;
+    case PILLBOX_5:
+      dest.x = STATUS_PILLBOX_5_X;
+      dest.y = STATUS_PILLBOX_5_Y;
+      break;
+    case PILLBOX_6:
+      dest.x = STATUS_PILLBOX_6_X;
+      dest.y = STATUS_PILLBOX_6_Y;
+      break;
+    case PILLBOX_7:
+      dest.x = STATUS_PILLBOX_7_X;
+      dest.y = STATUS_PILLBOX_7_Y;
+      break;
+    case PILLBOX_8:
+      dest.x = STATUS_PILLBOX_8_X;
+      dest.y = STATUS_PILLBOX_8_Y;
+      break;
+    case PILLBOX_9:
+      dest.x = STATUS_PILLBOX_9_X;
+      dest.y = STATUS_PILLBOX_9_Y;
+      break;
+    case PILLBOX_10:
+      dest.x = STATUS_PILLBOX_10_X;
+      dest.y = STATUS_PILLBOX_10_Y;
+      break;
+    case PILLBOX_11:
+      dest.x = STATUS_PILLBOX_11_X;
+      dest.y = STATUS_PILLBOX_11_Y;
+      break;
+    case PILLBOX_12:
+      dest.x = STATUS_PILLBOX_12_X;
+      dest.y = STATUS_PILLBOX_12_Y;
+      break;
+    case PILLBOX_13:
+      dest.x = STATUS_PILLBOX_13_X;
+      dest.y = STATUS_PILLBOX_13_Y;
+      break;
+    case PILLBOX_14:
+      dest.x = STATUS_PILLBOX_14_X;
+      dest.y = STATUS_PILLBOX_14_Y;
+      break;
+    case PILLBOX_15:
+      dest.x = STATUS_PILLBOX_15_X;
+      dest.y = STATUS_PILLBOX_15_Y;
+      break;
+    case PILLBOX_16:
+      dest.x = STATUS_PILLBOX_16_X;
+      dest.y = STATUS_PILLBOX_16_Y;
+  }
+
+  dest.x += STATUS_PILLS_LEFT;
+  dest.y += STATUS_PILLS_TOP;
+  dest.w = STATUS_ITEM_SIZE_X;
+  dest.h = STATUS_ITEM_SIZE_Y;
+
+  /* Perform the drawing */
+  SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
+  if (labels) {
+    /* Must draw the label */
+    sprintf(str, "%d", (pillNum - 1));
+  }
+}
+
+/*********************************************************
+ *NAME:          drawStatusTank
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 14/2/99
+ *LAST MODIFIED: 14/2/99
+ *PURPOSE:
+ *  Draws the tank status for a particular tank
+ *
+ *ARGUMENTS:
+ *  tankNum - The tank number to draw (1-16)
+ *  ta      - The allience of the pillbox
+ *********************************************************/
+void drawStatusTank(BYTE tankNum, bolo::tankAlliance ta) {
+  SDL_Rect src;  /* The src square on the tile file to retrieve */
+  SDL_Rect dest; /* The dest square to draw it */
+
+  src.w = STATUS_ITEM_SIZE_X;
+  src.h = STATUS_ITEM_SIZE_Y;
+
+  /* Set the co-ords of the tile file to get */
+  switch (ta) {
+    case bolo::tankAlliance::tankNone:
+      src.x = STATUS_TANK_NONE_X;
+      src.y = STATUS_TANK_NONE_Y;
+      break;
+    case bolo::tankAlliance::tankSelf:
+      src.x = STATUS_TANK_SELF_X;
+      src.y = STATUS_TANK_SELF_Y;
+      break;
+    case bolo::tankAlliance::tankAllie:
+      src.x = STATUS_TANK_GOOD_X;
+      src.y = STATUS_TANK_GOOD_Y;
+      break;
+    case bolo::tankAlliance::tankEvil:
+      src.x = STATUS_TANK_EVIL_X;
+      src.y = STATUS_TANK_EVIL_Y;
+      break;
+  }
+  /* Modify the offset to allow for the indents */
+  switch (tankNum) {
+    case TANK_1:
+      dest.x = STATUS_TANKS_1_X;
+      dest.y = STATUS_TANKS_1_Y;
+      break;
+    case TANK_2:
+      dest.x = STATUS_TANKS_2_X;
+      dest.y = STATUS_TANKS_2_Y;
+      break;
+    case TANK_3:
+      dest.x = STATUS_TANKS_3_X;
+      dest.y = STATUS_TANKS_3_Y;
+      break;
+    case TANK_4:
+      dest.x = STATUS_TANKS_4_X;
+      dest.y = STATUS_TANKS_4_Y;
+      break;
+    case TANK_5:
+      dest.x = STATUS_TANKS_5_X;
+      dest.y = STATUS_TANKS_5_Y;
+      break;
+    case TANK_6:
+      dest.x = STATUS_TANKS_6_X;
+      dest.y = STATUS_TANKS_6_Y;
+      break;
+    case TANK_7:
+      dest.x = STATUS_TANKS_7_X;
+      dest.y = STATUS_TANKS_7_Y;
+      break;
+    case TANK_8:
+      dest.x = STATUS_TANKS_8_X;
+      dest.y = STATUS_TANKS_8_Y;
+      break;
+    case TANK_9:
+      dest.x = STATUS_TANKS_9_X;
+      dest.y = STATUS_TANKS_9_Y;
+      break;
+    case TANK_10:
+      dest.x = STATUS_TANKS_10_X;
+      dest.y = STATUS_TANKS_10_Y;
+      break;
+    case TANK_11:
+      dest.x = STATUS_TANKS_11_X;
+      dest.y = STATUS_TANKS_11_Y;
+      break;
+    case TANK_12:
+      dest.x = STATUS_TANKS_12_X;
+      dest.y = STATUS_TANKS_12_Y;
+      break;
+    case TANK_13:
+      dest.x = STATUS_TANKS_13_X;
+      dest.y = STATUS_TANKS_13_Y;
+      break;
+    case TANK_14:
+      dest.x = STATUS_TANKS_14_X;
+      dest.y = STATUS_TANKS_14_Y;
+      break;
+    case TANK_15:
+      dest.x = STATUS_TANKS_15_X;
+      dest.y = STATUS_TANKS_15_Y;
+      break;
+    case TANK_16:
+      dest.x = STATUS_TANKS_16_X;
+      dest.y = STATUS_TANKS_16_Y;
+  }
+
+  dest.x += STATUS_TANKS_LEFT;
+  dest.y += STATUS_TANKS_TOP;
+  dest.w = STATUS_ITEM_SIZE_X;
+  dest.h = STATUS_ITEM_SIZE_Y;
+
+  /* Perform the drawing */
+  SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
+}
 }
 
 /*********************************************************
@@ -566,68 +815,6 @@ bool drawSetup() {
     }
     SDL_FreeRW(rw);
   }
-
-  /* Makes the pills status */
-  if (returnValue) {
-    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
-        0, STATUS_PILLS_WIDTH, STATUS_PILLS_HEIGHT, 16, 0, 0, 0, 0);
-    if (lpTemp == nullptr) {
-      returnValue = false;
-      MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
-    } else {
-      lpPillsStatus = SDL_DisplayFormat(lpTemp);
-      SDL_FreeSurface(lpTemp);
-      if (lpTemp == nullptr) {
-        returnValue = false;
-        MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
-      } else {
-        /* Fill the surface black */
-        SDL_Rect fill{.x = 0,
-                      .y = 0,
-                      .w = static_cast<Uint16>(lpPillsStatus->w),
-                      .h = static_cast<Uint16>(lpPillsStatus->h)};
-        SDL_FillRect(lpPillsStatus, &fill,
-                     SDL_MapRGB(lpPillsStatus->format, 0, 0, 0));
-        /* Copy in the icon */
-        in.x = PILL_GOOD15_X;
-        in.y = PILL_GOOD15_Y;
-        out.x = STATUS_PILLS_MIDDLE_ICON_X;
-        out.y = STATUS_PILLS_MIDDLE_ICON_Y;
-        SDL_BlitSurface(lpTiles, &in, lpPillsStatus, &out);
-      }
-    }
-  }
-
-  /* Makes the tanks status */
-  if (returnValue) {
-    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
-        0, STATUS_TANKS_WIDTH, STATUS_TANKS_HEIGHT, 16, 0, 0, 0, 0);
-    if (lpTemp == nullptr) {
-      returnValue = false;
-      MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
-    } else {
-      lpTankStatus = SDL_DisplayFormat(lpTemp);
-      SDL_FreeSurface(lpTemp);
-      if (lpTankStatus == nullptr) {
-        returnValue = false;
-        MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
-      } else {
-        /* Fill the surface black */
-        SDL_Rect fill{.x = 0,
-                      .y = 0,
-                      .w = static_cast<Uint16>(lpTankStatus->w),
-                      .h = static_cast<Uint16>(lpTankStatus->h)};
-        SDL_FillRect(lpTankStatus, &fill,
-                     SDL_MapRGB(lpTankStatus->format, 0, 0, 0));
-        /* Copy in the icon */
-        in.x = TANK_SELF_0_X;
-        in.y = TANK_SELF_0_Y;
-        out.x = STATUS_TANKS_MIDDLE_ICON_X;
-        out.y = STATUS_TANKS_MIDDLE_ICON_Y;
-        SDL_BlitSurface(lpTiles, &in, lpTankStatus, &out);
-      }
-    }
-  }
   if (returnValue) {
     if (TTF_Init() < 0) {
       MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
@@ -672,14 +859,6 @@ void drawCleanup(void) {
   if (lpBackBuffer != nullptr) {
     SDL_FreeSurface(lpBackBuffer);
     lpBackBuffer = nullptr;
-  }
-  if (lpPillsStatus != nullptr) {
-    SDL_FreeSurface(lpPillsStatus);
-    lpPillsStatus = nullptr;
-  }
-  if (lpTankStatus != nullptr) {
-    SDL_FreeSurface(lpTankStatus);
-    lpTankStatus = nullptr;
   }
   if (lpFont != nullptr) {
     TTF_CloseFont(lpFont);
@@ -1844,366 +2023,6 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
 }
 
 /*********************************************************
- * *NAME:          drawSetPillsStatusClear
- *AUTHOR:        John Morrison
- *CREATION DATE: 23/1/98
- *LAST MODIFIED: 23/1/98
- *PURPOSE:
- *  Clears the pills status display.
- *
- *ARGUMENTS:
- *********************************************************/
-void drawSetPillsStatusClear(void) {
-  SDL_Rect src;    /* Used for copying the bases & pills icon in */
-  SDL_Rect dest;   /* Used for copying the bases & pills icon in */
-
-  src.x = PILL_GOOD15_X;
-  src.y = PILL_GOOD15_Y;
-  src.w = TILE_SIZE_X;
-  src.h = TILE_SIZE_Y;
-  dest.y = STATUS_PILLS_MIDDLE_ICON_Y;
-  dest.x = STATUS_PILLS_MIDDLE_ICON_X;
-  dest.w = TILE_SIZE_X;
-  dest.h = TILE_SIZE_Y;
-  SDL_FillRect(lpPillsStatus, nullptr,
-               SDL_MapRGB(lpPillsStatus->format, 0, 0, 0));
-  SDL_BlitSurface(lpTiles, &src, lpPillsStatus, &dest);
-  SDL_UpdateRect(lpPillsStatus, 0, 0, 0, 0);
-}
-
-/*********************************************************
- *NAME:          drawSetTanksStatusClear
- *AUTHOR:        John Morrison
- *CREATION DATE: 14/2/98
- *LAST MODIFIED: 14/2/98
- *PURPOSE:
- *  Clears the tanks status display.
- *
- *ARGUMENTS:
- *********************************************************/
-void drawSetTanksStatusClear(void) {
-  SDL_Rect src;    /* Used for copying the bases & pills icon in */
-  SDL_Rect dest;   /* Used for copying the bases & pills icon in */
-
-  src.x = TANK_SELF_0_X;
-  src.y = TANK_SELF_0_Y;
-  src.w = TILE_SIZE_X;
-  src.h = TILE_SIZE_Y;
-  dest.y = STATUS_TANKS_MIDDLE_ICON_Y;
-  dest.x = STATUS_TANKS_MIDDLE_ICON_X;
-  dest.w = TILE_SIZE_X;
-  dest.h = TILE_SIZE_Y;
-  SDL_FillRect(lpTankStatus, nullptr,
-               SDL_MapRGB(lpTankStatus->format, 0, 0, 0));
-  SDL_BlitSurface(lpTiles, &src, lpTankStatus, &dest);
-  SDL_UpdateRect(lpTankStatus, 0, 0, 0, 0);
-}
-
-/*********************************************************
- * *NAME:          drawCopyPillsStatus
- * *AUTHOR:        John Morrison
- * *CREATION DATE: 23/1/98
- * *LAST MODIFIED: 23/1/98
- * *PURPOSE:
- * *  Copys the pills status on to the primary buffer
- * *
- * *ARGUMENTS:
- * *  xValue  - The left position of the window
- * *  yValue  - The top position of the window
- * *********************************************************/
-void drawCopyPillsStatus() {
-  SDL_Rect dest; /* Destination location */
-
-  dest.x = STATUS_PILLS_LEFT;
-  dest.y = STATUS_PILLS_TOP;
-  dest.w = STATUS_PILLS_WIDTH;
-  dest.h = STATUS_PILLS_HEIGHT;
-  SDL_BlitSurface(lpPillsStatus, nullptr, lpScreen, &dest);
-  SDL_UpdateRects(lpScreen, 1, &dest);
-}
-
-/*********************************************************
- *NAME:          drawCopyTanksStatus
- *AUTHOR:        John Morrison
- *CREATION DATE: 14/2/98
- *LAST MODIFIED: 14/2/98
- *PURPOSE:
- *  Copys the tanks status on to the primary buffer
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *********************************************************/
-void drawCopyTanksStatus() {
-  SDL_Rect dest; /* Destination location */
-
-  dest.x = STATUS_TANKS_LEFT;
-  dest.y = STATUS_TANKS_TOP;
-  dest.w = STATUS_TANKS_WIDTH;
-  dest.h = STATUS_TANKS_HEIGHT;
-  SDL_BlitSurface(lpTankStatus, nullptr, lpScreen, &dest);
-  SDL_UpdateRects(lpScreen, 1, &dest);
-}
-
-/*********************************************************
- *NAME:          drawStatusPillbox
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/12/98
- *LAST MODIFIED: 23/1/99
- *PURPOSE:
- *  Draws the pillbox status for a particular pillbox
- *
- *ARGUMENTS:
- *  pillNum - The tank number to draw (1-16)
- *  pb      - The allience of the pillbox
- *  labels  - Should labels be drawn?
- *********************************************************/
-void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
-  SDL_Rect src;  /* The src square on the tile file to retrieve */
-  SDL_Rect dest; /* The dest square to draw it */
-  char str[3];   /* String to output if labels are on */
-
-  str[0] = '\0';
-  src.w = STATUS_ITEM_SIZE_X;
-  src.h = STATUS_ITEM_SIZE_Y;
-
-  /* Set the co-ords of the tile file to get */
-  switch (pb) {
-    case pillDead:
-      src.x = STATUS_ITEM_DEAD_X;
-      src.y = STATUS_ITEM_DEAD_Y;
-      break;
-    case pillNeutral:
-      src.x = STATUS_PILLBOX_NEUTRAL_X;
-      src.y = STATUS_PILLBOX_NEUTRAL_Y;
-      break;
-    case pillGood:
-      src.x = STATUS_PILLBOX_GOOD_X;
-      src.y = STATUS_PILLBOX_GOOD_Y;
-      break;
-    case pillAllie:
-      src.x = STATUS_PILLBOX_ALLIEGOOD_X;
-      src.y = STATUS_PILLBOX_ALLIEGOOD_Y;
-      break;
-    case pillTankGood:
-      src.x = STATUS_PILLBOX_TANKGOOD_X;
-      src.y = STATUS_PILLBOX_TANKGOOD_Y;
-      break;
-    case pillTankAllie:
-      src.x = 272;  // STATUS_PILLBOX_TANKALLIE_X;
-      src.y = 144;  // STATUS_PILLBOX_TANKALLIE_Y +5 ;
-      break;
-    case pillTankEvil:
-      src.x = STATUS_PILLBOX_TANKEVIL_X;
-      src.y = STATUS_PILLBOX_TANKEVIL_Y;
-      break;
-    default:
-      /* PILLBOX Evil */
-      src.x = STATUS_PILLBOX_EVIL_X;
-      src.y = STATUS_PILLBOX_EVIL_Y;
-      break;
-  }
-  /* Modify the offset to allow for the indents */
-  switch (pillNum) {
-    case PILLBOX_1:
-      dest.x = STATUS_PILLBOX_1_X;
-      dest.y = STATUS_PILLBOX_1_Y;
-      break;
-    case PILLBOX_2:
-      dest.x = STATUS_PILLBOX_2_X;
-      dest.y = STATUS_PILLBOX_2_Y;
-      break;
-    case PILLBOX_3:
-      dest.x = STATUS_PILLBOX_3_X;
-      dest.y = STATUS_PILLBOX_3_Y;
-      break;
-    case PILLBOX_4:
-      dest.x = STATUS_PILLBOX_4_X;
-      dest.y = STATUS_PILLBOX_4_Y;
-      break;
-    case PILLBOX_5:
-      dest.x = STATUS_PILLBOX_5_X;
-      dest.y = STATUS_PILLBOX_5_Y;
-      break;
-    case PILLBOX_6:
-      dest.x = STATUS_PILLBOX_6_X;
-      dest.y = STATUS_PILLBOX_6_Y;
-      break;
-    case PILLBOX_7:
-      dest.x = STATUS_PILLBOX_7_X;
-      dest.y = STATUS_PILLBOX_7_Y;
-      break;
-    case PILLBOX_8:
-      dest.x = STATUS_PILLBOX_8_X;
-      dest.y = STATUS_PILLBOX_8_Y;
-      break;
-    case PILLBOX_9:
-      dest.x = STATUS_PILLBOX_9_X;
-      dest.y = STATUS_PILLBOX_9_Y;
-      break;
-    case PILLBOX_10:
-      dest.x = STATUS_PILLBOX_10_X;
-      dest.y = STATUS_PILLBOX_10_Y;
-      break;
-    case PILLBOX_11:
-      dest.x = STATUS_PILLBOX_11_X;
-      dest.y = STATUS_PILLBOX_11_Y;
-      break;
-    case PILLBOX_12:
-      dest.x = STATUS_PILLBOX_12_X;
-      dest.y = STATUS_PILLBOX_12_Y;
-      break;
-    case PILLBOX_13:
-      dest.x = STATUS_PILLBOX_13_X;
-      dest.y = STATUS_PILLBOX_13_Y;
-      break;
-    case PILLBOX_14:
-      dest.x = STATUS_PILLBOX_14_X;
-      dest.y = STATUS_PILLBOX_14_Y;
-      break;
-    case PILLBOX_15:
-      dest.x = STATUS_PILLBOX_15_X;
-      dest.y = STATUS_PILLBOX_15_Y;
-      break;
-    case PILLBOX_16:
-      dest.x = STATUS_PILLBOX_16_X;
-      dest.y = STATUS_PILLBOX_16_Y;
-  }
-
-  dest.w = STATUS_ITEM_SIZE_X;
-  dest.h = STATUS_ITEM_SIZE_Y;
-
-  /* Perform the drawing */
-  SDL_BlitSurface(lpTiles, &src, lpPillsStatus, &dest);
-  if (labels) {
-    /* Must draw the label */
-    sprintf(str, "%d", (pillNum - 1));
-    /* FIXME:    if
-       (SUCCEEDED(lpDDSPillsStatus->lpVtbl->GetDC(lpDDSPillsStatus,&hDC))) {
-          fontSelectTiny(hDC);
-          SetBkColor(hDC, RGB(0,0,0));
-          SetTextColor(hDC, RGB(255,255,255));
-          DrawText(hDC, str, strlen(str), &dest, (DT_TOP | DT_NOCLIP));
-          lpDDSPillsStatus->lpVtbl->ReleaseDC(lpDDSPillsStatus,&hDC);
-        } */
-  }
-  SDL_UpdateRects(lpPillsStatus, 1, &dest);
-}
-
-/*********************************************************
- *NAME:          drawStatusTank
- *AUTHOR:        John Morrison
- *CREATION DATE: 14/2/99
- *LAST MODIFIED: 14/2/99
- *PURPOSE:
- *  Draws the tank status for a particular tank
- *
- *ARGUMENTS:
- *  tankNum - The tank number to draw (1-16)
- *  ta      - The allience of the pillbox
- *********************************************************/
-void drawStatusTank(BYTE tankNum, bolo::tankAlliance ta) {
-  SDL_Rect src;  /* The src square on the tile file to retrieve */
-  SDL_Rect dest; /* The dest square to draw it */
-
-  src.w = STATUS_ITEM_SIZE_X;
-  src.h = STATUS_ITEM_SIZE_Y;
-
-  /* Set the co-ords of the tile file to get */
-  switch (ta) {
-    case bolo::tankAlliance::tankNone:
-      src.x = STATUS_TANK_NONE_X;
-      src.y = STATUS_TANK_NONE_Y;
-      break;
-    case bolo::tankAlliance::tankSelf:
-      src.x = STATUS_TANK_SELF_X;
-      src.y = STATUS_TANK_SELF_Y;
-      break;
-    case bolo::tankAlliance::tankAllie:
-      src.x = STATUS_TANK_GOOD_X;
-      src.y = STATUS_TANK_GOOD_Y;
-      break;
-    case bolo::tankAlliance::tankEvil:
-      src.x = STATUS_TANK_EVIL_X;
-      src.y = STATUS_TANK_EVIL_Y;
-      break;
-  }
-  /* Modify the offset to allow for the indents */
-  switch (tankNum) {
-    case TANK_1:
-      dest.x = STATUS_TANKS_1_X;
-      dest.y = STATUS_TANKS_1_Y;
-      break;
-    case TANK_2:
-      dest.x = STATUS_TANKS_2_X;
-      dest.y = STATUS_TANKS_2_Y;
-      break;
-    case TANK_3:
-      dest.x = STATUS_TANKS_3_X;
-      dest.y = STATUS_TANKS_3_Y;
-      break;
-    case TANK_4:
-      dest.x = STATUS_TANKS_4_X;
-      dest.y = STATUS_TANKS_4_Y;
-      break;
-    case TANK_5:
-      dest.x = STATUS_TANKS_5_X;
-      dest.y = STATUS_TANKS_5_Y;
-      break;
-    case TANK_6:
-      dest.x = STATUS_TANKS_6_X;
-      dest.y = STATUS_TANKS_6_Y;
-      break;
-    case TANK_7:
-      dest.x = STATUS_TANKS_7_X;
-      dest.y = STATUS_TANKS_7_Y;
-      break;
-    case TANK_8:
-      dest.x = STATUS_TANKS_8_X;
-      dest.y = STATUS_TANKS_8_Y;
-      break;
-    case TANK_9:
-      dest.x = STATUS_TANKS_9_X;
-      dest.y = STATUS_TANKS_9_Y;
-      break;
-    case TANK_10:
-      dest.x = STATUS_TANKS_10_X;
-      dest.y = STATUS_TANKS_10_Y;
-      break;
-    case TANK_11:
-      dest.x = STATUS_TANKS_11_X;
-      dest.y = STATUS_TANKS_11_Y;
-      break;
-    case TANK_12:
-      dest.x = STATUS_TANKS_12_X;
-      dest.y = STATUS_TANKS_12_Y;
-      break;
-    case TANK_13:
-      dest.x = STATUS_TANKS_13_X;
-      dest.y = STATUS_TANKS_13_Y;
-      break;
-    case TANK_14:
-      dest.x = STATUS_TANKS_14_X;
-      dest.y = STATUS_TANKS_14_Y;
-      break;
-    case TANK_15:
-      dest.x = STATUS_TANKS_15_X;
-      dest.y = STATUS_TANKS_15_Y;
-      break;
-    case TANK_16:
-      dest.x = STATUS_TANKS_16_X;
-      dest.y = STATUS_TANKS_16_Y;
-  }
-
-  dest.w = STATUS_ITEM_SIZE_X;
-  dest.h = STATUS_ITEM_SIZE_Y;
-
-  /* Perform the drawing */
-  SDL_BlitSurface(lpTiles, &src, lpTankStatus, &dest);
-  SDL_UpdateRects(lpTankStatus, 1, &dest);
-}
-
-/*********************************************************
  *NAME:          drawStatusTankBars
  *AUTHOR:        John Morrison
  *CREATION DATE: 22/12/98
@@ -2347,10 +2166,10 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
  *  showBasesStatus - Should the the base status be shown
  *********************************************************/
 void drawRedrawAll(int width, int height, buildSelect value,
-                   const std::vector<baseAlliance> &bas, bool showPillsStatus,
-                   bool showBasesStatus) {
-  BYTE total;  /* Total number of elements */
-  BYTE count;  /* Looping Variable */
+                   const std::vector<baseAlliance> &bas,
+                   const std::vector<pillAlliance> &pas,
+                   const std::vector<bolo::tankAlliance> &tas,
+                   bool showPillsStatus, bool showBasesStatus) {
   BYTE shells; /* Tank amounts */
   BYTE mines;
   BYTE armour;
@@ -2364,7 +2183,6 @@ void drawRedrawAll(int width, int height, buildSelect value,
   bool lgmIsDead;
   TURNTYPE lgmAngle;
 
-  // lpScreen = SDL_SetVideoMode(width, height, 0, 0);
   SDL_Rect destRect{.x = 0,
                     .y = 0,
                     .w = static_cast<Uint16>(lpBackground->w),
@@ -2374,6 +2192,8 @@ void drawRedrawAll(int width, int height, buildSelect value,
 
   clientMutexWaitFor();
   BYTE total_bases = screenNumBases();
+  BYTE total_pills = screenNumPills();
+  BYTE total_tanks = screenGetNumPlayers();
   clientMutexRelease();
 
   // Render the Base status window
@@ -2387,33 +2207,45 @@ void drawRedrawAll(int width, int height, buildSelect value,
     SDL_BlitSurface(lpTiles, &in, lpScreen, &out);
 
     for (int i = 1; i <= total_bases; i++) {
-      // BYTE ba = screenBaseAlliance(i);
       drawStatusBase(i, bas[i], showBasesStatus);
     }
   }
 
-  SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
-  /* Draw Pillbox Status */
-  clientMutexWaitFor();
-  drawSetPillsStatusClear();
-  total = screenNumPills();
-  for (count = 1; count <= total; count++) {
-    BYTE ba = screenPillAlliance(count);
-    drawStatusPillbox(count, (pillAlliance)ba, showPillsStatus);
-  }
-  clientMutexRelease();
-  drawCopyPillsStatus();
+  // Render the Pillbox status window
+  {
+    SDL_Rect in{.x = PILL_GOOD15_X,
+                .y = PILL_GOOD15_Y,
+                .w = TILE_SIZE_X,
+                .h = TILE_SIZE_Y};
+    SDL_Rect out{.x = STATUS_PILLS_MIDDLE_ICON_X + STATUS_PILLS_LEFT,
+                 .y = STATUS_PILLS_MIDDLE_ICON_Y + STATUS_PILLS_TOP,
+                 .w = TILE_SIZE_X,
+                 .h = TILE_SIZE_Y};
+    SDL_BlitSurface(lpTiles, &in, lpScreen, &out);
 
-  /* Draw Tanks Status */
-  drawSetTanksStatusClear();
-  clientMutexWaitFor();
-  total = screenGetNumPlayers();
-  for (count = 1; count <= MAX_TANKS; count++) {
-    bolo::tankAlliance ba = screenTankAlliance(count);
-    drawStatusTank(count, ba);
+    for (int i = 1; i <= total_pills; i++) {
+      drawStatusPillbox(i, pas[i], showPillsStatus);
+    }
   }
-  clientMutexRelease();
-  drawCopyTanksStatus();
+
+  // Render Tank status
+  {
+    SDL_Rect in{.x = TANK_SELF_0_X,
+                .y = TANK_SELF_0_Y,
+                .w = TILE_SIZE_X,
+                .h = TILE_SIZE_Y};
+    SDL_Rect out{.x = STATUS_TANKS_MIDDLE_ICON_X + STATUS_TANKS_LEFT,
+                 .y = STATUS_TANKS_MIDDLE_ICON_Y + STATUS_TANKS_TOP,
+                 .w = TILE_SIZE_X,
+                 .h = TILE_SIZE_Y};
+    SDL_BlitSurface(lpTiles, &in, lpScreen, &out);
+
+    for (int i = 1; i <= total_tanks; i++) {
+      drawStatusTank(i, tas[i]);
+    }
+  }
+
+  SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
 
   /* Draw tank Bars */
   clientMutexWaitFor();

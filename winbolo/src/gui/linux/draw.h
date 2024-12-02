@@ -135,87 +135,6 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
                     BYTE cursorTop);
 
 /*********************************************************
- * *NAME:          drawSetPillsStatusClear
- *AUTHOR:        John Morrison
- *CREATION DATE: 23/1/98
- *LAST MODIFIED: 23/1/98
- *PURPOSE:
- *  Clears the pills status display.
- *
- *ARGUMENTS:
- *********************************************************/
-void drawSetPillsStatusClear(void);
-
-/*********************************************************
- *NAME:          drawSetTanksStatusClear
- *AUTHOR:        John Morrison
- *CREATION DATE: 14/2/98
- *LAST MODIFIED: 14/2/98
- *PURPOSE:
- *  Clears the tanks status display.
- *
- *ARGUMENTS:
- *********************************************************/
-void drawSetTanksStatusClear(void);
-
-/*********************************************************
- *NAME:          drawCopyPillsStatus
- *AUTHOR:        John Morrison
- *CREATION DATE: 23/1/98
- *LAST MODIFIED: 23/1/98
- *PURPOSE:
- *  Copys the pills status on to the primary buffer
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *********************************************************/
-void drawCopyPillsStatus();
-
-/*********************************************************
- *NAME:          drawCopyTanksStatus
- *AUTHOR:        John Morrison
- *CREATION DATE: 14/2/98
- *LAST MODIFIED: 14/2/98
- *PURPOSE:
- *  Copys the tanks status on to the primary buffer
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *********************************************************/
-void drawCopyTanksStatus();
-
-/*********************************************************
- *NAME:          drawStatusPillbox
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/12/98
- *LAST MODIFIED: 23/1/99
- *PURPOSE:
- *  Draws the pillbox status for a particular pillbox
- *
- *ARGUMENTS:
- *  pillNum - The tank number to draw (1-16)
- *  pb      - The allience of the pillbox
- *  labels  - Should labels be drawn?
- *********************************************************/
-void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels);
-
-/*********************************************************
- *NAME:          drawStatusTank
- *AUTHOR:        John Morrison
- *CREATION DATE: 14/2/99
- *LAST MODIFIED: 14/2/99
- *PURPOSE:
- *  Draws the tank status for a particular tank
- *
- *ARGUMENTS:
- *  tankNum - The tank number to draw (1-16)
- *  ta      - The allience of the pillbox
- *********************************************************/
-void drawStatusTank(BYTE tankNum, bolo::tankAlliance ta);
-
-/*********************************************************
  *NAME:          drawStatusTankBars
  *AUTHOR:        John Morrison
  *CREATION DATE: 22/12/98
@@ -270,8 +189,10 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
  *  showBasesStatus - Should the the base status be shown
  *********************************************************/
 void drawRedrawAll(int width, int height, buildSelect value,
-                   const std::vector<baseAlliance> &bas, bool showPillsStatus,
-                   bool showBasesStatus);
+                   const std::vector<baseAlliance> &bas,
+                   const std::vector<pillAlliance> &pas,
+                   const std::vector<bolo::tankAlliance> &tas,
+                   bool showPillsStatus, bool showBasesStatus);
 
 /*********************************************************
  *NAME:          drawMessages
