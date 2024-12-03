@@ -84,7 +84,8 @@ GtkWidget *dialogAboutCreate(void) {
   gtk_box_pack_start(GTK_BOX(hbox1), pixmap1, TRUE, TRUE, 0);
 
   label2 = gtk_label_new(
-      "LinBolo  - v1.13\nLinBolo Copyright 1998-2003 John Morrison\nBolo "
+      "Bolo  - v1.91\nCopyright 2024-    Hyrum Wright\nCopyright 1998-2003 "
+      "John Morrison\n"
       "Copyright 1987-1995 Stuart Cheshire\n");
   gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
   gtk_widget_ref(label2);
