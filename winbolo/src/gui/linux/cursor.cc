@@ -122,9 +122,9 @@ void cursorSetCursor(bool normalCurs) {
  *  rcWindow - Rect with the windows co-ordinates
  *********************************************************/
 void cursorMove(int mouseX, int mouseY) {
-  int xPos;        /* X and Y positions of the mouse adjusted */
-  int yPos;        /* to the window */
-  int left;        /* Rect co-ordinates */
+  int xPos; /* X and Y positions of the mouse adjusted */
+  int yPos; /* to the window */
+  int left; /* Rect co-ordinates */
   int right;
   int top;
   int bottom;
@@ -175,9 +175,9 @@ void cursorMove(int mouseX, int mouseY) {
 bool cursorPos(int mouseX, int mouseY, BYTE *xValue, BYTE *yValue) {
   static int oldX; /* Cursor old pos */
   static int oldY;
-  int xPos;        /* X and Y positions of the mouse adjusted */
-  int yPos;        /* to the window */
-  div_t dt;        /* Used for integer division */
+  int xPos; /* X and Y positions of the mouse adjusted */
+  int yPos; /* to the window */
+  div_t dt; /* Used for integer division */
 
   if (cursorInMainView) {
     if (mouseX != oldX || mouseY != oldY) {

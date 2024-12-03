@@ -923,7 +923,7 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   // TURNTYPE oldAngle; /* Copy of the angle parameter */
   double dbAngle; /* Angle in radians */
   double dbTemp;
-  int addX;        /* X And and Y co-ordinates */
+  int addX; /* X And and Y co-ordinates */
   int addY;
   int left, top;
 
@@ -1003,7 +1003,8 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
     lastManX = 0;
   } else {
     draw_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
-                MAN_STATUS_WIDTH / 2, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
+                MAN_STATUS_WIDTH / 2,
+                SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
     draw_line(lpScreen, MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y,
               addX, addY, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
 
@@ -1849,8 +1850,8 @@ void drawMainScreen(SDL_Surface *surface, const bolo::ScreenTiles &tiles,
   BYTE y;
   int outputX; /* X and Y co-ordinates in the tile image */
   int outputY;
-  BYTE pos;        /* Current position */
-  char str[255];   /* Frame Rate Counting Stuff */
+  BYTE pos;      /* Current position */
+  char str[255]; /* Frame Rate Counting Stuff */
   bool isPill;   /* Is the square a pill */
   bool isBase;   /* Is the square a base */
   BYTE labelNum; /* Returns the label number */

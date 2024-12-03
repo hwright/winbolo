@@ -162,7 +162,7 @@ static bool labelSelf = FALSE;
 static labelLen labelMsg = lblShort;
 static labelLen labelTank = lblShort;
 
-#define itoa(X) std::format("{}", (int) X)
+#define itoa(X) std::format("{}", (int)X)
 
 static keyItems keys;
 

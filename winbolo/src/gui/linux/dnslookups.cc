@@ -25,8 +25,8 @@
  *********************************************************/
 
 #ifdef _WIN32
-#include <windows.h>
 #include <winbase.h>
+#include <windows.h>
 #else
 #include "SDL.h"
 #include "SDL_thread.h"
@@ -91,27 +91,27 @@ bool dnsLookupsCreate(void) {
 void dnsLookupsDestroy(void) {
   dnsList del; /* Use to delete our queues */
 
-    /* Wait for current to finish */
-    dnsShouldRun = false;
-    while (!dnsFinished) {
-      /* Wait a bit for the last call to finish */
-      sleep(DNS_SHUTDOWN_SLEEP_TIME_LINUX);
-    }
-    SDL_WaitThread(hDnsThread, nullptr);
+  /* Wait for current to finish */
+  dnsShouldRun = false;
+  while (!dnsFinished) {
+    /* Wait a bit for the last call to finish */
+    sleep(DNS_SHUTDOWN_SLEEP_TIME_LINUX);
+  }
+  SDL_WaitThread(hDnsThread, nullptr);
 
-    /* Free our list queues */
-    hDnsMutexHandle.lock();
-    while (NonEmpty(dnsProcessing)) {
-      del = dnsProcessing;
-      dnsProcessing = dnsProcessing->next;
-      delete del;
-    }
-    while (NonEmpty(dnsWaiting)) {
-      del = dnsWaiting;
-      dnsWaiting = dnsWaiting->next;
-      delete del;
-    }
-    hDnsMutexHandle.unlock();
+  /* Free our list queues */
+  hDnsMutexHandle.lock();
+  while (NonEmpty(dnsProcessing)) {
+    del = dnsProcessing;
+    dnsProcessing = dnsProcessing->next;
+    delete del;
+  }
+  while (NonEmpty(dnsWaiting)) {
+    del = dnsWaiting;
+    dnsWaiting = dnsWaiting->next;
+    delete del;
+  }
+  hDnsMutexHandle.unlock();
 }
 
 /*********************************************************
