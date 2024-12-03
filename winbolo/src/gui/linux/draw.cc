@@ -298,7 +298,7 @@ bool drawSetup() {
   }
 
   /* Create the back buffer surface */
-  if (returnValue == true) {
+  if (returnValue) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         SDL_HWSURFACE, MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
         MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
@@ -316,7 +316,7 @@ bool drawSetup() {
   }
 
   /* Create the tile buffer and copy the bitmap into it */
-  if (returnValue == true) {
+  if (returnValue) {
     /* Create the buffer */
     FILE *fp = fopen(fileName, "wb");
     fwrite(buff, 80438, 1, fp);
@@ -350,7 +350,7 @@ bool drawSetup() {
   in.h = TILE_SIZE_Y;
 
   // Load the background surface
-  if (returnValue == true) {
+  if (returnValue) {
     SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
     lpBackground = IMG_LoadPNG_RW(rw);
     if (lpBackground == nullptr) {
@@ -361,7 +361,7 @@ bool drawSetup() {
   }
 
   /* Create the Base status window */
-  if (returnValue == true) {
+  if (returnValue) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         0, STATUS_BASES_WIDTH, STATUS_BASES_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
@@ -391,7 +391,7 @@ bool drawSetup() {
     }
   }
   /* Makes the pills status */
-  if (returnValue == true) {
+  if (returnValue) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         0, STATUS_PILLS_WIDTH, STATUS_PILLS_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
@@ -422,7 +422,7 @@ bool drawSetup() {
   }
 
   /* Makes the tanks status */
-  if (returnValue == true) {
+  if (returnValue) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         0, STATUS_TANKS_WIDTH, STATUS_TANKS_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
@@ -451,7 +451,7 @@ bool drawSetup() {
       }
     }
   }
-  if (returnValue == true) {
+  if (returnValue) {
     if (TTF_Init() < 0) {
       MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
       returnValue = false;
@@ -647,7 +647,7 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   SDL_LockSurface(lpScreen);
   addY += top;
   addX += left;
-  if (isDead == true) {
+  if (isDead) {
     /* Draw dead circle */
     fill_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
                 MAN_STATUS_WIDTH / 2,
@@ -1525,7 +1525,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
     drawStartDelay(srtDelay);
     return;
   }
-  while (done == false) {
+  while (!done) {
     pos = tiles[x][y].terrain;
     isPill = false;
     isBase = false;
@@ -1568,7 +1568,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
     }
 
     /* Draw the pillNumber or base Number if required */
-    if (isPill == true && showPillLabels == true) {
+    if (isPill && showPillLabels) {
       labelNum = screenPillNumPos(x, y);
       sprintf(str, "%d", (labelNum - 1));
       lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
@@ -1580,7 +1580,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
       SDL_FreeSurface(lpTextSurface);
     }
 
-    if (isBase == true && showBaseLabels == true) {
+    if (isBase && showBaseLabels) {
       labelNum = screenBaseNumPos(x, y);
       sprintf(str, "%d", (labelNum - 1));
       lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
@@ -1624,7 +1624,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   }
 
   /* Draw the Cursor Square if required */
-  if (useCursor == true) {
+  if (useCursor) {
     in.x = MOUSE_SQUARE_X;
     in.w = TILE_SIZE_X;
     in.y = MOUSE_SQUARE_Y;
@@ -1647,7 +1647,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   output.w = in.w;
   output.h = in.h;
 
-  if (isPillView == true) {
+  if (isPillView) {
     /* we are in pillbox view - Write text here */
     drawPillInView();
   }
@@ -1942,7 +1942,7 @@ void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpBasesStatus, &dest);
-  if (labels == true) {
+  if (labels) {
     /* Must draw the label */
     sprintf(str, "%d", (baseNum - 1));
     /* FIXME    if
@@ -2088,7 +2088,7 @@ void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpPillsStatus, &dest);
-  if (labels == true) {
+  if (labels) {
     /* Must draw the label */
     sprintf(str, "%d", (pillNum - 1));
     /* FIXME:    if
@@ -2306,8 +2306,8 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
   Uint32 color; /* Fill green colour */
 
   if (lastShells != shells || lastMines != mines || lastArmour != armour ||
-      redraw == true) {
-    if (redraw == false) {
+      redraw) {
+    if (!redraw) {
       lastShells = shells;
       lastMines = mines;
       lastArmour = armour;
@@ -2620,7 +2620,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
   drawKillsDeaths(0, 0, kills, deaths);
   drawStatusBaseBars(0, 0, 0, 0, 0, true);
   screenGetLgmStatus(&lgmIsOut, &lgmIsDead, &lgmAngle);
-  if (lgmIsOut == true) {
+  if (lgmIsOut) {
     drawSetManStatus(lgmIsDead, lgmAngle, false);
   }
   clientMutexRelease();
@@ -2686,7 +2686,7 @@ void drawDownloadScreen(bool justBlack) {
   SDL_FillRect(lpBackBuffer, nullptr,
                SDL_MapRGB(lpBackBuffer->format, 0, 0, 0));
   /* Fill the downloaded area white */
-  if (justBlack == false) {
+  if (!justBlack) {
     output.x = 0;
     output.y = 0;
     output.h = netGetDownloadPos();
