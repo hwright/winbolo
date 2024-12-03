@@ -58,20 +58,15 @@ GtkWidget *create_MessageBox(const char *name, const char *label) {
   GtkWidget *label1;
   GtkWidget *idc_messageboxok;
 
-  MessageBox = gtk_window_new(GTK_WINDOW_DIALOG);
+  MessageBox = gtk_dialog_new();
   gtk_object_set_data(GTK_OBJECT(MessageBox), "name", MessageBox);
   gtk_window_set_title(GTK_WINDOW(MessageBox), name);
   gtk_window_set_policy(GTK_WINDOW(MessageBox), FALSE, FALSE, FALSE);
   gtk_window_set_position(GTK_WINDOW(MessageBox), GTK_WIN_POS_CENTER);
   gtk_window_set_modal(GTK_WINDOW(MessageBox), TRUE);
 
-  vbox1 = gtk_vbox_new(FALSE, 0);
-  gtk_widget_ref(vbox1);
-  gtk_object_set_data_full(GTK_OBJECT(MessageBox), "vbox1", vbox1,
-                           (GtkDestroyNotify)gtk_widget_unref);
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(MessageBox));
   gtk_container_set_border_width(GTK_CONTAINER(vbox1), 5);
-  gtk_widget_show(vbox1);
-  gtk_container_add(GTK_CONTAINER(MessageBox), vbox1);
 
   label1 = gtk_label_new(label);
   gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);

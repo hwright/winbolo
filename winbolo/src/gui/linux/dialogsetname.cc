@@ -45,7 +45,6 @@ static gboolean dialogSetNameOK(GtkWidget *widget, GdkEventKey *event,
   bool changeOK;                 /* Is the name change ok */
   char oldName[PLAYER_NAME_LEN]; /* Old player name */
   char newName[PLAYER_NAME_LEN]; /* New player name */
-  gchar *str;
 
   /* Set the name */
   oldName[0] = '\0';
@@ -54,7 +53,7 @@ static gboolean dialogSetNameOK(GtkWidget *widget, GdkEventKey *event,
   changeOK = TRUE;
 
   screenGetPlayerName(oldName);
-  str = gtk_entry_get_text(GTK_ENTRY(idc_setnametxt));
+  const gchar *str = gtk_entry_get_text(GTK_ENTRY(idc_setnametxt));
   strncpy(newName, str, sizeof(newName));
   newName[PLAYER_NAME_LAST] = '\0';
 
@@ -119,7 +118,7 @@ GtkWidget *dialogSetNameCreate(bool inGame) {
 
   setNameInGame = inGame;
 
-  dialogSetName = gtk_window_new(GTK_WINDOW_DIALOG);
+  dialogSetName = gtk_dialog_new();
   gtk_object_set_data(GTK_OBJECT(dialogSetName), "dialogSetName",
                       dialogSetName);
   gtk_container_set_border_width(GTK_CONTAINER(dialogSetName), 10);
@@ -128,12 +127,7 @@ GtkWidget *dialogSetNameCreate(bool inGame) {
   gtk_window_set_modal(GTK_WINDOW(dialogSetName), TRUE);
   gtk_window_set_policy(GTK_WINDOW(dialogSetName), FALSE, FALSE, FALSE);
 
-  vbox1 = gtk_vbox_new(FALSE, 0);
-  gtk_widget_ref(vbox1);
-  gtk_object_set_data_full(GTK_OBJECT(dialogSetName), "vbox1", vbox1,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(vbox1);
-  gtk_container_add(GTK_CONTAINER(dialogSetName), vbox1);
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogSetName));
 
   label1 = gtk_label_new("Enter the new player name for your tank");
   gtk_widget_ref(label1);

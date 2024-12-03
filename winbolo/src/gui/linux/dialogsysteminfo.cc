@@ -144,7 +144,7 @@ GtkWidget *dialogSystemInfoCreate(void) {
   GtkWidget *hbox13;
   GtkWidget *label24;
 
-  dialogSystemInfo = gtk_window_new(GTK_WINDOW_DIALOG);
+  dialogSystemInfo = gtk_dialog_new();
   gtk_object_set_data(GTK_OBJECT(dialogSystemInfo), "dialogSystemInfo",
                       dialogSystemInfo);
   gtk_widget_set_usize(dialogSystemInfo, 300, 150);
@@ -152,12 +152,7 @@ GtkWidget *dialogSystemInfoCreate(void) {
   gtk_window_set_title(GTK_WINDOW(dialogSystemInfo),
                        "LinBolo System Information");
   gtk_window_set_policy(GTK_WINDOW(dialogSystemInfo), FALSE, FALSE, FALSE);
-  vbox1 = gtk_vbox_new(FALSE, 0);
-  gtk_widget_ref(vbox1);
-  gtk_object_set_data_full(GTK_OBJECT(dialogSystemInfo), "vbox1", vbox1,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(vbox1);
-  gtk_container_add(GTK_CONTAINER(dialogSystemInfo), vbox1);
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogSystemInfo));
 
   hbox7 = gtk_hbox_new(FALSE, 0);
   gtk_widget_ref(hbox7);

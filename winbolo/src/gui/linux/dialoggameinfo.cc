@@ -111,7 +111,7 @@ GtkWidget *dialogGameInfoCreate(void) {
   bool bTemp;                 /* Used for holding misc bool variables */
   gameType *t;
 
-  dialogGameInfo = gtk_window_new(GTK_WINDOW_DIALOG);
+  dialogGameInfo = gtk_dialog_new();
   gtk_object_set_data(GTK_OBJECT(dialogGameInfo), "dialogGameInfo",
                       dialogGameInfo);
   gtk_widget_set_usize(dialogGameInfo, 300, 150);

@@ -258,7 +258,7 @@ gint windowclose(GtkWidget *widget, gpointer gdata) {
     gtk_widget_destroy(windowNetInfo);
     windowNetInfo = nullptr;
   }
-  gdk_key_repeat_restore();
+  // gdk_key_repeat_restore();
   gtk_main_quit();
   return FALSE;
 }
@@ -271,8 +271,8 @@ void saveFileCancel(GtkWidget *w, GtkFileSelection *fs) {
 }
 
 void saveFileOK(GtkWidget *w, GtkFileSelection *fs) {
-  gchar *sTempFile;
-  sTempFile = gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs));
+  const gchar *sTempFile =
+      gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs));
   strcpy(saveFileName, sTempFile);
   gtk_widget_destroy(saveFileW);
 }
@@ -339,7 +339,7 @@ gboolean release_event(GtkWidget *widget, GdkEventKey *event,
 }
 
 gint windowLoseFocus(GtkWidget *widget, gpointer data) {
-  gdk_key_repeat_restore();
+  // gdk_key_repeat_restore();
   return 0;
 }
 
@@ -372,7 +372,7 @@ gint windowGetFocus(GtkWidget *widget, gpointer data) {
                 std::nullopt, false, false);
   clientMutexRelease();
   frameMutexRelease();
-  gdk_key_repeat_disable();
+  // gdk_key_repeat_disable();
   return 0;
 }
 
@@ -1346,7 +1346,6 @@ int main(int argc, char **argv) {
   mkdir(mkDirPath, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
   g_free(mkDirPath);
 
-  g_thread_init(nullptr);
   gtk_init(&argc, &argv);
 
   timeLen = UNLIMITED_GAME_TIME;
@@ -1397,7 +1396,7 @@ int main(int argc, char **argv) {
     gdk_threads_enter();
     gtk_main();
     gdk_threads_leave();
-    gdk_key_repeat_restore();
+    // gdk_key_repeat_restore();
     if (isQuiting == FALSE) {
       gtk_widget_hide(window);
     }
@@ -2164,7 +2163,6 @@ void menus(GtkWidget *window) {
   GtkWidget *vbox1;
   GtkWidget *file1;
   GtkWidget *file1_menu;
-  // GtkAccelGroup *file1_menu_accels;
   GtkWidget *new1;
   GtkWidget *save_map1;
   GtkWidget *separator1;
@@ -2176,23 +2174,19 @@ void menus(GtkWidget *window) {
   GtkWidget *exit1;
   GtkWidget *edit1;
   GtkWidget *edit1_menu;
-  // GtkAccelGroup *edit1_menu_accels;
   GtkWidget *window_size1;
   GtkWidget *window_size1_menu;
-  // GtkAccelGroup *window_size1_menu_accels;
   GSList *_3_group = nullptr;
   GtkWidget *normal1;
   GtkWidget *double1;
   GtkWidget *quad1;
   GtkWidget *message_sender_names1;
   GtkWidget *message_sender_names1_menu;
-  // GtkAccelGroup *message_sender_names1_menu_accels;
   GSList *_0_group = nullptr;
   GtkWidget *short1;
   GtkWidget *long1;
   GtkWidget *tank_labels1;
   GtkWidget *tank_labels1_menu;
-  // GtkAccelGroup *tank_labels1_menu_accels;
   GSList *_1_group = nullptr;
   GtkWidget *none1;
   GtkWidget *short2;
@@ -2204,7 +2198,6 @@ void menus(GtkWidget *window) {
   GtkWidget *hide_main_view1;
   GtkWidget *linbolo1;
   GtkWidget *linbolo1_menu;
-  // GtkAccelGroup *linbolo1_menu_accels;
   GtkWidget *allow_new_players1;
   GtkWidget *allow_alliance_request1;
   GtkWidget *set_keys1;
@@ -2218,7 +2211,6 @@ void menus(GtkWidget *window) {
   GtkWidget *separator6;
   GtkWidget *players1;
   GtkWidget *players1_menu;
-  // GtkAccelGroup *players1_menu_accels;
   GtkWidget *send_message1;
   GtkWidget *separator7;
   GtkWidget *select_all1;
@@ -2227,11 +2219,9 @@ void menus(GtkWidget *window) {
   GtkWidget *select_nearby_tanks1;
   GtkWidget *separator8;
   GtkWidget *brains1;
-  // GtkAccelGroup *brains1_menu_accels;
   GtkWidget *separator9;
   GtkWidget *help1;
   GtkWidget *help1_menu;
-  // GtkAccelGroup *help1_menu_accels;
   GtkWidget *help2;
   GtkWidget *about1;
   GtkAccelGroup *accel_group;
@@ -2264,8 +2254,6 @@ void menus(GtkWidget *window) {
   gtk_object_set_data_full(GTK_OBJECT(window), "file1_menu", file1_menu,
                            (GtkDestroyNotify)gtk_widget_unref);
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(file1), file1_menu);
-  /*file1_menu_accels =*/gtk_menu_ensure_uline_accel_group(
-      GTK_MENU(file1_menu));
 
   new1 = gtk_menu_item_new_with_label("New");
   gtk_widget_ref(new1);
@@ -2344,8 +2332,6 @@ void menus(GtkWidget *window) {
   gtk_object_set_data_full(GTK_OBJECT(window), "edit1_menu", edit1_menu,
                            (GtkDestroyNotify)gtk_widget_unref);
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(edit1), edit1_menu);
-  /*edit1_menu_accels =*/gtk_menu_ensure_uline_accel_group(
-      GTK_MENU(edit1_menu));
 
   window_size1 = gtk_menu_item_new_with_label("Window Size");
   gtk_widget_ref(window_size1);
@@ -2360,8 +2346,6 @@ void menus(GtkWidget *window) {
                            window_size1_menu,
                            (GtkDestroyNotify)gtk_widget_unref);
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(window_size1), window_size1_menu);
-  /*window_size1_menu_accels = */ gtk_menu_ensure_uline_accel_group(
-      GTK_MENU(window_size1_menu));
 
   normal1 = gtk_radio_menu_item_new_with_label(_3_group, "Normal");
   _3_group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(normal1));
@@ -2423,8 +2407,6 @@ void menus(GtkWidget *window) {
                            (GtkDestroyNotify)gtk_widget_unref);
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(message_sender_names1),
                             message_sender_names1_menu);
-  /*message_sender_names1_menu_accels = */ gtk_menu_ensure_uline_accel_group(
-      GTK_MENU(message_sender_names1_menu));
 
   short1 = gtk_radio_menu_item_new_with_label(_0_group, "Short");
   _0_group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(short1));
@@ -2456,8 +2438,6 @@ void menus(GtkWidget *window) {
                            tank_labels1_menu,
                            (GtkDestroyNotify)gtk_widget_unref);
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(tank_labels1), tank_labels1_menu);
-  /*tank_labels1_menu_accels = */ gtk_menu_ensure_uline_accel_group(
-      GTK_MENU(tank_labels1_menu));
 
   none1 = gtk_radio_menu_item_new_with_label(_1_group, "None");
   _1_group = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(none1));
@@ -2548,8 +2528,6 @@ void menus(GtkWidget *window) {
   gtk_object_set_data_full(GTK_OBJECT(window), "linbolo1_menu", linbolo1_menu,
                            (GtkDestroyNotify)gtk_widget_unref);
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(linbolo1), linbolo1_menu);
-  /*linbolo1_menu_accels =*/gtk_menu_ensure_uline_accel_group(
-      GTK_MENU(linbolo1_menu));
 
   allow_new_players1 = gtk_check_menu_item_new_with_label("Allow New Players");
   gtk_widget_ref(allow_new_players1);
@@ -2701,8 +2679,6 @@ void menus(GtkWidget *window) {
   gtk_object_set_data_full(GTK_OBJECT(window), "players1_menu", players1_menu,
                            (GtkDestroyNotify)gtk_widget_unref);
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(players1), players1_menu);
-  /*players1_menu_accels = */ gtk_menu_ensure_uline_accel_group(
-      GTK_MENU(players1_menu));
 
   send_message1 = gtk_menu_item_new_with_label("Send Message");
   gtk_widget_ref(send_message1);
@@ -2882,8 +2858,6 @@ void menus(GtkWidget *window) {
   gtk_object_set_data_full(GTK_OBJECT(window), "brains1_menu", brains1_menu,
                            (GtkDestroyNotify)gtk_widget_unref);
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(brains1), brains1_menu);
-  /*brains1_menu_accels = */ gtk_menu_ensure_uline_accel_group(
-      GTK_MENU(brains1_menu));
 
   manual1 = gtk_radio_menu_item_new_with_label(brainsGroup, "Manual");
   brainsGroup = gtk_radio_menu_item_group(GTK_RADIO_MENU_ITEM(manual1));
@@ -2915,8 +2889,6 @@ void menus(GtkWidget *window) {
   gtk_object_set_data_full(GTK_OBJECT(window), "help1_menu", help1_menu,
                            (GtkDestroyNotify)gtk_widget_unref);
   gtk_menu_item_set_submenu(GTK_MENU_ITEM(help1), help1_menu);
-  /*help1_menu_accels = */ gtk_menu_ensure_uline_accel_group(
-      GTK_MENU(help1_menu));
 
   help2 = gtk_menu_item_new_with_label("Help");
   gtk_widget_ref(help2);

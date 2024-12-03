@@ -510,7 +510,7 @@ GtkWidget *dialogGameFinderCreate(bool useTrack, char *title) {
 
   useTracker = useTrack;
 
-  dialogGameFinder = gtk_window_new(GTK_WINDOW_DIALOG);
+  dialogGameFinder = gtk_dialog_new();
   gtk_object_set_data(GTK_OBJECT(dialogGameFinder), "dialogGameFinder",
                       dialogGameFinder);
   gtk_container_set_border_width(GTK_CONTAINER(dialogGameFinder), 15);
@@ -518,12 +518,7 @@ GtkWidget *dialogGameFinderCreate(bool useTrack, char *title) {
   gtk_window_set_modal(GTK_WINDOW(dialogGameFinder), TRUE);
   gtk_window_set_position(GTK_WINDOW(dialogGameFinder), GTK_WIN_POS_CENTER);
   gtk_window_set_policy(GTK_WINDOW(dialogGameFinder), FALSE, FALSE, FALSE);
-  vbox1 = gtk_vbox_new(FALSE, 0);
-  gtk_widget_ref(vbox1);
-  gtk_object_set_data_full(GTK_OBJECT(dialogGameFinder), "vbox1", vbox1,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(vbox1);
-  gtk_container_add(GTK_CONTAINER(dialogGameFinder), vbox1);
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogGameFinder));
 
   hbox1 = gtk_hbox_new(FALSE, 0);
   gtk_widget_ref(hbox1);

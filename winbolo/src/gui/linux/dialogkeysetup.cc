@@ -126,7 +126,7 @@ GtkWidget *dialogKeySetupCreate(keyItems *value) {
   keySetupKeys.kiScrollLeft = value->kiScrollLeft;
   keySetupKeys.kiScrollRight = value->kiScrollRight;
 
-  dialogKeySetup = gtk_window_new(GTK_WINDOW_DIALOG);
+  dialogKeySetup = gtk_dialog_new();
   gtk_object_set_data(GTK_OBJECT(dialogKeySetup), "dialogKeySetup",
                       dialogKeySetup);
   gtk_container_set_border_width(GTK_CONTAINER(dialogKeySetup), 15);
@@ -135,12 +135,7 @@ GtkWidget *dialogKeySetupCreate(keyItems *value) {
   gtk_window_set_modal(GTK_WINDOW(dialogKeySetup), TRUE);
   gtk_window_set_policy(GTK_WINDOW(dialogKeySetup), FALSE, FALSE, FALSE);
 
-  vbox1 = gtk_vbox_new(FALSE, 0);
-  gtk_widget_ref(vbox1);
-  gtk_object_set_data_full(GTK_OBJECT(dialogKeySetup), "vbox1", vbox1,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(vbox1);
-  gtk_container_add(GTK_CONTAINER(dialogKeySetup), vbox1);
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogKeySetup));
 
   label1 = gtk_label_new(
       "Click on the option you wish to change then the next key pressed will "

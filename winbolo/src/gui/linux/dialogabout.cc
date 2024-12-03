@@ -54,18 +54,13 @@ GtkWidget *dialogAboutCreate(void) {
   GdkBitmap *pixmap_mask;
   GdkPixmap *pixmap_data;
 
-  dialogAbout = gtk_window_new(GTK_WINDOW_DIALOG);
+  dialogAbout = gtk_dialog_new();
   gtk_object_set_data(GTK_OBJECT(dialogAbout), "dialogAbout", dialogAbout);
   gtk_window_set_position(GTK_WINDOW(dialogAbout), GTK_WIN_POS_CENTER);
   gtk_window_set_modal(GTK_WINDOW(dialogAbout), TRUE);
   gtk_window_set_policy(GTK_WINDOW(dialogAbout), FALSE, FALSE, FALSE);
   gtk_container_set_border_width(GTK_CONTAINER(dialogAbout), 10);
-  vbox1 = gtk_vbox_new(FALSE, 0);
-  gtk_widget_ref(vbox1);
-  gtk_object_set_data_full(GTK_OBJECT(dialogAbout), "vbox1", vbox1,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(vbox1);
-  gtk_container_add(GTK_CONTAINER(dialogAbout), vbox1);
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogAbout));
 
   hbox1 = gtk_hbox_new(FALSE, 0);
   gtk_widget_ref(hbox1);
@@ -89,7 +84,8 @@ GtkWidget *dialogAboutCreate(void) {
   gtk_box_pack_start(GTK_BOX(hbox1), pixmap1, TRUE, TRUE, 0);
 
   label2 = gtk_label_new(
-      "LinBolo  - v1.13\nLinBolo Copyright 1998-2003 John Morrison\nBolo "
+      "Bolo  - v1.91\nCopyright 2024-    Hyrum Wright\nCopyright 1998-2003 "
+      "John Morrison\n"
       "Copyright 1987-1995 Stuart Cheshire\n");
   gtk_label_set_justify(GTK_LABEL(label2), GTK_JUSTIFY_LEFT);
   gtk_widget_ref(label2);
