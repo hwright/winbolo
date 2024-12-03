@@ -31,11 +31,12 @@
 
 #include "draw.h"
 
-#include <gdk/gdk.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <filesystem>
 
 #include "../../bolo/backend.h"
 #include "../../bolo/global.h"
@@ -280,41 +281,42 @@ bool drawSetup() {
 
   BYTE* buff = new BYTE[80438];
   /* Get tmp file */
-  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX", g_get_tmp_dir());
+  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX",
+           std::filesystem::temp_directory_path().c_str());
   int ret = lzwdecoding((char *)TILES_IMAGE, (char *)buff, 36499);
   if (ret != 80438) {
     free(buff);
     MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
-    return FALSE;
+    return false;
   }
 
-  returnValue = TRUE;
+  returnValue = true;
   lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
   if (lpScreen == nullptr) {
-    returnValue = FALSE;
+    returnValue = false;
     MessageBox("Can't build main surface", DIALOG_BOX_TITLE);
   }
 
   /* Create the back buffer surface */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         SDL_HWSURFACE, MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
         MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
     } else {
       lpBackBuffer = SDL_DisplayFormat(lpTemp);
       SDL_FreeSurface(lpTemp);
       if (lpBackBuffer == nullptr) {
-        returnValue = FALSE;
+        returnValue = false;
         MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
       }
     }
   }
 
   /* Create the tile buffer and copy the bitmap into it */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     /* Create the buffer */
     FILE *fp = fopen(fileName, "wb");
     fwrite(buff, 80438, 1, fp);
@@ -322,7 +324,7 @@ bool drawSetup() {
     lpTiles = SDL_LoadBMP(fileName);
     unlink(fileName);
     if (lpTiles == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
     } else {
       /* Colour key */
@@ -330,12 +332,12 @@ bool drawSetup() {
                             SDL_MapRGB(lpTiles->format, 0, 0xFF, 0));
       if (ret == -1) {
         MessageBox("Couldn't map colour key", DIALOG_BOX_TITLE);
-        returnValue = FALSE;
+        returnValue = false;
       } else {
         //      lpTiles = SDL_DisplayFormat(lpTemp);
         //	SDL_FreeSurface(lpTemp);
         if (lpTiles == nullptr) {
-          returnValue = FALSE;
+          returnValue = false;
           MessageBox("Can't build a tile file", DIALOG_BOX_TITLE);
         }
       }
@@ -348,29 +350,29 @@ bool drawSetup() {
   in.h = TILE_SIZE_Y;
 
   // Load the background surface
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
     lpBackground = IMG_LoadPNG_RW(rw);
     if (lpBackground == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't load background image", DIALOG_BOX_TITLE);
     }
     SDL_FreeRW(rw);
   }
 
   /* Create the Base status window */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         0, STATUS_BASES_WIDTH, STATUS_BASES_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
     } else {
       /* Fill the surface black */
       lpBasesStatus = SDL_DisplayFormat(lpTemp);
       SDL_FreeSurface(lpTemp);
       if (lpBasesStatus == nullptr) {
-        returnValue = FALSE;
+        returnValue = false;
         MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
       } else {
         SDL_Rect fill{.x = 0,
@@ -389,17 +391,17 @@ bool drawSetup() {
     }
   }
   /* Makes the pills status */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         0, STATUS_PILLS_WIDTH, STATUS_PILLS_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
     } else {
       lpPillsStatus = SDL_DisplayFormat(lpTemp);
       SDL_FreeSurface(lpTemp);
-      if (lpTemp == FALSE) {
-        returnValue = FALSE;
+      if (lpTemp == nullptr) {
+        returnValue = false;
         MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
       } else {
         /* Fill the surface black */
@@ -420,17 +422,17 @@ bool drawSetup() {
   }
 
   /* Makes the tanks status */
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         0, STATUS_TANKS_WIDTH, STATUS_TANKS_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
     } else {
       lpTankStatus = SDL_DisplayFormat(lpTemp);
       SDL_FreeSurface(lpTemp);
       if (lpTankStatus == nullptr) {
-        returnValue = FALSE;
+        returnValue = false;
         MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
       } else {
         /* Fill the surface black */
@@ -449,10 +451,10 @@ bool drawSetup() {
       }
     }
   }
-  if (returnValue == TRUE) {
+  if (returnValue == true) {
     if (TTF_Init() < 0) {
       MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
-      returnValue = FALSE;
+      returnValue = false;
     } else {
       lpFont = TTF_OpenFont("cour.ttf", 12);
       if (lpFont == nullptr) {
@@ -460,7 +462,7 @@ bool drawSetup() {
             "Couldn't open font file.\n Please place a courier font\ncalled "
             "\"cour.ttf\" in your\nLinBolo directory.",
             DIALOG_BOX_TITLE);
-        returnValue = FALSE;
+        returnValue = false;
       }
     }
   }
@@ -1479,7 +1481,7 @@ void drawStartDelay(long srtDelay) {
  *  showBaseLabels - Show the base labels?
  *  srtDelay       - The start delay in ticks.
  *                  If greater then 0 should draw countdown
- *  isPillView     - TRUE if we are in pillbox view
+ *  isPillView     - true if we are in pillbox view
  *  edgeX          - Edge X offset for smooth scrolling
  *  edgeY          - Edge Y offset for smooth scrolling
  *  useCursor      - True if to draw the cursor
@@ -1512,7 +1514,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
 
   x = 0;
   y = 0;
-  done = FALSE;
+  done = false;
   in.w = TILE_SIZE_X;
   in.h = TILE_SIZE_Y;
   output.w = TILE_SIZE_X;
@@ -1523,10 +1525,10 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
     drawStartDelay(srtDelay);
     return;
   }
-  while (done == FALSE) {
+  while (done == false) {
     pos = tiles[x][y].terrain;
-    isPill = FALSE;
-    isBase = FALSE;
+    isPill = false;
+    isBase = false;
     outputX = drawPosX[pos];
     outputY = drawPosY[pos];
     if (pos == PILL_EVIL_15 || pos == PILL_EVIL_14 || pos == PILL_EVIL_13 ||
@@ -1535,7 +1537,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
         pos == PILL_EVIL_6 || pos == PILL_EVIL_5 || pos == PILL_EVIL_4 ||
         pos == PILL_EVIL_3 || pos == PILL_EVIL_2 || pos == PILL_EVIL_1 ||
         pos == PILL_EVIL_0) {
-      isPill = TRUE;
+      isPill = true;
     }
     if (pos == PILL_GOOD_15 || pos == PILL_GOOD_14 || pos == PILL_GOOD_13 ||
         pos == PILL_GOOD_12 || pos == PILL_GOOD_11 || pos == PILL_GOOD_10 ||
@@ -1543,10 +1545,10 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
         pos == PILL_GOOD_6 || pos == PILL_GOOD_5 || pos == PILL_GOOD_4 ||
         pos == PILL_GOOD_3 || pos == PILL_GOOD_2 || pos == PILL_GOOD_1 ||
         pos == PILL_GOOD_0) {
-      isPill = TRUE;
+      isPill = true;
     }
     if (pos == BASE_GOOD || pos == BASE_NEUTRAL || pos == BASE_EVIL) {
-      isBase = TRUE;
+      isBase = true;
     }
 
     /* Drawing */
@@ -1566,7 +1568,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
     }
 
     /* Draw the pillNumber or base Number if required */
-    if (isPill == TRUE && showPillLabels == TRUE) {
+    if (isPill == true && showPillLabels == true) {
       labelNum = screenPillNumPos(x, y);
       sprintf(str, "%d", (labelNum - 1));
       lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
@@ -1578,7 +1580,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
       SDL_FreeSurface(lpTextSurface);
     }
 
-    if (isBase == TRUE && showBaseLabels == TRUE) {
+    if (isBase == true && showBaseLabels == true) {
       labelNum = screenBaseNumPos(x, y);
       sprintf(str, "%d", (labelNum - 1));
       lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
@@ -1596,7 +1598,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
       y++;
       x = 0;
       if (y == MAIN_BACK_BUFFER_SIZE_Y) {
-        done = TRUE;
+        done = true;
       }
     }
   }
@@ -1622,7 +1624,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   }
 
   /* Draw the Cursor Square if required */
-  if (useCursor == TRUE) {
+  if (useCursor == true) {
     in.x = MOUSE_SQUARE_X;
     in.w = TILE_SIZE_X;
     in.y = MOUSE_SQUARE_Y;
@@ -1645,7 +1647,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   output.w = in.w;
   output.h = in.h;
 
-  if (isPillView == TRUE) {
+  if (isPillView == true) {
     /* we are in pillbox view - Write text here */
     drawPillInView();
   }
@@ -1940,7 +1942,7 @@ void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpBasesStatus, &dest);
-  if (labels == TRUE) {
+  if (labels == true) {
     /* Must draw the label */
     sprintf(str, "%d", (baseNum - 1));
     /* FIXME    if
@@ -2086,7 +2088,7 @@ void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpPillsStatus, &dest);
-  if (labels == TRUE) {
+  if (labels == true) {
     /* Must draw the label */
     sprintf(str, "%d", (pillNum - 1));
     /* FIXME:    if
@@ -2304,8 +2306,8 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
   Uint32 color; /* Fill green colour */
 
   if (lastShells != shells || lastMines != mines || lastArmour != armour ||
-      redraw == TRUE) {
-    if (redraw == FALSE) {
+      redraw == true) {
+    if (redraw == false) {
       lastShells = shells;
       lastMines = mines;
       lastArmour = armour;
@@ -2616,10 +2618,10 @@ void drawRedrawAll(int width, int height, buildSelect value,
   drawMessages(0, 0, top, bottom);
   screenGetKillsDeaths(&kills, &deaths);
   drawKillsDeaths(0, 0, kills, deaths);
-  drawStatusBaseBars(0, 0, 0, 0, 0, TRUE);
+  drawStatusBaseBars(0, 0, 0, 0, 0, true);
   screenGetLgmStatus(&lgmIsOut, &lgmIsDead, &lgmAngle);
-  if (lgmIsOut == TRUE) {
-    drawSetManStatus(lgmIsDead, lgmAngle, FALSE);
+  if (lgmIsOut == true) {
+    drawSetManStatus(lgmIsDead, lgmAngle, false);
   }
   clientMutexRelease();
 }
@@ -2674,7 +2676,7 @@ void drawMessages(int xValue, int yValue, const char *top, const char *bottom) {
  *
  *ARGUMENTS:
  *  rcWindow  - Window Co-ordinates
- *  justBlack - TRUE if we want a black screen
+ *  justBlack - true if we want a black screen
  *********************************************************/
 void drawDownloadScreen(bool justBlack) {
   SDL_Rect output; /* Output RECT */
@@ -2684,7 +2686,7 @@ void drawDownloadScreen(bool justBlack) {
   SDL_FillRect(lpBackBuffer, nullptr,
                SDL_MapRGB(lpBackBuffer->format, 0, 0, 0));
   /* Fill the downloaded area white */
-  if (justBlack == FALSE) {
+  if (justBlack == false) {
     output.x = 0;
     output.y = 0;
     output.h = netGetDownloadPos();
