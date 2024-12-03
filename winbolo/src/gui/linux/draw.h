@@ -170,7 +170,5 @@ void drawRedrawAll(int width, int height, buildSelect value,
 void drawSetupArrays();
 
 void drawDownloadScreen(bool justBlack);
-void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking);
-void drawSetManClear();
 
 #endif

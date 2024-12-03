@@ -901,6 +901,118 @@ void drawKillsDeaths(int kills, int deaths) {
     SDL_FreeSurface(lpTextSurface);
   }
 }
+
+int lastManX = 0;
+int lastManY = 0;
+
+/*********************************************************
+ *NAME:          drawSetManStatus
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 18/1/98
+ *LAST MODIFIED: 18/1/98
+ *PURPOSE:
+ *  Draws the man arrow status. If isDead is set to true
+ *  then the angle is ignored.
+ *
+ *ARGUMENTS:
+ *  xValue  - The left position of the window
+ *  yValue  - The top position of the window
+ *  isDead - Is the man dead
+ *  angle  - The angle the item is facing
+ *********************************************************/
+void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
+  // TURNTYPE oldAngle; /* Copy of the angle parameter */
+  double dbAngle; /* Angle in radians */
+  double dbTemp;
+  int addX;        /* X And and Y co-ordinates */
+  int addY;
+  int left, top;
+
+  // oldAngle = angle;
+  angle += BRADIANS_SOUTH;
+  if (angle >= BRADIANS_MAX) {
+    angle -= BRADIANS_MAX;
+  }
+
+  if (angle >= BRADIANS_NORTH && angle < BRADIANS_EAST) {
+    /* Convert bradians to degrees */
+    dbAngle = (DEGREES_MAX / BRADIANS_MAX) * angle;
+    /* Convert degrees to radians */
+    dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
+
+    addX = MAN_STATUS_CENTER_X;
+    addY = MAN_STATUS_CENTER_Y;
+    dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
+    addX += (int)dbTemp;
+    dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
+    addY -= (int)dbTemp;
+  } else if (angle >= BRADIANS_EAST && angle < BRADIANS_SOUTH) {
+    angle = BRADIANS_SOUTH - angle;
+    /* Convert bradians to degrees */
+    dbAngle = (DEGREES_MAX / BRADIANS_MAX) * angle;
+    /* Convert degrees to radians */
+    dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
+
+    addX = MAN_STATUS_CENTER_X;
+    addY = MAN_STATUS_CENTER_Y;
+    dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
+    addX += (int)dbTemp;
+    dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
+    addY += (int)dbTemp;
+  } else if (angle >= BRADIANS_SOUTH && angle < BRADIANS_WEST) {
+    angle = BRADIANS_WEST - angle;
+    angle = BRADIANS_EAST - angle;
+    /* Convert bradians to degrees */
+    dbAngle = (DEGREES_MAX / BRADIANS_MAX) * angle;
+    /* Convert degrees to radians */
+    dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
+
+    addX = MAN_STATUS_CENTER_X;
+    addY = MAN_STATUS_CENTER_Y;
+    dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
+    addX -= (int)dbTemp;
+    dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
+    addY += (int)dbTemp;
+  } else {
+    angle = (float)BRADIANS_MAX - angle;
+    /* Convert bradians to degrees */
+    dbAngle = (DEGREES_MAX / BRADIANS_MAX) * angle;
+    /* Convert degrees to radians */
+    dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
+
+    addX = MAN_STATUS_CENTER_X;
+    addY = MAN_STATUS_CENTER_Y;
+    dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
+    addX -= (int)dbTemp;
+    dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
+    addY -= (int)dbTemp;
+  }
+
+  left = MAN_STATUS_X;
+  top = MAN_STATUS_Y;
+
+  // SDL does not give us native arc, circle or line methods, so we have
+  // to compute our own.
+  SDL_LockSurface(lpScreen);
+  addY += top;
+  addX += left;
+  if (isDead) {
+    /* Draw dead circle */
+    fill_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
+                MAN_STATUS_WIDTH / 2,
+                SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
+    lastManX = 0;
+  } else {
+    draw_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
+                MAN_STATUS_WIDTH / 2, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
+    draw_line(lpScreen, MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y,
+              addX, addY, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
+
+    lastManX = addX;
+    lastManY = addY;
+  }
+  SDL_UnlockSurface(lpScreen);
+}
 }
 
 /*********************************************************
@@ -1058,151 +1170,6 @@ void drawCleanup(void) {
     lpScreen = nullptr;
   }
 }
-
-int lastManX = 0;
-int lastManY = 0;
-
-/*********************************************************
- *NAME:          drawSetManClear
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/98
- *LAST MODIFIED: 18/1/98
- *PURPOSE:
- *  Clears the lgm status display.
- *
- *ARGUMENTS:
- *********************************************************/
-void drawSetManClear() {
-  SDL_Rect fill;
-  fill.x = MAN_STATUS_X;
-  fill.y = MAN_STATUS_Y;
-  fill.w = MAN_STATUS_WIDTH + 5;
-  fill.h = MAN_STATUS_HEIGHT + 5;
-  SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
-  SDL_UpdateRect(lpScreen, MAN_STATUS_X, MAN_STATUS_Y, MAN_STATUS_WIDTH,
-                 MAN_STATUS_HEIGHT);
-  lastManX = 0;
-  lastManY = 0;
-}
-
-/*********************************************************
- *NAME:          drawSetManStatus
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/98
- *LAST MODIFIED: 18/1/98
- *PURPOSE:
- *  Draws the man arrow status. If isDead is set to true
- *  then the angle is ignored.
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  isDead - Is the man dead
- *  angle  - The angle the item is facing
- *********************************************************/
-void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
-  // TURNTYPE oldAngle; /* Copy of the angle parameter */
-  double dbAngle; /* Angle in radians */
-  double dbTemp;
-  int addX;        /* X And and Y co-ordinates */
-  int addY;
-  int left, top;
-
-  // Clear the area
-  SDL_Rect fill;
-  fill.x = MAN_STATUS_X;
-  fill.y = MAN_STATUS_Y;
-  fill.w = MAN_STATUS_WIDTH + 5;
-  fill.h = MAN_STATUS_HEIGHT + 5;
-  SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
-
-  // oldAngle = angle;
-  angle += BRADIANS_SOUTH;
-  if (angle >= BRADIANS_MAX) {
-    angle -= BRADIANS_MAX;
-  }
-
-  if (angle >= BRADIANS_NORTH && angle < BRADIANS_EAST) {
-    /* Convert bradians to degrees */
-    dbAngle = (DEGREES_MAX / BRADIANS_MAX) * angle;
-    /* Convert degrees to radians */
-    dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
-
-    addX = MAN_STATUS_CENTER_X;
-    addY = MAN_STATUS_CENTER_Y;
-    dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
-    addX += (int)dbTemp;
-    dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
-    addY -= (int)dbTemp;
-  } else if (angle >= BRADIANS_EAST && angle < BRADIANS_SOUTH) {
-    angle = BRADIANS_SOUTH - angle;
-    /* Convert bradians to degrees */
-    dbAngle = (DEGREES_MAX / BRADIANS_MAX) * angle;
-    /* Convert degrees to radians */
-    dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
-
-    addX = MAN_STATUS_CENTER_X;
-    addY = MAN_STATUS_CENTER_Y;
-    dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
-    addX += (int)dbTemp;
-    dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
-    addY += (int)dbTemp;
-  } else if (angle >= BRADIANS_SOUTH && angle < BRADIANS_WEST) {
-    angle = BRADIANS_WEST - angle;
-    angle = BRADIANS_EAST - angle;
-    /* Convert bradians to degrees */
-    dbAngle = (DEGREES_MAX / BRADIANS_MAX) * angle;
-    /* Convert degrees to radians */
-    dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
-
-    addX = MAN_STATUS_CENTER_X;
-    addY = MAN_STATUS_CENTER_Y;
-    dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
-    addX -= (int)dbTemp;
-    dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
-    addY += (int)dbTemp;
-  } else {
-    angle = (float)BRADIANS_MAX - angle;
-    /* Convert bradians to degrees */
-    dbAngle = (DEGREES_MAX / BRADIANS_MAX) * angle;
-    /* Convert degrees to radians */
-    dbAngle = (dbAngle / DEGREES_MAX) * RADIANS_MAX;
-
-    addX = MAN_STATUS_CENTER_X;
-    addY = MAN_STATUS_CENTER_Y;
-    dbTemp = MAN_STATUS_RADIUS * (sin(dbAngle));
-    addX -= (int)dbTemp;
-    dbTemp = MAN_STATUS_RADIUS * (cos(dbAngle));
-    addY -= (int)dbTemp;
-  }
-
-  left = MAN_STATUS_X;
-  top = MAN_STATUS_Y;
-
-  // SDL does not give us native arc, circle or line methods, so we have
-  // to compute our own.
-  SDL_LockSurface(lpScreen);
-  addY += top;
-  addX += left;
-  if (isDead) {
-    /* Draw dead circle */
-    fill_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
-                MAN_STATUS_WIDTH / 2,
-                SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
-    lastManX = 0;
-  } else {
-    draw_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
-                MAN_STATUS_WIDTH / 2, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
-    draw_line(lpScreen, MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y,
-              addX, addY, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
-
-    lastManX = addX;
-    lastManY = addY;
-  }
-  SDL_UnlockSurface(lpScreen);
-  SDL_UpdateRect(lpScreen, left, top, MAN_STATUS_WIDTH, MAN_STATUS_HEIGHT);
-}
-
 /*********************************************************
  *NAME:          drawShells
  *AUTHOR:        John Morrison
@@ -2257,6 +2224,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
   screenGetTankStats(&shells, &mines, &armour, &trees);
   screenGetMessages(top, bottom);
   screenGetKillsDeaths(&kills, &deaths);
+  screenGetLgmStatus(&lgmIsOut, &lgmIsDead, &lgmAngle);
   clientMutexRelease();
 
   // Render the Base status window
@@ -2317,14 +2285,11 @@ void drawRedrawAll(int width, int height, buildSelect value,
   drawMessages(top, bottom);
   drawKillsDeaths(kills, deaths);
 
-  SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
-
-  clientMutexWaitFor();
-  screenGetLgmStatus(&lgmIsOut, &lgmIsDead, &lgmAngle);
   if (lgmIsOut) {
     drawSetManStatus(lgmIsDead, lgmAngle, false);
   }
-  clientMutexRelease();
+
+  SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
 }
 
 /*********************************************************
