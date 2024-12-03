@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
+find_package(GTK2 2.0 REQUIRED gtk)
+
 add_subdirectory(../../lzw lzw)
 add_subdirectory(../../server/BigDigits bd)
 
