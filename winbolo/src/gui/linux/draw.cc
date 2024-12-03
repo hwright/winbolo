@@ -199,6 +199,58 @@ void fill_circle(SDL_Surface *surface, int cx, int cy, int radius,
   }
 }
 
+void draw_line(SDL_Surface *surface, int x0, int y0, int x1, int y1,
+               Uint32 pixel) {
+  int dx = x1 - x0;
+  int dy = y1 - y0;
+  int incX = dx < 0 ? -1 : dx > 0 ? 1 : 0;
+  int incY = dy < 0 ? -1 : dy > 0 ? 1 : 0;
+  dx = abs(dx);
+  dy = abs(dy);
+
+  if (dy == 0) {
+    // horizontal line
+    for (int x = x0; x != x1 + incX; x += incX)
+      set_pixel(surface, x, y0, pixel);
+  } else if (dx == 0) {
+    // vertical line
+    for (int y = y0; y != y1 + incY; y += incY)
+      set_pixel(surface, x0, y, pixel);
+  } else if (dx >= dy) {
+    // more horizontal than vertical
+    int slope = 2 * dy;
+    int error = -dx;
+    int errorInc = -2 * dx;
+    int y = y0;
+
+    for (int x = x0; x != x1 + incX; x += incX) {
+      set_pixel(surface, x, y, pixel);
+      error += slope;
+
+      if (error >= 0) {
+        y += incY;
+        error += errorInc;
+      }
+    }
+  } else {
+    // more vertical than horizontal
+    int slope = 2 * dx;
+    int error = -dy;
+    int errorInc = -2 * dy;
+    int x = x0;
+
+    for (int y = y0; y != y1 + incY; y += incY) {
+      set_pixel(surface, x, y, pixel);
+      error += slope;
+
+      if (error >= 0) {
+        x += incX;
+        error += errorInc;
+      }
+    }
+  }
+}
+
 // Draws the background graphic. Returns if the operation
 // is successful or not.
 //
@@ -530,7 +582,13 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   int addY;
   int left, top;
 
-  // drawSetManClear(menuHeight); /* Clear the display */
+  // Clear the area
+  SDL_Rect fill;
+  fill.x = MAN_STATUS_X;
+  fill.y = MAN_STATUS_Y;
+  fill.w = MAN_STATUS_WIDTH + 5;
+  fill.h = MAN_STATUS_HEIGHT + 5;
+  SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
 
   // oldAngle = angle;
   angle += BRADIANS_SOUTH;
@@ -592,9 +650,6 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
     addY -= (int)dbTemp;
   }
 
-  if (needLocking == TRUE) {
-    gdk_threads_enter();
-  }
   left = MAN_STATUS_X;
   top = MAN_STATUS_Y;
 
@@ -612,15 +667,11 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   } else {
     draw_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
                 MAN_STATUS_WIDTH / 2, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
-    gdk_draw_line(drawingarea1->window, drawingarea1->style->white_gc,
-                  MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y, addX,
-                  addY);
+    draw_line(lpScreen, MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y,
+              addX, addY, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
 
     lastManX = addX;
     lastManY = addY;
-  }
-  if (needLocking == TRUE) {
-    gdk_threads_leave();
   }
   SDL_UnlockSurface(lpScreen);
   SDL_UpdateRect(lpScreen, left, top, MAN_STATUS_WIDTH, MAN_STATUS_HEIGHT);
