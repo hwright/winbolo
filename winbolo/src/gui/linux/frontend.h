@@ -19,6 +19,7 @@
 #define _LINUX_FRONTEND_H
 
 #include "../../bolo/frontend.h"
+#include "draw.h"
 
 namespace bolo {
 
@@ -60,20 +61,6 @@ class LinuxFrontend : public Frontend {
   std::vector<baseAlliance> base_status_;
   std::vector<tankAlliance> tank_status_;
   std::vector<pillAlliance> pill_status_;
-
-  struct MainScreenData {
-    std::optional<ScreenGunsight> gunsight_;
-    ScreenBulletList screen_bullet_list_;
-    ScreenLgmList screen_lgm_list_;
-    ScreenTankList screen_tank_list_;
-    ScreenTiles screen_tiles_;
-
-    int edgeX_ = 0;
-    int edgeY_ = 0;
-
-    long srtDelay_;
-    bool isPillView_;
-  };
 
   std::optional<MainScreenData> main_screen_data_;
 

@@ -369,7 +369,7 @@ gint windowGetFocus(GtkWidget *widget, gpointer data) {
     tas.push_back(screenTankAlliance(i));
   }
   drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, BsLinuxCurrent, bas, pas, tas,
-                false, false);
+                std::nullopt, false, false);
   clientMutexRelease();
   frameMutexRelease();
   gdk_key_repeat_disable();

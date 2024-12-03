@@ -65,7 +65,6 @@
 */
 /* SDL Surfaces */
 static SDL_Surface *lpScreen = nullptr;
-static SDL_Surface *lpBackBuffer = nullptr;
 static SDL_Surface *lpTiles = nullptr;
 static SDL_Surface *lpBackground = nullptr;
 static TTF_Font *lpFont = nullptr;
@@ -1709,163 +1708,7 @@ void drawLGMs(SDL_Surface *surface, const bolo::ScreenLgmList &lgms) {
     SDL_BlitSurface(lpTiles, &output, surface, &dest);
   }
 }
-}  // namespace
 
-/*********************************************************
- *NAME:          drawSetup
- *AUTHOR:        John Morrison
- *CREATION DATE: 13/10/98
- *LAST MODIFIED:  29/4/00
- *PURPOSE:
- *  Sets up drawing systems, direct draw structures etc.
- *  Returns whether the operation was successful or not
- *
- *ARGUMENTS:
- *********************************************************/
-bool drawSetup() {
-  bool returnValue; /* Value to return */
-  SDL_Rect in;      /* Used for copying the bases & pills icon in */
-  SDL_Rect out;     /* Used for copying the bases & pills icon in */
-  char fileName[FILENAME_MAX];
-
-  BYTE *buff = new BYTE[80438];
-  /* Get tmp file */
-  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX",
-           std::filesystem::temp_directory_path().c_str());
-  int ret = lzwdecoding((char *)TILES_IMAGE, (char *)buff, 36499);
-  if (ret != 80438) {
-    free(buff);
-    MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
-    return false;
-  }
-
-  returnValue = true;
-  lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
-  if (lpScreen == nullptr) {
-    returnValue = false;
-    MessageBox("Can't build main surface", DIALOG_BOX_TITLE);
-  }
-
-  /* Create the back buffer surface */
-  if (returnValue) {
-    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
-        SDL_HWSURFACE, MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
-        MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
-    if (lpTemp == nullptr) {
-      returnValue = false;
-      MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
-    } else {
-      lpBackBuffer = SDL_DisplayFormat(lpTemp);
-      SDL_FreeSurface(lpTemp);
-      if (lpBackBuffer == nullptr) {
-        returnValue = false;
-        MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
-      }
-    }
-  }
-
-  /* Create the tile buffer and copy the bitmap into it */
-  if (returnValue) {
-    /* Create the buffer */
-    FILE *fp = fopen(fileName, "wb");
-    fwrite(buff, 80438, 1, fp);
-    fclose(fp);
-    lpTiles = SDL_LoadBMP(fileName);
-    unlink(fileName);
-    if (lpTiles == nullptr) {
-      returnValue = false;
-      MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
-    } else {
-      /* Colour key */
-      ret = SDL_SetColorKey(lpTiles, SDL_SRCCOLORKEY,
-                            SDL_MapRGB(lpTiles->format, 0, 0xFF, 0));
-      if (ret == -1) {
-        MessageBox("Couldn't map colour key", DIALOG_BOX_TITLE);
-        returnValue = false;
-      } else {
-        //      lpTiles = SDL_DisplayFormat(lpTemp);
-        //	SDL_FreeSurface(lpTemp);
-        if (lpTiles == nullptr) {
-          returnValue = false;
-          MessageBox("Can't build a tile file", DIALOG_BOX_TITLE);
-        }
-      }
-    }
-  }
-
-  out.w = TILE_SIZE_X;
-  out.h = TILE_SIZE_Y;
-  in.w = TILE_SIZE_X;
-  in.h = TILE_SIZE_Y;
-
-  // Load the background surface
-  if (returnValue) {
-    SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
-    lpBackground = IMG_LoadPNG_RW(rw);
-    if (lpBackground == nullptr) {
-      returnValue = false;
-      MessageBox("Can't load background image", DIALOG_BOX_TITLE);
-    }
-    SDL_FreeRW(rw);
-  }
-  if (returnValue) {
-    if (TTF_Init() < 0) {
-      MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
-      returnValue = false;
-    } else {
-      lpFont = TTF_OpenFont("cour.ttf", 12);
-      if (lpFont == nullptr) {
-        MessageBox(
-            "Couldn't open font file.\n Please place a courier font\ncalled "
-            "\"cour.ttf\" in your\nLinBolo directory.",
-            DIALOG_BOX_TITLE);
-        returnValue = false;
-      }
-    }
-  }
-
-  g_dwFrameTime = SDL_GetTicks();
-  g_dwFrameCount = 0;
-  drawSetupArrays();
-
-  delete[] buff;
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          drawCleanup
- *AUTHOR:        John Morrison
- *CREATION DATE: 13/12/98
- *LAST MODIFIED: 13/2/98
- *PURPOSE:
- *  Destroys and cleans up drawing systems, direct draw
- *  structures etc.
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void drawCleanup(void) {
-  if (lpTiles != nullptr) {
-    SDL_FreeSurface(lpTiles);
-    lpTiles = nullptr;
-  }
-  if (lpBackBuffer != nullptr) {
-    SDL_FreeSurface(lpBackBuffer);
-    lpBackBuffer = nullptr;
-  }
-  if (lpFont != nullptr) {
-    TTF_CloseFont(lpFont);
-    TTF_Quit();
-  }
-  if (lpBackground != nullptr) {
-    SDL_FreeSurface(lpBackground);
-    lpBackground = nullptr;
-  }
-  if (lpScreen != nullptr) {
-    SDL_FreeSurface(lpScreen);
-    lpScreen = nullptr;
-  }
-}
 /*********************************************************
  *NAME:          drawPillInView
  *AUTHOR:        John Morrison
@@ -1877,7 +1720,7 @@ void drawCleanup(void) {
  *ARGUMENTS:
  *
  *********************************************************/
-void drawNetFailed() {
+void drawNetFailed(SDL_Surface *surface) {
   SDL_Surface *lpTextSurface;
 
   lpTextSurface = TTF_RenderText_Shaded(lpFont, "Network Failed -  Resyncing",
@@ -1889,7 +1732,7 @@ void drawNetFailed() {
                 .w = static_cast<Uint16>(lpTextSurface->w),
                 .h = static_cast<Uint16>(lpTextSurface->h)};
   /* Output it */
-  SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &dest);
+  SDL_BlitSurface(lpTextSurface, nullptr, surface, &dest);
   SDL_FreeSurface(lpTextSurface);
 }
 
@@ -1904,7 +1747,7 @@ void drawNetFailed() {
  *ARGUMENTS:
  *
  *********************************************************/
-void drawPillInView() {
+void drawPillInView(SDL_Surface *surface) {
   SDL_Surface *lpTextSurface;
 
   lpTextSurface = TTF_RenderText_Shaded(
@@ -1916,7 +1759,7 @@ void drawPillInView() {
                 .w = static_cast<Uint16>(lpTextSurface->w),
                 .h = static_cast<Uint16>(lpTextSurface->h)};
   /* Output it */
-  SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &dest);
+  SDL_BlitSurface(lpTextSurface, nullptr, surface, &dest);
   SDL_FreeSurface(lpTextSurface);
 }
 
@@ -1932,13 +1775,12 @@ void drawPillInView() {
  *  rcWindow - Window rectangle
  *  srtDelay - The start delay
  *********************************************************/
-void drawStartDelay(long srtDelay) {
+void drawStartDelay(SDL_Surface *surface, long srtDelay) {
   char str[FILENAME_MAX];    /* Output String */
   char strNum[FILENAME_MAX]; /* Holds the start delay as a string */
   SDL_Surface *lpTextSurface;
 
-  SDL_FillRect(lpBackBuffer, nullptr,
-               SDL_MapRGB(lpBackBuffer->format, 0, 0, 0));
+  SDL_FillRect(surface, nullptr, SDL_MapRGB(surface->format, 0, 0, 0));
   /* Prepare the string */
   srtDelay /= GAME_NUMGAMETICKS_SEC; /* Convert ticks back to seconds */
   sprintf(strNum, "%ld", srtDelay);
@@ -1950,8 +1792,8 @@ void drawStartDelay(long srtDelay) {
                  .y = TILE_SIZE_Y + 5,
                  .w = static_cast<Uint16>(lpTextSurface->w),
                  .h = static_cast<Uint16>(lpTextSurface->h)};
-    SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &src);
-    SDL_UpdateRect(lpBackBuffer, 0, 0, 0, 0);
+    SDL_BlitSurface(lpTextSurface, nullptr, surface, &src);
+    SDL_UpdateRect(surface, 0, 0, 0, 0);
     SDL_Rect in{.x = TILE_SIZE_X,
                 .y = TILE_SIZE_Y,
                 .w = MAIN_SCREEN_SIZE_X * TILE_SIZE_X,
@@ -1960,8 +1802,7 @@ void drawStartDelay(long srtDelay) {
     src.y = MAIN_OFFSET_Y;
     src.w = in.w;
     src.h = in.h;
-    SDL_BlitSurface(lpBackBuffer, &in, lpScreen, &src);
-    SDL_UpdateRect(lpScreen, src.x, src.y, src.w, src.h);
+    SDL_BlitSurface(surface, &in, lpScreen, &src);
     SDL_FreeSurface(lpTextSurface);
   }
 }
@@ -1993,7 +1834,7 @@ void drawStartDelay(long srtDelay) {
  *  cursorLeft     - Cursor left position
  *  cursorTop      - Cursor Top position
  *********************************************************/
-void drawMainScreen(const bolo::ScreenTiles &tiles,
+void drawMainScreen(SDL_Surface *surface, const bolo::ScreenTiles &tiles,
                     const bolo::ScreenTankList &tks,
                     const std::optional<bolo::ScreenGunsight> &gunsight,
                     const bolo::ScreenBulletList &sBullets,
@@ -2010,12 +1851,16 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   int outputY;
   BYTE pos;        /* Current position */
   char str[255];   /* Frame Rate Counting Stuff */
-  DWORD time;
   bool isPill;   /* Is the square a pill */
   bool isBase;   /* Is the square a base */
   BYTE labelNum; /* Returns the label number */
   SDL_Rect in;
   SDL_Surface *lpTextSurface;
+
+  SDL_Surface *lpTemp = SDL_CreateRGBSurface(
+      SDL_HWSURFACE, MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
+      MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
+  SDL_Surface *lpBackBuffer = SDL_DisplayFormat(lpTemp);
 
   x = 0;
   y = 0;
@@ -2027,7 +1872,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   str[0] = '\0';
   if (srtDelay > 0) {
     /* Waiting for game to start. Draw coutdown */
-    drawStartDelay(srtDelay);
+    drawStartDelay(lpBackBuffer, srtDelay);
     return;
   }
   while (!done) {
@@ -2154,24 +1999,151 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
 
   if (isPillView) {
     /* we are in pillbox view - Write text here */
-    drawPillInView();
+    drawPillInView(lpBackBuffer);
   }
 
   if (netGetStatus() == netFailed) {
-    drawNetFailed();
+    drawNetFailed(lpBackBuffer);
   }
 
-  SDL_BlitSurface(lpBackBuffer, &in, lpScreen, &output);
+  SDL_BlitSurface(lpBackBuffer, &in, surface, &output);
   SDL_UpdateRect(lpScreen, output.x, output.y, output.w, output.h);
+  SDL_FreeSurface(lpBackBuffer);
+  SDL_FreeSurface(lpTemp);
+}
+}  // namespace
 
-  /* Frame rate counting stuff */
-  g_dwFrameCount++;
-  time = SDL_GetTicks() - g_dwFrameTime;
-  if (time > 1000) {
-    g_dwFrameTotal = g_dwFrameCount;
-    sprintf(str, "%ld", g_dwFrameTotal);
-    g_dwFrameTime = SDL_GetTicks();
-    g_dwFrameCount = 0;
+/*********************************************************
+ *NAME:          drawSetup
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 13/10/98
+ *LAST MODIFIED:  29/4/00
+ *PURPOSE:
+ *  Sets up drawing systems, direct draw structures etc.
+ *  Returns whether the operation was successful or not
+ *
+ *ARGUMENTS:
+ *********************************************************/
+bool drawSetup() {
+  bool returnValue; /* Value to return */
+  SDL_Rect in;      /* Used for copying the bases & pills icon in */
+  SDL_Rect out;     /* Used for copying the bases & pills icon in */
+  char fileName[FILENAME_MAX];
+
+  BYTE *buff = new BYTE[80438];
+  /* Get tmp file */
+  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX",
+           std::filesystem::temp_directory_path().c_str());
+  int ret = lzwdecoding((char *)TILES_IMAGE, (char *)buff, 36499);
+  if (ret != 80438) {
+    free(buff);
+    MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
+    return false;
+  }
+
+  returnValue = true;
+  lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
+  if (lpScreen == nullptr) {
+    returnValue = false;
+    MessageBox("Can't build main surface", DIALOG_BOX_TITLE);
+  }
+
+  /* Create the tile buffer and copy the bitmap into it */
+  if (returnValue) {
+    /* Create the buffer */
+    FILE *fp = fopen(fileName, "wb");
+    fwrite(buff, 80438, 1, fp);
+    fclose(fp);
+    lpTiles = SDL_LoadBMP(fileName);
+    unlink(fileName);
+    if (lpTiles == nullptr) {
+      returnValue = false;
+      MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
+    } else {
+      /* Colour key */
+      ret = SDL_SetColorKey(lpTiles, SDL_SRCCOLORKEY,
+                            SDL_MapRGB(lpTiles->format, 0, 0xFF, 0));
+      if (ret == -1) {
+        MessageBox("Couldn't map colour key", DIALOG_BOX_TITLE);
+        returnValue = false;
+      } else {
+        //      lpTiles = SDL_DisplayFormat(lpTemp);
+        //	SDL_FreeSurface(lpTemp);
+        if (lpTiles == nullptr) {
+          returnValue = false;
+          MessageBox("Can't build a tile file", DIALOG_BOX_TITLE);
+        }
+      }
+    }
+  }
+
+  out.w = TILE_SIZE_X;
+  out.h = TILE_SIZE_Y;
+  in.w = TILE_SIZE_X;
+  in.h = TILE_SIZE_Y;
+
+  // Load the background surface
+  if (returnValue) {
+    SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
+    lpBackground = IMG_LoadPNG_RW(rw);
+    if (lpBackground == nullptr) {
+      returnValue = false;
+      MessageBox("Can't load background image", DIALOG_BOX_TITLE);
+    }
+    SDL_FreeRW(rw);
+  }
+  if (returnValue) {
+    if (TTF_Init() < 0) {
+      MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
+      returnValue = false;
+    } else {
+      lpFont = TTF_OpenFont("cour.ttf", 12);
+      if (lpFont == nullptr) {
+        MessageBox(
+            "Couldn't open font file.\n Please place a courier font\ncalled "
+            "\"cour.ttf\" in your\nLinBolo directory.",
+            DIALOG_BOX_TITLE);
+        returnValue = false;
+      }
+    }
+  }
+
+  g_dwFrameTime = SDL_GetTicks();
+  g_dwFrameCount = 0;
+  drawSetupArrays();
+
+  delete[] buff;
+  return returnValue;
+}
+
+/*********************************************************
+ *NAME:          drawCleanup
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 13/12/98
+ *LAST MODIFIED: 13/2/98
+ *PURPOSE:
+ *  Destroys and cleans up drawing systems, direct draw
+ *  structures etc.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+void drawCleanup(void) {
+  if (lpTiles != nullptr) {
+    SDL_FreeSurface(lpTiles);
+    lpTiles = nullptr;
+  }
+  if (lpFont != nullptr) {
+    TTF_CloseFont(lpFont);
+    TTF_Quit();
+  }
+  if (lpBackground != nullptr) {
+    SDL_FreeSurface(lpBackground);
+    lpBackground = nullptr;
+  }
+  if (lpScreen != nullptr) {
+    SDL_FreeSurface(lpScreen);
+    lpScreen = nullptr;
   }
 }
 
@@ -2195,6 +2167,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
                    const std::vector<baseAlliance> &bas,
                    const std::vector<pillAlliance> &pas,
                    const std::vector<bolo::tankAlliance> &tas,
+                   const std::optional<bolo::MainScreenData> &main_screen_data,
                    bool showPillsStatus, bool showBasesStatus) {
   BYTE shells; /* Tank amounts */
   BYTE mines;
@@ -2208,6 +2181,9 @@ void drawRedrawAll(int width, int height, buildSelect value,
   bool lgmIsOut;
   bool lgmIsDead;
   TURNTYPE lgmAngle;
+  uint8_t cursorX;
+  uint8_t cursorY;
+  bool showCursor;
 
   SDL_Rect destRect{.x = 0,
                     .y = 0,
@@ -2226,6 +2202,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
   screenGetMessages(top, bottom);
   screenGetKillsDeaths(&kills, &deaths);
   screenGetLgmStatus(&lgmIsOut, &lgmIsDead, &lgmAngle);
+  showCursor = screenGetCursorPos(&cursorX, &cursorY);
   clientMutexRelease();
 
   // Render the Base status window
@@ -2290,6 +2267,17 @@ void drawRedrawAll(int width, int height, buildSelect value,
     drawSetManStatus(lgmIsDead, lgmAngle, false);
   }
 
+  if (main_screen_data.has_value()) {
+    ::drawMainScreen(lpScreen, main_screen_data->screen_tiles_,
+                     main_screen_data->screen_tank_list_,
+                     main_screen_data->gunsight_,
+                     main_screen_data->screen_bullet_list_,
+                     main_screen_data->screen_lgm_list_, showPillsStatus,
+                     showBasesStatus, main_screen_data->srtDelay_,
+                     main_screen_data->isPillView_, main_screen_data->edgeX_,
+                     main_screen_data->edgeY_, showCursor, cursorX, cursorY);
+  }
+
   SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
 }
 
@@ -2310,20 +2298,19 @@ void drawDownloadScreen(bool justBlack) {
   SDL_Rect in;
 
   /* Fill the area black */
-  SDL_FillRect(lpBackBuffer, nullptr,
-               SDL_MapRGB(lpBackBuffer->format, 0, 0, 0));
+  SDL_FillRect(lpScreen, nullptr, SDL_MapRGB(lpScreen->format, 0, 0, 0));
   /* Fill the downloaded area white */
   if (!justBlack) {
     output.x = 0;
     output.y = 0;
     output.h = netGetDownloadPos();
     output.w = (MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y) + TILE_SIZE_Y;
-    SDL_FillRect(lpBackBuffer, &output,
-                 SDL_MapRGB(lpBackBuffer->format, 255, 255, 255));
+    SDL_FillRect(lpScreen, &output,
+                 SDL_MapRGB(lpScreen->format, 255, 255, 255));
   }
 
   /* Copy the back buffer to the window */
-  SDL_UpdateRect(lpBackBuffer, 0, 0, 0, 0);
+  SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
   in.x = TILE_SIZE_X + 2;
   in.y = TILE_SIZE_Y + 1;
   in.w = MAIN_SCREEN_SIZE_X * TILE_SIZE_X;
@@ -2333,7 +2320,6 @@ void drawDownloadScreen(bool justBlack) {
   output.w = in.w;
   output.h = in.h;
 
-  SDL_BlitSurface(lpBackBuffer, &in, lpScreen, &output);
   SDL_UpdateRect(lpScreen, output.x, output.y, output.w, output.h);
 }
 

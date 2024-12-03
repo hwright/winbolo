@@ -33,6 +33,24 @@
 #include "../../bolo/global.h"
 #include "SDL.h"
 
+namespace bolo {
+
+struct MainScreenData {
+  std::optional<ScreenGunsight> gunsight_;
+  ScreenBulletList screen_bullet_list_;
+  ScreenLgmList screen_lgm_list_;
+  ScreenTankList screen_tank_list_;
+  ScreenTiles screen_tiles_;
+
+  int edgeX_ = 0;
+  int edgeY_ = 0;
+
+  long srtDelay_;
+  bool isPillView_;
+};
+
+}  // namespace bolo
+
 /*********************************************************
  *NAME:          drawSetup
  *AUTHOR:        John Morrison
@@ -61,41 +79,6 @@ bool drawSetup();
 void drawCleanup(void);
 
 /*********************************************************
- *NAME:          drawMainScreen
- *AUTHOR:        John Morrison
- *CREATION DATE: 31/10/98
- *LAST MODIFIED: 27/05/00
- *PURPOSE:
- *  Updates the Main Window View
- *
- *ARGUMENTS:
- *  value    - Pointer to the sceen structure
- *  tks      - Pointer to the screen tank structure
- *  gs       - Pointer to the screen gunsight structure
- *  sBullets - The screen Bullets structure
- *  lgms     - Screen Builder structure
- *  rcWindow - Window region
- *  showPillLabels - Show the pillbox labels?
- *  showBaseLabels - Show the base labels?
- *  srtDelay       - The start delay in ticks.
- *                  If greater then 0 should draw countdown
- *  isPillView     - TRUE if we are in pillbox view
- *  edgeX          - Edge X offset for smooth scrolling
- *  edgeY          - Edge Y offset for smooth scrolling
- *  useCursor      - True if to draw the cursor
- *  cursorLeft     - Cursor left position
- *  cursorTop      - Cursor Top position
- *********************************************************/
-void drawMainScreen(const bolo::ScreenTiles &tiles,
-                    const bolo::ScreenTankList &tks,
-                    const std::optional<bolo::ScreenGunsight> &gunsight,
-                    const bolo::ScreenBulletList &sBullets,
-                    const bolo::ScreenLgmList &lgms, bool showPillLabels,
-                    bool showBaseLabels, long srtDelay, bool isPillView,
-                    int edgeX, int edgeY, bool useCursor, BYTE cursorLeft,
-                    BYTE cursorTop);
-
-/*********************************************************
  *NAME:          drawRedrawAll
  *AUTHOR:        John Morrison
  *CREATION DATE: 20/12/98
@@ -115,6 +98,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
                    const std::vector<baseAlliance> &bas,
                    const std::vector<pillAlliance> &pas,
                    const std::vector<bolo::tankAlliance> &tas,
+                   const std::optional<bolo::MainScreenData> &main_screen_data,
                    bool showPillsStatus, bool showBasesStatus);
 
 /*********************************************************

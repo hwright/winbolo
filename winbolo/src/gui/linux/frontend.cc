@@ -130,24 +130,10 @@ void LinuxFrontend::drawMainScreen(ScreenTiles tiles, ScreenTankList tks,
 }
 
 void LinuxFrontend::drawAll() {
-  uint8_t cursorX;
-  uint8_t cursorY;
-  bool showCursor;
-
-  showCursor = screenGetCursorPos(&cursorX, &cursorY);
-
   uint64_t tick = SDL_GetTicks();
   drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, build_select_, base_status_,
-                pill_status_, tank_status_, showPillLabels, showBaseLabels);
-  if (main_screen_data_.has_value()) {
-    ::drawMainScreen(
-        main_screen_data_->screen_tiles_, main_screen_data_->screen_tank_list_,
-        main_screen_data_->gunsight_, main_screen_data_->screen_bullet_list_,
-        main_screen_data_->screen_lgm_list_, showPillLabels, showBaseLabels,
-        main_screen_data_->srtDelay_, main_screen_data_->isPillView_,
-        main_screen_data_->edgeX_, main_screen_data_->edgeY_, showCursor,
-        cursorX, cursorY);
-  }
+                pill_status_, tank_status_, main_screen_data_, showPillLabels,
+                showBaseLabels);
   dwSysFrame += (SDL_GetTicks() - tick);
 }
 
