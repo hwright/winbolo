@@ -93,9 +93,9 @@ const int SCREEN_SIZE_Y = 325;
 }  // namespace
 
 LinuxFrontend::LinuxFrontend()
-    : base_status_(MAX_BASES, baseNeutral),
-      tank_status_(MAX_TANKS, bolo::tankAlliance::tankNone),
-      pill_status_(MAX_PILLS, pillNeutral) {}
+    : base_status_(MAX_BASES + 1, baseNeutral),
+      tank_status_(MAX_TANKS + 1, bolo::tankAlliance::tankNone),
+      pill_status_(MAX_PILLS + 1, pillNeutral) {}
 
 void LinuxFrontend::updateTankSupplyBars(TankSupply tank_supply) {
   tank_supply_ = std::move(tank_supply);

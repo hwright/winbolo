@@ -2206,6 +2206,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
                  .h = TILE_SIZE_Y};
     SDL_BlitSurface(lpTiles, &in, lpScreen, &out);
 
+    // `bas` is 1-indexed
     for (int i = 1; i <= total_bases; i++) {
       drawStatusBase(i, bas[i], showBasesStatus);
     }
@@ -2223,6 +2224,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
                  .h = TILE_SIZE_Y};
     SDL_BlitSurface(lpTiles, &in, lpScreen, &out);
 
+    // `pas` is 1-indexed
     for (int i = 1; i <= total_pills; i++) {
       drawStatusPillbox(i, pas[i], showPillsStatus);
     }
@@ -2240,6 +2242,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
                  .h = TILE_SIZE_Y};
     SDL_BlitSurface(lpTiles, &in, lpScreen, &out);
 
+    // `tas` is 1-indexed
     for (int i = 1; i <= total_tanks; i++) {
       drawStatusTank(i, tas[i]);
     }
