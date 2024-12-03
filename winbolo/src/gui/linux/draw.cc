@@ -162,6 +162,43 @@ void draw_circle(SDL_Surface *surface, int n_cx, int n_cy, int radius,
   }
 }
 
+void fill_circle(SDL_Surface *surface, int cx, int cy, int radius,
+                 Uint32 pixel) {
+  // Note that there is more to altering the bitrate of this
+  // method than just changing this value.  See how pixels are
+  // altered at the following web page for tips:
+  //   http://www.libsdl.org/intro.en/usingvideo.html
+  static const int BPP = 4;
+
+  double r = (double)radius;
+
+  for (double dy = 1; dy <= r; dy += 1.0) {
+    // This loop is unrolled a bit, only iterating through half of the
+    // height of the circle.  The result is used to draw a scan line and
+    // its mirror image below it.
+
+    // The following formula has been simplified from our original.  We
+    // are using half of the width of the circle because we are provided
+    // with a center and we need left/right coordinates.
+
+    double dx = floor(sqrt((2.0 * r * dy) - (dy * dy)));
+    int x = cx - dx;
+
+    // Grab a pointer to the left-most pixel for each half of the circle
+    Uint8 *target_pixel_a = (Uint8 *)surface->pixels +
+                            ((int)(cy + r - dy)) * surface->pitch + x * BPP;
+    Uint8 *target_pixel_b = (Uint8 *)surface->pixels +
+                            ((int)(cy - r + dy)) * surface->pitch + x * BPP;
+
+    for (; x <= cx + dx; x++) {
+      *(Uint32 *)target_pixel_a = pixel;
+      *(Uint32 *)target_pixel_b = pixel;
+      target_pixel_a += BPP;
+      target_pixel_b += BPP;
+    }
+  }
+}
+
 // Draws the background graphic. Returns if the operation
 // is successful or not.
 //
@@ -492,7 +529,6 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   int addX;        /* X And and Y co-ordinates */
   int addY;
   int left, top;
-  int width, height;
 
   // drawSetManClear(menuHeight); /* Clear the display */
 
@@ -561,23 +597,17 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   }
   left = MAN_STATUS_X;
   top = MAN_STATUS_Y;
-  width = MAN_STATUS_WIDTH;
-  height = MAN_STATUS_HEIGHT;
 
   // SDL does not give us native arc, circle or line methods, so we have
   // to compute our own.
   SDL_LockSurface(lpScreen);
-  if (lastManX != 0) {
-    gdk_draw_line(drawingarea1->window, drawingarea1->style->black_gc,
-                  MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y,
-                  lastManX, lastManY);
-  }
   addY += top;
   addX += left;
-  if (isDead == TRUE) {
+  if (isDead == true) {
     /* Draw dead circle */
-    gdk_draw_arc(drawingarea1->window, drawingarea1->style->white_gc, TRUE,
-                 left, top, width, height, 0, 360 * 64);
+    fill_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
+                MAN_STATUS_WIDTH / 2,
+                SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
     lastManX = 0;
   } else {
     draw_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
@@ -593,7 +623,7 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
     gdk_threads_leave();
   }
   SDL_UnlockSurface(lpScreen);
-  SDL_UpdateRect(lpScreen, left, top, width, height);
+  SDL_UpdateRect(lpScreen, left, top, MAN_STATUS_WIDTH, MAN_STATUS_HEIGHT);
 }
 
 /*********************************************************
