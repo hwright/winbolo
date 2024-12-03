@@ -31,13 +31,7 @@
 
 #include "draw.h"
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/keysym.h>
-#include <X11/xpm.h>
 #include <gdk/gdk.h>
-#include <gdk/gdkx.h>
-#include <gtk/gtk.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -91,8 +85,6 @@ static DWORD g_dwFrameTime = 0;
 static DWORD g_dwFrameCount = 0;
 /* The total frames per second for last second */
 static DWORD g_dwFrameTotal = 0;
-
-extern GtkWidget *drawingarea1;
 
 static int drawPosX[255];
 static int drawPosY[255];
@@ -542,18 +534,16 @@ int lastManY = 0;
  *ARGUMENTS:
  *********************************************************/
 void drawSetManClear() {
-  int left, top, width, height;
-
-  //  jm removed today gdk_threads_enter();
-  left = MAN_STATUS_X;
-  top = MAN_STATUS_Y;
-  width = MAN_STATUS_WIDTH + 5;
-  height = MAN_STATUS_HEIGHT + 5;
-  gdk_draw_rectangle(drawingarea1->window, drawingarea1->style->black_gc, TRUE,
-                     left, top, width, height);
+  SDL_Rect fill;
+  fill.x = MAN_STATUS_X;
+  fill.y = MAN_STATUS_Y;
+  fill.w = MAN_STATUS_WIDTH + 5;
+  fill.h = MAN_STATUS_HEIGHT + 5;
+  SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
+  SDL_UpdateRect(lpScreen, MAN_STATUS_X, MAN_STATUS_Y, MAN_STATUS_WIDTH,
+                 MAN_STATUS_HEIGHT);
   lastManX = 0;
   lastManY = 0;
-  //  gdk_threads_leave();
 }
 
 /*********************************************************

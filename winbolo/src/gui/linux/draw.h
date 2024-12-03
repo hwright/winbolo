@@ -27,7 +27,6 @@
 #ifndef _DRAW_H
 #define _DRAW_H
 
-#include <gtk/gtk.h>
 #include <string.h>
 
 #include "../../bolo/backend.h"
