@@ -279,11 +279,8 @@ bool drawBackground() {
  *  Returns whether the operation was successful or not
  *
  *ARGUMENTS:
- * appInst - Handle to the application (Required to
- *           load bitmaps from resources)
- * appWnd  - Main Window Handle (Required for clipper)
  *********************************************************/
-bool drawSetup(GtkWidget *appWnd) {
+bool drawSetup() {
   bool returnValue; /* Value to return */
   SDL_Rect in;      /* Used for copying the bases & pills icon in */
   SDL_Rect out;     /* Used for copying the bases & pills icon in */

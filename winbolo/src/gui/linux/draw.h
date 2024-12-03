@@ -44,11 +44,8 @@
  *  Returns whether the operation was successful or not
  *
  *ARGUMENTS:
- * appInst - Handle to the application (Required to
- *           load bitmaps from resources)
- * appWnd  - Main Window Handle (Required for clipper)
  *********************************************************/
-bool drawSetup(GtkWidget *appWnd);
+bool drawSetup();
 
 /*********************************************************
  *NAME:          drawCleanup
