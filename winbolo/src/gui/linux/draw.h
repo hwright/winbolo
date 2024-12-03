@@ -135,44 +135,6 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
                     BYTE cursorTop);
 
 /*********************************************************
- *NAME:          drawStatusTankBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/12/98
- *LAST MODIFIED: 22/12/98
- *PURPOSE:
- *  Draws the tanks armour, shells etc bars.
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *  trees   - Amount of trees
- *********************************************************/
-void drawStatusTankBars(int xValue, int yValue, BYTE shells, BYTE mines,
-                        BYTE armour, BYTE trees);
-
-/*********************************************************
- *NAME:          drawStatusBaseBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 11/1/98
- *LAST MODIFIED: 11/1/98
- *PURPOSE:
- *  Draws the base armour, shells etc bars.
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *  redraw  - If set to true use the redraw last amounts
- *********************************************************/
-void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
-                        BYTE armour, bool redraw);
-
-/*********************************************************
  *NAME:          drawRedrawAll
  *AUTHOR:        John Morrison
  *CREATION DATE: 20/12/98

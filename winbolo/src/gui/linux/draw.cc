@@ -68,8 +68,6 @@ static SDL_Surface *lpBackBuffer = nullptr;
 static SDL_Surface *lpTiles = nullptr;
 static SDL_Surface *lpBackground = nullptr;
 static TTF_Font *lpFont = nullptr;
-static SDL_Color white = {0xFF, 0xFF, 0xFF, 0};
-static SDL_Color black = {0, 0, 0, 0};
 
 /* typedef int DWORD; */
 /* Used for drawing the man status */
@@ -93,6 +91,9 @@ void clientMutexRelease(void);
 int drawGetFrameRate() { return g_dwFrameTotal; }
 
 namespace {
+
+const SDL_Color white = {0xFF, 0xFF, 0xFF, 0};
+const SDL_Color black = {0, 0, 0, 0};
 
 // These are from
 // https://web.archive.org/web/20160326085538/http://content.gpwiki.org/index.php/SDL:Tutorials:Drawing_and_Filling_Circles
@@ -715,6 +716,112 @@ void drawStatusTank(BYTE tankNum, bolo::tankAlliance ta) {
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
+}
+
+/*********************************************************
+ *NAME:          drawStatusTankBars
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/12/98
+ *LAST MODIFIED: 22/12/98
+ *PURPOSE:
+ *  Draws the tanks armour, shells etc bars.
+ *
+ *ARGUMENTS:
+ *  shells  - Number of shells
+ *  mines   - Number of mines
+ *  armour  - Amount of armour
+ *  trees   - Amount of trees
+ *********************************************************/
+void drawStatusTankBars(uint8_t shells, uint8_t mines, uint8_t armour,
+                        uint8_t trees) {
+  SDL_Rect dest; /* The dest square to draw it */
+  Uint32 color = SDL_MapRGB(lpScreen->format, 0, 0xFF, 0);
+
+  dest.w = STATUS_TANK_BARS_WIDTH;
+
+  // Shells
+  dest.y = STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * shells);
+  dest.x = STATUS_TANK_SHELLS;
+  dest.h = BAR_TANK_MULTIPLY * shells;
+  SDL_FillRect(lpScreen, &dest, color);
+
+  // Mines
+  dest.y = STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * mines);
+  dest.x = STATUS_TANK_MINES;
+  dest.h = BAR_TANK_MULTIPLY * mines;
+  SDL_FillRect(lpScreen, &dest, color);
+
+  // Armour
+  dest.y = STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * armour);
+  dest.x = STATUS_TANK_ARMOUR;
+  dest.h = BAR_TANK_MULTIPLY * armour;
+  SDL_FillRect(lpScreen, &dest, color);
+
+  // Trees
+  dest.y = STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * trees);
+  dest.x = STATUS_TANK_TREES;
+  dest.h = BAR_TANK_MULTIPLY * trees;
+  SDL_FillRect(lpScreen, &dest, color);
+}
+
+/*********************************************************
+ *NAME:          drawStatusBaseBars
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 11/1/98
+ *LAST MODIFIED: 11/1/98
+ *PURPOSE:
+ *  Draws the base armour, shells etc bars.
+ *
+ *ARGUMENTS:
+ *  shells  - Number of shells
+ *  mines   - Number of mines
+ *  armour  - Amount of armour
+ *  redraw  - If set to true use the redraw last amounts
+ *********************************************************/
+void drawStatusBaseBars(uint8_t shells, uint8_t mines, uint8_t armour,
+                        bool redraw) {
+  SDL_Rect dest; /* The dest square to draw it */
+  // Last amount of stuff to save on rendering and flicker
+  // TODO: Store this somewhere else
+  static uint8_t lastShells = 0;
+  static uint8_t lastMines = 0;
+  static uint8_t lastArmour = 0;
+  Uint32 color = SDL_MapRGB(lpScreen->format, 0, 0xFF, 0);
+
+  if (redraw == false) {
+    lastShells = shells;
+    lastMines = mines;
+    lastArmour = armour;
+  } else {
+    shells = lastShells;
+    mines = lastMines;
+    armour = lastArmour;
+  }
+
+  dest.x = STATUS_BASE_BARS_LEFT;
+  dest.h = STATUS_BASE_BARS_HEIGHT;
+  if (shells != 0) {
+    /* Shells */
+    dest.y = STATUS_BASE_SHELLS;
+    dest.w = shells * BAR_BASE_MULTIPLY;
+    SDL_FillRect(lpScreen, &dest, color);
+  }
+  if (mines != 0) {
+    /* Mines */
+    dest.y = STATUS_BASE_MINES;
+    dest.w = mines * BAR_BASE_MULTIPLY;
+    SDL_FillRect(lpScreen, &dest, color);
+  }
+  if (armour != 0) {
+    /* Armour */
+    dest.y = STATUS_BASE_ARMOUR;
+    dest.w = armour * BAR_BASE_MULTIPLY;
+    SDL_FillRect(lpScreen, &dest, color);
+  }
 }
 }
 
@@ -2023,133 +2130,6 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
 }
 
 /*********************************************************
- *NAME:          drawStatusTankBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/12/98
- *LAST MODIFIED: 22/12/98
- *PURPOSE:
- *  Draws the tanks armour, shells etc bars.
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *  trees   - Amount of trees
- *********************************************************/
-void drawStatusTankBars(int xValue, int yValue, BYTE shells, BYTE mines,
-                        BYTE armour, BYTE trees) {
-  SDL_Rect dest; /* The dest square to draw it */
-  SDL_Rect fill;
-  Uint32 color; /* Fill green colour */
-
-  dest.w = STATUS_TANK_BARS_WIDTH;
-  color = SDL_MapRGB(lpScreen->format, 0, 0xFF, 0);
-
-  /* Make the area black first */
-  fill.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
-           (BAR_TANK_MULTIPLY * 40);
-  fill.h = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT - fill.y;
-  fill.x = xValue + STATUS_TANK_SHELLS;
-  fill.w = xValue + STATUS_TANK_TREES + STATUS_TANK_BARS_WIDTH - fill.x;
-  SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
-
-  /* Shells */
-  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
-           (BAR_TANK_MULTIPLY * shells);
-  dest.x = xValue + STATUS_TANK_SHELLS;
-  dest.h = BAR_TANK_MULTIPLY * shells;
-  SDL_FillRect(lpScreen, &dest, color);
-
-  /* Mines */
-  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
-           (BAR_TANK_MULTIPLY * mines);
-  dest.x = xValue + STATUS_TANK_MINES;
-  dest.h = BAR_TANK_MULTIPLY * mines;
-  SDL_FillRect(lpScreen, &dest, color);
-
-  /* Armour */
-  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
-           (BAR_TANK_MULTIPLY * armour);
-  dest.x = xValue + STATUS_TANK_ARMOUR;
-  dest.h = BAR_TANK_MULTIPLY * armour;
-  SDL_FillRect(lpScreen, &dest, color);
-
-  /* Trees */
-  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
-           (BAR_TANK_MULTIPLY * trees);
-  dest.x = xValue + STATUS_TANK_TREES;
-  dest.h = BAR_TANK_MULTIPLY * trees;
-  SDL_FillRect(lpScreen, &dest, color);
-
-  SDL_UpdateRects(lpScreen, 1, &fill);
-}
-/*********************************************************
- *NAME:          drawStatusBaseBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 11/1/98
- *LAST MODIFIED: 11/1/98
- *PURPOSE:
- *  Draws the base armour, shells etc bars.
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *  redraw  - If set to true use the redraw last amounts
- *********************************************************/
-void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
-                        BYTE armour, bool redraw) {
-  SDL_Rect dest; /* The dest square to draw it */
-  SDL_Rect fill;
-  static BYTE lastShells =
-      0; /* Last amount of stuff to save on rendering and flicker */
-  static BYTE lastMines = 0;
-  static BYTE lastArmour = 0;
-  Uint32 color; /* Fill green colour */
-
-  if (lastShells != shells || lastMines != mines || lastArmour != armour ||
-      redraw) {
-    if (!redraw) {
-      lastShells = shells;
-      lastMines = mines;
-      lastArmour = armour;
-    } else {
-      shells = lastShells;
-      mines = lastMines;
-      armour = lastArmour;
-    }
-    /* Make the area black first */
-    fill.y = yValue + STATUS_BASE_SHELLS;
-    fill.x = xValue + STATUS_BASE_BARS_LEFT;
-    fill.h = yValue + STATUS_BASE_MINES + STATUS_BASE_BARS_HEIGHT - fill.y;
-    fill.w = STATUS_BASE_BARS_MAX_WIDTH;
-    SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
-    if (shells != 0 || mines != 0 || armour != 0) {
-      color = SDL_MapRGB(lpScreen->format, 0, 0xFF, 0);
-      dest.x = xValue + STATUS_BASE_BARS_LEFT;
-      dest.h = STATUS_BASE_BARS_HEIGHT;
-      /* Shells */
-      dest.y = yValue + STATUS_BASE_SHELLS;
-      dest.w = shells * BAR_BASE_MULTIPLY;
-      SDL_FillRect(lpScreen, &dest, color);
-      /* Mines */
-      dest.y = yValue + STATUS_BASE_MINES;
-      dest.w = mines * BAR_BASE_MULTIPLY;
-      SDL_FillRect(lpScreen, &dest, color);
-      /* Armour */
-      dest.y = yValue + STATUS_BASE_ARMOUR;
-      dest.w = armour * BAR_BASE_MULTIPLY;
-      SDL_FillRect(lpScreen, &dest, color);
-    }
-    SDL_UpdateRects(lpScreen, 1, &fill);
-  }
-}
-
-/*********************************************************
  *NAME:          drawRedrawAll
  *AUTHOR:        John Morrison
  *CREATION DATE: 20/12/98
@@ -2194,6 +2174,7 @@ void drawRedrawAll(int width, int height, buildSelect value,
   BYTE total_bases = screenNumBases();
   BYTE total_pills = screenNumPills();
   BYTE total_tanks = screenGetNumPlayers();
+  screenGetTankStats(&shells, &mines, &armour, &trees);
   clientMutexRelease();
 
   // Render the Base status window
@@ -2248,17 +2229,17 @@ void drawRedrawAll(int width, int height, buildSelect value,
     }
   }
 
+  // Draw tank Bars
+  drawStatusTankBars(shells, mines, armour, trees);
+  drawStatusBaseBars(0, 0, 0, true);
+
   SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
 
-  /* Draw tank Bars */
   clientMutexWaitFor();
-  screenGetTankStats(&shells, &mines, &armour, &trees);
-  drawStatusTankBars(0, 0, shells, mines, armour, trees);
   screenGetMessages(top, bottom);
   drawMessages(0, 0, top, bottom);
   screenGetKillsDeaths(&kills, &deaths);
   drawKillsDeaths(0, 0, kills, deaths);
-  drawStatusBaseBars(0, 0, 0, 0, 0, true);
   screenGetLgmStatus(&lgmIsOut, &lgmIsDead, &lgmAngle);
   if (lgmIsOut) {
     drawSetManStatus(lgmIsDead, lgmAngle, false);
