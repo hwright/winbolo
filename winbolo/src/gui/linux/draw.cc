@@ -104,6 +104,64 @@ int drawGetFrameRate() { return g_dwFrameTotal; }
 
 namespace {
 
+// These are from
+// https://web.archive.org/web/20160326085538/http://content.gpwiki.org/index.php/SDL:Tutorials:Drawing_and_Filling_Circles
+void set_pixel(SDL_Surface *surface, int x, int y, Uint32 pixel) {
+  Uint8 *target_pixel = (Uint8 *)surface->pixels + y * surface->pitch +
+                        x * surface->format->BytesPerPixel;
+  *(Uint32 *)target_pixel = pixel;
+}
+
+// This is an implementation of the Midpoint Circle Algorithm
+// found on Wikipedia at the following link:
+//
+//   http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+//
+// The algorithm elegantly draws a circle quickly, using a
+// set_pixel function for clarity.
+void draw_circle(SDL_Surface *surface, int n_cx, int n_cy, int radius,
+                 Uint32 pixel) {
+  // if the first pixel in the screen is represented by (0,0) (which is in sdl)
+  // remember that the beginning of the circle is not in the middle of the pixel
+  // but to the left-top from it:
+
+  double error = (double)-radius;
+  double x = (double)radius - 0.5;
+  double y = (double)0.5;
+  double cx = n_cx - 0.5;
+  double cy = n_cy - 0.5;
+
+  while (x >= y) {
+    set_pixel(surface, (int)(cx + x), (int)(cy + y), pixel);
+    set_pixel(surface, (int)(cx + y), (int)(cy + x), pixel);
+
+    if (x != 0) {
+      set_pixel(surface, (int)(cx - x), (int)(cy + y), pixel);
+      set_pixel(surface, (int)(cx + y), (int)(cy - x), pixel);
+    }
+
+    if (y != 0) {
+      set_pixel(surface, (int)(cx + x), (int)(cy - y), pixel);
+      set_pixel(surface, (int)(cx - y), (int)(cy + x), pixel);
+    }
+
+    if (x != 0 && y != 0) {
+      set_pixel(surface, (int)(cx - x), (int)(cy - y), pixel);
+      set_pixel(surface, (int)(cx - y), (int)(cy - x), pixel);
+    }
+
+    error += y;
+    ++y;
+    error += y;
+
+    if (error >= 0) {
+      --x;
+      error -= x;
+      error -= x;
+    }
+  }
+}
+
 // Draws the background graphic. Returns if the operation
 // is successful or not.
 //
@@ -505,13 +563,14 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   top = MAN_STATUS_Y;
   width = MAN_STATUS_WIDTH;
   height = MAN_STATUS_HEIGHT;
+
+  // SDL does not give us native arc, circle or line methods, so we have
+  // to compute our own.
+  SDL_LockSurface(lpScreen);
   if (lastManX != 0) {
     gdk_draw_line(drawingarea1->window, drawingarea1->style->black_gc,
                   MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y,
                   lastManX, lastManY);
-  } else {
-    gdk_draw_rectangle(drawingarea1->window, drawingarea1->style->black_gc,
-                       TRUE, left, top, width, height);
   }
   addY += top;
   addX += left;
@@ -521,8 +580,8 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
                  left, top, width, height, 0, 360 * 64);
     lastManX = 0;
   } else {
-    gdk_draw_arc(drawingarea1->window, drawingarea1->style->white_gc, FALSE,
-                 left, top, width, height, 0, 360 * 64);
+    draw_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
+                MAN_STATUS_WIDTH / 2, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
     gdk_draw_line(drawingarea1->window, drawingarea1->style->white_gc,
                   MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y, addX,
                   addY);
@@ -533,6 +592,8 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   if (needLocking == TRUE) {
     gdk_threads_leave();
   }
+  SDL_UnlockSurface(lpScreen);
+  SDL_UpdateRect(lpScreen, left, top, width, height);
 }
 
 /*********************************************************
