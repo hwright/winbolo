@@ -1013,175 +1013,19 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   }
   SDL_UnlockSurface(lpScreen);
 }
-}
 
-/*********************************************************
- *NAME:          drawSetup
- *AUTHOR:        John Morrison
- *CREATION DATE: 13/10/98
- *LAST MODIFIED:  29/4/00
- *PURPOSE:
- *  Sets up drawing systems, direct draw structures etc.
- *  Returns whether the operation was successful or not
- *
- *ARGUMENTS:
- *********************************************************/
-bool drawSetup() {
-  bool returnValue; /* Value to return */
-  SDL_Rect in;      /* Used for copying the bases & pills icon in */
-  SDL_Rect out;     /* Used for copying the bases & pills icon in */
-  char fileName[FILENAME_MAX];
-
-  BYTE* buff = new BYTE[80438];
-  /* Get tmp file */
-  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX",
-           std::filesystem::temp_directory_path().c_str());
-  int ret = lzwdecoding((char *)TILES_IMAGE, (char *)buff, 36499);
-  if (ret != 80438) {
-    free(buff);
-    MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
-    return false;
-  }
-
-  returnValue = true;
-  lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
-  if (lpScreen == nullptr) {
-    returnValue = false;
-    MessageBox("Can't build main surface", DIALOG_BOX_TITLE);
-  }
-
-  /* Create the back buffer surface */
-  if (returnValue) {
-    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
-        SDL_HWSURFACE, MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
-        MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
-    if (lpTemp == nullptr) {
-      returnValue = false;
-      MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
-    } else {
-      lpBackBuffer = SDL_DisplayFormat(lpTemp);
-      SDL_FreeSurface(lpTemp);
-      if (lpBackBuffer == nullptr) {
-        returnValue = false;
-        MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
-      }
-    }
-  }
-
-  /* Create the tile buffer and copy the bitmap into it */
-  if (returnValue) {
-    /* Create the buffer */
-    FILE *fp = fopen(fileName, "wb");
-    fwrite(buff, 80438, 1, fp);
-    fclose(fp);
-    lpTiles = SDL_LoadBMP(fileName);
-    unlink(fileName);
-    if (lpTiles == nullptr) {
-      returnValue = false;
-      MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
-    } else {
-      /* Colour key */
-      ret = SDL_SetColorKey(lpTiles, SDL_SRCCOLORKEY,
-                            SDL_MapRGB(lpTiles->format, 0, 0xFF, 0));
-      if (ret == -1) {
-        MessageBox("Couldn't map colour key", DIALOG_BOX_TITLE);
-        returnValue = false;
-      } else {
-        //      lpTiles = SDL_DisplayFormat(lpTemp);
-        //	SDL_FreeSurface(lpTemp);
-        if (lpTiles == nullptr) {
-          returnValue = false;
-          MessageBox("Can't build a tile file", DIALOG_BOX_TITLE);
-        }
-      }
-    }
-  }
-
-  out.w = TILE_SIZE_X;
-  out.h = TILE_SIZE_Y;
-  in.w = TILE_SIZE_X;
-  in.h = TILE_SIZE_Y;
-
-  // Load the background surface
-  if (returnValue) {
-    SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
-    lpBackground = IMG_LoadPNG_RW(rw);
-    if (lpBackground == nullptr) {
-      returnValue = false;
-      MessageBox("Can't load background image", DIALOG_BOX_TITLE);
-    }
-    SDL_FreeRW(rw);
-  }
-  if (returnValue) {
-    if (TTF_Init() < 0) {
-      MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
-      returnValue = false;
-    } else {
-      lpFont = TTF_OpenFont("cour.ttf", 12);
-      if (lpFont == nullptr) {
-        MessageBox(
-            "Couldn't open font file.\n Please place a courier font\ncalled "
-            "\"cour.ttf\" in your\nLinBolo directory.",
-            DIALOG_BOX_TITLE);
-        returnValue = false;
-      }
-    }
-  }
-
-  g_dwFrameTime = SDL_GetTicks();
-  g_dwFrameCount = 0;
-  drawSetupArrays();
-
-  delete[] buff;
-  return returnValue;
-}
-
-/*********************************************************
- *NAME:          drawCleanup
- *AUTHOR:        John Morrison
- *CREATION DATE: 13/12/98
- *LAST MODIFIED: 13/2/98
- *PURPOSE:
- *  Destroys and cleans up drawing systems, direct draw
- *  structures etc.
- *
- *ARGUMENTS:
- *
- *********************************************************/
-void drawCleanup(void) {
-  if (lpTiles != nullptr) {
-    SDL_FreeSurface(lpTiles);
-    lpTiles = nullptr;
-  }
-  if (lpBackBuffer != nullptr) {
-    SDL_FreeSurface(lpBackBuffer);
-    lpBackBuffer = nullptr;
-  }
-  if (lpFont != nullptr) {
-    TTF_CloseFont(lpFont);
-    TTF_Quit();
-  }
-  if (lpBackground != nullptr) {
-    SDL_FreeSurface(lpBackground);
-    lpBackground = nullptr;
-  }
-  if (lpScreen != nullptr) {
-    SDL_FreeSurface(lpScreen);
-    lpScreen = nullptr;
-  }
-}
 /*********************************************************
  *NAME:          drawShells
  *AUTHOR:        John Morrison
  *CREATION DATE: 26/12/98
  *LAST MODIFIED: 26/12/98
  *PURPOSE:
- *  Draws shells and explosions on the backbuffer.
+ *  Draws shells and explosions to a surface.
  *
  *ARGUMENTS:
  *  sBullets - The screen Bullets data structure
  *********************************************************/
-void drawShells(const bolo::ScreenBulletList &sBullets) {
+void drawShells(SDL_Surface *surface, const bolo::ScreenBulletList &sBullets) {
   SDL_Rect output; /* Output Rectangle */
   SDL_Rect dest;
 
@@ -1336,7 +1180,7 @@ void drawShells(const bolo::ScreenBulletList &sBullets) {
     }
     dest.w = output.w;
     dest.h = output.h;
-    SDL_BlitSurface(lpTiles, &output, lpBackBuffer, &dest);
+    SDL_BlitSurface(lpTiles, &output, surface, &dest);
   }
 }
 
@@ -1356,7 +1200,8 @@ Draws the tank label if required.
 *  px  - Tank pixel offset
 *  py  - Tank pixel offset
 *********************************************************/
-void drawTankLabel(const char *str, int mx, int my, BYTE px, BYTE py) {
+void drawTankLabel(SDL_Surface *surface, const char *str, int mx, int my,
+                   BYTE px, BYTE py) {
   int len;       /* Length of the string */
   SDL_Rect dest; /* Defines the text rectangle */
   SDL_Surface *lpTextSurface;
@@ -1384,8 +1229,8 @@ void drawTankLabel(const char *str, int mx, int my, BYTE px, BYTE py) {
       SDL_SetColorKey(lpTextSurface, SDL_SRCCOLORKEY,
                       SDL_MapRGB(lpTextSurface->format, 0, 0, 0));
       /* Output it */
-      SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &dest);
-      SDL_UpdateRects(lpBackBuffer, 1, &dest);
+      SDL_BlitSurface(lpTextSurface, nullptr, surface, &dest);
+      SDL_UpdateRects(surface, 1, &dest);
       SDL_FreeSurface(lpTextSurface);
     }
   }
@@ -1402,7 +1247,7 @@ void drawTankLabel(const char *str, int mx, int my, BYTE px, BYTE py) {
  *ARGUMENTS:
  *  tks - The screen Tanks data structure
  *********************************************************/
-void drawTanks(const bolo::ScreenTankList &tks) {
+void drawTanks(SDL_Surface *surface, const bolo::ScreenTankList &tks) {
   SDL_Rect output; /* Source Rectangle */
   SDL_Rect dest;
 
@@ -1808,10 +1653,10 @@ void drawTanks(const bolo::ScreenTankList &tks) {
     output.y *= 1;
     dest.x = tank.pos.x * TILE_SIZE_X + tank.px;
     dest.y = tank.pos.y * TILE_SIZE_Y + tank.py;
-    SDL_BlitSurface(lpTiles, &output, lpBackBuffer, &dest);
+    SDL_BlitSurface(lpTiles, &output, surface, &dest);
     /* Output the label */
-    drawTankLabel(tank.playerName.c_str(), tank.pos.x, tank.pos.y, tank.px + 2,
-                  tank.py + 2);
+    drawTankLabel(surface, tank.playerName.c_str(), tank.pos.x, tank.pos.y,
+                  tank.px + 2, tank.py + 2);
   }
 }
 
@@ -1826,7 +1671,7 @@ void drawTanks(const bolo::ScreenTankList &tks) {
  *ARGUMENTS:
  *  lgms - The screenLgm data structure
  *********************************************************/
-void drawLGMs(const bolo::ScreenLgmList &lgms) {
+void drawLGMs(SDL_Surface *surface, const bolo::ScreenLgmList &lgms) {
   SDL_Rect output; /* Source Rectangle */
 
   for (const auto &lgm : lgms.lgms_) {
@@ -1861,10 +1706,166 @@ void drawLGMs(const bolo::ScreenLgmList &lgms) {
                   .y = static_cast<Sint16>((lgm.pos.y * TILE_SIZE_Y) + lgm.py),
                   .w = output.w,
                   .h = output.h};
-    SDL_BlitSurface(lpTiles, &output, lpBackBuffer, &dest);
+    SDL_BlitSurface(lpTiles, &output, surface, &dest);
   }
 }
+}  // namespace
 
+/*********************************************************
+ *NAME:          drawSetup
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 13/10/98
+ *LAST MODIFIED:  29/4/00
+ *PURPOSE:
+ *  Sets up drawing systems, direct draw structures etc.
+ *  Returns whether the operation was successful or not
+ *
+ *ARGUMENTS:
+ *********************************************************/
+bool drawSetup() {
+  bool returnValue; /* Value to return */
+  SDL_Rect in;      /* Used for copying the bases & pills icon in */
+  SDL_Rect out;     /* Used for copying the bases & pills icon in */
+  char fileName[FILENAME_MAX];
+
+  BYTE *buff = new BYTE[80438];
+  /* Get tmp file */
+  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX",
+           std::filesystem::temp_directory_path().c_str());
+  int ret = lzwdecoding((char *)TILES_IMAGE, (char *)buff, 36499);
+  if (ret != 80438) {
+    free(buff);
+    MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
+    return false;
+  }
+
+  returnValue = true;
+  lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
+  if (lpScreen == nullptr) {
+    returnValue = false;
+    MessageBox("Can't build main surface", DIALOG_BOX_TITLE);
+  }
+
+  /* Create the back buffer surface */
+  if (returnValue) {
+    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
+        SDL_HWSURFACE, MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
+        MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
+    if (lpTemp == nullptr) {
+      returnValue = false;
+      MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
+    } else {
+      lpBackBuffer = SDL_DisplayFormat(lpTemp);
+      SDL_FreeSurface(lpTemp);
+      if (lpBackBuffer == nullptr) {
+        returnValue = false;
+        MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
+      }
+    }
+  }
+
+  /* Create the tile buffer and copy the bitmap into it */
+  if (returnValue) {
+    /* Create the buffer */
+    FILE *fp = fopen(fileName, "wb");
+    fwrite(buff, 80438, 1, fp);
+    fclose(fp);
+    lpTiles = SDL_LoadBMP(fileName);
+    unlink(fileName);
+    if (lpTiles == nullptr) {
+      returnValue = false;
+      MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
+    } else {
+      /* Colour key */
+      ret = SDL_SetColorKey(lpTiles, SDL_SRCCOLORKEY,
+                            SDL_MapRGB(lpTiles->format, 0, 0xFF, 0));
+      if (ret == -1) {
+        MessageBox("Couldn't map colour key", DIALOG_BOX_TITLE);
+        returnValue = false;
+      } else {
+        //      lpTiles = SDL_DisplayFormat(lpTemp);
+        //	SDL_FreeSurface(lpTemp);
+        if (lpTiles == nullptr) {
+          returnValue = false;
+          MessageBox("Can't build a tile file", DIALOG_BOX_TITLE);
+        }
+      }
+    }
+  }
+
+  out.w = TILE_SIZE_X;
+  out.h = TILE_SIZE_Y;
+  in.w = TILE_SIZE_X;
+  in.h = TILE_SIZE_Y;
+
+  // Load the background surface
+  if (returnValue) {
+    SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
+    lpBackground = IMG_LoadPNG_RW(rw);
+    if (lpBackground == nullptr) {
+      returnValue = false;
+      MessageBox("Can't load background image", DIALOG_BOX_TITLE);
+    }
+    SDL_FreeRW(rw);
+  }
+  if (returnValue) {
+    if (TTF_Init() < 0) {
+      MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
+      returnValue = false;
+    } else {
+      lpFont = TTF_OpenFont("cour.ttf", 12);
+      if (lpFont == nullptr) {
+        MessageBox(
+            "Couldn't open font file.\n Please place a courier font\ncalled "
+            "\"cour.ttf\" in your\nLinBolo directory.",
+            DIALOG_BOX_TITLE);
+        returnValue = false;
+      }
+    }
+  }
+
+  g_dwFrameTime = SDL_GetTicks();
+  g_dwFrameCount = 0;
+  drawSetupArrays();
+
+  delete[] buff;
+  return returnValue;
+}
+
+/*********************************************************
+ *NAME:          drawCleanup
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 13/12/98
+ *LAST MODIFIED: 13/2/98
+ *PURPOSE:
+ *  Destroys and cleans up drawing systems, direct draw
+ *  structures etc.
+ *
+ *ARGUMENTS:
+ *
+ *********************************************************/
+void drawCleanup(void) {
+  if (lpTiles != nullptr) {
+    SDL_FreeSurface(lpTiles);
+    lpTiles = nullptr;
+  }
+  if (lpBackBuffer != nullptr) {
+    SDL_FreeSurface(lpBackBuffer);
+    lpBackBuffer = nullptr;
+  }
+  if (lpFont != nullptr) {
+    TTF_CloseFont(lpFont);
+    TTF_Quit();
+  }
+  if (lpBackground != nullptr) {
+    SDL_FreeSurface(lpBackground);
+    lpBackground = nullptr;
+  }
+  if (lpScreen != nullptr) {
+    SDL_FreeSurface(lpScreen);
+    lpScreen = nullptr;
+  }
+}
 /*********************************************************
  *NAME:          drawPillInView
  *AUTHOR:        John Morrison
@@ -2108,11 +2109,11 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   }
 
   /* Draw Explosions if Required */
-  drawShells(sBullets);
+  drawShells(lpBackBuffer, sBullets);
 
   /* Draw the tank */
-  drawTanks(tks);
-  drawLGMs(lgms);
+  drawTanks(lpBackBuffer, tks);
+  drawLGMs(lpBackBuffer, lgms);
 
   /* Draw Gunsight */
   if (gunsight.has_value()) {

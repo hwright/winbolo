@@ -61,45 +61,6 @@ bool drawSetup();
 void drawCleanup(void);
 
 /*********************************************************
- *NAME:          drawShells
- *AUTHOR:        John Morrison
- *CREATION DATE: 26/12/98
- *LAST MODIFIED: 26/12/98
- *PURPOSE:
- *  Draws shells and explosions on the backbuffer.
- *
- *ARGUMENTS:
- *  sBullets - The screen Bullets data structure
- *********************************************************/
-void drawShells(const bolo::ScreenBulletList &sBullets);
-
-/*********************************************************
- *NAME:          drawTanks
- *AUTHOR:        John Morrison
- *CREATION DATE: 6/1/99
- *LAST MODIFIED: 2/2/99
- *PURPOSE:
- *  Draws tanks on the backbuffer.
- *
- *ARGUMENTS:
- *  tks - The screen Tanks data structure
- *********************************************************/
-void drawTanks(const bolo::ScreenTankList &tks);
-
-/*********************************************************
- *NAME:          drawLgms
- *AUTHOR:        John Morrison
- *CREATION DATE: 17/1/99
- *LAST MODIFIED: 17/1/99
- *PURPOSE:
- *  Draws the builder
- *
- *ARGUMENTS:
- *  lgms - The screenLgm data structure
- *********************************************************/
-void drawLGMs(const bolo::ScreenLgmList &lgms);
-
-/*********************************************************
  *NAME:          drawMainScreen
  *AUTHOR:        John Morrison
  *CREATION DATE: 31/10/98
