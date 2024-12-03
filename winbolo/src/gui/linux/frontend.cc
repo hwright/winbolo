@@ -94,7 +94,7 @@ const int SCREEN_SIZE_Y = 325;
 
 LinuxFrontend::LinuxFrontend()
     : base_status_(MAX_BASES + 1, baseNeutral),
-      tank_status_(MAX_TANKS + 1, bolo::tankAlliance::tankNone),
+      tank_status_(MAX_TANKS + 1, bolo::tankAlliance::tankSelf),
       pill_status_(MAX_PILLS + 1, pillNeutral) {}
 
 void LinuxFrontend::updateTankSupplyBars(TankSupply tank_supply) {
