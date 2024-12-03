@@ -1358,7 +1358,7 @@ int main(int argc, char **argv) {
 
   isQuiting = soundSetup();
   if (isQuiting == TRUE) {
-    isQuiting = drawSetup(drawingarea1);
+    isQuiting = drawSetup();
   }
   if (isQuiting == TRUE) {
     isQuiting = inputSetup();

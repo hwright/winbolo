@@ -31,17 +31,12 @@
 
 #include "draw.h"
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <X11/keysym.h>
-#include <X11/xpm.h>
-#include <gdk/gdk.h>
-#include <gdk/gdkx.h>
-#include <gtk/gtk.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
+
+#include <filesystem>
 
 #include "../../bolo/backend.h"
 #include "../../bolo/global.h"
@@ -92,8 +87,6 @@ static DWORD g_dwFrameCount = 0;
 /* The total frames per second for last second */
 static DWORD g_dwFrameTotal = 0;
 
-extern GtkWidget *drawingarea1;
-
 static int drawPosX[255];
 static int drawPosY[255];
 
@@ -103,6 +96,153 @@ void clientMutexRelease(void);
 int drawGetFrameRate() { return g_dwFrameTotal; }
 
 namespace {
+
+// These are from
+// https://web.archive.org/web/20160326085538/http://content.gpwiki.org/index.php/SDL:Tutorials:Drawing_and_Filling_Circles
+void set_pixel(SDL_Surface *surface, int x, int y, Uint32 pixel) {
+  Uint8 *target_pixel = (Uint8 *)surface->pixels + y * surface->pitch +
+                        x * surface->format->BytesPerPixel;
+  *(Uint32 *)target_pixel = pixel;
+}
+
+// This is an implementation of the Midpoint Circle Algorithm
+// found on Wikipedia at the following link:
+//
+//   http://en.wikipedia.org/wiki/Midpoint_circle_algorithm
+//
+// The algorithm elegantly draws a circle quickly, using a
+// set_pixel function for clarity.
+void draw_circle(SDL_Surface *surface, int n_cx, int n_cy, int radius,
+                 Uint32 pixel) {
+  // if the first pixel in the screen is represented by (0,0) (which is in sdl)
+  // remember that the beginning of the circle is not in the middle of the pixel
+  // but to the left-top from it:
+
+  double error = (double)-radius;
+  double x = (double)radius - 0.5;
+  double y = (double)0.5;
+  double cx = n_cx - 0.5;
+  double cy = n_cy - 0.5;
+
+  while (x >= y) {
+    set_pixel(surface, (int)(cx + x), (int)(cy + y), pixel);
+    set_pixel(surface, (int)(cx + y), (int)(cy + x), pixel);
+
+    if (x != 0) {
+      set_pixel(surface, (int)(cx - x), (int)(cy + y), pixel);
+      set_pixel(surface, (int)(cx + y), (int)(cy - x), pixel);
+    }
+
+    if (y != 0) {
+      set_pixel(surface, (int)(cx + x), (int)(cy - y), pixel);
+      set_pixel(surface, (int)(cx - y), (int)(cy + x), pixel);
+    }
+
+    if (x != 0 && y != 0) {
+      set_pixel(surface, (int)(cx - x), (int)(cy - y), pixel);
+      set_pixel(surface, (int)(cx - y), (int)(cy - x), pixel);
+    }
+
+    error += y;
+    ++y;
+    error += y;
+
+    if (error >= 0) {
+      --x;
+      error -= x;
+      error -= x;
+    }
+  }
+}
+
+void fill_circle(SDL_Surface *surface, int cx, int cy, int radius,
+                 Uint32 pixel) {
+  // Note that there is more to altering the bitrate of this
+  // method than just changing this value.  See how pixels are
+  // altered at the following web page for tips:
+  //   http://www.libsdl.org/intro.en/usingvideo.html
+  static const int BPP = 4;
+
+  double r = (double)radius;
+
+  for (double dy = 1; dy <= r; dy += 1.0) {
+    // This loop is unrolled a bit, only iterating through half of the
+    // height of the circle.  The result is used to draw a scan line and
+    // its mirror image below it.
+
+    // The following formula has been simplified from our original.  We
+    // are using half of the width of the circle because we are provided
+    // with a center and we need left/right coordinates.
+
+    double dx = floor(sqrt((2.0 * r * dy) - (dy * dy)));
+    int x = cx - dx;
+
+    // Grab a pointer to the left-most pixel for each half of the circle
+    Uint8 *target_pixel_a = (Uint8 *)surface->pixels +
+                            ((int)(cy + r - dy)) * surface->pitch + x * BPP;
+    Uint8 *target_pixel_b = (Uint8 *)surface->pixels +
+                            ((int)(cy - r + dy)) * surface->pitch + x * BPP;
+
+    for (; x <= cx + dx; x++) {
+      *(Uint32 *)target_pixel_a = pixel;
+      *(Uint32 *)target_pixel_b = pixel;
+      target_pixel_a += BPP;
+      target_pixel_b += BPP;
+    }
+  }
+}
+
+void draw_line(SDL_Surface *surface, int x0, int y0, int x1, int y1,
+               Uint32 pixel) {
+  int dx = x1 - x0;
+  int dy = y1 - y0;
+  int incX = dx < 0 ? -1 : dx > 0 ? 1 : 0;
+  int incY = dy < 0 ? -1 : dy > 0 ? 1 : 0;
+  dx = abs(dx);
+  dy = abs(dy);
+
+  if (dy == 0) {
+    // horizontal line
+    for (int x = x0; x != x1 + incX; x += incX)
+      set_pixel(surface, x, y0, pixel);
+  } else if (dx == 0) {
+    // vertical line
+    for (int y = y0; y != y1 + incY; y += incY)
+      set_pixel(surface, x0, y, pixel);
+  } else if (dx >= dy) {
+    // more horizontal than vertical
+    int slope = 2 * dy;
+    int error = -dx;
+    int errorInc = -2 * dx;
+    int y = y0;
+
+    for (int x = x0; x != x1 + incX; x += incX) {
+      set_pixel(surface, x, y, pixel);
+      error += slope;
+
+      if (error >= 0) {
+        y += incY;
+        error += errorInc;
+      }
+    }
+  } else {
+    // more vertical than horizontal
+    int slope = 2 * dx;
+    int error = -dy;
+    int errorInc = -2 * dy;
+    int x = x0;
+
+    for (int y = y0; y != y1 + incY; y += incY) {
+      set_pixel(surface, x, y, pixel);
+      error += slope;
+
+      if (error >= 0) {
+        x += incX;
+        error += errorInc;
+      }
+    }
+  }
+}
 
 // Draws the background graphic. Returns if the operation
 // is successful or not.
@@ -132,11 +272,8 @@ bool drawBackground() {
  *  Returns whether the operation was successful or not
  *
  *ARGUMENTS:
- * appInst - Handle to the application (Required to
- *           load bitmaps from resources)
- * appWnd  - Main Window Handle (Required for clipper)
  *********************************************************/
-bool drawSetup(GtkWidget *appWnd) {
+bool drawSetup() {
   bool returnValue; /* Value to return */
   SDL_Rect in;      /* Used for copying the bases & pills icon in */
   SDL_Rect out;     /* Used for copying the bases & pills icon in */
@@ -144,41 +281,42 @@ bool drawSetup(GtkWidget *appWnd) {
 
   BYTE* buff = new BYTE[80438];
   /* Get tmp file */
-  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX", g_get_tmp_dir());
+  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX",
+           std::filesystem::temp_directory_path().c_str());
   int ret = lzwdecoding((char *)TILES_IMAGE, (char *)buff, 36499);
   if (ret != 80438) {
     free(buff);
     MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
-    return FALSE;
+    return false;
   }
 
-  returnValue = TRUE;
+  returnValue = true;
   lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
   if (lpScreen == nullptr) {
-    returnValue = FALSE;
+    returnValue = false;
     MessageBox("Can't build main surface", DIALOG_BOX_TITLE);
   }
 
   /* Create the back buffer surface */
-  if (returnValue == TRUE) {
+  if (returnValue) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         SDL_HWSURFACE, MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
         MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
     } else {
       lpBackBuffer = SDL_DisplayFormat(lpTemp);
       SDL_FreeSurface(lpTemp);
       if (lpBackBuffer == nullptr) {
-        returnValue = FALSE;
+        returnValue = false;
         MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
       }
     }
   }
 
   /* Create the tile buffer and copy the bitmap into it */
-  if (returnValue == TRUE) {
+  if (returnValue) {
     /* Create the buffer */
     FILE *fp = fopen(fileName, "wb");
     fwrite(buff, 80438, 1, fp);
@@ -186,7 +324,7 @@ bool drawSetup(GtkWidget *appWnd) {
     lpTiles = SDL_LoadBMP(fileName);
     unlink(fileName);
     if (lpTiles == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
     } else {
       /* Colour key */
@@ -194,12 +332,12 @@ bool drawSetup(GtkWidget *appWnd) {
                             SDL_MapRGB(lpTiles->format, 0, 0xFF, 0));
       if (ret == -1) {
         MessageBox("Couldn't map colour key", DIALOG_BOX_TITLE);
-        returnValue = FALSE;
+        returnValue = false;
       } else {
         //      lpTiles = SDL_DisplayFormat(lpTemp);
         //	SDL_FreeSurface(lpTemp);
         if (lpTiles == nullptr) {
-          returnValue = FALSE;
+          returnValue = false;
           MessageBox("Can't build a tile file", DIALOG_BOX_TITLE);
         }
       }
@@ -212,29 +350,29 @@ bool drawSetup(GtkWidget *appWnd) {
   in.h = TILE_SIZE_Y;
 
   // Load the background surface
-  if (returnValue == TRUE) {
+  if (returnValue) {
     SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
     lpBackground = IMG_LoadPNG_RW(rw);
     if (lpBackground == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't load background image", DIALOG_BOX_TITLE);
     }
     SDL_FreeRW(rw);
   }
 
   /* Create the Base status window */
-  if (returnValue == TRUE) {
+  if (returnValue) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         0, STATUS_BASES_WIDTH, STATUS_BASES_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
     } else {
       /* Fill the surface black */
       lpBasesStatus = SDL_DisplayFormat(lpTemp);
       SDL_FreeSurface(lpTemp);
       if (lpBasesStatus == nullptr) {
-        returnValue = FALSE;
+        returnValue = false;
         MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
       } else {
         SDL_Rect fill{.x = 0,
@@ -253,17 +391,17 @@ bool drawSetup(GtkWidget *appWnd) {
     }
   }
   /* Makes the pills status */
-  if (returnValue == TRUE) {
+  if (returnValue) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         0, STATUS_PILLS_WIDTH, STATUS_PILLS_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
     } else {
       lpPillsStatus = SDL_DisplayFormat(lpTemp);
       SDL_FreeSurface(lpTemp);
-      if (lpTemp == FALSE) {
-        returnValue = FALSE;
+      if (lpTemp == nullptr) {
+        returnValue = false;
         MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
       } else {
         /* Fill the surface black */
@@ -284,17 +422,17 @@ bool drawSetup(GtkWidget *appWnd) {
   }
 
   /* Makes the tanks status */
-  if (returnValue == TRUE) {
+  if (returnValue) {
     SDL_Surface *lpTemp = SDL_CreateRGBSurface(
         0, STATUS_TANKS_WIDTH, STATUS_TANKS_HEIGHT, 16, 0, 0, 0, 0);
     if (lpTemp == nullptr) {
-      returnValue = FALSE;
+      returnValue = false;
       MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
     } else {
       lpTankStatus = SDL_DisplayFormat(lpTemp);
       SDL_FreeSurface(lpTemp);
       if (lpTankStatus == nullptr) {
-        returnValue = FALSE;
+        returnValue = false;
         MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
       } else {
         /* Fill the surface black */
@@ -313,10 +451,10 @@ bool drawSetup(GtkWidget *appWnd) {
       }
     }
   }
-  if (returnValue == TRUE) {
+  if (returnValue) {
     if (TTF_Init() < 0) {
       MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
-      returnValue = FALSE;
+      returnValue = false;
     } else {
       lpFont = TTF_OpenFont("cour.ttf", 12);
       if (lpFont == nullptr) {
@@ -324,7 +462,7 @@ bool drawSetup(GtkWidget *appWnd) {
             "Couldn't open font file.\n Please place a courier font\ncalled "
             "\"cour.ttf\" in your\nLinBolo directory.",
             DIALOG_BOX_TITLE);
-        returnValue = FALSE;
+        returnValue = false;
       }
     }
   }
@@ -398,18 +536,16 @@ int lastManY = 0;
  *ARGUMENTS:
  *********************************************************/
 void drawSetManClear() {
-  int left, top, width, height;
-
-  //  jm removed today gdk_threads_enter();
-  left = MAN_STATUS_X;
-  top = MAN_STATUS_Y;
-  width = MAN_STATUS_WIDTH + 5;
-  height = MAN_STATUS_HEIGHT + 5;
-  gdk_draw_rectangle(drawingarea1->window, drawingarea1->style->black_gc, TRUE,
-                     left, top, width, height);
+  SDL_Rect fill;
+  fill.x = MAN_STATUS_X;
+  fill.y = MAN_STATUS_Y;
+  fill.w = MAN_STATUS_WIDTH + 5;
+  fill.h = MAN_STATUS_HEIGHT + 5;
+  SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
+  SDL_UpdateRect(lpScreen, MAN_STATUS_X, MAN_STATUS_Y, MAN_STATUS_WIDTH,
+                 MAN_STATUS_HEIGHT);
   lastManX = 0;
   lastManY = 0;
-  //  gdk_threads_leave();
 }
 
 /*********************************************************
@@ -434,9 +570,14 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   int addX;        /* X And and Y co-ordinates */
   int addY;
   int left, top;
-  int width, height;
 
-  // drawSetManClear(menuHeight); /* Clear the display */
+  // Clear the area
+  SDL_Rect fill;
+  fill.x = MAN_STATUS_X;
+  fill.y = MAN_STATUS_Y;
+  fill.w = MAN_STATUS_WIDTH + 5;
+  fill.h = MAN_STATUS_HEIGHT + 5;
+  SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
 
   // oldAngle = angle;
   angle += BRADIANS_SOUTH;
@@ -498,41 +639,31 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
     addY -= (int)dbTemp;
   }
 
-  if (needLocking == TRUE) {
-    gdk_threads_enter();
-  }
   left = MAN_STATUS_X;
   top = MAN_STATUS_Y;
-  width = MAN_STATUS_WIDTH;
-  height = MAN_STATUS_HEIGHT;
-  if (lastManX != 0) {
-    gdk_draw_line(drawingarea1->window, drawingarea1->style->black_gc,
-                  MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y,
-                  lastManX, lastManY);
-  } else {
-    gdk_draw_rectangle(drawingarea1->window, drawingarea1->style->black_gc,
-                       TRUE, left, top, width, height);
-  }
+
+  // SDL does not give us native arc, circle or line methods, so we have
+  // to compute our own.
+  SDL_LockSurface(lpScreen);
   addY += top;
   addX += left;
-  if (isDead == TRUE) {
+  if (isDead) {
     /* Draw dead circle */
-    gdk_draw_arc(drawingarea1->window, drawingarea1->style->white_gc, TRUE,
-                 left, top, width, height, 0, 360 * 64);
+    fill_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
+                MAN_STATUS_WIDTH / 2,
+                SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
     lastManX = 0;
   } else {
-    gdk_draw_arc(drawingarea1->window, drawingarea1->style->white_gc, FALSE,
-                 left, top, width, height, 0, 360 * 64);
-    gdk_draw_line(drawingarea1->window, drawingarea1->style->white_gc,
-                  MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y, addX,
-                  addY);
+    draw_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
+                MAN_STATUS_WIDTH / 2, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
+    draw_line(lpScreen, MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y,
+              addX, addY, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
 
     lastManX = addX;
     lastManY = addY;
   }
-  if (needLocking == TRUE) {
-    gdk_threads_leave();
-  }
+  SDL_UnlockSurface(lpScreen);
+  SDL_UpdateRect(lpScreen, left, top, MAN_STATUS_WIDTH, MAN_STATUS_HEIGHT);
 }
 
 /*********************************************************
@@ -1350,7 +1481,7 @@ void drawStartDelay(long srtDelay) {
  *  showBaseLabels - Show the base labels?
  *  srtDelay       - The start delay in ticks.
  *                  If greater then 0 should draw countdown
- *  isPillView     - TRUE if we are in pillbox view
+ *  isPillView     - true if we are in pillbox view
  *  edgeX          - Edge X offset for smooth scrolling
  *  edgeY          - Edge Y offset for smooth scrolling
  *  useCursor      - True if to draw the cursor
@@ -1383,7 +1514,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
 
   x = 0;
   y = 0;
-  done = FALSE;
+  done = false;
   in.w = TILE_SIZE_X;
   in.h = TILE_SIZE_Y;
   output.w = TILE_SIZE_X;
@@ -1394,10 +1525,10 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
     drawStartDelay(srtDelay);
     return;
   }
-  while (done == FALSE) {
+  while (!done) {
     pos = tiles[x][y].terrain;
-    isPill = FALSE;
-    isBase = FALSE;
+    isPill = false;
+    isBase = false;
     outputX = drawPosX[pos];
     outputY = drawPosY[pos];
     if (pos == PILL_EVIL_15 || pos == PILL_EVIL_14 || pos == PILL_EVIL_13 ||
@@ -1406,7 +1537,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
         pos == PILL_EVIL_6 || pos == PILL_EVIL_5 || pos == PILL_EVIL_4 ||
         pos == PILL_EVIL_3 || pos == PILL_EVIL_2 || pos == PILL_EVIL_1 ||
         pos == PILL_EVIL_0) {
-      isPill = TRUE;
+      isPill = true;
     }
     if (pos == PILL_GOOD_15 || pos == PILL_GOOD_14 || pos == PILL_GOOD_13 ||
         pos == PILL_GOOD_12 || pos == PILL_GOOD_11 || pos == PILL_GOOD_10 ||
@@ -1414,10 +1545,10 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
         pos == PILL_GOOD_6 || pos == PILL_GOOD_5 || pos == PILL_GOOD_4 ||
         pos == PILL_GOOD_3 || pos == PILL_GOOD_2 || pos == PILL_GOOD_1 ||
         pos == PILL_GOOD_0) {
-      isPill = TRUE;
+      isPill = true;
     }
     if (pos == BASE_GOOD || pos == BASE_NEUTRAL || pos == BASE_EVIL) {
-      isBase = TRUE;
+      isBase = true;
     }
 
     /* Drawing */
@@ -1437,7 +1568,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
     }
 
     /* Draw the pillNumber or base Number if required */
-    if (isPill == TRUE && showPillLabels == TRUE) {
+    if (isPill && showPillLabels) {
       labelNum = screenPillNumPos(x, y);
       sprintf(str, "%d", (labelNum - 1));
       lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
@@ -1449,7 +1580,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
       SDL_FreeSurface(lpTextSurface);
     }
 
-    if (isBase == TRUE && showBaseLabels == TRUE) {
+    if (isBase && showBaseLabels) {
       labelNum = screenBaseNumPos(x, y);
       sprintf(str, "%d", (labelNum - 1));
       lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
@@ -1467,7 +1598,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
       y++;
       x = 0;
       if (y == MAIN_BACK_BUFFER_SIZE_Y) {
-        done = TRUE;
+        done = true;
       }
     }
   }
@@ -1493,7 +1624,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   }
 
   /* Draw the Cursor Square if required */
-  if (useCursor == TRUE) {
+  if (useCursor) {
     in.x = MOUSE_SQUARE_X;
     in.w = TILE_SIZE_X;
     in.y = MOUSE_SQUARE_Y;
@@ -1516,7 +1647,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   output.w = in.w;
   output.h = in.h;
 
-  if (isPillView == TRUE) {
+  if (isPillView) {
     /* we are in pillbox view - Write text here */
     drawPillInView();
   }
@@ -1811,7 +1942,7 @@ void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpBasesStatus, &dest);
-  if (labels == TRUE) {
+  if (labels) {
     /* Must draw the label */
     sprintf(str, "%d", (baseNum - 1));
     /* FIXME    if
@@ -1957,7 +2088,7 @@ void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
 
   /* Perform the drawing */
   SDL_BlitSurface(lpTiles, &src, lpPillsStatus, &dest);
-  if (labels == TRUE) {
+  if (labels) {
     /* Must draw the label */
     sprintf(str, "%d", (pillNum - 1));
     /* FIXME:    if
@@ -2175,8 +2306,8 @@ void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
   Uint32 color; /* Fill green colour */
 
   if (lastShells != shells || lastMines != mines || lastArmour != armour ||
-      redraw == TRUE) {
-    if (redraw == FALSE) {
+      redraw) {
+    if (!redraw) {
       lastShells = shells;
       lastMines = mines;
       lastArmour = armour;
@@ -2487,10 +2618,10 @@ void drawRedrawAll(int width, int height, buildSelect value,
   drawMessages(0, 0, top, bottom);
   screenGetKillsDeaths(&kills, &deaths);
   drawKillsDeaths(0, 0, kills, deaths);
-  drawStatusBaseBars(0, 0, 0, 0, 0, TRUE);
+  drawStatusBaseBars(0, 0, 0, 0, 0, true);
   screenGetLgmStatus(&lgmIsOut, &lgmIsDead, &lgmAngle);
-  if (lgmIsOut == TRUE) {
-    drawSetManStatus(lgmIsDead, lgmAngle, FALSE);
+  if (lgmIsOut) {
+    drawSetManStatus(lgmIsDead, lgmAngle, false);
   }
   clientMutexRelease();
 }
@@ -2545,7 +2676,7 @@ void drawMessages(int xValue, int yValue, const char *top, const char *bottom) {
  *
  *ARGUMENTS:
  *  rcWindow  - Window Co-ordinates
- *  justBlack - TRUE if we want a black screen
+ *  justBlack - true if we want a black screen
  *********************************************************/
 void drawDownloadScreen(bool justBlack) {
   SDL_Rect output; /* Output RECT */
@@ -2555,7 +2686,7 @@ void drawDownloadScreen(bool justBlack) {
   SDL_FillRect(lpBackBuffer, nullptr,
                SDL_MapRGB(lpBackBuffer->format, 0, 0, 0));
   /* Fill the downloaded area white */
-  if (justBlack == FALSE) {
+  if (!justBlack) {
     output.x = 0;
     output.y = 0;
     output.h = netGetDownloadPos();

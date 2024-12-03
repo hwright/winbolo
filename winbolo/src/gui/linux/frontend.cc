@@ -16,11 +16,12 @@
 #include "frontend.h"
 
 #include <SDL.h>
+#include <gtk/gtk.h>
 
 #include "../clientmutex.h"
+#include "../lang.h"
 #include "../linresource.h"
 #include "draw.h"
-#include "../lang.h"
 #include "framemutex.h"
 #include "sound.h"
 
