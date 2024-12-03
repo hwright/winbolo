@@ -48,7 +48,6 @@ static void dialogWinbolonetOK(GtkWidget *widget, gpointer user_data) {
   char password[FILENAME_MAX];
   bool useWbn = FALSE;
   bool savePass = FALSE;
-  gchar *str;
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(dialogWbnUse)) == TRUE) {
     useWbn = TRUE;
   }
@@ -57,7 +56,7 @@ static void dialogWinbolonetOK(GtkWidget *widget, gpointer user_data) {
     savePass = TRUE;
   }
 
-  str = gtk_entry_get_text(GTK_ENTRY(dialogWbnPassword));
+  const gchar *str = gtk_entry_get_text(GTK_ENTRY(dialogWbnPassword));
   strcpy(password, str);
   if (password[0] == EMPTY_CHAR && useWbn == TRUE) {
     MessageBox(
@@ -101,7 +100,7 @@ GtkWidget *dialogWinboloNetCreate() {
   gtk_window_set_position(GTK_WINDOW(Winbolo_net_settings), GTK_WIN_POS_CENTER);
   gtk_window_set_modal(GTK_WINDOW(Winbolo_net_settings), TRUE);
 
-  dialog_vbox1 = GTK_DIALOG(Winbolo_net_settings)->vbox;
+  dialog_vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(Winbolo_net_settings));
   gtk_object_set_data(GTK_OBJECT(Winbolo_net_settings), "dialog_vbox1",
                       dialog_vbox1);
   gtk_widget_show(dialog_vbox1);

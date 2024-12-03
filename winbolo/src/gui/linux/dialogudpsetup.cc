@@ -55,14 +55,13 @@ static bool dialogUdpClosing = FALSE;
  *********************************************************/
 static bool dialogUdpSetupDone(bool isJoin) {
   bool returnValue;         /* Value to return */
-  gchar *str;               /* Temp string for conversions */
   char add[FILENAME_MAX];   /* Target address */
   char pn[PLAYER_NAME_LEN]; /* Player name */
   unsigned short udp;       /* Udp ports */
   unsigned short myUdp;
 
   returnValue = TRUE;
-  str = gtk_entry_get_text(GTK_ENTRY(idc_updsetuptxtplayername));
+  const gchar *str = gtk_entry_get_text(GTK_ENTRY(idc_updsetuptxtplayername));
   if (str == nullptr) {
     returnValue = FALSE;
   } else {
@@ -176,8 +175,7 @@ static gboolean dialogUdpSetupNew(GtkWidget *widget, GdkEventButton *event,
                                   gpointer user_data) {
   unsigned short udp; /* Udp ports */
   unsigned short myUdp;
-  gchar *str;
-  str = gtk_entry_get_text(GTK_ENTRY(idc_updsetuptxtourport));
+  const gchar *str = gtk_entry_get_text(GTK_ENTRY(idc_updsetuptxtourport));
   myUdp = atoi(str);
   str = gtk_entry_get_text(GTK_ENTRY(idc_updsetuptxtthereport));
   udp = atoi(str);

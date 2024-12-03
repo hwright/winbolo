@@ -91,5 +91,5 @@ target_link_libraries(linbolo PRIVATE
                      ${SDL_LIBRARIES}
                      ${SDL_image_LIBRARIES}
                      gmodule
-                     gthread)
+                     X11)
 

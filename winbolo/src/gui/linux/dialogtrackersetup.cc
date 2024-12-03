@@ -44,7 +44,6 @@ static gboolean dialogTrackerUseFunc(GtkWidget *widget, GdkEventButton *event,
 static gboolean dialogTrackerOK(GtkWidget *widget, GdkEventButton *event,
                                 gpointer user_data) {
   char addr[FILENAME_MAX]; /* Tracker address   */
-  gchar *str;
   unsigned short port; /* Port              */
   bool enabled;        /* Use of tracker enabled */
 
@@ -53,7 +52,7 @@ static gboolean dialogTrackerOK(GtkWidget *widget, GdkEventButton *event,
       TRUE) {
     enabled = TRUE;
   }
-  str = gtk_entry_get_text(GTK_ENTRY(entry2));
+  const gchar *str = gtk_entry_get_text(GTK_ENTRY(entry2));
   port = atoi(str);
   str = gtk_entry_get_text(GTK_ENTRY(entry1));
   strcpy(addr, str);
@@ -89,7 +88,7 @@ GtkWidget *dialogTrackerCreate(void) {
   unsigned short port;     /* Port              */
   bool enabled;            /* Use of tracker enabled */
 
-  dialogTracker = gtk_window_new(GTK_WINDOW_DIALOG);
+  dialogTracker = gtk_dialog_new();
   gtk_object_set_data(GTK_OBJECT(dialogTracker), "dialogTracker",
                       dialogTracker);
   gtk_container_set_border_width(GTK_CONTAINER(dialogTracker), 10);
@@ -98,12 +97,7 @@ GtkWidget *dialogTrackerCreate(void) {
   gtk_window_set_modal(GTK_WINDOW(dialogTracker), TRUE);
   gtk_window_set_policy(GTK_WINDOW(dialogTracker), FALSE, FALSE, FALSE);
 
-  vbox1 = gtk_vbox_new(FALSE, 0);
-  gtk_widget_ref(vbox1);
-  gtk_object_set_data_full(GTK_OBJECT(dialogTracker), "vbox1", vbox1,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(vbox1);
-  gtk_container_add(GTK_CONTAINER(dialogTracker), vbox1);
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogTracker));
 
   table1 = gtk_table_new(2, 2, FALSE);
   gtk_widget_ref(table1);

@@ -82,12 +82,12 @@ static void dialogOpeningOK(GtkWidget *widget, gpointer user_data) {
 }
 
 static void dialogOpeningQuit(GtkWidget *widget, gpointer user_data) {
-  gdk_key_repeat_restore();
+  // gdk_key_repeat_restore();
   exit(0);
 }
 
 static void dialogOpeningCloseBox(GtkWidget *widget, gpointer user_data) {
-  gdk_key_repeat_restore();
+  // gdk_key_repeat_restore();
   exit(0);
 }
 
@@ -111,19 +111,14 @@ GtkWidget *dialogOpeningCreate(void) {
   GdkPixmap *pixmap_data;
   GdkPixmap *pixmap_mask;
 
-  dialogOpening = gtk_window_new(GTK_WINDOW_DIALOG);
+  dialogOpening = gtk_dialog_new();
   gtk_object_set_data(GTK_OBJECT(dialogOpening), "dialogOpening",
                       dialogOpening);
   gtk_container_set_border_width(GTK_CONTAINER(dialogOpening), 20);
   gtk_window_set_title(GTK_WINDOW(dialogOpening), "Network Selection");
   gtk_window_set_policy(GTK_WINDOW(dialogOpening), FALSE, FALSE, FALSE);
   gtk_window_set_position(GTK_WINDOW(dialogOpening), GTK_WIN_POS_CENTER);
-  vbox1 = gtk_vbox_new(FALSE, 0);
-  gtk_widget_ref(vbox1);
-  gtk_object_set_data_full(GTK_OBJECT(dialogOpening), "vbox1", vbox1,
-                           (GtkDestroyNotify)gtk_widget_unref);
-  gtk_widget_show(vbox1);
-  gtk_container_add(GTK_CONTAINER(dialogOpening), vbox1);
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(dialogOpening));
 
   pixmap_data = gdk_pixmap_colormap_create_from_xpm_d(
       nullptr, gtk_widget_get_colormap(dialogOpening), &pixmap_mask, nullptr,

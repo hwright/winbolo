@@ -67,7 +67,7 @@ static void file_cancel_sel(GtkWidget *w, GtkFileSelection *fs) {
 }
 
 static void file_ok_sel(GtkWidget *w, GtkFileSelection *fs) {
-  gchar *sTempFile;
+  const gchar *sTempFile;
   sTempFile = gtk_file_selection_get_filename(GTK_FILE_SELECTION(fs));
 
   strcpy(fileName, sTempFile);
@@ -341,7 +341,8 @@ static gboolean dialogGameSetupOK(GtkWidget *widget, GdkEventButton *event,
   /* Game Start Delay */
   if (gtk_toggle_button_get_active(
           GTK_TOGGLE_BUTTON(idc_gamesetupstartdelay)) == TRUE) {
-    gchar *str2 = gtk_entry_get_text(GTK_ENTRY(idc_gamesetuptxtstartdelay));
+    const gchar *str2 =
+        gtk_entry_get_text(GTK_ENTRY(idc_gamesetuptxtstartdelay));
     strcpy(str, str2);
     gsd = atol(str);
     if (gsd < 0) {
@@ -352,7 +353,7 @@ static gboolean dialogGameSetupOK(GtkWidget *widget, GdkEventButton *event,
   /* Get Game Len */
   if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(idc_gamesetuptimelimit)) ==
       TRUE) {
-    gchar *str2 = gtk_entry_get_text(GTK_ENTRY(idc_gamesetuptxtlimit));
+    const gchar *str2 = gtk_entry_get_text(GTK_ENTRY(idc_gamesetuptxtlimit));
     strcpy(str, str2);
     gl = atol(str);
     if (gl < 0) {
@@ -364,7 +365,8 @@ static gboolean dialogGameSetupOK(GtkWidget *widget, GdkEventButton *event,
   str[0] = '\0';
   if (gtk_toggle_button_get_active(
           GTK_TOGGLE_BUTTON(idc_gamesetupgamepassword)) == TRUE) {
-    gchar *str2 = gtk_entry_get_text(GTK_ENTRY(idc_gamesetuptextpassword));
+    const gchar *str2 =
+        gtk_entry_get_text(GTK_ENTRY(idc_gamesetuptextpassword));
     strcpy(str, str2);
   }
 
