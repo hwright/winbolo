@@ -157,38 +157,6 @@ void drawRedrawAll(int width, int height, buildSelect value,
                    bool showPillsStatus, bool showBasesStatus);
 
 /*********************************************************
- *NAME:          drawMessages
- *AUTHOR:        John Morrison
- *CREATION DATE: 3/1/99
- *LAST MODIFIED: 3/1/99
- *PURPOSE:
- *  Draws the message window
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  top    - The top string to draw
- *  bottom - The bottom string to draw
- *********************************************************/
-void drawMessages(int xValue, int yValue, const char *top, const char *bottom);
-
-/*********************************************************
- *NAME:          drawKillsDeaths
- *AUTHOR:        John Morrison
- *CREATION DATE:  8/1/99
- *LAST MODIFIED:  8/1/99
- *PURPOSE:
- *  Draws the tanks kills/deaths
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  kills  - The number of kills the tank has.
- *  deaths - The number of times the tank has died
- *********************************************************/
-void drawKillsDeaths(int xValue, int yValue, int kills, int deaths);
-
-/*********************************************************
  *NAME:          drawSetupArrays
  *AUTHOR:        John Morrison
  *CREATION DATE: 28/5/00

@@ -37,6 +37,7 @@
 #include <unistd.h>
 
 #include <filesystem>
+#include <format>
 
 #include "../../bolo/backend.h"
 #include "../../bolo/global.h"
@@ -821,6 +822,83 @@ void drawStatusBaseBars(uint8_t shells, uint8_t mines, uint8_t armour,
     dest.y = STATUS_BASE_ARMOUR;
     dest.w = armour * BAR_BASE_MULTIPLY;
     SDL_FillRect(lpScreen, &dest, color);
+  }
+}
+
+/*********************************************************
+ *NAME:          drawMessages
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 3/1/99
+ *LAST MODIFIED: 3/1/99
+ *PURPOSE:
+ *  Draws the message window
+ *
+ *ARGUMENTS:
+ *  top    - The top string to draw
+ *  bottom - The bottom string to draw
+ *********************************************************/
+void drawMessages(const char *top, const char *bottom) {
+  SDL_Surface *lpTextSurface;
+  SDL_Rect dest; /* The dest square to draw it */
+
+  lpTextSurface = TTF_RenderText_Shaded(lpFont, top, white, black);
+  if (lpTextSurface) {
+    dest.x = MESSAGE_LEFT;
+    dest.y = MESSAGE_TOP;
+    dest.w = lpTextSurface->w;
+    dest.h = lpTextSurface->h;
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
+    SDL_FreeSurface(lpTextSurface);
+  }
+  lpTextSurface = TTF_RenderText_Shaded(lpFont, bottom, white, black);
+  if (lpTextSurface) {
+    dest.x = MESSAGE_LEFT;
+    dest.y = MESSAGE_TOP + MESSAGE_TEXT_HEIGHT;
+    dest.w = lpTextSurface->w;
+    dest.h = lpTextSurface->h;
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
+    SDL_FreeSurface(lpTextSurface);
+  }
+}
+
+/*********************************************************
+ *NAME:          drawKillsDeaths
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  8/1/99
+ *LAST MODIFIED:  8/1/99
+ *PURPOSE:
+ *  Draws the tanks kills/deaths
+ *
+ *ARGUMENTS:
+ *  xValue  - The left position of the window
+ *  yValue  - The top position of the window
+ *  kills  - The number of kills the tank has.
+ *  deaths - The number of times the tank has died
+ *********************************************************/
+void drawKillsDeaths(int kills, int deaths) {
+  SDL_Surface *lpTextSurface;
+  SDL_Rect dest; /* The dest square to draw it */
+
+  std::string str = std::format("{}", kills);
+
+  lpTextSurface = TTF_RenderText_Shaded(lpFont, str.c_str(), white, black);
+  if (lpTextSurface) {
+    dest.x = STATUS_KILLS_LEFT;
+    dest.y = STATUS_KILLS_TOP + 1;
+    dest.w = lpTextSurface->w;
+    dest.h = lpTextSurface->h;
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
+    SDL_FreeSurface(lpTextSurface);
+  }
+  str = std::format("{}", deaths);
+  lpTextSurface = TTF_RenderText_Shaded(lpFont, str.c_str(), white, black);
+  if (lpTextSurface) {
+    dest.x = STATUS_DEATHS_LEFT;
+    dest.y = STATUS_DEATHS_TOP + 1;
+    dest.w = lpTextSurface->w;
+    dest.h = lpTextSurface->h;
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
+    SDL_FreeSurface(lpTextSurface);
   }
 }
 }
@@ -2170,11 +2248,15 @@ void drawRedrawAll(int width, int height, buildSelect value,
   SDL_BlitSurface(lpBackground, nullptr, lpScreen, &destRect);
   drawSelectIndentsOn(value, 0, 0);
 
+  // Fetch all of the state we weren't supplied.
+  // TODO: These should be parameters to this method.
   clientMutexWaitFor();
   BYTE total_bases = screenNumBases();
   BYTE total_pills = screenNumPills();
   BYTE total_tanks = screenGetNumPlayers();
   screenGetTankStats(&shells, &mines, &armour, &trees);
+  screenGetMessages(top, bottom);
+  screenGetKillsDeaths(&kills, &deaths);
   clientMutexRelease();
 
   // Render the Base status window
@@ -2232,59 +2314,17 @@ void drawRedrawAll(int width, int height, buildSelect value,
   // Draw tank Bars
   drawStatusTankBars(shells, mines, armour, trees);
   drawStatusBaseBars(0, 0, 0, true);
+  drawMessages(top, bottom);
+  drawKillsDeaths(kills, deaths);
 
   SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
 
   clientMutexWaitFor();
-  screenGetMessages(top, bottom);
-  drawMessages(0, 0, top, bottom);
-  screenGetKillsDeaths(&kills, &deaths);
-  drawKillsDeaths(0, 0, kills, deaths);
   screenGetLgmStatus(&lgmIsOut, &lgmIsDead, &lgmAngle);
   if (lgmIsOut) {
     drawSetManStatus(lgmIsDead, lgmAngle, false);
   }
   clientMutexRelease();
-}
-
-/*********************************************************
- *NAME:          drawMessages
- *AUTHOR:        John Morrison
- *CREATION DATE: 3/1/99
- *LAST MODIFIED: 3/1/99
- *PURPOSE:
- *  Draws the message window
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  top    - The top string to draw
- *  bottom - The bottom string to draw
- *********************************************************/
-void drawMessages(int xValue, int yValue, const char *top, const char *bottom) {
-  SDL_Surface *lpTextSurface;
-  SDL_Rect dest; /* The dest square to draw it */
-
-  lpTextSurface = TTF_RenderText_Shaded(lpFont, top, white, black);
-  if (lpTextSurface) {
-    dest.x = xValue + MESSAGE_LEFT;
-    dest.y = yValue + MESSAGE_TOP;
-    dest.w = lpTextSurface->w;
-    dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
-    SDL_UpdateRects(lpScreen, 1, &dest);
-    SDL_FreeSurface(lpTextSurface);
-  }
-  lpTextSurface = TTF_RenderText_Shaded(lpFont, bottom, white, black);
-  if (lpTextSurface) {
-    dest.x = xValue + MESSAGE_LEFT;
-    dest.y = yValue + MESSAGE_TOP + MESSAGE_TEXT_HEIGHT;
-    dest.w = lpTextSurface->w;
-    dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
-    SDL_UpdateRects(lpScreen, 1, &dest);
-    SDL_FreeSurface(lpTextSurface);
-  }
 }
 
 /*********************************************************
@@ -2329,50 +2369,6 @@ void drawDownloadScreen(bool justBlack) {
 
   SDL_BlitSurface(lpBackBuffer, &in, lpScreen, &output);
   SDL_UpdateRect(lpScreen, output.x, output.y, output.w, output.h);
-}
-
-/*********************************************************
- *NAME:          drawKillsDeaths
- *AUTHOR:        John Morrison
- *CREATION DATE:  8/1/99
- *LAST MODIFIED:  8/1/99
- *PURPOSE:
- *  Draws the tanks kills/deaths
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  kills  - The number of kills the tank has.
- *  deaths - The number of times the tank has died
- *********************************************************/
-void drawKillsDeaths(int xValue, int yValue, int kills, int deaths) {
-  SDL_Surface *lpTextSurface;
-  SDL_Rect dest; /* The dest square to draw it */
-  char str[16];  /* Holds the charectors to print */
-
-  sprintf(str, "%d", kills);
-
-  lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
-  if (lpTextSurface) {
-    dest.x = xValue + STATUS_KILLS_LEFT;
-    dest.y = yValue + STATUS_KILLS_TOP + 1;
-    dest.w = lpTextSurface->w;
-    dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
-    SDL_UpdateRects(lpScreen, 1, &dest);
-    SDL_FreeSurface(lpTextSurface);
-  }
-  sprintf(str, "%d", deaths);
-  lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
-  if (lpTextSurface) {
-    dest.x = xValue + STATUS_DEATHS_LEFT;
-    dest.y = yValue + STATUS_DEATHS_TOP + 1;
-    dest.w = lpTextSurface->w;
-    dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
-    SDL_UpdateRects(lpScreen, 1, &dest);
-    SDL_FreeSurface(lpTextSurface);
-  }
 }
 
 /*********************************************************
