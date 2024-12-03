@@ -241,8 +241,11 @@ void tankUpdate(tank *value, map *mp, bases *bs, pillboxes *pb, shells *shs,
 
     if (!threadsGetContext()) {
       screenGetFrontend()->playSound(bolo::sndEffects::shootSelf);
-      screenGetFrontend()->updateTankStatusBars(
-          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankSupplyBars(
+          bolo::TankSupply{.shells = (*value)->shells,
+                           .mines = (*value)->mines,
+                           .armor = (*value)->armour,
+                           .trees = (*value)->trees});
     }
     (*value)->justFired = true;
     tankRegisterChangeByte(value, CRC_JUSTFIRED_OFFSET, true);
@@ -837,8 +840,11 @@ void tankSetWorld(tank *value, WORLD x, WORLD y, TURNTYPE angle,
     (*value)->trees = trees;
     tankRegisterChangeByte(value, CRC_TREES_OFFSET, trees);
     if (!threadsGetContext()) {
-      screenGetFrontend()->updateTankStatusBars(
-          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankSupplyBars(
+          bolo::TankSupply{.shells = (*value)->shells,
+                           .mines = (*value)->mines,
+                           .armor = (*value)->armour,
+                           .trees = (*value)->trees});
     }
   }
 }
@@ -981,9 +987,11 @@ tankHit tankIsTankHit(tank *value, map *mp, pillboxes *pb, bases *bs, WORLD x,
     }
     if ((*value)->armour <= TANK_FULL_ARMOUR) {
       if (!threadsGetContext()) {
-        screenGetFrontend()->updateTankStatusBars(
-            (*value)->shells, (*value)->mines, (*value)->armour,
-            (*value)->trees);
+        screenGetFrontend()->updateTankSupplyBars(
+            bolo::TankSupply{.shells = (*value)->shells,
+                             .mines = (*value)->mines,
+                             .armor = (*value)->armour,
+                             .trees = (*value)->trees});
         if (needSend) {
           /* Send hit to network */
           netMNTAdd(screenGetNetMnt(), NMNT_TANKHIT,
@@ -994,8 +1002,11 @@ tankHit tankIsTankHit(tank *value, map *mp, pillboxes *pb, bases *bs, WORLD x,
       }
     } else {
       if (!threadsGetContext()) {
-        screenGetFrontend()->updateTankStatusBars(
-            (*value)->shells, (*value)->mines, 0, (*value)->trees);
+        screenGetFrontend()->updateTankSupplyBars(
+            bolo::TankSupply{.shells = (*value)->shells,
+                             .mines = (*value)->mines,
+                             .armor = 0,
+                             .trees = (*value)->trees});
       }
     }
   } else if (abs((*value)->x - x) < 128 && abs((*value)->y - y) < 128 &&
@@ -1034,8 +1045,11 @@ void tankInWater(tank *value) {
   if (modsMade) {
     /* Update view and play sound */
     if (!threadsGetContext()) {
-      screenGetFrontend()->updateTankStatusBars(
-          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankSupplyBars(
+          bolo::TankSupply{.shells = (*value)->shells,
+                           .mines = (*value)->mines,
+                           .armor = (*value)->armour,
+                           .trees = (*value)->trees});
       screenGetFrontend()->playSound(bolo::sndEffects::bubbles);
     }
   }
@@ -1126,9 +1140,11 @@ void tankDeath(tank *value, starts *sts) {
         screenTankView();
         screenSetInStartFind(false);
         if (!threadsGetContext()) {
-          screenGetFrontend()->updateTankStatusBars(
-              (*value)->shells, (*value)->mines, (*value)->armour,
-              (*value)->trees);
+          screenGetFrontend()->updateTankSupplyBars(
+              bolo::TankSupply{.shells = (*value)->shells,
+                               .mines = (*value)->mines,
+                               .armor = (*value)->armour,
+                               .trees = (*value)->trees});
         }
       }
     }
@@ -1191,8 +1207,11 @@ void tankAddArmour(tank *value, BYTE amount) {
     (*value)->armour += amount;
     tankRegisterChangeByte(value, CRC_ARMOUR_OFFSET, (*value)->armour);
     if (!threadsGetContext()) {
-      screenGetFrontend()->updateTankStatusBars(
-          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankSupplyBars(
+          bolo::TankSupply{.shells = (*value)->shells,
+                           .mines = (*value)->mines,
+                           .armor = (*value)->armour,
+                           .trees = (*value)->trees});
     }
   }
 }
@@ -1214,8 +1233,11 @@ void tankAddShells(tank *value, BYTE amount) {
     (*value)->shells += amount;
     tankRegisterChangeByte(value, CRC_SHELLS_OFFSET, (*value)->shells);
     if (!threadsGetContext()) {
-      screenGetFrontend()->updateTankStatusBars(
-          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankSupplyBars(
+          bolo::TankSupply{.shells = (*value)->shells,
+                           .mines = (*value)->mines,
+                           .armor = (*value)->armour,
+                           .trees = (*value)->trees});
     }
   }
 }
@@ -1237,8 +1259,11 @@ void tankAddMines(tank *value, BYTE amount) {
     (*value)->mines += amount;
     tankRegisterChangeByte(value, CRC_MINES_OFFSET, (*value)->mines);
     if (!threadsGetContext()) {
-      screenGetFrontend()->updateTankStatusBars(
-          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankSupplyBars(
+          bolo::TankSupply{.shells = (*value)->shells,
+                           .mines = (*value)->mines,
+                           .armor = (*value)->armour,
+                           .trees = (*value)->trees});
     }
   }
 }
@@ -1993,14 +2018,19 @@ bool tankGetLgmTrees(tank *value, BYTE amount, bool perform) {
       tankRegisterChangeByte(value, CRC_TREES_OFFSET, (*value)->trees);
       if ((*value)->armour <= TANK_FULL_ARMOUR) {
         if (!threadsGetContext()) {
-          screenGetFrontend()->updateTankStatusBars(
-              (*value)->shells, (*value)->mines, (*value)->armour,
-              (*value)->trees);
+          screenGetFrontend()->updateTankSupplyBars(
+              bolo::TankSupply{.shells = (*value)->shells,
+                               .mines = (*value)->mines,
+                               .armor = (*value)->armour,
+                               .trees = (*value)->trees});
         }
       } else {
         if (!threadsGetContext()) {
-          screenGetFrontend()->updateTankStatusBars(
-              (*value)->shells, (*value)->mines, 0, (*value)->trees);
+          screenGetFrontend()->updateTankSupplyBars(
+              bolo::TankSupply{.shells = (*value)->shells,
+                               .mines = (*value)->mines,
+                               .armor = 0,
+                               .trees = (*value)->trees});
         }
       }
     }
@@ -2029,13 +2059,19 @@ void tankGiveTrees(tank *value, BYTE amount) {
   tankRegisterChangeByte(value, CRC_TREES_OFFSET, (*value)->trees);
   if ((*value)->armour <= TANK_FULL_ARMOUR) {
     if (!threadsGetContext()) {
-      screenGetFrontend()->updateTankStatusBars(
-          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankSupplyBars(
+          bolo::TankSupply{.shells = (*value)->shells,
+                           .mines = (*value)->mines,
+                           .armor = (*value)->armour,
+                           .trees = (*value)->trees});
     }
   } else {
     if (!threadsGetContext()) {
-      screenGetFrontend()->updateTankStatusBars(
-          (*value)->shells, (*value)->mines, 0, (*value)->trees);
+      screenGetFrontend()->updateTankSupplyBars(
+          bolo::TankSupply{.shells = (*value)->shells,
+                           .mines = (*value)->mines,
+                           .armor = 0,
+                           .trees = (*value)->trees});
     }
   }
 }
@@ -2067,14 +2103,19 @@ bool tankGetLgmMines(tank *value, BYTE amount, bool perform) {
       tankRegisterChangeByte(value, CRC_MINES_OFFSET, (*value)->mines);
       if ((*value)->armour <= TANK_FULL_ARMOUR) {
         if (!threadsGetContext()) {
-          screenGetFrontend()->updateTankStatusBars(
-              (*value)->shells, (*value)->mines, (*value)->armour,
-              (*value)->trees);
+          screenGetFrontend()->updateTankSupplyBars(
+              bolo::TankSupply{.shells = (*value)->shells,
+                               .mines = (*value)->mines,
+                               .armor = (*value)->armour,
+                               .trees = (*value)->trees});
         }
       } else {
         if (!threadsGetContext()) {
-          screenGetFrontend()->updateTankStatusBars(
-              (*value)->shells, (*value)->mines, 0, (*value)->trees);
+          screenGetFrontend()->updateTankSupplyBars(
+              bolo::TankSupply{.shells = (*value)->shells,
+                               .mines = (*value)->mines,
+                               .armor = 0,
+                               .trees = (*value)->trees});
         }
       }
     }
@@ -2103,13 +2144,19 @@ void tankGiveMines(tank *value, BYTE amount) {
   tankRegisterChangeByte(value, CRC_MINES_OFFSET, (*value)->mines);
   if ((*value)->armour <= TANK_FULL_ARMOUR) {
     if (!threadsGetContext()) {
-      screenGetFrontend()->updateTankStatusBars(
-          (*value)->shells, (*value)->mines, (*value)->armour, (*value)->trees);
+      screenGetFrontend()->updateTankSupplyBars(
+          bolo::TankSupply{.shells = (*value)->shells,
+                           .mines = (*value)->mines,
+                           .armor = (*value)->armour,
+                           .trees = (*value)->trees});
     }
   } else {
     if (!threadsGetContext()) {
-      screenGetFrontend()->updateTankStatusBars(
-          (*value)->shells, (*value)->mines, 0, (*value)->trees);
+      screenGetFrontend()->updateTankSupplyBars(
+          bolo::TankSupply{.shells = (*value)->shells,
+                           .mines = (*value)->mines,
+                           .armor = 0,
+                           .trees = (*value)->trees});
     }
   }
 }
@@ -2275,14 +2322,19 @@ void tankLayMine(tank *value, map *mp, pillboxes *pb, bases *bs) {
       soundDist(bolo::sndEffects::manLayingMineNear, bmx, bmy);
       if ((*value)->armour <= TANK_FULL_ARMOUR) {
         if (!threadsGetContext()) {
-          screenGetFrontend()->updateTankStatusBars(
-              (*value)->shells, (*value)->mines, (*value)->armour,
-              (*value)->trees);
+          screenGetFrontend()->updateTankSupplyBars(
+              bolo::TankSupply{.shells = (*value)->shells,
+                               .mines = (*value)->mines,
+                               .armor = (*value)->armour,
+                               .trees = (*value)->trees});
         }
       } else {
         if (!threadsGetContext()) {
-          screenGetFrontend()->updateTankStatusBars(
-              (*value)->shells, (*value)->mines, 0, (*value)->trees);
+          screenGetFrontend()->updateTankSupplyBars(
+              bolo::TankSupply{.shells = (*value)->shells,
+                               .mines = (*value)->mines,
+                               .armor = 0,
+                               .trees = (*value)->trees});
         }
       }
     }
@@ -2360,14 +2412,19 @@ void tankMineDamage(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE mx,
     }
     if ((*value)->armour <= TANK_FULL_ARMOUR) {
       if (!threadsGetContext()) {
-        screenGetFrontend()->updateTankStatusBars(
-            (*value)->shells, (*value)->mines, (*value)->armour,
-            (*value)->trees);
+        screenGetFrontend()->updateTankSupplyBars(
+            bolo::TankSupply{.shells = (*value)->shells,
+                             .mines = (*value)->mines,
+                             .armor = (*value)->armour,
+                             .trees = (*value)->trees});
       }
     } else {
       if (!threadsGetContext()) {
-        screenGetFrontend()->updateTankStatusBars(
-            (*value)->shells, (*value)->mines, 0, (*value)->trees);
+        screenGetFrontend()->updateTankSupplyBars(
+            bolo::TankSupply{.shells = (*value)->shells,
+                             .mines = (*value)->mines,
+                             .armor = 0,
+                             .trees = (*value)->trees});
       }
     }
   }

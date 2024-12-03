@@ -37,6 +37,7 @@
 #include <unistd.h>
 
 #include <filesystem>
+#include <format>
 
 #include "../../bolo/backend.h"
 #include "../../bolo/global.h"
@@ -64,15 +65,9 @@
 */
 /* SDL Surfaces */
 static SDL_Surface *lpScreen = nullptr;
-static SDL_Surface *lpBackBuffer = nullptr;
 static SDL_Surface *lpTiles = nullptr;
 static SDL_Surface *lpBackground = nullptr;
-static SDL_Surface *lpPillsStatus = nullptr;
-static SDL_Surface *lpBasesStatus = nullptr;
-static SDL_Surface *lpTankStatus = nullptr;
 static TTF_Font *lpFont = nullptr;
-static SDL_Color white = {0xFF, 0xFF, 0xFF, 0};
-static SDL_Color black = {0, 0, 0, 0};
 
 /* typedef int DWORD; */
 /* Used for drawing the man status */
@@ -96,6 +91,9 @@ void clientMutexRelease(void);
 int drawGetFrameRate() { return g_dwFrameTotal; }
 
 namespace {
+
+const SDL_Color white = {0xFF, 0xFF, 0xFF, 0};
+const SDL_Color black = {0, 0, 0, 0};
 
 // These are from
 // https://web.archive.org/web/20160326085538/http://content.gpwiki.org/index.php/SDL:Tutorials:Drawing_and_Filling_Circles
@@ -192,6 +190,8 @@ void fill_circle(SDL_Surface *surface, int cx, int cy, int radius,
   }
 }
 
+// Adapted from
+// http://fredericgoset.ovh/mathematiques/courbes/en/bresenham_line.html
 void draw_line(SDL_Surface *surface, int x0, int y0, int x1, int y1,
                Uint32 pixel) {
   int dx = x1 - x0;
@@ -244,309 +244,665 @@ void draw_line(SDL_Surface *surface, int x0, int y0, int x1, int y1,
   }
 }
 
-// Draws the background graphic. Returns if the operation
-// is successful or not.
-//
-// ARGUMENTS:
-bool drawBackground() {
-  bool returnValue = false; /* Value to return */
-  SDL_Rect destRect{.x = 0,
-                    .y = 0,
-                    .w = static_cast<Uint16>(lpBackground->w),
-                    .h = static_cast<Uint16>(lpBackground->h)};
-  if (SDL_BlitSurface(lpBackground, nullptr, lpScreen, &destRect) == 0) {
-    returnValue = true;
-    SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
+/*********************************************************
+ *NAME:          drawSelectIndentsOn
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 20/12/98
+ *LAST MODIFIED: 20/12/98
+ *PURPOSE:
+ *  Draws the indents around the five building selection
+ *  graphics on the left based on the buildSelect value.
+ *  Draws the red dot as well.
+ *
+ *ARGUMENTS:
+ *  value   - The currently selected build icon
+ *  xValue  - The left position of the window
+ *  yValue  - The top position of the window
+ *********************************************************/
+void drawSelectIndentsOn(buildSelect value, int xValue, int yValue) {
+  SDL_Rect src;  /* The src square on the tile file to retrieve */
+  SDL_Rect dest; /* The dest square to draw it */
+
+  /* Set the co-ords of the tile file to get */
+  src.x = INDENT_ON_X;
+  src.y = INDENT_ON_Y;
+  src.w = BS_ITEM_SIZE_X;
+  src.h = BS_ITEM_SIZE_Y;
+
+  /* Modify the offset to allow for the indents */
+  dest.x = xValue;
+  dest.y = yValue;
+  switch (value) {
+    case BsTrees:
+      dest.x += BS_TREE_OFFSET_X;
+      dest.y += BS_TREE_OFFSET_Y;
+      break;
+    case BsRoad:
+      dest.x += BS_ROAD_OFFSET_X;
+      dest.y += BS_ROAD_OFFSET_Y;
+      break;
+    case BsBuilding:
+      dest.x += BS_BUILDING_OFFSET_X;
+      dest.y += BS_BUILDING_OFFSET_Y;
+      break;
+    case BsPillbox:
+      dest.x += BS_PILLBOX_OFFSET_X;
+      dest.y += BS_PILLBOX_OFFSET_Y;
+      break;
+    default:
+      /* BsMine:*/
+      dest.x += BS_MINE_OFFSET_X;
+      dest.y += BS_MINE_OFFSET_Y;
+      break;
   }
-  return returnValue;
-}
+  dest.w = BS_ITEM_SIZE_X;
+  dest.h = BS_ITEM_SIZE_Y;
+
+  /* Perform the drawing */
+  SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
+
+  /* Set the co-ords of the tile file to get */
+  src.x = INDENT_DOT_ON_X;
+  src.y = INDENT_DOT_ON_Y;
+  src.w = BS_DOT_ITEM_SIZE_X;
+  src.h = BS_DOT_ITEM_SIZE_Y;
+
+  /* Draw the dot */
+  /* Modify the offset to allow for the indents */
+  dest.x = xValue;
+  dest.y = yValue;
+  switch (value) {
+    case BsTrees:
+      dest.x += BS_DOT_TREE_OFFSET_X;
+      dest.y += BS_DOT_TREE_OFFSET_Y;
+      break;
+    case BsRoad:
+      dest.x += BS_DOT_ROAD_OFFSET_X;
+      dest.y += BS_DOT_ROAD_OFFSET_Y;
+      break;
+    case BsBuilding:
+      dest.x += BS_DOT_BUILDING_OFFSET_X;
+      dest.y += BS_DOT_BUILDING_OFFSET_Y;
+      break;
+    case BsPillbox:
+      dest.x += BS_DOT_PILLBOX_OFFSET_X;
+      dest.y += BS_DOT_PILLBOX_OFFSET_Y;
+      break;
+    default:
+      /* BsMine:*/
+      dest.x += BS_DOT_MINE_OFFSET_X;
+      dest.y += BS_DOT_MINE_OFFSET_Y;
+      break;
+  }
+
+  dest.w = BS_DOT_ITEM_SIZE_X;
+  dest.h = BS_DOT_ITEM_SIZE_Y;
+
+  /* Perform the drawing */
+  SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
 }
 
 /*********************************************************
- *NAME:          drawSetup
+ *NAME:          drawStatusBase
  *AUTHOR:        John Morrison
- *CREATION DATE: 13/10/98
- *LAST MODIFIED:  29/4/00
+ *CREATION DATE: 21/12/98
+ *LAST MODIFIED: 23/1/99
  *PURPOSE:
- *  Sets up drawing systems, direct draw structures etc.
- *  Returns whether the operation was successful or not
+ *  Draws the base status for a particular base
  *
  *ARGUMENTS:
+ *  baseNum - The base number to draw (1-16)
+ *  ba      - The allience of the base
+ *  labels  - Should the label be shown
  *********************************************************/
-bool drawSetup() {
-  bool returnValue; /* Value to return */
-  SDL_Rect in;      /* Used for copying the bases & pills icon in */
-  SDL_Rect out;     /* Used for copying the bases & pills icon in */
-  char fileName[FILENAME_MAX];
+void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
+  SDL_Rect src;     /* The src square on the tile file to retrieve */
+  SDL_Rect dest;    /* The dest square to draw it */
+  char str[3] = ""; /* String to output if labels are on */
 
-  BYTE* buff = new BYTE[80438];
-  /* Get tmp file */
-  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX",
-           std::filesystem::temp_directory_path().c_str());
-  int ret = lzwdecoding((char *)TILES_IMAGE, (char *)buff, 36499);
-  if (ret != 80438) {
-    free(buff);
-    MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
-    return false;
+  src.w = STATUS_ITEM_SIZE_X;
+  src.h = STATUS_ITEM_SIZE_Y;
+
+  /* Set the co-ords of the tile file to get */
+  switch (ba) {
+    case baseDead:
+      src.x = STATUS_ITEM_DEAD_X;
+      src.y = STATUS_ITEM_DEAD_Y;
+      break;
+    case baseNeutral:
+      src.x = STATUS_BASE_NEUTRAL_X;
+      src.y = STATUS_BASE_NEUTRAL_Y;
+      break;
+    case baseOwnGood:
+      src.x = STATUS_BASE_GOOD_X;
+      src.y = STATUS_BASE_GOOD_Y;
+      break;
+    case baseAllieGood:
+      src.x = STATUS_BASE_ALLIEGOOD_X;
+      src.y = STATUS_BASE_ALLIEGOOD_Y;
+      break;
+    default:
+      /* Base Evil */
+      src.x = STATUS_BASE_EVIL_X;
+      src.y = STATUS_BASE_EVIL_Y;
+      break;
+  }
+  /* Modify the offset to allow for the indents */
+  switch (baseNum) {
+    case BASE_1:
+      dest.x = STATUS_BASE_1_X;
+      dest.y = STATUS_BASE_1_Y;
+      break;
+    case BASE_2:
+      dest.x = STATUS_BASE_2_X;
+      dest.y = STATUS_BASE_2_Y;
+      break;
+    case BASE_3:
+      dest.x = STATUS_BASE_3_X;
+      dest.y = STATUS_BASE_3_Y;
+      break;
+    case BASE_4:
+      dest.x = STATUS_BASE_4_X;
+      dest.y = STATUS_BASE_4_Y;
+      break;
+    case BASE_5:
+      dest.x = STATUS_BASE_5_X;
+      dest.y = STATUS_BASE_5_Y;
+      break;
+    case BASE_6:
+      dest.x = STATUS_BASE_6_X;
+      dest.y = STATUS_BASE_6_Y;
+      break;
+    case BASE_7:
+      dest.x = STATUS_BASE_7_X;
+      dest.y = STATUS_BASE_7_Y;
+      break;
+    case BASE_8:
+      dest.x = STATUS_BASE_8_X;
+      dest.y = STATUS_BASE_8_Y;
+      break;
+    case BASE_9:
+      dest.x = STATUS_BASE_9_X;
+      dest.y = STATUS_BASE_9_Y;
+      break;
+    case BASE_10:
+      dest.x = STATUS_BASE_10_X;
+      dest.y = STATUS_BASE_10_Y;
+      break;
+    case BASE_11:
+      dest.x = STATUS_BASE_11_X;
+      dest.y = STATUS_BASE_11_Y;
+      break;
+    case BASE_12:
+      dest.x = STATUS_BASE_12_X;
+      dest.y = STATUS_BASE_12_Y;
+      break;
+    case BASE_13:
+      dest.x = STATUS_BASE_13_X;
+      dest.y = STATUS_BASE_13_Y;
+      break;
+    case BASE_14:
+      dest.x = STATUS_BASE_14_X;
+      dest.y = STATUS_BASE_14_Y;
+      break;
+    case BASE_15:
+      dest.x = STATUS_BASE_15_X;
+      dest.y = STATUS_BASE_15_Y;
+      break;
+    case BASE_16:
+      dest.x = STATUS_BASE_16_X;
+      dest.y = STATUS_BASE_16_Y;
   }
 
-  returnValue = true;
-  lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
-  if (lpScreen == nullptr) {
-    returnValue = false;
-    MessageBox("Can't build main surface", DIALOG_BOX_TITLE);
-  }
+  dest.x += STATUS_BASES_LEFT;
+  dest.y += STATUS_BASES_TOP;
+  dest.w = STATUS_ITEM_SIZE_X;
+  dest.h = STATUS_ITEM_SIZE_Y;
 
-  /* Create the back buffer surface */
-  if (returnValue) {
-    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
-        SDL_HWSURFACE, MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
-        MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
-    if (lpTemp == nullptr) {
-      returnValue = false;
-      MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
-    } else {
-      lpBackBuffer = SDL_DisplayFormat(lpTemp);
-      SDL_FreeSurface(lpTemp);
-      if (lpBackBuffer == nullptr) {
-        returnValue = false;
-        MessageBox("Can't build a back buffer", DIALOG_BOX_TITLE);
-      }
-    }
+  /* Perform the drawing */
+  SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
+  if (labels) {
+    /* Must draw the label */
+    sprintf(str, "%d", (baseNum - 1));
   }
-
-  /* Create the tile buffer and copy the bitmap into it */
-  if (returnValue) {
-    /* Create the buffer */
-    FILE *fp = fopen(fileName, "wb");
-    fwrite(buff, 80438, 1, fp);
-    fclose(fp);
-    lpTiles = SDL_LoadBMP(fileName);
-    unlink(fileName);
-    if (lpTiles == nullptr) {
-      returnValue = false;
-      MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
-    } else {
-      /* Colour key */
-      ret = SDL_SetColorKey(lpTiles, SDL_SRCCOLORKEY,
-                            SDL_MapRGB(lpTiles->format, 0, 0xFF, 0));
-      if (ret == -1) {
-        MessageBox("Couldn't map colour key", DIALOG_BOX_TITLE);
-        returnValue = false;
-      } else {
-        //      lpTiles = SDL_DisplayFormat(lpTemp);
-        //	SDL_FreeSurface(lpTemp);
-        if (lpTiles == nullptr) {
-          returnValue = false;
-          MessageBox("Can't build a tile file", DIALOG_BOX_TITLE);
-        }
-      }
-    }
-  }
-
-  out.w = TILE_SIZE_X;
-  out.h = TILE_SIZE_Y;
-  in.w = TILE_SIZE_X;
-  in.h = TILE_SIZE_Y;
-
-  // Load the background surface
-  if (returnValue) {
-    SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
-    lpBackground = IMG_LoadPNG_RW(rw);
-    if (lpBackground == nullptr) {
-      returnValue = false;
-      MessageBox("Can't load background image", DIALOG_BOX_TITLE);
-    }
-    SDL_FreeRW(rw);
-  }
-
-  /* Create the Base status window */
-  if (returnValue) {
-    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
-        0, STATUS_BASES_WIDTH, STATUS_BASES_HEIGHT, 16, 0, 0, 0, 0);
-    if (lpTemp == nullptr) {
-      returnValue = false;
-      MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
-    } else {
-      /* Fill the surface black */
-      lpBasesStatus = SDL_DisplayFormat(lpTemp);
-      SDL_FreeSurface(lpTemp);
-      if (lpBasesStatus == nullptr) {
-        returnValue = false;
-        MessageBox("Can't build a status base buffer", DIALOG_BOX_TITLE);
-      } else {
-        SDL_Rect fill{.x = 0,
-                      .y = 0,
-                      .w = static_cast<Uint16>(lpBasesStatus->w),
-                      .h = static_cast<Uint16>(lpBasesStatus->h)};
-        SDL_FillRect(lpBasesStatus, &fill,
-                     SDL_MapRGB(lpBasesStatus->format, 0, 0, 0));
-        /* Copy in the icon */
-        in.x = BASE_GOOD_X;
-        in.y = BASE_GOOD_Y;
-        out.x = STATUS_BASES_MIDDLE_ICON_X;
-        out.y = STATUS_BASES_MIDDLE_ICON_Y;
-        SDL_BlitSurface(lpTiles, &in, lpBasesStatus, &out);
-      }
-    }
-  }
-  /* Makes the pills status */
-  if (returnValue) {
-    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
-        0, STATUS_PILLS_WIDTH, STATUS_PILLS_HEIGHT, 16, 0, 0, 0, 0);
-    if (lpTemp == nullptr) {
-      returnValue = false;
-      MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
-    } else {
-      lpPillsStatus = SDL_DisplayFormat(lpTemp);
-      SDL_FreeSurface(lpTemp);
-      if (lpTemp == nullptr) {
-        returnValue = false;
-        MessageBox("Can't build a status pills buffer", DIALOG_BOX_TITLE);
-      } else {
-        /* Fill the surface black */
-        SDL_Rect fill{.x = 0,
-                      .y = 0,
-                      .w = static_cast<Uint16>(lpPillsStatus->w),
-                      .h = static_cast<Uint16>(lpPillsStatus->h)};
-        SDL_FillRect(lpPillsStatus, &fill,
-                     SDL_MapRGB(lpPillsStatus->format, 0, 0, 0));
-        /* Copy in the icon */
-        in.x = PILL_GOOD15_X;
-        in.y = PILL_GOOD15_Y;
-        out.x = STATUS_PILLS_MIDDLE_ICON_X;
-        out.y = STATUS_PILLS_MIDDLE_ICON_Y;
-        SDL_BlitSurface(lpTiles, &in, lpPillsStatus, &out);
-      }
-    }
-  }
-
-  /* Makes the tanks status */
-  if (returnValue) {
-    SDL_Surface *lpTemp = SDL_CreateRGBSurface(
-        0, STATUS_TANKS_WIDTH, STATUS_TANKS_HEIGHT, 16, 0, 0, 0, 0);
-    if (lpTemp == nullptr) {
-      returnValue = false;
-      MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
-    } else {
-      lpTankStatus = SDL_DisplayFormat(lpTemp);
-      SDL_FreeSurface(lpTemp);
-      if (lpTankStatus == nullptr) {
-        returnValue = false;
-        MessageBox("Can't build a status tanks buffer", DIALOG_BOX_TITLE);
-      } else {
-        /* Fill the surface black */
-        SDL_Rect fill{.x = 0,
-                      .y = 0,
-                      .w = static_cast<Uint16>(lpTankStatus->w),
-                      .h = static_cast<Uint16>(lpTankStatus->h)};
-        SDL_FillRect(lpTankStatus, &fill,
-                     SDL_MapRGB(lpTankStatus->format, 0, 0, 0));
-        /* Copy in the icon */
-        in.x = TANK_SELF_0_X;
-        in.y = TANK_SELF_0_Y;
-        out.x = STATUS_TANKS_MIDDLE_ICON_X;
-        out.y = STATUS_TANKS_MIDDLE_ICON_Y;
-        SDL_BlitSurface(lpTiles, &in, lpTankStatus, &out);
-      }
-    }
-  }
-  if (returnValue) {
-    if (TTF_Init() < 0) {
-      MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
-      returnValue = false;
-    } else {
-      lpFont = TTF_OpenFont("cour.ttf", 12);
-      if (lpFont == nullptr) {
-        MessageBox(
-            "Couldn't open font file.\n Please place a courier font\ncalled "
-            "\"cour.ttf\" in your\nLinBolo directory.",
-            DIALOG_BOX_TITLE);
-        returnValue = false;
-      }
-    }
-  }
-
-  g_dwFrameTime = SDL_GetTicks();
-  g_dwFrameCount = 0;
-  drawSetupArrays();
-
-  delete[] buff;
-  return returnValue;
 }
 
 /*********************************************************
- *NAME:          drawCleanup
+ *NAME:          drawStatusPillbox
  *AUTHOR:        John Morrison
- *CREATION DATE: 13/12/98
- *LAST MODIFIED: 13/2/98
+ *CREATION DATE: 21/12/98
+ *LAST MODIFIED: 23/1/99
  *PURPOSE:
- *  Destroys and cleans up drawing systems, direct draw
- *  structures etc.
+ *  Draws the pillbox status for a particular pillbox
  *
  *ARGUMENTS:
- *
+ *  pillNum - The tank number to draw (1-16)
+ *  pb      - The allience of the pillbox
+ *  labels  - Should labels be drawn?
  *********************************************************/
-void drawCleanup(void) {
-  if (lpTiles != nullptr) {
-    SDL_FreeSurface(lpTiles);
-    lpTiles = nullptr;
+void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
+  SDL_Rect src;     /* The src square on the tile file to retrieve */
+  SDL_Rect dest;    /* The dest square to draw it */
+  char str[3] = ""; /* String to output if labels are on */
+
+  src.w = STATUS_ITEM_SIZE_X;
+  src.h = STATUS_ITEM_SIZE_Y;
+
+  /* Set the co-ords of the tile file to get */
+  switch (pb) {
+    case pillDead:
+      src.x = STATUS_ITEM_DEAD_X;
+      src.y = STATUS_ITEM_DEAD_Y;
+      break;
+    case pillNeutral:
+      src.x = STATUS_PILLBOX_NEUTRAL_X;
+      src.y = STATUS_PILLBOX_NEUTRAL_Y;
+      break;
+    case pillGood:
+      src.x = STATUS_PILLBOX_GOOD_X;
+      src.y = STATUS_PILLBOX_GOOD_Y;
+      break;
+    case pillAllie:
+      src.x = STATUS_PILLBOX_ALLIEGOOD_X;
+      src.y = STATUS_PILLBOX_ALLIEGOOD_Y;
+      break;
+    case pillTankGood:
+      src.x = STATUS_PILLBOX_TANKGOOD_X;
+      src.y = STATUS_PILLBOX_TANKGOOD_Y;
+      break;
+    case pillTankAllie:
+      src.x = 272;  // STATUS_PILLBOX_TANKALLIE_X;
+      src.y = 144;  // STATUS_PILLBOX_TANKALLIE_Y +5 ;
+      break;
+    case pillTankEvil:
+      src.x = STATUS_PILLBOX_TANKEVIL_X;
+      src.y = STATUS_PILLBOX_TANKEVIL_Y;
+      break;
+    default:
+      /* PILLBOX Evil */
+      src.x = STATUS_PILLBOX_EVIL_X;
+      src.y = STATUS_PILLBOX_EVIL_Y;
+      break;
   }
-  if (lpBackBuffer != nullptr) {
-    SDL_FreeSurface(lpBackBuffer);
-    lpBackBuffer = nullptr;
+  /* Modify the offset to allow for the indents */
+  switch (pillNum) {
+    case PILLBOX_1:
+      dest.x = STATUS_PILLBOX_1_X;
+      dest.y = STATUS_PILLBOX_1_Y;
+      break;
+    case PILLBOX_2:
+      dest.x = STATUS_PILLBOX_2_X;
+      dest.y = STATUS_PILLBOX_2_Y;
+      break;
+    case PILLBOX_3:
+      dest.x = STATUS_PILLBOX_3_X;
+      dest.y = STATUS_PILLBOX_3_Y;
+      break;
+    case PILLBOX_4:
+      dest.x = STATUS_PILLBOX_4_X;
+      dest.y = STATUS_PILLBOX_4_Y;
+      break;
+    case PILLBOX_5:
+      dest.x = STATUS_PILLBOX_5_X;
+      dest.y = STATUS_PILLBOX_5_Y;
+      break;
+    case PILLBOX_6:
+      dest.x = STATUS_PILLBOX_6_X;
+      dest.y = STATUS_PILLBOX_6_Y;
+      break;
+    case PILLBOX_7:
+      dest.x = STATUS_PILLBOX_7_X;
+      dest.y = STATUS_PILLBOX_7_Y;
+      break;
+    case PILLBOX_8:
+      dest.x = STATUS_PILLBOX_8_X;
+      dest.y = STATUS_PILLBOX_8_Y;
+      break;
+    case PILLBOX_9:
+      dest.x = STATUS_PILLBOX_9_X;
+      dest.y = STATUS_PILLBOX_9_Y;
+      break;
+    case PILLBOX_10:
+      dest.x = STATUS_PILLBOX_10_X;
+      dest.y = STATUS_PILLBOX_10_Y;
+      break;
+    case PILLBOX_11:
+      dest.x = STATUS_PILLBOX_11_X;
+      dest.y = STATUS_PILLBOX_11_Y;
+      break;
+    case PILLBOX_12:
+      dest.x = STATUS_PILLBOX_12_X;
+      dest.y = STATUS_PILLBOX_12_Y;
+      break;
+    case PILLBOX_13:
+      dest.x = STATUS_PILLBOX_13_X;
+      dest.y = STATUS_PILLBOX_13_Y;
+      break;
+    case PILLBOX_14:
+      dest.x = STATUS_PILLBOX_14_X;
+      dest.y = STATUS_PILLBOX_14_Y;
+      break;
+    case PILLBOX_15:
+      dest.x = STATUS_PILLBOX_15_X;
+      dest.y = STATUS_PILLBOX_15_Y;
+      break;
+    case PILLBOX_16:
+      dest.x = STATUS_PILLBOX_16_X;
+      dest.y = STATUS_PILLBOX_16_Y;
   }
-  if (lpBasesStatus != nullptr) {
-    SDL_FreeSurface(lpBasesStatus);
-    lpBasesStatus = nullptr;
+
+  dest.x += STATUS_PILLS_LEFT;
+  dest.y += STATUS_PILLS_TOP;
+  dest.w = STATUS_ITEM_SIZE_X;
+  dest.h = STATUS_ITEM_SIZE_Y;
+
+  /* Perform the drawing */
+  SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
+  if (labels) {
+    /* Must draw the label */
+    sprintf(str, "%d", (pillNum - 1));
   }
-  if (lpPillsStatus != nullptr) {
-    SDL_FreeSurface(lpPillsStatus);
-    lpPillsStatus = nullptr;
+}
+
+/*********************************************************
+ *NAME:          drawStatusTank
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 14/2/99
+ *LAST MODIFIED: 14/2/99
+ *PURPOSE:
+ *  Draws the tank status for a particular tank
+ *
+ *ARGUMENTS:
+ *  tankNum - The tank number to draw (1-16)
+ *  ta      - The allience of the pillbox
+ *********************************************************/
+void drawStatusTank(BYTE tankNum, bolo::tankAlliance ta) {
+  SDL_Rect src;  /* The src square on the tile file to retrieve */
+  SDL_Rect dest; /* The dest square to draw it */
+
+  src.w = STATUS_ITEM_SIZE_X;
+  src.h = STATUS_ITEM_SIZE_Y;
+
+  /* Set the co-ords of the tile file to get */
+  switch (ta) {
+    case bolo::tankAlliance::tankNone:
+      src.x = STATUS_TANK_NONE_X;
+      src.y = STATUS_TANK_NONE_Y;
+      break;
+    case bolo::tankAlliance::tankSelf:
+      src.x = STATUS_TANK_SELF_X;
+      src.y = STATUS_TANK_SELF_Y;
+      break;
+    case bolo::tankAlliance::tankAllie:
+      src.x = STATUS_TANK_GOOD_X;
+      src.y = STATUS_TANK_GOOD_Y;
+      break;
+    case bolo::tankAlliance::tankEvil:
+      src.x = STATUS_TANK_EVIL_X;
+      src.y = STATUS_TANK_EVIL_Y;
+      break;
   }
-  if (lpTankStatus != nullptr) {
-    SDL_FreeSurface(lpTankStatus);
-    lpTankStatus = nullptr;
+  /* Modify the offset to allow for the indents */
+  switch (tankNum) {
+    case TANK_1:
+      dest.x = STATUS_TANKS_1_X;
+      dest.y = STATUS_TANKS_1_Y;
+      break;
+    case TANK_2:
+      dest.x = STATUS_TANKS_2_X;
+      dest.y = STATUS_TANKS_2_Y;
+      break;
+    case TANK_3:
+      dest.x = STATUS_TANKS_3_X;
+      dest.y = STATUS_TANKS_3_Y;
+      break;
+    case TANK_4:
+      dest.x = STATUS_TANKS_4_X;
+      dest.y = STATUS_TANKS_4_Y;
+      break;
+    case TANK_5:
+      dest.x = STATUS_TANKS_5_X;
+      dest.y = STATUS_TANKS_5_Y;
+      break;
+    case TANK_6:
+      dest.x = STATUS_TANKS_6_X;
+      dest.y = STATUS_TANKS_6_Y;
+      break;
+    case TANK_7:
+      dest.x = STATUS_TANKS_7_X;
+      dest.y = STATUS_TANKS_7_Y;
+      break;
+    case TANK_8:
+      dest.x = STATUS_TANKS_8_X;
+      dest.y = STATUS_TANKS_8_Y;
+      break;
+    case TANK_9:
+      dest.x = STATUS_TANKS_9_X;
+      dest.y = STATUS_TANKS_9_Y;
+      break;
+    case TANK_10:
+      dest.x = STATUS_TANKS_10_X;
+      dest.y = STATUS_TANKS_10_Y;
+      break;
+    case TANK_11:
+      dest.x = STATUS_TANKS_11_X;
+      dest.y = STATUS_TANKS_11_Y;
+      break;
+    case TANK_12:
+      dest.x = STATUS_TANKS_12_X;
+      dest.y = STATUS_TANKS_12_Y;
+      break;
+    case TANK_13:
+      dest.x = STATUS_TANKS_13_X;
+      dest.y = STATUS_TANKS_13_Y;
+      break;
+    case TANK_14:
+      dest.x = STATUS_TANKS_14_X;
+      dest.y = STATUS_TANKS_14_Y;
+      break;
+    case TANK_15:
+      dest.x = STATUS_TANKS_15_X;
+      dest.y = STATUS_TANKS_15_Y;
+      break;
+    case TANK_16:
+      dest.x = STATUS_TANKS_16_X;
+      dest.y = STATUS_TANKS_16_Y;
   }
-  if (lpFont != nullptr) {
-    TTF_CloseFont(lpFont);
-    TTF_Quit();
+
+  dest.x += STATUS_TANKS_LEFT;
+  dest.y += STATUS_TANKS_TOP;
+  dest.w = STATUS_ITEM_SIZE_X;
+  dest.h = STATUS_ITEM_SIZE_Y;
+
+  /* Perform the drawing */
+  SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
+}
+
+/*********************************************************
+ *NAME:          drawStatusTankBars
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 22/12/98
+ *LAST MODIFIED: 22/12/98
+ *PURPOSE:
+ *  Draws the tanks armour, shells etc bars.
+ *
+ *ARGUMENTS:
+ *  shells  - Number of shells
+ *  mines   - Number of mines
+ *  armour  - Amount of armour
+ *  trees   - Amount of trees
+ *********************************************************/
+void drawStatusTankBars(uint8_t shells, uint8_t mines, uint8_t armour,
+                        uint8_t trees) {
+  SDL_Rect dest; /* The dest square to draw it */
+  Uint32 color = SDL_MapRGB(lpScreen->format, 0, 0xFF, 0);
+
+  dest.w = STATUS_TANK_BARS_WIDTH;
+
+  // Shells
+  dest.y = STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * shells);
+  dest.x = STATUS_TANK_SHELLS;
+  dest.h = BAR_TANK_MULTIPLY * shells;
+  SDL_FillRect(lpScreen, &dest, color);
+
+  // Mines
+  dest.y = STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * mines);
+  dest.x = STATUS_TANK_MINES;
+  dest.h = BAR_TANK_MULTIPLY * mines;
+  SDL_FillRect(lpScreen, &dest, color);
+
+  // Armour
+  dest.y = STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * armour);
+  dest.x = STATUS_TANK_ARMOUR;
+  dest.h = BAR_TANK_MULTIPLY * armour;
+  SDL_FillRect(lpScreen, &dest, color);
+
+  // Trees
+  dest.y = STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
+           (BAR_TANK_MULTIPLY * trees);
+  dest.x = STATUS_TANK_TREES;
+  dest.h = BAR_TANK_MULTIPLY * trees;
+  SDL_FillRect(lpScreen, &dest, color);
+}
+
+/*********************************************************
+ *NAME:          drawStatusBaseBars
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 11/1/98
+ *LAST MODIFIED: 11/1/98
+ *PURPOSE:
+ *  Draws the base armour, shells etc bars.
+ *
+ *ARGUMENTS:
+ *  shells  - Number of shells
+ *  mines   - Number of mines
+ *  armour  - Amount of armour
+ *  redraw  - If set to true use the redraw last amounts
+ *********************************************************/
+void drawStatusBaseBars(uint8_t shells, uint8_t mines, uint8_t armour,
+                        bool redraw) {
+  SDL_Rect dest; /* The dest square to draw it */
+  // Last amount of stuff to save on rendering and flicker
+  // TODO: Store this somewhere else
+  static uint8_t lastShells = 0;
+  static uint8_t lastMines = 0;
+  static uint8_t lastArmour = 0;
+  Uint32 color = SDL_MapRGB(lpScreen->format, 0, 0xFF, 0);
+
+  if (redraw == false) {
+    lastShells = shells;
+    lastMines = mines;
+    lastArmour = armour;
+  } else {
+    shells = lastShells;
+    mines = lastMines;
+    armour = lastArmour;
   }
-  if (lpBackground != nullptr) {
-    SDL_FreeSurface(lpBackground);
-    lpBackground = nullptr;
+
+  dest.x = STATUS_BASE_BARS_LEFT;
+  dest.h = STATUS_BASE_BARS_HEIGHT;
+  if (shells != 0) {
+    /* Shells */
+    dest.y = STATUS_BASE_SHELLS;
+    dest.w = shells * BAR_BASE_MULTIPLY;
+    SDL_FillRect(lpScreen, &dest, color);
   }
-  if (lpScreen != nullptr) {
-    SDL_FreeSurface(lpScreen);
-    lpScreen = nullptr;
+  if (mines != 0) {
+    /* Mines */
+    dest.y = STATUS_BASE_MINES;
+    dest.w = mines * BAR_BASE_MULTIPLY;
+    SDL_FillRect(lpScreen, &dest, color);
+  }
+  if (armour != 0) {
+    /* Armour */
+    dest.y = STATUS_BASE_ARMOUR;
+    dest.w = armour * BAR_BASE_MULTIPLY;
+    SDL_FillRect(lpScreen, &dest, color);
+  }
+}
+
+/*********************************************************
+ *NAME:          drawMessages
+ *AUTHOR:        John Morrison
+ *CREATION DATE: 3/1/99
+ *LAST MODIFIED: 3/1/99
+ *PURPOSE:
+ *  Draws the message window
+ *
+ *ARGUMENTS:
+ *  top    - The top string to draw
+ *  bottom - The bottom string to draw
+ *********************************************************/
+void drawMessages(const char *top, const char *bottom) {
+  SDL_Surface *lpTextSurface;
+  SDL_Rect dest; /* The dest square to draw it */
+
+  lpTextSurface = TTF_RenderText_Shaded(lpFont, top, white, black);
+  if (lpTextSurface) {
+    dest.x = MESSAGE_LEFT;
+    dest.y = MESSAGE_TOP;
+    dest.w = lpTextSurface->w;
+    dest.h = lpTextSurface->h;
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
+    SDL_FreeSurface(lpTextSurface);
+  }
+  lpTextSurface = TTF_RenderText_Shaded(lpFont, bottom, white, black);
+  if (lpTextSurface) {
+    dest.x = MESSAGE_LEFT;
+    dest.y = MESSAGE_TOP + MESSAGE_TEXT_HEIGHT;
+    dest.w = lpTextSurface->w;
+    dest.h = lpTextSurface->h;
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
+    SDL_FreeSurface(lpTextSurface);
+  }
+}
+
+/*********************************************************
+ *NAME:          drawKillsDeaths
+ *AUTHOR:        John Morrison
+ *CREATION DATE:  8/1/99
+ *LAST MODIFIED:  8/1/99
+ *PURPOSE:
+ *  Draws the tanks kills/deaths
+ *
+ *ARGUMENTS:
+ *  xValue  - The left position of the window
+ *  yValue  - The top position of the window
+ *  kills  - The number of kills the tank has.
+ *  deaths - The number of times the tank has died
+ *********************************************************/
+void drawKillsDeaths(int kills, int deaths) {
+  SDL_Surface *lpTextSurface;
+  SDL_Rect dest; /* The dest square to draw it */
+
+  std::string str = std::format("{}", kills);
+
+  lpTextSurface = TTF_RenderText_Shaded(lpFont, str.c_str(), white, black);
+  if (lpTextSurface) {
+    dest.x = STATUS_KILLS_LEFT;
+    dest.y = STATUS_KILLS_TOP + 1;
+    dest.w = lpTextSurface->w;
+    dest.h = lpTextSurface->h;
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
+    SDL_FreeSurface(lpTextSurface);
+  }
+  str = std::format("{}", deaths);
+  lpTextSurface = TTF_RenderText_Shaded(lpFont, str.c_str(), white, black);
+  if (lpTextSurface) {
+    dest.x = STATUS_DEATHS_LEFT;
+    dest.y = STATUS_DEATHS_TOP + 1;
+    dest.w = lpTextSurface->w;
+    dest.h = lpTextSurface->h;
+    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
+    SDL_FreeSurface(lpTextSurface);
   }
 }
 
 int lastManX = 0;
 int lastManY = 0;
-
-/*********************************************************
- *NAME:          drawSetManClear
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/1/98
- *LAST MODIFIED: 18/1/98
- *PURPOSE:
- *  Clears the lgm status display.
- *
- *ARGUMENTS:
- *********************************************************/
-void drawSetManClear() {
-  SDL_Rect fill;
-  fill.x = MAN_STATUS_X;
-  fill.y = MAN_STATUS_Y;
-  fill.w = MAN_STATUS_WIDTH + 5;
-  fill.h = MAN_STATUS_HEIGHT + 5;
-  SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
-  SDL_UpdateRect(lpScreen, MAN_STATUS_X, MAN_STATUS_Y, MAN_STATUS_WIDTH,
-                 MAN_STATUS_HEIGHT);
-  lastManX = 0;
-  lastManY = 0;
-}
 
 /*********************************************************
  *NAME:          drawSetManStatus
@@ -567,17 +923,9 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
   // TURNTYPE oldAngle; /* Copy of the angle parameter */
   double dbAngle; /* Angle in radians */
   double dbTemp;
-  int addX;        /* X And and Y co-ordinates */
+  int addX; /* X And and Y co-ordinates */
   int addY;
   int left, top;
-
-  // Clear the area
-  SDL_Rect fill;
-  fill.x = MAN_STATUS_X;
-  fill.y = MAN_STATUS_Y;
-  fill.w = MAN_STATUS_WIDTH + 5;
-  fill.h = MAN_STATUS_HEIGHT + 5;
-  SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
 
   // oldAngle = angle;
   angle += BRADIANS_SOUTH;
@@ -655,7 +1003,8 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
     lastManX = 0;
   } else {
     draw_circle(lpScreen, left + MAN_STATUS_CENTER_X, top + MAN_STATUS_CENTER_Y,
-                MAN_STATUS_WIDTH / 2, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
+                MAN_STATUS_WIDTH / 2,
+                SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
     draw_line(lpScreen, MAN_STATUS_CENTER_X + left, top + MAN_STATUS_CENTER_Y,
               addX, addY, SDL_MapRGB(lpScreen->format, 0xFF, 0xFF, 0xFF));
 
@@ -663,7 +1012,6 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
     lastManY = addY;
   }
   SDL_UnlockSurface(lpScreen);
-  SDL_UpdateRect(lpScreen, left, top, MAN_STATUS_WIDTH, MAN_STATUS_HEIGHT);
 }
 
 /*********************************************************
@@ -672,12 +1020,12 @@ void drawSetManStatus(bool isDead, TURNTYPE angle, bool needLocking) {
  *CREATION DATE: 26/12/98
  *LAST MODIFIED: 26/12/98
  *PURPOSE:
- *  Draws shells and explosions on the backbuffer.
+ *  Draws shells and explosions to a surface.
  *
  *ARGUMENTS:
  *  sBullets - The screen Bullets data structure
  *********************************************************/
-void drawShells(const bolo::ScreenBulletList &sBullets) {
+void drawShells(SDL_Surface *surface, const bolo::ScreenBulletList &sBullets) {
   SDL_Rect output; /* Output Rectangle */
   SDL_Rect dest;
 
@@ -832,7 +1180,7 @@ void drawShells(const bolo::ScreenBulletList &sBullets) {
     }
     dest.w = output.w;
     dest.h = output.h;
-    SDL_BlitSurface(lpTiles, &output, lpBackBuffer, &dest);
+    SDL_BlitSurface(lpTiles, &output, surface, &dest);
   }
 }
 
@@ -852,7 +1200,8 @@ Draws the tank label if required.
 *  px  - Tank pixel offset
 *  py  - Tank pixel offset
 *********************************************************/
-void drawTankLabel(const char *str, int mx, int my, BYTE px, BYTE py) {
+void drawTankLabel(SDL_Surface *surface, const char *str, int mx, int my,
+                   BYTE px, BYTE py) {
   int len;       /* Length of the string */
   SDL_Rect dest; /* Defines the text rectangle */
   SDL_Surface *lpTextSurface;
@@ -880,8 +1229,8 @@ void drawTankLabel(const char *str, int mx, int my, BYTE px, BYTE py) {
       SDL_SetColorKey(lpTextSurface, SDL_SRCCOLORKEY,
                       SDL_MapRGB(lpTextSurface->format, 0, 0, 0));
       /* Output it */
-      SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &dest);
-      SDL_UpdateRects(lpBackBuffer, 1, &dest);
+      SDL_BlitSurface(lpTextSurface, nullptr, surface, &dest);
+      SDL_UpdateRects(surface, 1, &dest);
       SDL_FreeSurface(lpTextSurface);
     }
   }
@@ -898,7 +1247,7 @@ void drawTankLabel(const char *str, int mx, int my, BYTE px, BYTE py) {
  *ARGUMENTS:
  *  tks - The screen Tanks data structure
  *********************************************************/
-void drawTanks(const bolo::ScreenTankList &tks) {
+void drawTanks(SDL_Surface *surface, const bolo::ScreenTankList &tks) {
   SDL_Rect output; /* Source Rectangle */
   SDL_Rect dest;
 
@@ -1304,10 +1653,10 @@ void drawTanks(const bolo::ScreenTankList &tks) {
     output.y *= 1;
     dest.x = tank.pos.x * TILE_SIZE_X + tank.px;
     dest.y = tank.pos.y * TILE_SIZE_Y + tank.py;
-    SDL_BlitSurface(lpTiles, &output, lpBackBuffer, &dest);
+    SDL_BlitSurface(lpTiles, &output, surface, &dest);
     /* Output the label */
-    drawTankLabel(tank.playerName.c_str(), tank.pos.x, tank.pos.y, tank.px + 2,
-                  tank.py + 2);
+    drawTankLabel(surface, tank.playerName.c_str(), tank.pos.x, tank.pos.y,
+                  tank.px + 2, tank.py + 2);
   }
 }
 
@@ -1322,7 +1671,7 @@ void drawTanks(const bolo::ScreenTankList &tks) {
  *ARGUMENTS:
  *  lgms - The screenLgm data structure
  *********************************************************/
-void drawLGMs(const bolo::ScreenLgmList &lgms) {
+void drawLGMs(SDL_Surface *surface, const bolo::ScreenLgmList &lgms) {
   SDL_Rect output; /* Source Rectangle */
 
   for (const auto &lgm : lgms.lgms_) {
@@ -1357,7 +1706,7 @@ void drawLGMs(const bolo::ScreenLgmList &lgms) {
                   .y = static_cast<Sint16>((lgm.pos.y * TILE_SIZE_Y) + lgm.py),
                   .w = output.w,
                   .h = output.h};
-    SDL_BlitSurface(lpTiles, &output, lpBackBuffer, &dest);
+    SDL_BlitSurface(lpTiles, &output, surface, &dest);
   }
 }
 
@@ -1372,7 +1721,7 @@ void drawLGMs(const bolo::ScreenLgmList &lgms) {
  *ARGUMENTS:
  *
  *********************************************************/
-void drawNetFailed() {
+void drawNetFailed(SDL_Surface *surface) {
   SDL_Surface *lpTextSurface;
 
   lpTextSurface = TTF_RenderText_Shaded(lpFont, "Network Failed -  Resyncing",
@@ -1384,7 +1733,7 @@ void drawNetFailed() {
                 .w = static_cast<Uint16>(lpTextSurface->w),
                 .h = static_cast<Uint16>(lpTextSurface->h)};
   /* Output it */
-  SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &dest);
+  SDL_BlitSurface(lpTextSurface, nullptr, surface, &dest);
   SDL_FreeSurface(lpTextSurface);
 }
 
@@ -1399,7 +1748,7 @@ void drawNetFailed() {
  *ARGUMENTS:
  *
  *********************************************************/
-void drawPillInView() {
+void drawPillInView(SDL_Surface *surface) {
   SDL_Surface *lpTextSurface;
 
   lpTextSurface = TTF_RenderText_Shaded(
@@ -1411,7 +1760,7 @@ void drawPillInView() {
                 .w = static_cast<Uint16>(lpTextSurface->w),
                 .h = static_cast<Uint16>(lpTextSurface->h)};
   /* Output it */
-  SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &dest);
+  SDL_BlitSurface(lpTextSurface, nullptr, surface, &dest);
   SDL_FreeSurface(lpTextSurface);
 }
 
@@ -1427,13 +1776,12 @@ void drawPillInView() {
  *  rcWindow - Window rectangle
  *  srtDelay - The start delay
  *********************************************************/
-void drawStartDelay(long srtDelay) {
+void drawStartDelay(SDL_Surface *surface, long srtDelay) {
   char str[FILENAME_MAX];    /* Output String */
   char strNum[FILENAME_MAX]; /* Holds the start delay as a string */
   SDL_Surface *lpTextSurface;
 
-  SDL_FillRect(lpBackBuffer, nullptr,
-               SDL_MapRGB(lpBackBuffer->format, 0, 0, 0));
+  SDL_FillRect(surface, nullptr, SDL_MapRGB(surface->format, 0, 0, 0));
   /* Prepare the string */
   srtDelay /= GAME_NUMGAMETICKS_SEC; /* Convert ticks back to seconds */
   sprintf(strNum, "%ld", srtDelay);
@@ -1445,8 +1793,8 @@ void drawStartDelay(long srtDelay) {
                  .y = TILE_SIZE_Y + 5,
                  .w = static_cast<Uint16>(lpTextSurface->w),
                  .h = static_cast<Uint16>(lpTextSurface->h)};
-    SDL_BlitSurface(lpTextSurface, nullptr, lpBackBuffer, &src);
-    SDL_UpdateRect(lpBackBuffer, 0, 0, 0, 0);
+    SDL_BlitSurface(lpTextSurface, nullptr, surface, &src);
+    SDL_UpdateRect(surface, 0, 0, 0, 0);
     SDL_Rect in{.x = TILE_SIZE_X,
                 .y = TILE_SIZE_Y,
                 .w = MAIN_SCREEN_SIZE_X * TILE_SIZE_X,
@@ -1455,8 +1803,7 @@ void drawStartDelay(long srtDelay) {
     src.y = MAIN_OFFSET_Y;
     src.w = in.w;
     src.h = in.h;
-    SDL_BlitSurface(lpBackBuffer, &in, lpScreen, &src);
-    SDL_UpdateRect(lpScreen, src.x, src.y, src.w, src.h);
+    SDL_BlitSurface(surface, &in, lpScreen, &src);
     SDL_FreeSurface(lpTextSurface);
   }
 }
@@ -1488,7 +1835,7 @@ void drawStartDelay(long srtDelay) {
  *  cursorLeft     - Cursor left position
  *  cursorTop      - Cursor Top position
  *********************************************************/
-void drawMainScreen(const bolo::ScreenTiles &tiles,
+void drawMainScreen(SDL_Surface *surface, const bolo::ScreenTiles &tiles,
                     const bolo::ScreenTankList &tks,
                     const std::optional<bolo::ScreenGunsight> &gunsight,
                     const bolo::ScreenBulletList &sBullets,
@@ -1503,14 +1850,18 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   BYTE y;
   int outputX; /* X and Y co-ordinates in the tile image */
   int outputY;
-  BYTE pos;        /* Current position */
-  char str[255];   /* Frame Rate Counting Stuff */
-  DWORD time;
+  BYTE pos;      /* Current position */
+  char str[255]; /* Frame Rate Counting Stuff */
   bool isPill;   /* Is the square a pill */
   bool isBase;   /* Is the square a base */
   BYTE labelNum; /* Returns the label number */
   SDL_Rect in;
   SDL_Surface *lpTextSurface;
+
+  SDL_Surface *lpTemp = SDL_CreateRGBSurface(
+      SDL_HWSURFACE, MAIN_BACK_BUFFER_SIZE_X * TILE_SIZE_X,
+      MAIN_BACK_BUFFER_SIZE_Y * TILE_SIZE_Y, 16, 0, 0, 0, 0);
+  SDL_Surface *lpBackBuffer = SDL_DisplayFormat(lpTemp);
 
   x = 0;
   y = 0;
@@ -1522,7 +1873,7 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   str[0] = '\0';
   if (srtDelay > 0) {
     /* Waiting for game to start. Draw coutdown */
-    drawStartDelay(srtDelay);
+    drawStartDelay(lpBackBuffer, srtDelay);
     return;
   }
   while (!done) {
@@ -1604,11 +1955,11 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
   }
 
   /* Draw Explosions if Required */
-  drawShells(sBullets);
+  drawShells(lpBackBuffer, sBullets);
 
   /* Draw the tank */
-  drawTanks(tks);
-  drawLGMs(lgms);
+  drawTanks(lpBackBuffer, tks);
+  drawLGMs(lpBackBuffer, lgms);
 
   /* Draw Gunsight */
   if (gunsight.has_value()) {
@@ -1649,898 +2000,152 @@ void drawMainScreen(const bolo::ScreenTiles &tiles,
 
   if (isPillView) {
     /* we are in pillbox view - Write text here */
-    drawPillInView();
+    drawPillInView(lpBackBuffer);
   }
 
   if (netGetStatus() == netFailed) {
-    drawNetFailed();
+    drawNetFailed(lpBackBuffer);
   }
 
-  SDL_BlitSurface(lpBackBuffer, &in, lpScreen, &output);
+  SDL_BlitSurface(lpBackBuffer, &in, surface, &output);
   SDL_UpdateRect(lpScreen, output.x, output.y, output.w, output.h);
-
-  /* Frame rate counting stuff */
-  g_dwFrameCount++;
-  time = SDL_GetTicks() - g_dwFrameTime;
-  if (time > 1000) {
-    g_dwFrameTotal = g_dwFrameCount;
-    sprintf(str, "%ld", g_dwFrameTotal);
-    g_dwFrameTime = SDL_GetTicks();
-    g_dwFrameCount = 0;
-  }
+  SDL_FreeSurface(lpBackBuffer);
+  SDL_FreeSurface(lpTemp);
 }
+}  // namespace
 
 /*********************************************************
- *NAME:          drawSetBasesStatusClear
+ *NAME:          drawSetup
  *AUTHOR:        John Morrison
- *CREATION DATE: 23/1/98
- *LAST MODIFIED: 23/1/98
+ *CREATION DATE: 13/10/98
+ *LAST MODIFIED:  29/4/00
  *PURPOSE:
- *  Clears the bases status display.
+ *  Sets up drawing systems, direct draw structures etc.
+ *  Returns whether the operation was successful or not
  *
  *ARGUMENTS:
  *********************************************************/
-void drawSetBasesStatusClear(void) {
-  SDL_Rect src;    /* Used for copying the bases & pills icon in */
-  SDL_Rect dest;   /* Used for copying the bases & pills icon in */
+bool drawSetup() {
+  bool returnValue; /* Value to return */
+  SDL_Rect in;      /* Used for copying the bases & pills icon in */
+  SDL_Rect out;     /* Used for copying the bases & pills icon in */
+  char fileName[FILENAME_MAX];
 
-  src.x = BASE_GOOD_X;
-  src.y = BASE_GOOD_Y;
-  src.w = TILE_SIZE_X;
-  src.h = TILE_SIZE_Y;
-  dest.x = STATUS_BASES_MIDDLE_ICON_X;
-  dest.y = STATUS_BASES_MIDDLE_ICON_Y;
-  dest.w = TILE_SIZE_X;
-  dest.h = TILE_SIZE_Y;
-  SDL_FillRect(lpBasesStatus, nullptr,
-               SDL_MapRGB(lpBasesStatus->format, 0, 0, 0));
-  SDL_BlitSurface(lpTiles, &src, lpBasesStatus, &dest);
-  SDL_UpdateRect(lpBasesStatus, 0, 0, 0, 0);
-}
-
-/*********************************************************
- * *NAME:          drawSetPillsStatusClear
- *AUTHOR:        John Morrison
- *CREATION DATE: 23/1/98
- *LAST MODIFIED: 23/1/98
- *PURPOSE:
- *  Clears the pills status display.
- *
- *ARGUMENTS:
- *********************************************************/
-void drawSetPillsStatusClear(void) {
-  SDL_Rect src;    /* Used for copying the bases & pills icon in */
-  SDL_Rect dest;   /* Used for copying the bases & pills icon in */
-
-  src.x = PILL_GOOD15_X;
-  src.y = PILL_GOOD15_Y;
-  src.w = TILE_SIZE_X;
-  src.h = TILE_SIZE_Y;
-  dest.y = STATUS_PILLS_MIDDLE_ICON_Y;
-  dest.x = STATUS_PILLS_MIDDLE_ICON_X;
-  dest.w = TILE_SIZE_X;
-  dest.h = TILE_SIZE_Y;
-  SDL_FillRect(lpPillsStatus, nullptr,
-               SDL_MapRGB(lpPillsStatus->format, 0, 0, 0));
-  SDL_BlitSurface(lpTiles, &src, lpPillsStatus, &dest);
-  SDL_UpdateRect(lpPillsStatus, 0, 0, 0, 0);
-}
-
-/*********************************************************
- *NAME:          drawSetTanksStatusClear
- *AUTHOR:        John Morrison
- *CREATION DATE: 14/2/98
- *LAST MODIFIED: 14/2/98
- *PURPOSE:
- *  Clears the tanks status display.
- *
- *ARGUMENTS:
- *********************************************************/
-void drawSetTanksStatusClear(void) {
-  SDL_Rect src;    /* Used for copying the bases & pills icon in */
-  SDL_Rect dest;   /* Used for copying the bases & pills icon in */
-
-  src.x = TANK_SELF_0_X;
-  src.y = TANK_SELF_0_Y;
-  src.w = TILE_SIZE_X;
-  src.h = TILE_SIZE_Y;
-  dest.y = STATUS_TANKS_MIDDLE_ICON_Y;
-  dest.x = STATUS_TANKS_MIDDLE_ICON_X;
-  dest.w = TILE_SIZE_X;
-  dest.h = TILE_SIZE_Y;
-  SDL_FillRect(lpTankStatus, nullptr,
-               SDL_MapRGB(lpTankStatus->format, 0, 0, 0));
-  SDL_BlitSurface(lpTiles, &src, lpTankStatus, &dest);
-  SDL_UpdateRect(lpTankStatus, 0, 0, 0, 0);
-}
-
-/*********************************************************
- *NAME:          drawCopyBasesStatus
- *AUTHOR:        John Morrison
- *CREATION DATE: 23/1/98
- *LAST MODIFIED: 23/1/98
- *PURPOSE:
- *  Copys the Bases status on to the primary buffer
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *********************************************************/
-void drawCopyBasesStatus() {
-  SDL_Rect dest; /* Destination location */
-
-  dest.x = STATUS_BASES_LEFT;
-  dest.y = STATUS_BASES_TOP;
-  dest.w = STATUS_BASES_WIDTH;
-  dest.h = STATUS_BASES_HEIGHT;
-  SDL_BlitSurface(lpBasesStatus, nullptr, lpScreen, &dest);
-  SDL_UpdateRects(lpScreen, 1, &dest);
-}
-
-/*********************************************************
- * *NAME:          drawCopyPillsStatus
- * *AUTHOR:        John Morrison
- * *CREATION DATE: 23/1/98
- * *LAST MODIFIED: 23/1/98
- * *PURPOSE:
- * *  Copys the pills status on to the primary buffer
- * *
- * *ARGUMENTS:
- * *  xValue  - The left position of the window
- * *  yValue  - The top position of the window
- * *********************************************************/
-void drawCopyPillsStatus() {
-  SDL_Rect dest; /* Destination location */
-
-  dest.x = STATUS_PILLS_LEFT;
-  dest.y = STATUS_PILLS_TOP;
-  dest.w = STATUS_PILLS_WIDTH;
-  dest.h = STATUS_PILLS_HEIGHT;
-  SDL_BlitSurface(lpPillsStatus, nullptr, lpScreen, &dest);
-  SDL_UpdateRects(lpScreen, 1, &dest);
-}
-
-/*********************************************************
- *NAME:          drawCopyTanksStatus
- *AUTHOR:        John Morrison
- *CREATION DATE: 14/2/98
- *LAST MODIFIED: 14/2/98
- *PURPOSE:
- *  Copys the tanks status on to the primary buffer
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *********************************************************/
-void drawCopyTanksStatus() {
-  SDL_Rect dest; /* Destination location */
-
-  dest.x = STATUS_TANKS_LEFT;
-  dest.y = STATUS_TANKS_TOP;
-  dest.w = STATUS_TANKS_WIDTH;
-  dest.h = STATUS_TANKS_HEIGHT;
-  SDL_BlitSurface(lpTankStatus, nullptr, lpScreen, &dest);
-  SDL_UpdateRects(lpScreen, 1, &dest);
-}
-
-/*********************************************************
- *NAME:          drawStatusBase
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/12/98
- *LAST MODIFIED: 23/1/99
- *PURPOSE:
- *  Draws the base status for a particular base
- *
- *ARGUMENTS:
- *  baseNum - The base number to draw (1-16)
- *  ba      - The allience of the base
- *  labels  - Should the label be shown
- *********************************************************/
-void drawStatusBase(BYTE baseNum, baseAlliance ba, bool labels) {
-  SDL_Rect src;  /* The src square on the tile file to retrieve */
-  SDL_Rect dest; /* The dest square to draw it */
-  char str[3];   /* String to output if labels are on */
-
-  str[0] = '\0';
-
-  src.w = STATUS_ITEM_SIZE_X;
-  src.h = STATUS_ITEM_SIZE_Y;
-
-  /* Set the co-ords of the tile file to get */
-  switch (ba) {
-    case baseDead:
-      src.x = STATUS_ITEM_DEAD_X;
-      src.y = STATUS_ITEM_DEAD_Y;
-      break;
-    case baseNeutral:
-      src.x = STATUS_BASE_NEUTRAL_X;
-      src.y = STATUS_BASE_NEUTRAL_Y;
-      break;
-    case baseOwnGood:
-      src.x = STATUS_BASE_GOOD_X;
-      src.y = STATUS_BASE_GOOD_Y;
-      break;
-    case baseAllieGood:
-      src.x = STATUS_BASE_ALLIEGOOD_X;
-      src.y = STATUS_BASE_ALLIEGOOD_Y;
-      break;
-    default:
-      /* Base Evil */
-      src.x = STATUS_BASE_EVIL_X;
-      src.y = STATUS_BASE_EVIL_Y;
-      break;
-  }
-  /* Modify the offset to allow for the indents */
-  switch (baseNum) {
-    case BASE_1:
-      dest.x = STATUS_BASE_1_X;
-      dest.y = STATUS_BASE_1_Y;
-      break;
-    case BASE_2:
-      dest.x = STATUS_BASE_2_X;
-      dest.y = STATUS_BASE_2_Y;
-      break;
-    case BASE_3:
-      dest.x = STATUS_BASE_3_X;
-      dest.y = STATUS_BASE_3_Y;
-      break;
-    case BASE_4:
-      dest.x = STATUS_BASE_4_X;
-      dest.y = STATUS_BASE_4_Y;
-      break;
-    case BASE_5:
-      dest.x = STATUS_BASE_5_X;
-      dest.y = STATUS_BASE_5_Y;
-      break;
-    case BASE_6:
-      dest.x = STATUS_BASE_6_X;
-      dest.y = STATUS_BASE_6_Y;
-      break;
-    case BASE_7:
-      dest.x = STATUS_BASE_7_X;
-      dest.y = STATUS_BASE_7_Y;
-      break;
-    case BASE_8:
-      dest.x = STATUS_BASE_8_X;
-      dest.y = STATUS_BASE_8_Y;
-      break;
-    case BASE_9:
-      dest.x = STATUS_BASE_9_X;
-      dest.y = STATUS_BASE_9_Y;
-      break;
-    case BASE_10:
-      dest.x = STATUS_BASE_10_X;
-      dest.y = STATUS_BASE_10_Y;
-      break;
-    case BASE_11:
-      dest.x = STATUS_BASE_11_X;
-      dest.y = STATUS_BASE_11_Y;
-      break;
-    case BASE_12:
-      dest.x = STATUS_BASE_12_X;
-      dest.y = STATUS_BASE_12_Y;
-      break;
-    case BASE_13:
-      dest.x = STATUS_BASE_13_X;
-      dest.y = STATUS_BASE_13_Y;
-      break;
-    case BASE_14:
-      dest.x = STATUS_BASE_14_X;
-      dest.y = STATUS_BASE_14_Y;
-      break;
-    case BASE_15:
-      dest.x = STATUS_BASE_15_X;
-      dest.y = STATUS_BASE_15_Y;
-      break;
-    case BASE_16:
-      dest.x = STATUS_BASE_16_X;
-      dest.y = STATUS_BASE_16_Y;
+  BYTE *buff = new BYTE[80438];
+  /* Get tmp file */
+  snprintf(fileName, sizeof(fileName), "%s/lbXXXXXX",
+           std::filesystem::temp_directory_path().c_str());
+  int ret = lzwdecoding((char *)TILES_IMAGE, (char *)buff, 36499);
+  if (ret != 80438) {
+    free(buff);
+    MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
+    return false;
   }
 
-  dest.w = STATUS_ITEM_SIZE_X;
-  dest.h = STATUS_ITEM_SIZE_Y;
-
-  /* Perform the drawing */
-  SDL_BlitSurface(lpTiles, &src, lpBasesStatus, &dest);
-  if (labels) {
-    /* Must draw the label */
-    sprintf(str, "%d", (baseNum - 1));
-    /* FIXME    if
-       (SUCCEEDED(lpDDSBasesStatus->lpVtbl->GetDC(lpDDSBasesStatus,&hDC))) {
-          fontSelectTiny(hDC);
-          SetBkColor(hDC, RGB(0,0,0));
-          SetTextColor(hDC, RGB(255,255,255));
-          DrawText(hDC, str, strlen(str), &dest, (DT_TOP | DT_NOCLIP));
-          lpDDSBasesStatus->lpVtbl->ReleaseDC(lpDDSBasesStatus, &hDC);
-        } */
-  }
-  SDL_UpdateRects(lpBasesStatus, 1, &dest);
-  // gdk_threads_leave();
-}
-
-/*********************************************************
- *NAME:          drawStatusPillbox
- *AUTHOR:        John Morrison
- *CREATION DATE: 21/12/98
- *LAST MODIFIED: 23/1/99
- *PURPOSE:
- *  Draws the pillbox status for a particular pillbox
- *
- *ARGUMENTS:
- *  pillNum - The tank number to draw (1-16)
- *  pb      - The allience of the pillbox
- *  labels  - Should labels be drawn?
- *********************************************************/
-void drawStatusPillbox(BYTE pillNum, pillAlliance pb, bool labels) {
-  SDL_Rect src;  /* The src square on the tile file to retrieve */
-  SDL_Rect dest; /* The dest square to draw it */
-  char str[3];   /* String to output if labels are on */
-
-  str[0] = '\0';
-  src.w = STATUS_ITEM_SIZE_X;
-  src.h = STATUS_ITEM_SIZE_Y;
-
-  /* Set the co-ords of the tile file to get */
-  switch (pb) {
-    case pillDead:
-      src.x = STATUS_ITEM_DEAD_X;
-      src.y = STATUS_ITEM_DEAD_Y;
-      break;
-    case pillNeutral:
-      src.x = STATUS_PILLBOX_NEUTRAL_X;
-      src.y = STATUS_PILLBOX_NEUTRAL_Y;
-      break;
-    case pillGood:
-      src.x = STATUS_PILLBOX_GOOD_X;
-      src.y = STATUS_PILLBOX_GOOD_Y;
-      break;
-    case pillAllie:
-      src.x = STATUS_PILLBOX_ALLIEGOOD_X;
-      src.y = STATUS_PILLBOX_ALLIEGOOD_Y;
-      break;
-    case pillTankGood:
-      src.x = STATUS_PILLBOX_TANKGOOD_X;
-      src.y = STATUS_PILLBOX_TANKGOOD_Y;
-      break;
-    case pillTankAllie:
-      src.x = 272;  // STATUS_PILLBOX_TANKALLIE_X;
-      src.y = 144;  // STATUS_PILLBOX_TANKALLIE_Y +5 ;
-      break;
-    case pillTankEvil:
-      src.x = STATUS_PILLBOX_TANKEVIL_X;
-      src.y = STATUS_PILLBOX_TANKEVIL_Y;
-      break;
-    default:
-      /* PILLBOX Evil */
-      src.x = STATUS_PILLBOX_EVIL_X;
-      src.y = STATUS_PILLBOX_EVIL_Y;
-      break;
-  }
-  /* Modify the offset to allow for the indents */
-  switch (pillNum) {
-    case PILLBOX_1:
-      dest.x = STATUS_PILLBOX_1_X;
-      dest.y = STATUS_PILLBOX_1_Y;
-      break;
-    case PILLBOX_2:
-      dest.x = STATUS_PILLBOX_2_X;
-      dest.y = STATUS_PILLBOX_2_Y;
-      break;
-    case PILLBOX_3:
-      dest.x = STATUS_PILLBOX_3_X;
-      dest.y = STATUS_PILLBOX_3_Y;
-      break;
-    case PILLBOX_4:
-      dest.x = STATUS_PILLBOX_4_X;
-      dest.y = STATUS_PILLBOX_4_Y;
-      break;
-    case PILLBOX_5:
-      dest.x = STATUS_PILLBOX_5_X;
-      dest.y = STATUS_PILLBOX_5_Y;
-      break;
-    case PILLBOX_6:
-      dest.x = STATUS_PILLBOX_6_X;
-      dest.y = STATUS_PILLBOX_6_Y;
-      break;
-    case PILLBOX_7:
-      dest.x = STATUS_PILLBOX_7_X;
-      dest.y = STATUS_PILLBOX_7_Y;
-      break;
-    case PILLBOX_8:
-      dest.x = STATUS_PILLBOX_8_X;
-      dest.y = STATUS_PILLBOX_8_Y;
-      break;
-    case PILLBOX_9:
-      dest.x = STATUS_PILLBOX_9_X;
-      dest.y = STATUS_PILLBOX_9_Y;
-      break;
-    case PILLBOX_10:
-      dest.x = STATUS_PILLBOX_10_X;
-      dest.y = STATUS_PILLBOX_10_Y;
-      break;
-    case PILLBOX_11:
-      dest.x = STATUS_PILLBOX_11_X;
-      dest.y = STATUS_PILLBOX_11_Y;
-      break;
-    case PILLBOX_12:
-      dest.x = STATUS_PILLBOX_12_X;
-      dest.y = STATUS_PILLBOX_12_Y;
-      break;
-    case PILLBOX_13:
-      dest.x = STATUS_PILLBOX_13_X;
-      dest.y = STATUS_PILLBOX_13_Y;
-      break;
-    case PILLBOX_14:
-      dest.x = STATUS_PILLBOX_14_X;
-      dest.y = STATUS_PILLBOX_14_Y;
-      break;
-    case PILLBOX_15:
-      dest.x = STATUS_PILLBOX_15_X;
-      dest.y = STATUS_PILLBOX_15_Y;
-      break;
-    case PILLBOX_16:
-      dest.x = STATUS_PILLBOX_16_X;
-      dest.y = STATUS_PILLBOX_16_Y;
+  returnValue = true;
+  lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
+  if (lpScreen == nullptr) {
+    returnValue = false;
+    MessageBox("Can't build main surface", DIALOG_BOX_TITLE);
   }
 
-  dest.w = STATUS_ITEM_SIZE_X;
-  dest.h = STATUS_ITEM_SIZE_Y;
-
-  /* Perform the drawing */
-  SDL_BlitSurface(lpTiles, &src, lpPillsStatus, &dest);
-  if (labels) {
-    /* Must draw the label */
-    sprintf(str, "%d", (pillNum - 1));
-    /* FIXME:    if
-       (SUCCEEDED(lpDDSPillsStatus->lpVtbl->GetDC(lpDDSPillsStatus,&hDC))) {
-          fontSelectTiny(hDC);
-          SetBkColor(hDC, RGB(0,0,0));
-          SetTextColor(hDC, RGB(255,255,255));
-          DrawText(hDC, str, strlen(str), &dest, (DT_TOP | DT_NOCLIP));
-          lpDDSPillsStatus->lpVtbl->ReleaseDC(lpDDSPillsStatus,&hDC);
-        } */
-  }
-  SDL_UpdateRects(lpPillsStatus, 1, &dest);
-}
-
-/*********************************************************
- *NAME:          drawStatusTank
- *AUTHOR:        John Morrison
- *CREATION DATE: 14/2/99
- *LAST MODIFIED: 14/2/99
- *PURPOSE:
- *  Draws the tank status for a particular tank
- *
- *ARGUMENTS:
- *  tankNum - The tank number to draw (1-16)
- *  ta      - The allience of the pillbox
- *********************************************************/
-void drawStatusTank(BYTE tankNum, bolo::tankAlliance ta) {
-  SDL_Rect src;  /* The src square on the tile file to retrieve */
-  SDL_Rect dest; /* The dest square to draw it */
-
-  src.w = STATUS_ITEM_SIZE_X;
-  src.h = STATUS_ITEM_SIZE_Y;
-
-  /* Set the co-ords of the tile file to get */
-  switch (ta) {
-    case bolo::tankAlliance::tankNone:
-      src.x = STATUS_TANK_NONE_X;
-      src.y = STATUS_TANK_NONE_Y;
-      break;
-    case bolo::tankAlliance::tankSelf:
-      src.x = STATUS_TANK_SELF_X;
-      src.y = STATUS_TANK_SELF_Y;
-      break;
-    case bolo::tankAlliance::tankAllie:
-      src.x = STATUS_TANK_GOOD_X;
-      src.y = STATUS_TANK_GOOD_Y;
-      break;
-    case bolo::tankAlliance::tankEvil:
-      src.x = STATUS_TANK_EVIL_X;
-      src.y = STATUS_TANK_EVIL_Y;
-      break;
-  }
-  /* Modify the offset to allow for the indents */
-  switch (tankNum) {
-    case TANK_1:
-      dest.x = STATUS_TANKS_1_X;
-      dest.y = STATUS_TANKS_1_Y;
-      break;
-    case TANK_2:
-      dest.x = STATUS_TANKS_2_X;
-      dest.y = STATUS_TANKS_2_Y;
-      break;
-    case TANK_3:
-      dest.x = STATUS_TANKS_3_X;
-      dest.y = STATUS_TANKS_3_Y;
-      break;
-    case TANK_4:
-      dest.x = STATUS_TANKS_4_X;
-      dest.y = STATUS_TANKS_4_Y;
-      break;
-    case TANK_5:
-      dest.x = STATUS_TANKS_5_X;
-      dest.y = STATUS_TANKS_5_Y;
-      break;
-    case TANK_6:
-      dest.x = STATUS_TANKS_6_X;
-      dest.y = STATUS_TANKS_6_Y;
-      break;
-    case TANK_7:
-      dest.x = STATUS_TANKS_7_X;
-      dest.y = STATUS_TANKS_7_Y;
-      break;
-    case TANK_8:
-      dest.x = STATUS_TANKS_8_X;
-      dest.y = STATUS_TANKS_8_Y;
-      break;
-    case TANK_9:
-      dest.x = STATUS_TANKS_9_X;
-      dest.y = STATUS_TANKS_9_Y;
-      break;
-    case TANK_10:
-      dest.x = STATUS_TANKS_10_X;
-      dest.y = STATUS_TANKS_10_Y;
-      break;
-    case TANK_11:
-      dest.x = STATUS_TANKS_11_X;
-      dest.y = STATUS_TANKS_11_Y;
-      break;
-    case TANK_12:
-      dest.x = STATUS_TANKS_12_X;
-      dest.y = STATUS_TANKS_12_Y;
-      break;
-    case TANK_13:
-      dest.x = STATUS_TANKS_13_X;
-      dest.y = STATUS_TANKS_13_Y;
-      break;
-    case TANK_14:
-      dest.x = STATUS_TANKS_14_X;
-      dest.y = STATUS_TANKS_14_Y;
-      break;
-    case TANK_15:
-      dest.x = STATUS_TANKS_15_X;
-      dest.y = STATUS_TANKS_15_Y;
-      break;
-    case TANK_16:
-      dest.x = STATUS_TANKS_16_X;
-      dest.y = STATUS_TANKS_16_Y;
-  }
-
-  dest.w = STATUS_ITEM_SIZE_X;
-  dest.h = STATUS_ITEM_SIZE_Y;
-
-  /* Perform the drawing */
-  SDL_BlitSurface(lpTiles, &src, lpTankStatus, &dest);
-  SDL_UpdateRects(lpTankStatus, 1, &dest);
-}
-
-/*********************************************************
- *NAME:          drawStatusTankBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 22/12/98
- *LAST MODIFIED: 22/12/98
- *PURPOSE:
- *  Draws the tanks armour, shells etc bars.
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *  trees   - Amount of trees
- *********************************************************/
-void drawStatusTankBars(int xValue, int yValue, BYTE shells, BYTE mines,
-                        BYTE armour, BYTE trees) {
-  SDL_Rect dest; /* The dest square to draw it */
-  SDL_Rect fill;
-  Uint32 color; /* Fill green colour */
-
-  dest.w = STATUS_TANK_BARS_WIDTH;
-  color = SDL_MapRGB(lpScreen->format, 0, 0xFF, 0);
-
-  /* Make the area black first */
-  fill.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
-           (BAR_TANK_MULTIPLY * 40);
-  fill.h = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT - fill.y;
-  fill.x = xValue + STATUS_TANK_SHELLS;
-  fill.w = xValue + STATUS_TANK_TREES + STATUS_TANK_BARS_WIDTH - fill.x;
-  SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
-
-  /* Shells */
-  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
-           (BAR_TANK_MULTIPLY * shells);
-  dest.x = xValue + STATUS_TANK_SHELLS;
-  dest.h = BAR_TANK_MULTIPLY * shells;
-  SDL_FillRect(lpScreen, &dest, color);
-
-  /* Mines */
-  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
-           (BAR_TANK_MULTIPLY * mines);
-  dest.x = xValue + STATUS_TANK_MINES;
-  dest.h = BAR_TANK_MULTIPLY * mines;
-  SDL_FillRect(lpScreen, &dest, color);
-
-  /* Armour */
-  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
-           (BAR_TANK_MULTIPLY * armour);
-  dest.x = xValue + STATUS_TANK_ARMOUR;
-  dest.h = BAR_TANK_MULTIPLY * armour;
-  SDL_FillRect(lpScreen, &dest, color);
-
-  /* Trees */
-  dest.y = yValue + STATUS_TANK_BARS_TOP + STATUS_TANK_BARS_HEIGHT -
-           (BAR_TANK_MULTIPLY * trees);
-  dest.x = xValue + STATUS_TANK_TREES;
-  dest.h = BAR_TANK_MULTIPLY * trees;
-  SDL_FillRect(lpScreen, &dest, color);
-
-  SDL_UpdateRects(lpScreen, 1, &fill);
-}
-/*********************************************************
- *NAME:          drawStatusBaseBars
- *AUTHOR:        John Morrison
- *CREATION DATE: 11/1/98
- *LAST MODIFIED: 11/1/98
- *PURPOSE:
- *  Draws the base armour, shells etc bars.
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  shells  - Number of shells
- *  mines   - Number of mines
- *  armour  - Amount of armour
- *  redraw  - If set to true use the redraw last amounts
- *********************************************************/
-void drawStatusBaseBars(int xValue, int yValue, BYTE shells, BYTE mines,
-                        BYTE armour, bool redraw) {
-  SDL_Rect dest; /* The dest square to draw it */
-  SDL_Rect fill;
-  static BYTE lastShells =
-      0; /* Last amount of stuff to save on rendering and flicker */
-  static BYTE lastMines = 0;
-  static BYTE lastArmour = 0;
-  Uint32 color; /* Fill green colour */
-
-  if (lastShells != shells || lastMines != mines || lastArmour != armour ||
-      redraw) {
-    if (!redraw) {
-      lastShells = shells;
-      lastMines = mines;
-      lastArmour = armour;
+  /* Create the tile buffer and copy the bitmap into it */
+  if (returnValue) {
+    /* Create the buffer */
+    FILE *fp = fopen(fileName, "wb");
+    fwrite(buff, 80438, 1, fp);
+    fclose(fp);
+    lpTiles = SDL_LoadBMP(fileName);
+    unlink(fileName);
+    if (lpTiles == nullptr) {
+      returnValue = false;
+      MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
     } else {
-      shells = lastShells;
-      mines = lastMines;
-      armour = lastArmour;
+      /* Colour key */
+      ret = SDL_SetColorKey(lpTiles, SDL_SRCCOLORKEY,
+                            SDL_MapRGB(lpTiles->format, 0, 0xFF, 0));
+      if (ret == -1) {
+        MessageBox("Couldn't map colour key", DIALOG_BOX_TITLE);
+        returnValue = false;
+      } else {
+        //      lpTiles = SDL_DisplayFormat(lpTemp);
+        //	SDL_FreeSurface(lpTemp);
+        if (lpTiles == nullptr) {
+          returnValue = false;
+          MessageBox("Can't build a tile file", DIALOG_BOX_TITLE);
+        }
+      }
     }
-    /* Make the area black first */
-    fill.y = yValue + STATUS_BASE_SHELLS;
-    fill.x = xValue + STATUS_BASE_BARS_LEFT;
-    fill.h = yValue + STATUS_BASE_MINES + STATUS_BASE_BARS_HEIGHT - fill.y;
-    fill.w = STATUS_BASE_BARS_MAX_WIDTH;
-    SDL_FillRect(lpScreen, &fill, SDL_MapRGB(lpScreen->format, 0, 0, 0));
-    if (shells != 0 || mines != 0 || armour != 0) {
-      color = SDL_MapRGB(lpScreen->format, 0, 0xFF, 0);
-      dest.x = xValue + STATUS_BASE_BARS_LEFT;
-      dest.h = STATUS_BASE_BARS_HEIGHT;
-      /* Shells */
-      dest.y = yValue + STATUS_BASE_SHELLS;
-      dest.w = shells * BAR_BASE_MULTIPLY;
-      SDL_FillRect(lpScreen, &dest, color);
-      /* Mines */
-      dest.y = yValue + STATUS_BASE_MINES;
-      dest.w = mines * BAR_BASE_MULTIPLY;
-      SDL_FillRect(lpScreen, &dest, color);
-      /* Armour */
-      dest.y = yValue + STATUS_BASE_ARMOUR;
-      dest.w = armour * BAR_BASE_MULTIPLY;
-      SDL_FillRect(lpScreen, &dest, color);
-    }
-    SDL_UpdateRects(lpScreen, 1, &fill);
   }
+
+  out.w = TILE_SIZE_X;
+  out.h = TILE_SIZE_Y;
+  in.w = TILE_SIZE_X;
+  in.h = TILE_SIZE_Y;
+
+  // Load the background surface
+  if (returnValue) {
+    SDL_RWops *rw = SDL_RWFromMem(background_png, background_png_len);
+    lpBackground = IMG_LoadPNG_RW(rw);
+    if (lpBackground == nullptr) {
+      returnValue = false;
+      MessageBox("Can't load background image", DIALOG_BOX_TITLE);
+    }
+    SDL_FreeRW(rw);
+  }
+  if (returnValue) {
+    if (TTF_Init() < 0) {
+      MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
+      returnValue = false;
+    } else {
+      lpFont = TTF_OpenFont("cour.ttf", 12);
+      if (lpFont == nullptr) {
+        MessageBox(
+            "Couldn't open font file.\n Please place a courier font\ncalled "
+            "\"cour.ttf\" in your\nLinBolo directory.",
+            DIALOG_BOX_TITLE);
+        returnValue = false;
+      }
+    }
+  }
+
+  g_dwFrameTime = SDL_GetTicks();
+  g_dwFrameCount = 0;
+  drawSetupArrays();
+
+  delete[] buff;
+  return returnValue;
 }
 
 /*********************************************************
- *NAME:          drawSelectIndentsOn
+ *NAME:          drawCleanup
  *AUTHOR:        John Morrison
- *CREATION DATE: 20/12/98
- *LAST MODIFIED: 20/12/98
+ *CREATION DATE: 13/12/98
+ *LAST MODIFIED: 13/2/98
  *PURPOSE:
- *  Draws the indents around the five building selection
- *  graphics on the left based on the buildSelect value.
- *  Draws the red dot as well.
+ *  Destroys and cleans up drawing systems, direct draw
+ *  structures etc.
  *
  *ARGUMENTS:
- *  value   - The currently selected build icon
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *********************************************************/
-void drawSelectIndentsOn(buildSelect value, int xValue, int yValue) {
-  SDL_Rect src;    /* The src square on the tile file to retrieve */
-  SDL_Rect dest;   /* The dest square to draw it */
-
-  /* Set the co-ords of the tile file to get */
-  src.x = INDENT_ON_X;
-  src.y = INDENT_ON_Y;
-  src.w = BS_ITEM_SIZE_X;
-  src.h = BS_ITEM_SIZE_Y;
-
-  /* Modify the offset to allow for the indents */
-  dest.x = xValue;
-  dest.y = yValue;
-  switch (value) {
-    case BsTrees:
-      dest.x += BS_TREE_OFFSET_X;
-      dest.y += BS_TREE_OFFSET_Y;
-      break;
-    case BsRoad:
-      dest.x += BS_ROAD_OFFSET_X;
-      dest.y += BS_ROAD_OFFSET_Y;
-      break;
-    case BsBuilding:
-      dest.x += BS_BUILDING_OFFSET_X;
-      dest.y += BS_BUILDING_OFFSET_Y;
-      break;
-    case BsPillbox:
-      dest.x += BS_PILLBOX_OFFSET_X;
-      dest.y += BS_PILLBOX_OFFSET_Y;
-      break;
-    default:
-      /* BsMine:*/
-      dest.x += BS_MINE_OFFSET_X;
-      dest.y += BS_MINE_OFFSET_Y;
-      break;
-  }
-  dest.w = BS_ITEM_SIZE_X;
-  dest.h = BS_ITEM_SIZE_Y;
-
-  /* Perform the drawing */
-  SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
-  SDL_UpdateRects(lpScreen, 1, &dest);
-
-  /* Set the co-ords of the tile file to get */
-  src.x = INDENT_DOT_ON_X;
-  src.y = INDENT_DOT_ON_Y;
-  src.w = BS_DOT_ITEM_SIZE_X;
-  src.h = BS_DOT_ITEM_SIZE_Y;
-
-  /* Draw the dot */
-  /* Modify the offset to allow for the indents */
-  dest.x = xValue;
-  dest.y = yValue;
-  switch (value) {
-    case BsTrees:
-      dest.x += BS_DOT_TREE_OFFSET_X;
-      dest.y += BS_DOT_TREE_OFFSET_Y;
-      break;
-    case BsRoad:
-      dest.x += BS_DOT_ROAD_OFFSET_X;
-      dest.y += BS_DOT_ROAD_OFFSET_Y;
-      break;
-    case BsBuilding:
-      dest.x += BS_DOT_BUILDING_OFFSET_X;
-      dest.y += BS_DOT_BUILDING_OFFSET_Y;
-      break;
-    case BsPillbox:
-      dest.x += BS_DOT_PILLBOX_OFFSET_X;
-      dest.y += BS_DOT_PILLBOX_OFFSET_Y;
-      break;
-    default:
-      /* BsMine:*/
-      dest.x += BS_DOT_MINE_OFFSET_X;
-      dest.y += BS_DOT_MINE_OFFSET_Y;
-      break;
-  }
-
-  dest.w = BS_DOT_ITEM_SIZE_X;
-  dest.h = BS_DOT_ITEM_SIZE_Y;
-
-  /* Perform the drawing */
-  SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
-  SDL_UpdateRects(lpScreen, 1, &dest);
-}
-
-/*********************************************************
- *NAME:          drawSelectIndentsOff
- *AUTHOR:        John Morrison
- *CREATION DATE: 20/12/98
- *LAST MODIFIED: 20/12/98
- *PURPOSE:
- *  Draws the indents around the five building selection
- *  graphics off the left based on the buildSelect value.
- *  Draws the red dot as well.
  *
- *ARGUMENTS:
- *  value   - The currently selected build icon
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
  *********************************************************/
-void drawSelectIndentsOff(buildSelect value, int xValue, int yValue) {
-  SDL_Rect src;    /* The src square on the tile file to retrieve */
-  SDL_Rect dest;   /* The dest square to draw it */
-
-  /* Set the co-ords of the tile file to get */
-  src.x = INDENT_OFF_X;
-  src.y = INDENT_OFF_Y;
-  src.w = BS_ITEM_SIZE_X;
-  src.h = BS_ITEM_SIZE_Y;
-
-  /* Modify the offset to allow for the indents */
-  dest.x = xValue;
-  dest.y = yValue;
-  switch (value) {
-    case BsTrees:
-      dest.x += BS_TREE_OFFSET_X;
-      dest.y += BS_TREE_OFFSET_Y;
-      break;
-    case BsRoad:
-      dest.x += BS_ROAD_OFFSET_X;
-      dest.y += BS_ROAD_OFFSET_Y;
-      break;
-    case BsBuilding:
-      dest.x += BS_BUILDING_OFFSET_X;
-      dest.y += BS_BUILDING_OFFSET_Y;
-      break;
-    case BsPillbox:
-      dest.x += BS_PILLBOX_OFFSET_X;
-      dest.y += BS_PILLBOX_OFFSET_Y;
-      break;
-    default:
-      /* BsMine:*/
-      dest.x += BS_MINE_OFFSET_X;
-      dest.y += BS_MINE_OFFSET_Y;
-      break;
+void drawCleanup(void) {
+  if (lpTiles != nullptr) {
+    SDL_FreeSurface(lpTiles);
+    lpTiles = nullptr;
   }
-  dest.w = BS_ITEM_SIZE_X;
-  dest.h = BS_ITEM_SIZE_Y;
-
-  /* Perform the drawing */
-  SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
-  SDL_UpdateRects(lpScreen, 1, &dest);
-
-  /* Set the co-ords of the tile file to get */
-  src.x = INDENT_DOT_OFF_X;
-  src.y = INDENT_DOT_OFF_Y;
-  src.w = BS_DOT_ITEM_SIZE_X;
-  src.h = BS_DOT_ITEM_SIZE_Y;
-
-  /* Draw the dot */
-  /* Modify the offset to allow for the indents */
-  dest.x = xValue;
-  dest.y = yValue;
-  switch (value) {
-    case BsTrees:
-      dest.x += BS_DOT_TREE_OFFSET_X;
-      dest.y += BS_DOT_TREE_OFFSET_Y;
-      break;
-    case BsRoad:
-      dest.x += BS_DOT_ROAD_OFFSET_X;
-      dest.y += BS_DOT_ROAD_OFFSET_Y;
-      break;
-    case BsBuilding:
-      dest.x += BS_DOT_BUILDING_OFFSET_X;
-      dest.y += BS_DOT_BUILDING_OFFSET_Y;
-      break;
-    case BsPillbox:
-      dest.x += BS_DOT_PILLBOX_OFFSET_X;
-      dest.y += BS_DOT_PILLBOX_OFFSET_Y;
-      break;
-    default:
-      /* BsMine:*/
-      dest.x += BS_DOT_MINE_OFFSET_X;
-      dest.y += BS_DOT_MINE_OFFSET_Y;
-      break;
+  if (lpFont != nullptr) {
+    TTF_CloseFont(lpFont);
+    TTF_Quit();
   }
-
-  dest.w = BS_DOT_ITEM_SIZE_X;
-  dest.h = BS_DOT_ITEM_SIZE_Y;
-
-  /* Perform the drawing */
-  SDL_BlitSurface(lpTiles, &src, lpScreen, &dest);
-  SDL_UpdateRects(lpScreen, 1, &dest);
+  if (lpBackground != nullptr) {
+    SDL_FreeSurface(lpBackground);
+    lpBackground = nullptr;
+  }
+  if (lpScreen != nullptr) {
+    SDL_FreeSurface(lpScreen);
+    lpScreen = nullptr;
+  }
 }
 
 /*********************************************************
@@ -2560,9 +2165,11 @@ void drawSelectIndentsOff(buildSelect value, int xValue, int yValue) {
  *  showBasesStatus - Should the the base status be shown
  *********************************************************/
 void drawRedrawAll(int width, int height, buildSelect value,
+                   const std::vector<baseAlliance> &bas,
+                   const std::vector<pillAlliance> &pas,
+                   const std::vector<bolo::tankAlliance> &tas,
+                   const std::optional<bolo::MainScreenData> &main_screen_data,
                    bool showPillsStatus, bool showBasesStatus) {
-  BYTE total;  /* Total number of elements */
-  BYTE count;  /* Looping Variable */
   BYTE shells; /* Tank amounts */
   BYTE mines;
   BYTE armour;
@@ -2575,95 +2182,104 @@ void drawRedrawAll(int width, int height, buildSelect value,
   bool lgmIsOut;
   bool lgmIsDead;
   TURNTYPE lgmAngle;
+  uint8_t cursorX;
+  uint8_t cursorY;
+  bool showCursor;
 
-  lpScreen = SDL_SetVideoMode(width, height, 0, 0);
-  drawBackground();
+  SDL_Rect destRect{.x = 0,
+                    .y = 0,
+                    .w = static_cast<Uint16>(lpBackground->w),
+                    .h = static_cast<Uint16>(lpBackground->h)};
+  SDL_BlitSurface(lpBackground, nullptr, lpScreen, &destRect);
   drawSelectIndentsOn(value, 0, 0);
-  drawSetBasesStatusClear();
-  clientMutexWaitFor();
-  total = screenNumBases();
-  for (count = 1; count <= total; count++) {
-    BYTE ba = screenBaseAlliance(count);
-    drawStatusBase(count, (baseAlliance)ba, showBasesStatus);
-  }
-  clientMutexRelease();
-  drawCopyBasesStatus();
-  /* Draw Pillbox Status */
-  clientMutexWaitFor();
-  drawSetPillsStatusClear();
-  total = screenNumPills();
-  for (count = 1; count <= total; count++) {
-    BYTE ba = screenPillAlliance(count);
-    drawStatusPillbox(count, (pillAlliance)ba, showPillsStatus);
-  }
-  clientMutexRelease();
-  drawCopyPillsStatus();
 
-  /* Draw Tanks Status */
-  drawSetTanksStatusClear();
+  // Fetch all of the state we weren't supplied.
+  // TODO: These should be parameters to this method.
   clientMutexWaitFor();
-  total = screenGetNumPlayers();
-  for (count = 1; count <= MAX_TANKS; count++) {
-    bolo::tankAlliance ba = screenTankAlliance(count);
-    drawStatusTank(count, ba);
-  }
-  clientMutexRelease();
-  drawCopyTanksStatus();
-
-  /* Draw tank Bars */
-  clientMutexWaitFor();
+  BYTE total_bases = screenNumBases();
+  BYTE total_pills = screenNumPills();
+  BYTE total_tanks = screenGetNumPlayers();
   screenGetTankStats(&shells, &mines, &armour, &trees);
-  drawStatusTankBars(0, 0, shells, mines, armour, trees);
   screenGetMessages(top, bottom);
-  drawMessages(0, 0, top, bottom);
   screenGetKillsDeaths(&kills, &deaths);
-  drawKillsDeaths(0, 0, kills, deaths);
-  drawStatusBaseBars(0, 0, 0, 0, 0, true);
   screenGetLgmStatus(&lgmIsOut, &lgmIsDead, &lgmAngle);
+  showCursor = screenGetCursorPos(&cursorX, &cursorY);
+  clientMutexRelease();
+
+  // Render the Base status window
+  {
+    SDL_Rect in{
+        .x = BASE_GOOD_X, .y = BASE_GOOD_Y, .w = TILE_SIZE_X, .h = TILE_SIZE_Y};
+    SDL_Rect out{.x = STATUS_BASES_MIDDLE_ICON_X + STATUS_BASES_LEFT,
+                 .y = STATUS_BASES_MIDDLE_ICON_Y + STATUS_BASES_TOP,
+                 .w = TILE_SIZE_X,
+                 .h = TILE_SIZE_Y};
+    SDL_BlitSurface(lpTiles, &in, lpScreen, &out);
+
+    // `bas` is 1-indexed
+    for (int i = 1; i <= total_bases; i++) {
+      drawStatusBase(i, bas[i], showBasesStatus);
+    }
+  }
+
+  // Render the Pillbox status window
+  {
+    SDL_Rect in{.x = PILL_GOOD15_X,
+                .y = PILL_GOOD15_Y,
+                .w = TILE_SIZE_X,
+                .h = TILE_SIZE_Y};
+    SDL_Rect out{.x = STATUS_PILLS_MIDDLE_ICON_X + STATUS_PILLS_LEFT,
+                 .y = STATUS_PILLS_MIDDLE_ICON_Y + STATUS_PILLS_TOP,
+                 .w = TILE_SIZE_X,
+                 .h = TILE_SIZE_Y};
+    SDL_BlitSurface(lpTiles, &in, lpScreen, &out);
+
+    // `pas` is 1-indexed
+    for (int i = 1; i <= total_pills; i++) {
+      drawStatusPillbox(i, pas[i], showPillsStatus);
+    }
+  }
+
+  // Render Tank status
+  {
+    SDL_Rect in{.x = TANK_SELF_0_X,
+                .y = TANK_SELF_0_Y,
+                .w = TILE_SIZE_X,
+                .h = TILE_SIZE_Y};
+    SDL_Rect out{.x = STATUS_TANKS_MIDDLE_ICON_X + STATUS_TANKS_LEFT,
+                 .y = STATUS_TANKS_MIDDLE_ICON_Y + STATUS_TANKS_TOP,
+                 .w = TILE_SIZE_X,
+                 .h = TILE_SIZE_Y};
+    SDL_BlitSurface(lpTiles, &in, lpScreen, &out);
+
+    // `tas` is 1-indexed
+    for (int i = 1; i <= total_tanks; i++) {
+      drawStatusTank(i, tas[i]);
+    }
+  }
+
+  // Draw tank Bars
+  drawStatusTankBars(shells, mines, armour, trees);
+  drawStatusBaseBars(0, 0, 0, true);
+  drawMessages(top, bottom);
+  drawKillsDeaths(kills, deaths);
+
   if (lgmIsOut) {
     drawSetManStatus(lgmIsDead, lgmAngle, false);
   }
-  clientMutexRelease();
-}
 
-/*********************************************************
- *NAME:          drawMessages
- *AUTHOR:        John Morrison
- *CREATION DATE: 3/1/99
- *LAST MODIFIED: 3/1/99
- *PURPOSE:
- *  Draws the message window
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  top    - The top string to draw
- *  bottom - The bottom string to draw
- *********************************************************/
-void drawMessages(int xValue, int yValue, const char *top, const char *bottom) {
-  SDL_Surface *lpTextSurface;
-  SDL_Rect dest; /* The dest square to draw it */
+  if (main_screen_data.has_value()) {
+    ::drawMainScreen(lpScreen, main_screen_data->screen_tiles_,
+                     main_screen_data->screen_tank_list_,
+                     main_screen_data->gunsight_,
+                     main_screen_data->screen_bullet_list_,
+                     main_screen_data->screen_lgm_list_, showPillsStatus,
+                     showBasesStatus, main_screen_data->srtDelay_,
+                     main_screen_data->isPillView_, main_screen_data->edgeX_,
+                     main_screen_data->edgeY_, showCursor, cursorX, cursorY);
+  }
 
-  lpTextSurface = TTF_RenderText_Shaded(lpFont, top, white, black);
-  if (lpTextSurface) {
-    dest.x = xValue + MESSAGE_LEFT;
-    dest.y = yValue + MESSAGE_TOP;
-    dest.w = lpTextSurface->w;
-    dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
-    SDL_UpdateRects(lpScreen, 1, &dest);
-    SDL_FreeSurface(lpTextSurface);
-  }
-  lpTextSurface = TTF_RenderText_Shaded(lpFont, bottom, white, black);
-  if (lpTextSurface) {
-    dest.x = xValue + MESSAGE_LEFT;
-    dest.y = yValue + MESSAGE_TOP + MESSAGE_TEXT_HEIGHT;
-    dest.w = lpTextSurface->w;
-    dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
-    SDL_UpdateRects(lpScreen, 1, &dest);
-    SDL_FreeSurface(lpTextSurface);
-  }
+  SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
 }
 
 /*********************************************************
@@ -2683,20 +2299,19 @@ void drawDownloadScreen(bool justBlack) {
   SDL_Rect in;
 
   /* Fill the area black */
-  SDL_FillRect(lpBackBuffer, nullptr,
-               SDL_MapRGB(lpBackBuffer->format, 0, 0, 0));
+  SDL_FillRect(lpScreen, nullptr, SDL_MapRGB(lpScreen->format, 0, 0, 0));
   /* Fill the downloaded area white */
   if (!justBlack) {
     output.x = 0;
     output.y = 0;
     output.h = netGetDownloadPos();
     output.w = (MAIN_SCREEN_SIZE_Y * TILE_SIZE_Y) + TILE_SIZE_Y;
-    SDL_FillRect(lpBackBuffer, &output,
-                 SDL_MapRGB(lpBackBuffer->format, 255, 255, 255));
+    SDL_FillRect(lpScreen, &output,
+                 SDL_MapRGB(lpScreen->format, 255, 255, 255));
   }
 
   /* Copy the back buffer to the window */
-  SDL_UpdateRect(lpBackBuffer, 0, 0, 0, 0);
+  SDL_UpdateRect(lpScreen, 0, 0, 0, 0);
   in.x = TILE_SIZE_X + 2;
   in.y = TILE_SIZE_Y + 1;
   in.w = MAIN_SCREEN_SIZE_X * TILE_SIZE_X;
@@ -2706,52 +2321,7 @@ void drawDownloadScreen(bool justBlack) {
   output.w = in.w;
   output.h = in.h;
 
-  SDL_BlitSurface(lpBackBuffer, &in, lpScreen, &output);
   SDL_UpdateRect(lpScreen, output.x, output.y, output.w, output.h);
-}
-
-/*********************************************************
- *NAME:          drawKillsDeaths
- *AUTHOR:        John Morrison
- *CREATION DATE:  8/1/99
- *LAST MODIFIED:  8/1/99
- *PURPOSE:
- *  Draws the tanks kills/deaths
- *
- *ARGUMENTS:
- *  xValue  - The left position of the window
- *  yValue  - The top position of the window
- *  kills  - The number of kills the tank has.
- *  deaths - The number of times the tank has died
- *********************************************************/
-void drawKillsDeaths(int xValue, int yValue, int kills, int deaths) {
-  SDL_Surface *lpTextSurface;
-  SDL_Rect dest; /* The dest square to draw it */
-  char str[16];  /* Holds the charectors to print */
-
-  sprintf(str, "%d", kills);
-
-  lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
-  if (lpTextSurface) {
-    dest.x = xValue + STATUS_KILLS_LEFT;
-    dest.y = yValue + STATUS_KILLS_TOP + 1;
-    dest.w = lpTextSurface->w;
-    dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
-    SDL_UpdateRects(lpScreen, 1, &dest);
-    SDL_FreeSurface(lpTextSurface);
-  }
-  sprintf(str, "%d", deaths);
-  lpTextSurface = TTF_RenderText_Shaded(lpFont, str, white, black);
-  if (lpTextSurface) {
-    dest.x = xValue + STATUS_DEATHS_LEFT;
-    dest.y = yValue + STATUS_DEATHS_TOP + 1;
-    dest.w = lpTextSurface->w;
-    dest.h = lpTextSurface->h;
-    SDL_BlitSurface(lpTextSurface, nullptr, lpScreen, &dest);
-    SDL_UpdateRects(lpScreen, 1, &dest);
-    SDL_FreeSurface(lpTextSurface);
-  }
 }
 
 /*********************************************************

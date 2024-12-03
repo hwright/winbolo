@@ -91,7 +91,7 @@ void Preferences::write(std::string_view filename) {
 }
 
 std::string GetPreferenceFile() {
-  struct passwd *pwd;
+  struct passwd* pwd;
 
   pwd = getpwuid(getuid());
   std::string filename = std::format("{}/.linbolo/", pwd->pw_dir);

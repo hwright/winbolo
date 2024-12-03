@@ -162,7 +162,7 @@ static bool labelSelf = FALSE;
 static labelLen labelMsg = lblShort;
 static labelLen labelTank = lblShort;
 
-#define itoa(X) std::format("{}", (int) X)
+#define itoa(X) std::format("{}", (int)X)
 
 static keyItems keys;
 
@@ -350,7 +350,26 @@ gint windowGetFocus(GtkWidget *widget, gpointer data) {
   }
   frameMutexWaitFor();
   clientMutexWaitFor();
-  drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, BsLinuxCurrent, FALSE, FALSE);
+  std::vector<baseAlliance> bas;
+  bas.push_back(baseNeutral);
+  BYTE count = screenNumBases();
+  for (int i = 1; i <= count; count++) {
+    bas.push_back(screenBaseAlliance(i));
+  }
+  std::vector<pillAlliance> pas;
+  count = screenNumPills();
+  pas.push_back(pillNeutral);
+  for (int i = 1; i <= count; count++) {
+    pas.push_back(screenPillAlliance(i));
+  }
+  std::vector<bolo::tankAlliance> tas;
+  count = screenNumPills();
+  tas.push_back(bolo::tankAlliance::tankNone);
+  for (int i = 1; i <= count; count++) {
+    tas.push_back(screenTankAlliance(i));
+  }
+  drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, BsLinuxCurrent, bas, pas, tas,
+                std::nullopt, false, false);
   clientMutexRelease();
   frameMutexRelease();
   gdk_key_repeat_disable();
@@ -468,7 +487,8 @@ Uint32 windowFrameRateTimer(Uint32 interval, void *param) {
     if ((int)(tick - oldFrameTick) >= frameRateTime) {
       frameMutexWaitFor();
       clientMutexWaitFor();
-      screenRedraw();
+      screenUpdateTiles();
+      screenGetFrontend()->drawAll();
       clientMutexRelease();
       frameMutexRelease();
       oldFrameTick = timeGetTime();

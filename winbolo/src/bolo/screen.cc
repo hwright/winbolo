@@ -607,7 +607,7 @@ void screenUpdate(updateType value) {
   b = false;
 }
 
-void screenRedraw() {
+void screenUpdateTiles() {
   netStatus ns = netGetStatus();
   if (ns != netRunning && ns != netFailed) {
     frontend->drawDownload(false);
@@ -962,7 +962,8 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
   ta[0] = mytk;
   basesGetStats(&mybs, (basesGetClosest(&mybs, tankX, tankY)), &shellsAmount,
                 &armour, &minesAmount);
-  frontend->updateBaseStatusBars(shellsAmount, minesAmount, armour);
+  frontend->updateBaseSupplyBars(bolo::BaseSupply{
+      .shells = shellsAmount, .mines = minesAmount, .armor = armour});
   shellsUpdate(&myshs, &mymp, &mypb, &mybs, ta, 1, false);
   lgmUpdate(&mylgman, &mymp, &mypb, &mybs, &mytk);
   test = &mylgman;
@@ -3513,8 +3514,10 @@ void screenSetTankStartPosition(BYTE xValue, BYTE yValue, TURNTYPE angle,
     numTrees = TANK_FULL_TREES;
   }
   tankSetStats(&mytk, numShells, numMines, TANK_FULL_ARMOUR, numTrees);
-  frontend->updateTankStatusBars(numShells, numMines, TANK_FULL_ARMOUR,
-                                 numTrees);
+  frontend->updateTankSupplyBars(bolo::TankSupply{.shells = numShells,
+                                                  .mines = numMines,
+                                                  .armor = TANK_FULL_ARMOUR,
+                                                  .trees = numTrees});
   screenTankView();
   clientSetInStartFind(false);
 }

@@ -87,22 +87,22 @@ const char *STR_16 = "16";
 
 const char *DIALOG_BOX_TITLE = "LinBolo";
 
+const int SCREEN_SIZE_X = 515;
+const int SCREEN_SIZE_Y = 325;
+
 }  // namespace
 
-void LinuxFrontend::updateTankStatusBars(uint8_t shells, uint8_t mines,
-                                         uint8_t armour, uint8_t trees) {
-  uint64_t tick;
+LinuxFrontend::LinuxFrontend()
+    : base_status_(MAX_BASES + 1, baseNeutral),
+      tank_status_(MAX_TANKS + 1, bolo::tankAlliance::tankSelf),
+      pill_status_(MAX_PILLS + 1, pillNeutral) {}
 
-  tick = SDL_GetTicks();
-  drawStatusTankBars(0, 0, shells, mines, armour, trees);
-  dwSysFrame += (SDL_GetTicks() - tick);
+void LinuxFrontend::updateTankSupplyBars(TankSupply tank_supply) {
+  tank_supply_ = std::move(tank_supply);
 }
 
-void LinuxFrontend::updateBaseStatusBars(uint8_t shells, uint8_t mines,
-                                         uint8_t armour) {
-  uint64_t tick = SDL_GetTicks();
-  drawStatusBaseBars(0, 0, shells, mines, armour, FALSE);
-  dwSysFrame += (SDL_GetTicks() - tick);
+void LinuxFrontend::updateBaseSupplyBars(BaseSupply base_supply) {
+  base_supply_ = std::move(base_supply);
 }
 
 void LinuxFrontend::playSound(sndEffects value) {
@@ -116,61 +116,51 @@ void LinuxFrontend::drawMainScreen(ScreenTiles tiles, ScreenTankList tks,
                                    ScreenBulletList sBullet, ScreenLgmList lgms,
                                    long srtDelay, bool isPillView, int edgeX,
                                    int edgeY) {
-  uint8_t cursorX;
-  uint8_t cursorY;
-  bool showCursor;
+  main_screen_data_ = MainScreenData{
+      .gunsight_ = gunsight,
+      .screen_bullet_list_ = std::move(sBullet),
+      .screen_lgm_list_ = std::move(lgms),
+      .screen_tank_list_ = std::move(tks),
+      .screen_tiles_ = std::move(tiles),
+      .edgeX_ = edgeX,
+      .edgeY_ = edgeY,
+      .srtDelay_ = srtDelay,
+      .isPillView_ = isPillView,
+  };
+}
 
-  showCursor = screenGetCursorPos(&cursorX, &cursorY);
-  ::drawMainScreen(tiles, tks, std::move(gunsight), sBullet, lgms,
-                   showPillLabels, showBaseLabels, srtDelay, isPillView, edgeX,
-                   edgeY, showCursor, cursorX, cursorY);
+void LinuxFrontend::drawAll() {
+  uint64_t tick = SDL_GetTicks();
+  drawRedrawAll(SCREEN_SIZE_X, SCREEN_SIZE_Y, build_select_, base_status_,
+                pill_status_, tank_status_, main_screen_data_, showPillLabels,
+                showBaseLabels);
+  dwSysFrame += (SDL_GetTicks() - tick);
 }
 
 void LinuxFrontend::statusPillbox(uint8_t pillNum, pillAlliance pb) {
-  uint64_t tick = SDL_GetTicks();
-  drawStatusPillbox(pillNum, pb, showPillLabels);
-  drawCopyPillsStatus();
-  dwSysFrame += (SDL_GetTicks() - tick);
+  pill_status_[pillNum] = pb;
 }
 
 void LinuxFrontend::statusTank(uint8_t tankNum, tankAlliance ts) {
-  uint64_t tick = SDL_GetTicks();
-  drawStatusTank(tankNum, ts);
-  drawCopyTanksStatus();
-  dwSysFrame += (SDL_GetTicks() - tick);
+  tank_status_[tankNum] = ts;
 }
 
 void LinuxFrontend::statusBase(uint8_t baseNum, baseAlliance bs) {
-  uint64_t tick = SDL_GetTicks();
-  drawStatusBase(baseNum, bs, showBaseLabels);
-  drawCopyBasesStatus();
-  dwSysFrame += (SDL_GetTicks() - tick);
+  base_status_[baseNum] = bs;
 }
 
 void LinuxFrontend::messages(std::string_view top, std::string_view bottom) {
-  uint64_t tick = SDL_GetTicks();
-  frameMutexWaitFor();
-  drawMessages(0, 0, std::string(top).c_str(), std::string(bottom).c_str());
-  frameMutexRelease();
-  dwSysFrame += (SDL_GetTicks() - tick);
+  top_message_ = top;
+  bottom_message_ = bottom;
 }
 
 void LinuxFrontend::killsDeaths(int kills, int deaths) {
-  uint64_t tick = SDL_GetTicks();
-  drawKillsDeaths(0, 0, kills, deaths);
-  dwSysFrame += (SDL_GetTicks() - tick);
+  kills_ = kills;
+  deaths_ = deaths;
 }
 
 void LinuxFrontend::setManStatus(std::optional<ManStatus> status) {
-  if (status.has_value()) {
-    uint64_t tick = SDL_GetTicks();
-    frameMutexWaitFor();
-    drawSetManStatus(status->is_dead, status->angle, TRUE);
-    frameMutexRelease();
-    dwSysFrame += (SDL_GetTicks() - tick);
-  } else {
-    drawSetManClear();
-  }
+  man_status_ = status;
 }
 
 void LinuxFrontend::gameOver(void) {
@@ -366,8 +356,7 @@ void LinuxFrontend::drawDownload(bool justBlack) {
 }
 
 void LinuxFrontend::selectIndent(buildSelect old_val, buildSelect new_val) {
-  drawSelectIndentsOff(old_val, 0, 0);
-  drawSelectIndentsOn(new_val, 0, 0);
+  build_select_ = new_val;
 }
 
 void LinuxFrontend::setPlayerCheckState(playerNumbers value, bool isChecked) {

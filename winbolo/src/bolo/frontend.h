@@ -33,6 +33,21 @@ struct ManStatus {
   TURNTYPE angle;
 };
 
+// Conslidated tank status struct
+struct TankSupply {
+  uint8_t shells = 0;
+  uint8_t mines = 0;
+  uint8_t armor = 0;
+  uint8_t trees = 0;
+};
+
+// Consolidated base supply struct
+struct BaseSupply {
+  uint8_t shells = 0;
+  uint8_t mines = 0;
+  uint8_t armor = 0;
+};
+
 // The interface which a frontend must implement
 class Frontend {
  public:
@@ -41,21 +56,14 @@ class Frontend {
   // Called when the tanks status bars need to be updated
   //
   // ARGUMENTS:
-  //  shells  - Number of shells
-  //  mines   - Number of mines
-  //  armour  - Amount of armour
-  //  trees   - Amount of trees
-  virtual void updateTankStatusBars(uint8_t shells, uint8_t mines,
-                                    uint8_t armour, uint8_t trees) = 0;
+  //  status  - The tank status struct
+  virtual void updateTankSupplyBars(TankSupply tank_status) = 0;
 
   // Called when the tanks status bars need to be updated
   //
   // ARGUMENTS:
-  //  shells  - Number of shells
-  //  mines   - Number of mines
-  //  armour  - Amount of armour
-  virtual void updateBaseStatusBars(uint8_t shells, uint8_t mines,
-                                    uint8_t armour) = 0;
+  //  status  - The base status struct
+  virtual void updateBaseSupplyBars(BaseSupply base_status) = 0;
 
   // Play a sound effect if sounds are enabled.
   //
@@ -73,7 +81,6 @@ class Frontend {
   //  srtDelay   - Start delay. If this is greater then 0
   //               Then the delay screen should be drawn
   //  isPillView - TRUE if we are in pillbox view
-  //  tank       - Pointer to the player's tank structure
   //  edgeX      - X Offset for smooth scrolling
   //  edgeY      - Y Offset for smooth scrolling
   virtual void drawMainScreen(ScreenTiles tiles, ScreenTankList tks,
@@ -181,7 +188,7 @@ class Frontend {
   virtual void showGunsight(bool isShown) = 0;
 
   // Force a complete window redraw.
-  virtual void redrawAll(void) = 0;
+  virtual void drawAll(void) = 0;
 
   // Set the front end that we have reached a new position
   //

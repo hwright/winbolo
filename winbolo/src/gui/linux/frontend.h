@@ -19,15 +19,17 @@
 #define _LINUX_FRONTEND_H
 
 #include "../../bolo/frontend.h"
+#include "draw.h"
 
 namespace bolo {
 
 class LinuxFrontend : public Frontend {
  public:
-  void updateTankStatusBars(uint8_t shells, uint8_t mines, uint8_t armour,
-                            uint8_t trees) override;
-  void updateBaseStatusBars(uint8_t shells, uint8_t mines,
-                            uint8_t armour) override;
+  // TODO: Parameterize this by the number of bases.
+  LinuxFrontend();
+
+  void updateTankSupplyBars(TankSupply tank_supply) override;
+  void updateBaseSupplyBars(BaseSupply base_supply) override;
   void playSound(sndEffects value) override;
   void drawMainScreen(ScreenTiles tiles, ScreenTankList tks,
                       std::optional<ScreenGunsight> gunsight,
@@ -49,8 +51,27 @@ class LinuxFrontend : public Frontend {
   void enableRequestAllyMenu(bool enabled) override;
   void enableLeaveAllyMenu(bool enabled) override;
   void showGunsight(bool isShown) override;
-  void redrawAll(void) override {}
+  void drawAll(void) override;
   bool tutorial(BYTE pos) override;
+
+ private:
+  TankSupply tank_supply_;
+  BaseSupply base_supply_;
+
+  std::vector<baseAlliance> base_status_;
+  std::vector<tankAlliance> tank_status_;
+  std::vector<pillAlliance> pill_status_;
+
+  std::optional<MainScreenData> main_screen_data_;
+
+  int kills_ = 0;
+  int deaths_ = 0;
+
+  std::string top_message_;
+  std::string bottom_message_;
+
+  std::optional<ManStatus> man_status_;
+  buildSelect build_select_;
 };
 
 }  // namespace bolo

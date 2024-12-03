@@ -94,8 +94,8 @@ static int DestroyDialog(GtkWidget *widget, gpointer *data) {
  *  fileName - filename to check
  *********************************************************/
 static void dialogGameSetupMapCheck(char *fileName) {
-  char output[FILENAME_MAX];  /* String to output */
-  bool openOK;                /* Was the map opened OK? */
+  char output[FILENAME_MAX]; /* String to output */
+  bool openOK;               /* Was the map opened OK? */
 
   openOK = TRUE;
   output[0] = '\0';

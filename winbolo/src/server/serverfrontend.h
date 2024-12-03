@@ -21,14 +21,9 @@ namespace bolo {
 
 class ServerFrontend : public Frontend {
  public:
-  void updateTankStatusBars(uint8_t shells, uint8_t mines, uint8_t armour,
-                            uint8_t trees) override {}
-
-  void updateBaseStatusBars(uint8_t shells, uint8_t mines,
-                            uint8_t armour) override {}
-
+  void updateTankSupplyBars(TankSupply) override {}
+  void updateBaseSupplyBars(BaseSupply) override {}
   void playSound(sndEffects value) override {}
-
   void drawMainScreen(ScreenTiles, ScreenTankList,
                       std::optional<ScreenGunsight>, ScreenBulletList,
                       ScreenLgmList, long, bool, int, int) override {}
@@ -48,7 +43,7 @@ class ServerFrontend : public Frontend {
   void enableRequestAllyMenu(bool enabled) override {}
   void enableLeaveAllyMenu(bool enabled) override {}
   void showGunsight(bool isShown) override {}
-  void redrawAll(void) override {}
+  void drawAll(void) override {}
   bool tutorial(BYTE pos) override { return false; }
 };
 
