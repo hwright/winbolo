@@ -96,7 +96,7 @@ static shells myshs = nullptr;
 static lgm mylgman = nullptr;
 static players plyrs = nullptr;
 static std::optional<bolo::BuildingState> clientBlds;
-static explosions clientExpl = nullptr;
+static std::optional<bolo::ExplosionTracker> clientExpl;
 static std::optional<bolo::FloodFill> clientFF;
 static std::optional<bolo::GrassState> clientGrass;
 static std::optional<bolo::MineTracker> clientMines;
@@ -395,7 +395,7 @@ void screenSetup(gameType game, std::unique_ptr<bolo::Frontend> frontend_input,
   basesCreate(&mybs);
   playersCreate(&plyrs);
   myshs = shellsCreate();
-  explosionsCreate(&clientExpl);
+  clientExpl.emplace();
   clientRubble.emplace();
   clientBlds.emplace();
   messageCreate();
@@ -446,7 +446,7 @@ void screenDestroy() {
   startsDestroy(&myss);
   basesDestroy(&mybs);
   shellsDestroy(&myshs);
-  explosionsDestroy(&clientExpl);
+  clientExpl = std::nullopt;
   clientRubble = std::nullopt;
   clientBlds = std::nullopt;
   messageDestroy();
@@ -649,10 +649,9 @@ void screenUpdateTiles() {
   shellsCalcScreenBullets(
       &myshs, &sBullets, xOffset, (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
       yOffset, (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
-  explosionsCalcScreenBullets(&clientExpl, &sBullets, xOffset,
-                              (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
-                              yOffset,
-                              (BYTE)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
+  clientExpl->calcScreenBullets(
+      &sBullets, xOffset, (uint8_t)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
+      yOffset, (uint8_t)(yOffset + MAIN_BACK_BUFFER_SIZE_Y - 1));
   tkExplosionCalcScreenBullets(&clientTankExplosions, &sBullets, xOffset,
                                (BYTE)(xOffset + MAIN_BACK_BUFFER_SIZE_X - 1),
                                yOffset,
@@ -969,7 +968,7 @@ void screenGameTick(tankButton tb, bool tankShoot, bool isBrain) {
   test = &mylgman;
   tkExplosionUpdate(&clientTankExplosions, &mymp, &mypb, &mybs, (lgm **)&test,
                     1, &mytk);
-  explosionsUpdate(&clientExpl);
+  clientExpl->Update();
   clientMinesExp->Update(&mymp, &mypb, &mybs, (lgm **)&(test), 1);
   clientFF->Update(&mymp, &mypb, &mybs);
   treeGrowState->Update(&mymp, &mypb, &mybs);
@@ -3761,7 +3760,7 @@ bolo::BuildingState *clientGetBuildings() { return &*clientBlds; }
  *ARGUMENTS:
  *
  *********************************************************/
-explosions *clientGetExplosions() { return &clientExpl; }
+bolo::ExplosionTracker *clientGetExplosions() { return &*clientExpl; }
 
 /*********************************************************
  *NAME:          clientGetFloodFill

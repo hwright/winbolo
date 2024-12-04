@@ -847,7 +847,7 @@ bolo::BuildingState *serverCoreGetBuildings();
  *ARGUMENTS:
  *
  *********************************************************/
-explosions *serverCoreGetExplosions();
+bolo::ExplosionTracker *serverCoreGetExplosions();
 
 /*********************************************************
  *NAME:          serverCoreGetFloodFill

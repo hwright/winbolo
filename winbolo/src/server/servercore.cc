@@ -88,7 +88,7 @@ static lgm lgman[MAX_TANKS];
 static shells shs;
 static players splrs;
 static std::optional<bolo::BuildingState> serverBlds;
-static explosions serverExpl = nullptr;
+static std::optional<bolo::ExplosionTracker> serverExpl;
 static std::optional<bolo::FloodFill> serverFF;
 static std::optional<bolo::GrassState> serverGrass;
 static std::optional<bolo::MineTracker> serverMines;
@@ -159,7 +159,7 @@ bool serverCoreCreate(char *fileName, gameType game, bool hiddenMines,
   basesCreate(&bs);
   playersCreate(&splrs);
   shs = shellsCreate();
-  explosionsCreate(&serverExpl);
+  serverExpl.emplace();
   serverRubble.emplace();
   serverBlds.emplace();
   serverGrass.emplace();
@@ -235,7 +235,7 @@ bool serverCoreCreateCompressed(BYTE *buff, int buffLen, const char *mapn,
   playersCreate(&splrs);
   playersRejoinCreate();
   shs = shellsCreate();
-  explosionsCreate(&serverExpl);
+  serverExpl.emplace();
   serverRubble.emplace();
   serverBlds.emplace();
   serverGrass.emplace();
@@ -287,7 +287,7 @@ void serverCoreDestroy() {
   startsDestroy(&ss);
   basesDestroy(&bs);
   shellsDestroy(&shs);
-  explosionsDestroy(&serverExpl);
+  serverExpl = std::nullopt;
   playersRejoinDestroy();
   serverRubble = std::nullopt;
   serverBlds = std::nullopt;
@@ -335,8 +335,7 @@ void serverCoreLogTick() {
     /* Shells */
     bolo::ScreenBulletList sb;
     shellsCalcScreenBullets(&shs, &sb, 0, MAP_ARRAY_LAST, 0, MAP_ARRAY_LAST);
-    explosionsCalcScreenBullets(&serverExpl, &sb, 0, MAP_ARRAY_LAST, 0,
-                                MAP_ARRAY_LAST);
+    serverExpl->calcScreenBullets(&sb, 0, MAP_ARRAY_LAST, 0, MAP_ARRAY_LAST);
     tkExplosionCalcScreenBullets(&serverTankExp, &sb, 0, MAP_ARRAY_LAST, 0,
                                  MAP_ARRAY_LAST);
     for (const auto &bullet : sb) {
@@ -404,7 +403,7 @@ void serverCoreGameTick() {
                     &tk[0]); /*set this to tk[0] becuase it doesn't use the tank
                                 structure if its the server calling it.*/
   shellsUpdate(&shs, &mp, &pb, &bs, ta, numTanks, true);
-  explosionsUpdate(&serverExpl);
+  serverExpl->Update();
   serverMinesExp->Update(&mp, &pb, &bs, (lgm **)lgms, numTanks);
   serverFF->Update(&mp, &pb, &bs);
   playersRejoinUpdate();
@@ -1713,7 +1712,7 @@ bolo::BuildingState *serverCoreGetBuildings() { return &*serverBlds; }
  *ARGUMENTS:
  *
  *********************************************************/
-explosions *serverCoreGetExplosions() { return &serverExpl; }
+bolo::ExplosionTracker *serverCoreGetExplosions() { return &*serverExpl; }
 
 /*********************************************************
  *NAME:          serverCoreGetFloodFill

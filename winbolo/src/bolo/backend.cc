@@ -450,7 +450,7 @@ bolo::BuildingState *screenGetBuildings() {
  *ARGUMENTS:
  *
  *********************************************************/
-explosions *screenGetExplosions() {
+bolo::ExplosionTracker *screenGetExplosions() {
   if (!threadsGetContext()) {
     return clientGetExplosions();
   }

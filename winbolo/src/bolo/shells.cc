@@ -229,8 +229,8 @@ void shellsUpdate(shells *value, map *mp, pillboxes *pb, bases *bs, tank *tk,
         conv <<= TANK_SHIFT_MAPSIZE;
         conv >>= TANK_SHIFT_PIXELSIZE;
         spy = (BYTE)conv;
-        explosionsAddItem(screenGetExplosions(), sx, sy, spx, spy,
-                          EXPLOSION_START);
+        screenGetExplosions()->addItem(MapPoint{.x = sx, .y = sy}, spx, spy,
+                                       EXPLOSION_START);
         screenGetMinesExp()->addItem(MapPoint{.x = bmx, .y = bmy});
         count = 0;
         while (count < numTanks) {
@@ -276,8 +276,8 @@ void shellsUpdate(shells *value, map *mp, pillboxes *pb, bases *bs, tank *tk,
       conv <<= TANK_SHIFT_MAPSIZE;
       conv >>= TANK_SHIFT_PIXELSIZE;
       spy = (BYTE)conv;
-      explosionsAddItem(screenGetExplosions(), sx, sy, spx, spy,
-                        EXPLOSION_START);
+      screenGetExplosions()->addItem(MapPoint{.x = sx, .y = sy}, spx, spy,
+                                     EXPLOSION_START);
       screenGetMinesExp()->addItem(MapPoint{.x = bmx, .y = bmy});
       testPos = mapGetPos(mp, bmx, bmy);
       if (isServer && testPos >= MINE_START && testPos <= MINE_END) {
