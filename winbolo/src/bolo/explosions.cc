@@ -25,16 +25,16 @@ namespace bolo {
 
 namespace {
 
-const int EXPLODE_DEATH = 1;
+const int START = 8;
+const int DEATH = 1;
 
 // Explosions should only be updated every 3 ticks
 const int UPDATE_TIME = 3;
 
 }  // namespace
 
-void ExplosionTracker::addItem(MapPoint pos, uint8_t px, uint8_t py,
-                               uint8_t startPos) {
-  explosions_.push_back({.pos = pos, .px = px, .py = py, .length = startPos});
+void ExplosionTracker::addItem(MapPoint pos, uint8_t px, uint8_t py) {
+  explosions_.push_back({.pos = pos, .px = px, .py = py, .length = START});
 }
 
 void ExplosionTracker::Update() {
@@ -51,7 +51,7 @@ void ExplosionTracker::Update() {
 
   for (int i = 0; i < explosions_.size(); ++i) {
     auto &exp = explosions_[i];
-    if (exp.length > EXPLODE_DEATH) {
+    if (exp.length > DEATH) {
       exp.length--;
     } else {
       // Remove from data structure

@@ -86,7 +86,7 @@ void MineExplosionTracker::checkFill(map *mp, pillboxes *pb, bases *bs,
       count++;
     }
     screenCheckTankMineDamage(pos.x, pos.y);
-    screenGetExplosions()->addItem(pos, 0, 0, EXPLOSION_START);
+    screenGetExplosions()->addItem(pos, 0, 0);
     screenGetFloodFill()->addItem(pos);
     /* Remove Items from grass/swamp/rubble data stuctures */
     switch (terrain - MINE_SUBTRACT) {

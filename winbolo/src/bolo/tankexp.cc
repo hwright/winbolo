@@ -194,8 +194,7 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs,
       conv <<= TANK_SHIFT_MAPSIZE;
       conv >>= TANK_SHIFT_PIXELSIZE;
       py = (BYTE)conv;
-      screenGetExplosions()->addItem(MapPoint{.x = mx, .y = my}, px, py,
-                                     EXPLOSION_START);
+      screenGetExplosions()->addItem(MapPoint{.x = mx, .y = my}, px, py);
       /* Check for colisions then update position */
       newX = (WORLD)(position->x + moveX);
       newY = (WORLD)(position->y + moveY);
@@ -288,8 +287,7 @@ void tkExplosionUpdate(tkExplosion *tke, map *mp, pillboxes *pb, bases *bs,
       conv >>= TANK_SHIFT_MAPSIZE;
       my = (BYTE)conv;
       if (position->explodeType == TK_SMALL_EXPLOSION) {
-        screenGetExplosions()->addItem(MapPoint{.x = mx, .y = my}, 0, 0,
-                                       EXPLOSION_START);
+        screenGetExplosions()->addItem(MapPoint{.x = mx, .y = my}, 0, 0);
         currentPos = mapGetPos(mp, mx, my);
         if (currentPos != RIVER && currentPos != DEEP_SEA) {
           //          if (position->own == true) {
@@ -481,8 +479,7 @@ void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb,
     moveY = TK_MOVE_LEFT;
   }
   screenGetExplosions()->addItem(
-      MapPoint{.x = (uint8_t)(mx + moveX), .y = (uint8_t)(my + moveY)}, 0, 0,
-      EXPLOSION_START);
+      MapPoint{.x = (uint8_t)(mx + moveX), .y = (uint8_t)(my + moveY)}, 0, 0);
   currentPos = mapGetPos(mp, (BYTE)(mx + moveX), (BYTE)(my + moveY));
   tkExplosionCheckRemove(tke, currentPos, (BYTE)(mx + moveX),
                          (BYTE)(my + moveY));
@@ -508,7 +505,7 @@ void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb,
   }
 
   screenGetExplosions()->addItem(MapPoint{.x = (uint8_t)(mx + moveX), .y = my},
-                                 0, 0, EXPLOSION_START);
+                                 0, 0);
   currentPos = mapGetPos(mp, (BYTE)(mx + moveX), my);
   tkExplosionCheckRemove(tke, currentPos, (BYTE)(mx + moveX), my);
   if (pillsExistPos(pb, (BYTE)(mx + moveX), my)) {
@@ -530,7 +527,7 @@ void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb,
   }
 
   screenGetExplosions()->addItem(MapPoint{.x = mx, .y = (uint8_t)(my + moveY)},
-                                 0, 0, EXPLOSION_START);
+                                 0, 0);
   currentPos = mapGetPos(mp, mx, (BYTE)(my + moveY));
   tkExplosionCheckRemove(tke, currentPos, mx, (BYTE)(my + moveY));
   if (pillsExistPos(pb, mx, (BYTE)(my + moveY))) {
@@ -552,8 +549,7 @@ void tkExplosionBigExplosion(tkExplosion *tke, map *mp, pillboxes *pb,
     count++;
   }
 
-  screenGetExplosions()->addItem(MapPoint{.x = mx, .y = my}, 0, 0,
-                                 EXPLOSION_START);
+  screenGetExplosions()->addItem(MapPoint{.x = mx, .y = my}, 0, 0);
   count = 1;
   while (count <= numLgm) {
     lgmDeathCheck(lgms[count - 1], mp, pb, bs,
