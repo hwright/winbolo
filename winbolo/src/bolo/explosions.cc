@@ -25,16 +25,13 @@ namespace bolo {
 
 namespace {
 
-const int EXPLODE_DEATH = 1;
-
 // Explosions should only be updated every 3 ticks
 const int UPDATE_TIME = 3;
 
 }  // namespace
 
-void ExplosionTracker::addItem(MapPoint pos, uint8_t px, uint8_t py,
-                               uint8_t startPos) {
-  explosions_.push_back({.pos = pos, .px = px, .py = py, .length = startPos});
+void ExplosionTracker::addItem(MapPoint pos, uint8_t px, uint8_t py) {
+  explosions_[START].push_back({.pos = pos, .px = px, .py = py});
 }
 
 void ExplosionTracker::Update() {
@@ -47,37 +44,30 @@ void ExplosionTracker::Update() {
     update = 0;
   }
 
-  std::vector<int> to_remove;
+  // For all of the items in the `DEATH` state, remove them by bumping each
+  // state forward.
+  explosions_[1].clear();
 
-  for (int i = 0; i < explosions_.size(); ++i) {
-    auto &exp = explosions_[i];
-    if (exp.length > EXPLODE_DEATH) {
-      exp.length--;
-    } else {
-      // Remove from data structure
-      to_remove.push_back(i);
-    }
-  }
-
-  // Reverse iterate, because forward iterating would change the indicies
-  // of future members
-  for (auto it = to_remove.rbegin(); it != to_remove.rend(); ++it) {
-    explosions_.erase(explosions_.begin() + *it);
+  // Now move each list up the array.  This puts the empty array at the back.
+  for (int i = 1; i < explosions_.size() - 1; ++i) {
+    std::swap(explosions_[i], explosions_[i + 1]);
   }
 }
 
 void ExplosionTracker::calcScreenBullets(bolo::ScreenBulletList *sBullets,
                                          uint8_t leftPos, uint8_t rightPos,
                                          uint8_t topPos, uint8_t bottomPos) {
-  for (auto &exp : explosions_) {
-    if (exp.pos.x >= leftPos && exp.pos.x < rightPos && exp.pos.y >= topPos &&
-        exp.pos.y < bottomPos) {
-      sBullets->push_back(bolo::ScreenBullet{
-          .pos = {.x = static_cast<uint8_t>(exp.pos.x - leftPos),
-                  .y = static_cast<uint8_t>(exp.pos.y - topPos)},
-          .px = exp.px,
-          .py = exp.py,
-          .frame = exp.length});
+  for (int length = 1; length < explosions_.size(); ++length) {
+    for (auto &exp : explosions_[length]) {
+      if (exp.pos.x >= leftPos && exp.pos.x < rightPos && exp.pos.y >= topPos &&
+          exp.pos.y < bottomPos) {
+        sBullets->push_back(bolo::ScreenBullet{
+            .pos = {.x = static_cast<uint8_t>(exp.pos.x - leftPos),
+                    .y = static_cast<uint8_t>(exp.pos.y - topPos)},
+            .px = exp.px,
+            .py = exp.py,
+            .frame = static_cast<uint8_t>(length)});
+      }
     }
   }
 }

@@ -21,8 +21,6 @@
 #include "global.h"
 #include "screentypes.h"
 
-#define EXPLOSION_START 8
-
 namespace bolo {
 
 struct Explosion {
@@ -43,12 +41,10 @@ class ExplosionTracker {
   // Adds an item to the explosions data structure.
   //
   // ARGUMENTS:
-  //  mx     - Map X co-ord of the explosion
-  //  my     - Map Y co-ord of the explosion
+  //  pos    - Map position
   //  px     - Pixel X co-ord of the explosion
   //  py     - Pixel Y co-ord of the explosion
-  //  startPos  - How far through the explosion does it start
-  void addItem(MapPoint pos, uint8_t px, uint8_t py, uint8_t startPos);
+  void addItem(MapPoint pos, uint8_t px, uint8_t py);
 
   //  Updates each explosion position
   void Update();
@@ -66,7 +62,11 @@ class ExplosionTracker {
                          uint8_t rightPos, uint8_t topPos, uint8_t bottomPos);
 
  private:
-  std::vector<Explosion> explosions_;
+  static const int START = 8;
+
+  // We store explosions in groups according to their length.
+  // This is 1-indexed.
+  std::array<std::vector<Explosion>, START + 1> explosions_;
 };
 
 }  // namespace bolo

@@ -1395,8 +1395,8 @@ void tankMoveOnBoat(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
                     screenGetTankPlayer(value), newbmx, newbmy);
           mapSetPos(mp, newbmx, newbmy, RIVER, true, false);
         }
-        screenGetExplosions()->addItem(MapPoint{.x = newbmx, .y = newbmy}, 0, 0,
-                                       EXPLOSION_START);
+        screenGetExplosions()->addItem(MapPoint{.x = newbmx, .y = newbmy}, 0,
+                                       0);
 
         soundDist(bolo::sndEffects::shotBuildingNear, newbmx, newbmy);
       } else if (boatExitSquare != BUILDING && boatExitSquare != HALFBUILDING) {
@@ -1424,8 +1424,7 @@ void tankMoveOnBoat(tank *value, map *mp, pillboxes *pb, bases *bs, BYTE bmx,
     /* Check for hit mine on outer map edges */
     if (mapIsMine(mp, bmx, bmy)) {
       soundDist(bolo::sndEffects::mineExplosionNear, bmx, bmy);
-      screenGetExplosions()->addItem(MapPoint{.x = bmx, .y = bmy}, 0, 0,
-                                     EXPLOSION_START);
+      screenGetExplosions()->addItem(MapPoint{.x = bmx, .y = bmy}, 0, 0);
       (*value)->onBoat = false;
       tankRegisterChangeByte(value, CRC_ONBOAT_OFFSET, false);
       (*value)->speed = 0;
