@@ -32,7 +32,7 @@
 
 #include "../gui/lang.h"
 #include "../server/servercore.h"
-#include "allience.h"
+#include "alliance.h"
 #include "backend.h"
 #include "frontend.h"
 #include "global.h"

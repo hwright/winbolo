@@ -16,7 +16,7 @@
 
 /*********************************************************
  *Name:          Allience
- *Filename:      Allience.c
+ *Filename:      Allience.h
  *Author:        John Morrison
  *Creation Date: 18/02/99
  *Last Modified: 25/07/04
@@ -25,9 +25,27 @@
  *  simple set
  *********************************************************/
 
-#include "allience.h"
+#ifndef ALLIANCE_H
+#define ALLIANCE_H
 
 #include "global.h"
+
+/* Defines */
+/* Empty / Non Empty / Head / Tail Macros */
+#define IsEmpty(list) ((list) == NULL)
+#define NonEmpty(list) (!IsEmpty(list))
+#define AllienceHead(list) ((list)->playerNum);
+#define AllienceTail(list) ((list)->next);
+
+/* Allience */
+
+typedef struct allienceObj *allience;
+struct allienceObj {
+  allience next;  /* Next item */
+  BYTE playerNum; /* The player this person is allied to */
+};
+
+/* Prototypes */
 
 /*********************************************************
  *NAME:          allienceCreate
@@ -40,7 +58,7 @@
  *ARGUMENTS:
  *
  *********************************************************/
-allience allienceCreate(void) { return nullptr; }
+allience allienceCreate(void);
 
 /*********************************************************
  *NAME:          allienceDestroy
@@ -53,15 +71,7 @@ allience allienceCreate(void) { return nullptr; }
  *ARGUMENTS:
  *  value - The allience structure to destroy
  *********************************************************/
-void allienceDestroy(allience *value) {
-  allience q;
-
-  while (!IsEmpty(*value)) {
-    q = *value;
-    *value = AllienceTail(q);
-    delete q;
-  }
-}
+void allienceDestroy(allience *value);
 
 /*********************************************************
  *NAME:          allienceAdd
@@ -75,17 +85,7 @@ void allienceDestroy(allience *value) {
  *  value     - The allience structure to add to
  *  playerNum - The player number to add
  *********************************************************/
-void allienceAdd(allience *value, BYTE playerNum) {
-  allience q;
-
-  if (!allienceExist(value, playerNum)) {
-    /* Doesn't exist yet. Add */
-    q = new allienceObj;
-    q->playerNum = playerNum;
-    q->next = *value;
-    *value = q;
-  }
-}
+void allienceAdd(allience *value, BYTE playerNum);
 
 /*********************************************************
  *NAME:          allienceRemove
@@ -99,31 +99,7 @@ void allienceAdd(allience *value, BYTE playerNum) {
  *  value     - The allience structure to remove from
  *  playerNum - The player number to add
  *********************************************************/
-void allienceRemove(allience *value, BYTE playerNum) {
-  allience q;
-  allience prev;
-  BYTE test;  /* Number we are testing */
-  bool first; /* Is first item */
-
-  first = true;
-  if (allienceExist(value, playerNum)) {
-    q = *value;
-    prev = q;
-    test = AllienceHead(q);
-    while (test != playerNum) {
-      first = false;
-      prev = q;
-      q = AllienceTail(q);
-      test = AllienceHead(q);
-    }
-    if (!first) {
-      prev->next = q->next;
-    } else {
-      (*value) = (*value)->next;
-    }
-    delete q;
-  }
-}
+void allienceRemove(allience *value, BYTE playerNum);
 
 /*********************************************************
  *NAME:          allienceExist
@@ -137,22 +113,7 @@ void allienceRemove(allience *value, BYTE playerNum) {
  *  value     - The allience structure to remove from
  *  playerNum - The player number to add
  *********************************************************/
-bool allienceExist(allience *value, BYTE playerNum) {
-  bool returnValue; /* Value to return */
-  allience q;
-  BYTE test;
-
-  q = *value;
-  returnValue = false;
-  while (!returnValue && NonEmpty(q)) {
-    test = AllienceHead(q);
-    if (test == playerNum) {
-      returnValue = true;
-    }
-    q = AllienceTail(q);
-  }
-  return returnValue;
-}
+bool allienceExist(allience *value, BYTE playerNum);
 
 /*********************************************************
  *NAME:          allienceNumAllies
@@ -165,19 +126,7 @@ bool allienceExist(allience *value, BYTE playerNum) {
  *ARGUMENTS:
  *  value     - The allience structure to remove from
  *********************************************************/
-BYTE allienceNumAllies(allience *value) {
-  BYTE returnValue; /* Value to return */
-  allience q;
-
-  q = *value;
-  returnValue = 0;
-  while (NonEmpty(q)) {
-    returnValue++;
-    q = AllienceTail(q);
-  }
-
-  return returnValue;
-}
+BYTE allienceNumAllies(allience *value);
 
 /*********************************************************
  *NAME:          allienceReturnNum
@@ -191,27 +140,7 @@ BYTE allienceNumAllies(allience *value) {
  *  value - The allience structure to remove from
  *  num   - Position in the structure to get
  *********************************************************/
-BYTE allienceReturnNum(allience *value, BYTE num) {
-  BYTE returnValue; /* Value to return */
-  BYTE count;
-  allience q;
-
-  count = 0;
-  returnValue = NEUTRAL;
-
-  if (allienceNumAllies(value) >= num) {
-    q = *value;
-    while (NonEmpty(q) && count < num) {
-      count++;
-      q = AllienceTail(q);
-    }
-    if (NonEmpty(q)) {
-      returnValue = q->playerNum;
-    }
-  }
-
-  return returnValue;
-}
+BYTE allienceReturnNum(allience *value, BYTE num);
 
 /*********************************************************
  *NAME:          allianceMakeLogAlliance
@@ -228,17 +157,6 @@ BYTE allienceReturnNum(allience *value, BYTE num) {
  *  value - The allience structure to remove from
  *  buff  - Buffer to write into
  *********************************************************/
-BYTE allianceMakeLogAlliance(allience *value, BYTE *buff) {
-  BYTE returnValue = 1; /* Value to return */
-  allience q;
+BYTE allianceMakeLogAlliance(allience *value, BYTE *buff);
 
-  q = *value;
-  while (NonEmpty(q)) {
-    buff[returnValue] = q->playerNum;
-    returnValue++;
-    q = AllienceTail(q);
-  }
-
-  buff[0] = returnValue - 1;
-  return returnValue;
-}
+#endif /* ALLIANCE_H */

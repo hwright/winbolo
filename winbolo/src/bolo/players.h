@@ -27,7 +27,7 @@
 #ifndef PLAYERS_H
 #define PLAYERS_H
 
-#include "allience.h"
+#include "alliance.h"
 #include "global.h"
 #include "screentypes.h"
 
