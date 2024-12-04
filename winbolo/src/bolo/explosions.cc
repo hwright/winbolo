@@ -43,7 +43,7 @@
  *ARGUMENTS:
  *  expl - Pointer to the explosions object
  *********************************************************/
-void explosionsCreate(explosions *expl) { *expl = nullptr; }
+void explosionsCreate(explosions *expl) { *expl = new explosionsObj; }
 
 /*********************************************************
  *NAME:          explosionsDestroy
@@ -57,15 +57,7 @@ void explosionsCreate(explosions *expl) { *expl = nullptr; }
  *ARGUMENTS:
  *  expl - Pointer to the explosions object
  *********************************************************/
-void explosionsDestroy(explosions *expl) {
-  explosions q;
-
-  while (!IsEmpty(*expl)) {
-    q = *expl;
-    *expl = ExplosionsTail(q);
-    delete q;
-  }
-}
+void explosionsDestroy(explosions *expl) { delete *expl; }
 
 /*********************************************************
  *NAME:          explosionsAddItem
@@ -86,21 +78,8 @@ void explosionsDestroy(explosions *expl) {
  *********************************************************/
 void explosionsAddItem(explosions *expl, BYTE mx, BYTE my, BYTE px, BYTE py,
                        BYTE startPos) {
-  explosions q;
-
-  q = new explosionsObj;
-  q->mx = mx;
-  q->my = my;
-  q->px = px;
-  q->py = py;
-  q->length = startPos;
-  q->next = *expl;
-  q->prev = nullptr;
-  if (NonEmpty(*expl)) {
-    (*expl)->prev = q;
-  }
-
-  *expl = q;
+  (*expl)->explosions_.push_back(
+      {.pos = {.x = mx, .y = my}, .px = px, .py = py, .length = startPos});
 }
 
 /*********************************************************
@@ -116,8 +95,6 @@ void explosionsAddItem(explosions *expl, BYTE mx, BYTE my, BYTE px, BYTE py,
  *********************************************************/
 void explosionsUpdate(explosions *expl) {
   static BYTE update = 0; /* The update time */
-  explosions position;    /* Position throught the items */
-  bool needUpdate;        /* Whether an update is needed or not */
 
   update++;
   if (update != EXPLOAD_UPDATE_TIME) {
@@ -126,56 +103,23 @@ void explosionsUpdate(explosions *expl) {
     update = 0;
   }
 
-  position = *expl;
+  std::vector<int> to_remove;
 
-  while (NonEmpty(position)) {
-    needUpdate = true;
-    if (position->length > EXPLODE_DEATH) {
-      position->length--;
+  for (int i = 0; i < (*expl)->explosions_.size(); ++i) {
+    auto &exp = (*expl)->explosions_[i];
+    if (exp.length > EXPLODE_DEATH) {
+      exp.length--;
     } else {
-      /* Remove from data structure */
-      needUpdate = false;
-      explosionDeleteItem(expl, &position);
-    }
-
-    /* Get the next Item */
-    if (*expl != nullptr && needUpdate) {
-      position = ExplosionsTail(position);
-    }
-  }
-}
-
-/*********************************************************
- *NAME:          explosionDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/1/99
- *LAST MODIFIED: 1/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  expl  - Pointer to the explosions object
- *  value - Position to destroy (places next in it)
- *********************************************************/
-void explosionDeleteItem(explosions *expl, explosions *value) {
-  explosions del; /* The item to delete */
-
-  del = *value;
-  (*value) = ExplosionsTail(del);
-  if (del->prev != nullptr) {
-    del->prev->next = del->next;
-  } else {
-    /* Must be the first item - Move the master position along one */
-    *expl = ExplosionsTail(*expl);
-    if (NonEmpty(*expl)) {
-      (*expl)->prev = nullptr;
+      // Remove from data structure
+      to_remove.push_back(i);
     }
   }
 
-  if (del->next != nullptr) {
-    del->next->prev = del->prev;
+  // Reverse iterate, because forward iterating would change the indicies
+  // of future members
+  for (auto it = to_remove.rbegin(); it != to_remove.rend(); ++it) {
+    (*expl)->explosions_.erase((*expl)->explosions_.begin() + *it);
   }
-  delete del;
 }
 
 /*********************************************************
@@ -198,19 +142,15 @@ void explosionDeleteItem(explosions *expl, explosions *value) {
 void explosionsCalcScreenBullets(explosions *expl,
                                  bolo::ScreenBulletList *sBullets, BYTE leftPos,
                                  BYTE rightPos, BYTE topPos, BYTE bottomPos) {
-  explosions q; /* Temp Pointer */
-
-  q = *expl;
-  while (NonEmpty(q)) {
-    if (q->mx >= leftPos && q->mx < rightPos && q->my >= topPos &&
-        q->my < bottomPos) {
+  for (auto &exp : (*expl)->explosions_) {
+    if (exp.pos.x >= leftPos && exp.pos.x < rightPos && exp.pos.y >= topPos &&
+        exp.pos.y < bottomPos) {
       sBullets->push_back(bolo::ScreenBullet{
-          .pos = MapPoint{.x = static_cast<uint8_t>(q->mx - leftPos),
-                          .y = static_cast<uint8_t>(q->my - topPos)},
-          .px = q->px,
-          .py = q->py,
-          .frame = q->length});
+          .pos = {.x = static_cast<uint8_t>(exp.pos.x - leftPos),
+                  .y = static_cast<uint8_t>(exp.pos.y - topPos)},
+          .px = exp.px,
+          .py = exp.py,
+          .frame = exp.length});
     }
-    q = ExplosionsTail(q);
   }
 }

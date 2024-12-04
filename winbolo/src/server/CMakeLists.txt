@@ -15,7 +15,6 @@ add_executable(linbolods
                ../bolo/bolo_map.cc
                ../bolo/crc.cc
                ../bolo/debug_file_output.cc
-               ../bolo/explosions.cc
                ../bolo/gametype.cc
                ../bolo/lgm.cc
                ../bolo/log.cc

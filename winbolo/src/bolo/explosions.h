@@ -30,10 +30,6 @@
 #include "global.h"
 #include "screentypes.h"
 
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define ExplosionsTail(list) ((list)->next);
-
 #define EXPLOSION_START 8
 #define EXPLODE_DEATH 1
 /* Explosions should only be updated every 3 ticks */
@@ -41,15 +37,16 @@
 
 /* Type structure */
 
+struct Explosion {
+  MapPoint pos;
+  uint8_t px;
+  uint8_t py;
+  uint8_t length;
+};
+
 typedef struct explosionsObj *explosions;
 struct explosionsObj {
-  explosions next;
-  explosions prev;
-  BYTE mx;
-  BYTE my;
-  BYTE px;
-  BYTE py;
-  BYTE length;
+  std::vector<Explosion> explosions_;
 };
 
 /* Prototypes */
@@ -113,20 +110,6 @@ void explosionsAddItem(explosions *expl, BYTE mx, BYTE my, BYTE px, BYTE py,
  *  expl - Pointer to the explosions object
  *********************************************************/
 void explosionsUpdate(explosions *expl);
-
-/*********************************************************
- *NAME:          explosionDeleteItem
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/1/99
- *LAST MODIFIED: 1/1/99
- *PURPOSE:
- *  Deletes the item for the given number
- *
- *ARGUMENTS:
- *  expl  - Pointer to the explosions object
- *  value - Position to destroy (places next in it)
- *********************************************************/
-void explosionDeleteItem(explosions *expl, explosions *value);
 
 /*********************************************************
  *NAME:          explosionCalcScreenBullets
