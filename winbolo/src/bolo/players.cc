@@ -78,7 +78,7 @@ void playersCreate(players *plrs) {
   for (count = 0; count < MAX_TANKS; count++) {
     (*plrs)->item[count].inUse = false;
     (*plrs)->item[count].needUpdate = false;
-    (*plrs)->item[count].allie = allienceCreate();
+    (*plrs)->item[count].allie = allianceCreate();
     (*plrs)->item[count].isChecked = false;
     (*plrs)->playerBrainNames[count][0] = '\0';
   }
@@ -101,7 +101,7 @@ void playersDestroy(players *plrs) {
   if ((*plrs) != nullptr) {
     for (count = 0; count < MAX_TANKS; count++) {
       (*plrs)->item[count].inUse = false;
-      allienceDestroy(&((*plrs)->item[count].allie));
+      allianceDestroy(&((*plrs)->item[count].allie));
     }
     if (*plrs != nullptr) {
       delete *plrs;
@@ -304,10 +304,10 @@ void playersSetPlayer(players *plrs, BYTE playerNum, char *playerName,
     (*plrs)->item[playerNum].pixelY = py;
     (*plrs)->item[playerNum].frame = frame;
     (*plrs)->item[playerNum].onBoat = onBoat;
-    (*plrs)->item[playerNum].allie = allienceCreate();
+    (*plrs)->item[playerNum].allie = allianceCreate();
     count = 0;
     while (count < numAllies) {
-      allienceAdd(&((*plrs)->item[playerNum].allie), allies[count]);
+      allianceAdd(&((*plrs)->item[playerNum].allie), allies[count]);
       count++;
     }
   }
@@ -608,7 +608,7 @@ bool playersIsAllie(players *plrs, BYTE playerA, BYTE playerB) {
     }
 
     if (check != NEUTRAL) {
-      returnValue = allienceExist(&((*plrs)->item[check].allie), check2);
+      returnValue = allianceExist(&((*plrs)->item[check].allie), check2);
     }
   }
   return returnValue;
@@ -632,7 +632,7 @@ BYTE playersGetNumAllie(players *plrs, BYTE playerNum) {
 
   returnValue = 0;
   if ((*plrs)->item[playerNum].inUse) {
-    returnValue = allienceNumAllies(&((*plrs)->item[playerNum].allie)) + 1;
+    returnValue = allianceNumAllies(&((*plrs)->item[playerNum].allie)) + 1;
   }
   return returnValue;
 }
@@ -679,7 +679,7 @@ bool playersNameTaken(players *plrs, char *checkName) {
  *CREATION DATE: 18/2/99
  *LAST MODIFIED: 18/2/99
  *PURPOSE:
- * Returns a player is screen allience type.
+ * Returns a player is screen alliance type.
  *
  *ARGUMENTS:
  * plrs - Pointer to the players object
@@ -691,7 +691,7 @@ bolo::tankAlliance playersScreenAllience(players *plrs, BYTE playerNum) {
       return bolo::tankAlliance::tankNone;
     } else if (playerNum == (*plrs)->myPlayerNum) {
       return bolo::tankAlliance::tankSelf;
-    } else if (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie),
+    } else if (allianceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie),
                              playerNum)) {
       return bolo::tankAlliance::tankAllie;
     } else {
@@ -801,7 +801,7 @@ void playersMakeScreenTanks(players *plrs, bolo::ScreenTankList *value,
           if ((*plrs)->item[count].onBoat) {
             frame += TANK_BOAT_ADD;
           }
-          if (allienceExist(&((*plrs)->item[count].allie),
+          if (allianceExist(&((*plrs)->item[count].allie),
                             (*plrs)->myPlayerNum)) {
             frame += TANK_GOOD_ADD;
           } else {
@@ -958,7 +958,7 @@ bool playersIsTankCloser(players *plrs, WORLD x, WORLD y, BYTE pillOwner,
     /* Check to see player slot is being used */
     if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum) {
       /* Check for non-allined tank */
-      if (!allienceExist(&((*plrs)->item[count].allie), pillOwner) &&
+      if (!allianceExist(&((*plrs)->item[count].allie), pillOwner) &&
           count != pillOwner &&
           ((*plrs)->item[count].mapX != 0 && (*plrs)->item[count].mapY != 0)) {
         /* Make tankX and tankY */
@@ -1058,23 +1058,23 @@ BYTE playersIsTankHit(players *plrs, WORLD x, WORLD y, TURNTYPE angle,
  *CREATION DATE: 25/2/99
  *LAST MODIFIED: 29/2/99
  *PURPOSE:
- * Returns the number of alliences playerNum has. Also
+ * Returns the number of alliances playerNum has. Also
  * copies each into the array value
  *
  *ARGUMENTS:
  * plrs - Pointer to the players object
  * playerNum - Player number to make for
- * value     - Array to hold the alliences
+ * value     - Array to hold the alliances
  *********************************************************/
 BYTE playersMakeNetAlliences(players *plrs, BYTE playerNum, BYTE *value) {
   BYTE returnValue; /* Value to return */
   BYTE count;       /* Looping variable */
 
-  returnValue = allienceNumAllies(&((*plrs)->item[playerNum].allie));
+  returnValue = allianceNumAllies(&((*plrs)->item[playerNum].allie));
   count = 1;
   while (count <= returnValue) {
     value[count - 1] =
-        allienceReturnNum(&((*plrs)->item[playerNum].allie), (BYTE)(count - 1));
+        allianceReturnNum(&((*plrs)->item[playerNum].allie), (BYTE)(count - 1));
     count++;
   }
   return returnValue;
@@ -1090,7 +1090,7 @@ BYTE playersMakeNetAlliences(players *plrs, BYTE playerNum, BYTE *value) {
  *
  *ARGUMENTS:
  * plrs - Pointer to the players object
- * value - Array to hold the alliences
+ * value - Array to hold the alliances
  *********************************************************/
 BYTE playersGetFirstNotUsed(players *plrs) {
   BYTE returnValue; /* Value to return */
@@ -1125,12 +1125,12 @@ void playersLeaveGame(players *plrs, BYTE playerNum) {
   BYTE count;                /* Looping variable */
 
   if ((*plrs)->item[playerNum].inUse) {
-    allienceDestroy(&((*plrs)->item[playerNum].allie));
+    allianceDestroy(&((*plrs)->item[playerNum].allie));
 
     count = 0;
     while (count < MAX_TANKS) {
       if ((*plrs)->item[playerNum].inUse && count != playerNum) {
-        allienceRemove(&((*plrs)->item[count].allie), playerNum);
+        allianceRemove(&((*plrs)->item[count].allie), playerNum);
       }
       count++;
     }
@@ -1204,7 +1204,7 @@ int playersGetNumAllies(players *plrs) {
   BYTE returnValue; /* Value to return */
 
   returnValue =
-      allienceNumAllies(&((*plrs)->item[(*plrs)->myPlayerNum].allie)) + 1;
+      allianceNumAllies(&((*plrs)->item[(*plrs)->myPlayerNum].allie)) + 1;
   return returnValue;
 }
 
@@ -1254,7 +1254,7 @@ void playersCheckAllies(players *plrs) {
   while (count < MAX_TANKS) {
     (*plrs)->item[count].isChecked =
         (*plrs)->item[count].inUse &&
-        (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count) ||
+        (allianceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count) ||
          count == (*plrs)->myPlayerNum);
     if (!threadsGetContext()) {
       screenGetFrontend()->setPlayerCheckState((playerNumbers)count,
@@ -1410,7 +1410,7 @@ void playersSendMessageAllAllies(players *plrs, char *messageStr) {
   count = 0;
   while (count < MAX_TANKS) {
     if ((*plrs)->item[count].inUse &&
-        allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count)) {
+        allianceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count)) {
       netMessageSendPlayer((*plrs)->myPlayerNum, count, messageStr);
     }
     count++;
@@ -1638,7 +1638,7 @@ void playersSetAllieMenu(players *plrs) {
   leave = false;
   while (count < MAX_TANKS && !leave) {
     if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum) {
-      if (allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count)) {
+      if (allianceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count)) {
         leave = true;
         req = false;
       } else if ((*plrs)->item[count].isChecked) {
@@ -1671,7 +1671,7 @@ void playersRequestAlliance(players *plrs) {
   while (count < MAX_TANKS) {
     if ((*plrs)->item[count].inUse && count != (*plrs)->myPlayerNum &&
         (*plrs)->item[count].isChecked) {
-      if (!allienceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count)) {
+      if (!allianceExist(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count)) {
         /* Place request */
         netRequestAlliance((*plrs)->myPlayerNum, count);
       }
@@ -1711,12 +1711,12 @@ void playersLeaveAlliance(players *plrs, BYTE playerNum) {
   screenBasesMigrate(playerNum, count);
   screenPillsMigratePlanted(playerNum, count);
 
-  allienceDestroy(&((*plrs)->item[playerNum].allie));
-  (*plrs)->item[playerNum].allie = allienceCreate();
+  allianceDestroy(&((*plrs)->item[playerNum].allie));
+  (*plrs)->item[playerNum].allie = allianceCreate();
   count = 0;
   while (count < MAX_TANKS) {
     if ((*plrs)->item[count].inUse && count != playerNum) {
-      allienceRemove(&((*plrs)->item[count].allie), playerNum);
+      allianceRemove(&((*plrs)->item[count].allie), playerNum);
     }
     count++;
   }
@@ -1776,7 +1776,7 @@ void playersAcceptAlliance(players *plrs, BYTE acceptedBy, BYTE newMember) {
           test2 = (allyB >> count2);
           test2 &= 1;
           if (test2) {
-            allienceAdd(&((*plrs)->item[count].allie), count2);
+            allianceAdd(&((*plrs)->item[count].allie), count2);
           }
           count2++;
         }
@@ -1789,7 +1789,7 @@ void playersAcceptAlliance(players *plrs, BYTE acceptedBy, BYTE newMember) {
           test2 = (allyA >> count2);
           test2 &= 1;
           if (test2) {
-            allienceAdd(&((*plrs)->item[count].allie), count2);
+            allianceAdd(&((*plrs)->item[count].allie), count2);
           }
           count2++;
         }
@@ -1837,10 +1837,10 @@ void playersConnectionLost(players *plrs) {
 
   /* Move allies stuff to us */
   count = 0;
-  total = allienceNumAllies(&((*plrs)->item[(*plrs)->myPlayerNum].allie));
+  total = allianceNumAllies(&((*plrs)->item[(*plrs)->myPlayerNum].allie));
   while (count < total) {
     current =
-        allienceReturnNum(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count);
+        allianceReturnNum(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count);
     screenChangeOwnership(current);
     count++;
   }
@@ -1931,7 +1931,7 @@ void playersGetBrainTanksInRect(players *plrs, BYTE leftPos, BYTE rightPos,
         /* In the rectangle */
         /* wx and wy already set */
         /* Info */
-        if (allienceExist(&((*plrs)->item[count].allie),
+        if (allianceExist(&((*plrs)->item[count].allie),
                           (*plrs)->myPlayerNum)) {
           owner = PLAYERS_BRAIN_FRIENDLY;
         } else {
@@ -2032,7 +2032,7 @@ void playersGetBrainLgmsInRect(players *plrs, BYTE leftPos, BYTE rightPos,
           conv <<= TANK_SHIFT_RIGHT2;
           wy += conv;
           /* Info */
-          if (allienceExist(&((*plrs)->item[count].allie),
+          if (allianceExist(&((*plrs)->item[count].allie),
                             (*plrs)->myPlayerNum)) {
             owner = PLAYERS_BRAIN_FRIENDLY;
           } else {
@@ -2084,7 +2084,7 @@ unsigned long playersGetAlliesBitMap(players *plrs, BYTE playerNum) {
   while (count < MAX_TANKS) {
     if ((*plrs)->item[count].inUse) {
       if (count == playerNum ||
-          allienceExist(&((*plrs)->item[count].allie), playerNum)) {
+          allianceExist(&((*plrs)->item[count].allie), playerNum)) {
         returnValue |= 1 << count;
       }
     }

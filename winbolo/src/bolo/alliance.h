@@ -21,7 +21,7 @@
  *Creation Date: 18/02/99
  *Last Modified: 25/07/04
  *Purpose:
- *  Handles allience. Who is allied to who etc. Uses a
+ *  Handles alliance. Who is allied to who etc. Uses a
  *  simple set
  *********************************************************/
 
@@ -39,84 +39,84 @@
 
 /* Allience */
 
-typedef struct allienceObj *allience;
-struct allienceObj {
-  allience next;  /* Next item */
+typedef struct allianceObj *alliance;
+struct allianceObj {
+  alliance next;  /* Next item */
   BYTE playerNum; /* The player this person is allied to */
 };
 
 /* Prototypes */
 
 /*********************************************************
- *NAME:          allienceCreate
+ *NAME:          allianceCreate
  *AUTHOR:        John Morrison
  *CREATION DATE: 18/2/99
  *LAST MODIFIED: 18/2/99
  *PURPOSE:
- * Creates an allience struncture
+ * Creates an alliance struncture
  *
  *ARGUMENTS:
  *
  *********************************************************/
-allience allienceCreate(void);
+alliance allianceCreate(void);
 
 /*********************************************************
- *NAME:          allienceDestroy
+ *NAME:          allianceDestroy
  *AUTHOR:        John Morrison
  *CREATION DATE: 18/2/99
  *LAST MODIFIED: 18/2/99
  *PURPOSE:
- * Destroys a allience structure
+ * Destroys a alliance structure
  *
  *ARGUMENTS:
- *  value - The allience structure to destroy
+ *  value - The alliance structure to destroy
  *********************************************************/
-void allienceDestroy(allience *value);
+void allianceDestroy(alliance *value);
 
 /*********************************************************
- *NAME:          allienceAdd
+ *NAME:          allianceAdd
  *AUTHOR:        John Morrison
  *CREATION DATE: 18/2/99
  *LAST MODIFIED: 18/2/99
  *PURPOSE:
- * Adds an player to an allience (if doesn't exist already)
+ * Adds an player to an alliance (if doesn't exist already)
  *
  *ARGUMENTS:
- *  value     - The allience structure to add to
+ *  value     - The alliance structure to add to
  *  playerNum - The player number to add
  *********************************************************/
-void allienceAdd(allience *value, BYTE playerNum);
+void allianceAdd(alliance *value, BYTE playerNum);
 
 /*********************************************************
- *NAME:          allienceRemove
+ *NAME:          allianceRemove
  *AUTHOR:        John Morrison
  *CREATION DATE: 18/2/99
  *LAST MODIFIED: 18/2/99
  *PURPOSE:
- * Removes an player from an allience
+ * Removes an player from an alliance
  *
  *ARGUMENTS:
- *  value     - The allience structure to remove from
+ *  value     - The alliance structure to remove from
  *  playerNum - The player number to add
  *********************************************************/
-void allienceRemove(allience *value, BYTE playerNum);
+void allianceRemove(alliance *value, BYTE playerNum);
 
 /*********************************************************
- *NAME:          allienceExist
+ *NAME:          allianceExist
  *AUTHOR:        John Morrison
  *CREATION DATE: 18/2/99
  *LAST MODIFIED: 18/2/99
  *PURPOSE:
- * Returns whether a player number exist in this allience
+ * Returns whether a player number exist in this alliance
  *
  *ARGUMENTS:
- *  value     - The allience structure to remove from
+ *  value     - The alliance structure to remove from
  *  playerNum - The player number to add
  *********************************************************/
-bool allienceExist(allience *value, BYTE playerNum);
+bool allianceExist(alliance *value, BYTE playerNum);
 
 /*********************************************************
- *NAME:          allienceNumAllies
+ *NAME:          allianceNumAllies
  *AUTHOR:        John Morrison
  *CREATION DATE: 18/2/99
  *LAST MODIFIED: 18/2/99
@@ -124,23 +124,23 @@ bool allienceExist(allience *value, BYTE playerNum);
  * Returns the number of allies a player has
  *
  *ARGUMENTS:
- *  value     - The allience structure to remove from
+ *  value     - The alliance structure to remove from
  *********************************************************/
-BYTE allienceNumAllies(allience *value);
+BYTE allianceNumAllies(alliance *value);
 
 /*********************************************************
- *NAME:          allienceReturnNum
+ *NAME:          allianceReturnNum
  *AUTHOR:        John Morrison
  *CREATION DATE: 18/2/99
  *LAST MODIFIED: 18/2/99
  *PURPOSE:
- * Returns the player allience is allied with at num
+ * Returns the player alliance is allied with at num
  *
  *ARGUMENTS:
- *  value - The allience structure to remove from
+ *  value - The alliance structure to remove from
  *  num   - Position in the structure to get
  *********************************************************/
-BYTE allienceReturnNum(allience *value, BYTE num);
+BYTE allianceReturnNum(alliance *value, BYTE num);
 
 /*********************************************************
  *NAME:          allianceMakeLogAlliance
@@ -154,9 +154,9 @@ BYTE allienceReturnNum(allience *value, BYTE num);
  *
  *
  *ARGUMENTS:
- *  value - The allience structure to remove from
+ *  value - The alliance structure to remove from
  *  buff  - Buffer to write into
  *********************************************************/
-BYTE allianceMakeLogAlliance(allience *value, BYTE *buff);
+BYTE allianceMakeLogAlliance(alliance *value, BYTE *buff);
 
 #endif /* ALLIANCE_H */

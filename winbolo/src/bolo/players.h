@@ -82,7 +82,7 @@ typedef struct {
   bool inUse;                       /* Is player slot in use? */
   char playerName[PLAYER_NAME_LEN]; /* Player name */
   char location[512];               /* Location field */
-  allience allie;                   /* Alliences this player has */
+  alliance allie;                   /* Alliences this player has */
   BYTE mapX;                        /* Map X and Y co-ordinates */
   BYTE mapY;
   BYTE pixelX; /* Pixel X and Y co-ordinates */
@@ -397,7 +397,7 @@ bool playersNameTaken(players *plrs, char *checkName);
  *CREATION DATE: 18/2/99
  *LAST MODIFIED: 18/2/99
  *PURPOSE:
- * Returns a player is screen allience type.
+ * Returns a player is screen alliance type.
  *
  *ARGUMENTS:
  * plrs - Pointer to the players object
@@ -501,13 +501,13 @@ BYTE playersIsTankHit(players *plrs, WORLD x, WORLD y, TURNTYPE angle,
  *CREATION DATE: 25/2/99
  *LAST MODIFIED: 29/2/99
  *PURPOSE:
- * Returns the number of alliences playerNum has. Also
+ * Returns the number of alliances playerNum has. Also
  * copies each into the array value
  *
  *ARGUMENTS:
  * plrs - Pointer to the players object
  * playerNum - Player number to make for
- * value     - Array to hold the alliences
+ * value     - Array to hold the alliances
  *********************************************************/
 BYTE playersMakeNetAlliences(players *plrs, BYTE playerNum, BYTE *value);
 
@@ -521,7 +521,7 @@ BYTE playersMakeNetAlliences(players *plrs, BYTE playerNum, BYTE *value);
  *
  *ARGUMENTS:
  * plrs - Pointer to the players object
- * value - Array to hold the alliences
+ * value - Array to hold the alliances
  *********************************************************/
 BYTE playersGetFirstNotUsed(players *plrs);
 
