@@ -62,8 +62,11 @@ class ExplosionTracker {
                          uint8_t rightPos, uint8_t topPos, uint8_t bottomPos);
 
  private:
-  // We store explosions
-  std::vector<Explosion> explosions_;
+  static const int START = 8;
+
+  // We store explosions in groups according to their length.
+  // This is 1-indexed.
+  std::array<std::vector<Explosion>, START + 1> explosions_;
 };
 
 }  // namespace bolo
