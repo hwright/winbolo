@@ -936,7 +936,7 @@ bolo::BuildingState *clientGetBuildings();
  *ARGUMENTS:
  *
  *********************************************************/
-explosions *clientGetExplosions();
+bolo::ExplosionTracker *clientGetExplosions();
 
 /*********************************************************
  *NAME:          clientGetFloodFill

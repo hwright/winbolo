@@ -1019,7 +1019,7 @@ bolo::Frontend *screenGetFrontend();
  *ARGUMENTS:
  *
  *********************************************************/
-explosions *screenGetExplosions();
+bolo::ExplosionTracker *screenGetExplosions();
 
 /*********************************************************
  *NAME:          screenGetFloodFill

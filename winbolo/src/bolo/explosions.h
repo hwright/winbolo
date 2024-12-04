@@ -35,7 +35,7 @@
 /* Explosions should only be updated every 3 ticks */
 #define EXPLOAD_UPDATE_TIME 3
 
-/* Type structure */
+namespace bolo {
 
 struct Explosion {
   MapPoint pos;
@@ -44,92 +44,43 @@ struct Explosion {
   uint8_t length;
 };
 
-typedef struct explosionsObj *explosions;
-struct explosionsObj {
+class ExplosionTracker {
+ public:
+  ExplosionTracker() = default;
+
+  // Move-only
+  ExplosionTracker(ExplosionTracker &) = delete;
+  ExplosionTracker &operator=(ExplosionTracker &) = delete;
+
+  // Adds an item to the explosions data structure.
+  //
+  // ARGUMENTS:
+  //  mx     - Map X co-ord of the explosion
+  //  my     - Map Y co-ord of the explosion
+  //  px     - Pixel X co-ord of the explosion
+  //  py     - Pixel Y co-ord of the explosion
+  //  startPos  - How far through the explosion does it start
+  void addItem(MapPoint pos, uint8_t px, uint8_t py, uint8_t startPos);
+
+  //  Updates each explosion position
+  void Update();
+
+  //  Adds items to the sceenBullets data structure if they
+  //  are on screen
+  //
+  // ARGUMENTS:
+  //  sBullet    - The screenBullets Data structure
+  //  leftPos    - X Map offset start
+  //  rightPos   - X Map offset end
+  //  topPos     - Y Map offset end
+  //  bottomPos  - Y Map offset end
+  void calcScreenBullets(bolo::ScreenBulletList *sBullets, uint8_t leftPos,
+                         uint8_t rightPos, uint8_t topPos, uint8_t bottomPos);
+
+ private:
   std::vector<Explosion> explosions_;
 };
 
-/* Prototypes */
-
-/*********************************************************
- *NAME:          explosionsCreate
- *AUTHOR:        John Morrison
- *CREATION DATE:  1/1/99
- *LAST MODIFIED:  1/1/99
- *PURPOSE:
- *  Sets up the explosions data structure
- *
- *ARGUMENTS:
- *  expl - Pointer to the explosions object
- *********************************************************/
-void explosionsCreate(explosions *expl);
-
-/*********************************************************
- *NAME:          explosionsDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE:  1/1/99
- *LAST MODIFIED:  1/1/99
- *PURPOSE:
- *  Destroys and frees memory for the explosions data
- *  structure
- *
- *ARGUMENTS:
- *  expl - Pointer to the explosions object
- *********************************************************/
-void explosionsDestroy(explosions *expl);
-
-/*********************************************************
- *NAME:          explosionsAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE:  1/1/99
- *LAST MODIFIED: 15/1/99
- *PURPOSE:
- *  Adds an item to the explosions data structure.
- *
- *ARGUMENTS:
- *  expl   - Pointer to the explosions object
- *  value  - Pointer to the shells data structure
- *  mx     - Map X co-ord of the explosion
- *  my     - Map Y co-ord of the explosion
- *  px     - Pixel X co-ord of the explosion
- *  py     - Pixel Y co-ord of the explosion
- *  startPos  - How far through the explosion does it start
- *********************************************************/
-void explosionsAddItem(explosions *expl, BYTE mx, BYTE my, BYTE px, BYTE py,
-                       BYTE startPos);
-
-/*********************************************************
- *NAME:          explosionsUpdate
- *AUTHOR:        John Morrison
- *CREATION DATE:  1/1/99
- *LAST MODIFIED:  1/1/99
- *PURPOSE:
- *  Updates each explosion position
- *
- *ARGUMENTS:
- *  expl - Pointer to the explosions object
- *********************************************************/
-void explosionsUpdate(explosions *expl);
-
-/*********************************************************
- *NAME:          explosionCalcScreenBullets
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/1/98
- *LAST MODIFIED: 1/1/98
- *PURPOSE:
- *  Adds items to the sceenBullets data structure if they
- *  are on screen
- *
- *ARGUMENTS:
- *  expl       - Pointer to the explosions object
- *  sBullet    - The screenBullets Data structure
- *  leftPos    - X Map offset start
- *  rightPos   - X Map offset end
- *  topPos     - Y Map offset end
- *  bottomPos  - Y Map offset end
- *********************************************************/
-void explosionsCalcScreenBullets(explosions *expl,
-                                 bolo::ScreenBulletList *sBullets, BYTE leftPos,
-                                 BYTE rightPos, BYTE topPos, BYTE bottomPos);
+}  // namespace bolo
 
 #endif /* EXPLOSIONS_H */

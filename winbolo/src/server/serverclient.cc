@@ -727,7 +727,7 @@ bolo::BuildingState *clientGetBuildings() { return nullptr; }
  *ARGUMENTS:
  *
  *********************************************************/
-explosions *clientGetExplosions() { return nullptr; }
+bolo::ExplosionTracker *clientGetExplosions() { return nullptr; }
 
 /*********************************************************
  *NAME:          clientGetFloodFill

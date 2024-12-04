@@ -389,8 +389,8 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
       break;
     case NMNT_MINEEXPLOSION:
       if (owner != playersGetSelf(screenGetPlayers())) {
-        explosionsAddItem(screenGetExplosions(), opt1, opt2, 0, 0,
-                          EXPLOSION_START);
+        screenGetExplosions()->addItem(MapPoint{.x = opt1, .y = opt2}, 0, 0,
+                                       EXPLOSION_START);
         soundDist(bolo::sndEffects::mineExplosionNear, opt1, opt2);
         lgmDeathCheck(
             screenGetLgmFromPlayerNum(playersGetSelf(screenGetPlayers())), mp,
@@ -435,8 +435,8 @@ bool netMNTExtractClient(netMntContext *nmtc, map *mp, pillboxes *pb, bases *bs,
       break;
     case NMNT_RUNOVERBOAT:
       if (owner != playersGetSelf(screenGetPlayers())) {
-        explosionsAddItem(screenGetExplosions(), opt1, opt2, 0, 0,
-                          EXPLOSION_START);
+        screenGetExplosions()->addItem(MapPoint{.x = opt1, .y = opt2}, 0, 0,
+                                       EXPLOSION_START);
         soundDist(bolo::sndEffects::shotBuildingNear, opt1, opt2);
       }
       break;

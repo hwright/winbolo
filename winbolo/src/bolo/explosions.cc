@@ -32,69 +32,15 @@
 #include "screen.h"
 #include "screentypes.h"
 
-/*********************************************************
- *NAME:          explosionsCreate
- *AUTHOR:        John Morrison
- *CREATION DATE:  1/1/99
- *LAST MODIFIED:  1/1/99
- *PURPOSE:
- *  Sets up the explosions data structure
- *
- *ARGUMENTS:
- *  expl - Pointer to the explosions object
- *********************************************************/
-void explosionsCreate(explosions *expl) { *expl = new explosionsObj; }
+namespace bolo {
 
-/*********************************************************
- *NAME:          explosionsDestroy
- *AUTHOR:        John Morrison
- *CREATION DATE:  1/1/99
- *LAST MODIFIED:  1/1/99
- *PURPOSE:
- *  Destroys and frees memory for the explosions data
- *  structure
- *
- *ARGUMENTS:
- *  expl - Pointer to the explosions object
- *********************************************************/
-void explosionsDestroy(explosions *expl) { delete *expl; }
-
-/*********************************************************
- *NAME:          explosionsAddItem
- *AUTHOR:        John Morrison
- *CREATION DATE:  1/1/99
- *LAST MODIFIED: 15/1/99
- *PURPOSE:
- *  Adds an item to the explosions data structure.
- *
- *ARGUMENTS:
- *  expl   - Pointer to the explosions object
- *  value  - Pointer to the shells data structure
- *  mx     - Map X co-ord of the explosion
- *  my     - Map Y co-ord of the explosion
- *  px     - Pixel X co-ord of the explosion
- *  py     - Pixel Y co-ord of the explosion
- *  startPos  - How far through the explosion does it start
- *********************************************************/
-void explosionsAddItem(explosions *expl, BYTE mx, BYTE my, BYTE px, BYTE py,
-                       BYTE startPos) {
-  (*expl)->explosions_.push_back(
-      {.pos = {.x = mx, .y = my}, .px = px, .py = py, .length = startPos});
+void ExplosionTracker::addItem(MapPoint pos, uint8_t px, uint8_t py,
+                               uint8_t startPos) {
+  explosions_.push_back({.pos = pos, .px = px, .py = py, .length = startPos});
 }
 
-/*********************************************************
- *NAME:          explosionsUpdate
- *AUTHOR:        John Morrison
- *CREATION DATE:  1/1/99
- *LAST MODIFIED:  1/1/99
- *PURPOSE:
- *  Updates each explosion position
- *
- *ARGUMENTS:
- *  expl - Pointer to the explosions object
- *********************************************************/
-void explosionsUpdate(explosions *expl) {
-  static BYTE update = 0; /* The update time */
+void ExplosionTracker::Update() {
+  static uint8_t update = 0; /* The update time */
 
   update++;
   if (update != EXPLOAD_UPDATE_TIME) {
@@ -105,8 +51,8 @@ void explosionsUpdate(explosions *expl) {
 
   std::vector<int> to_remove;
 
-  for (int i = 0; i < (*expl)->explosions_.size(); ++i) {
-    auto &exp = (*expl)->explosions_[i];
+  for (int i = 0; i < explosions_.size(); ++i) {
+    auto &exp = explosions_[i];
     if (exp.length > EXPLODE_DEATH) {
       exp.length--;
     } else {
@@ -118,31 +64,14 @@ void explosionsUpdate(explosions *expl) {
   // Reverse iterate, because forward iterating would change the indicies
   // of future members
   for (auto it = to_remove.rbegin(); it != to_remove.rend(); ++it) {
-    (*expl)->explosions_.erase((*expl)->explosions_.begin() + *it);
+    explosions_.erase(explosions_.begin() + *it);
   }
 }
 
-/*********************************************************
- *NAME:          explosionCalcScreenBullets
- *AUTHOR:        John Morrison
- *CREATION DATE: 1/1/98
- *LAST MODIFIED: 1/1/98
- *PURPOSE:
- *  Adds items to the sceenBullets data structure if they
- *  are on screen
- *
- *ARGUMENTS:
- *  expl       - Pointer to the explosions object
- *  sBullet    - The screenBullets Data structure
- *  leftPos    - X Map offset start
- *  rightPos   - X Map offset end
- *  topPos     - Y Map offset end
- *  bottomPos  - Y Map offset end
- *********************************************************/
-void explosionsCalcScreenBullets(explosions *expl,
-                                 bolo::ScreenBulletList *sBullets, BYTE leftPos,
-                                 BYTE rightPos, BYTE topPos, BYTE bottomPos) {
-  for (auto &exp : (*expl)->explosions_) {
+void ExplosionTracker::calcScreenBullets(bolo::ScreenBulletList *sBullets,
+                                         uint8_t leftPos, uint8_t rightPos,
+                                         uint8_t topPos, uint8_t bottomPos) {
+  for (auto &exp : explosions_) {
     if (exp.pos.x >= leftPos && exp.pos.x < rightPos && exp.pos.y >= topPos &&
         exp.pos.y < bottomPos) {
       sBullets->push_back(bolo::ScreenBullet{
@@ -154,3 +83,5 @@ void explosionsCalcScreenBullets(explosions *expl,
     }
   }
 }
+
+}  // namespace bolo
