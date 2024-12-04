@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,16 +13,6 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Explosion
- *Filename:      explosion.c
- *Author:        John Morrison
- *Creation Date: 01/01/99
- *Last Modified: 04/10/03
- *Purpose:
- *  Responsable for Explosions
- *********************************************************/
-
 #include "explosions.h"
 
 #include "frontend.h"
@@ -34,6 +23,15 @@
 
 namespace bolo {
 
+namespace {
+
+const int EXPLODE_DEATH = 1;
+
+// Explosions should only be updated every 3 ticks
+const int UPDATE_TIME = 3;
+
+}  // namespace
+
 void ExplosionTracker::addItem(MapPoint pos, uint8_t px, uint8_t py,
                                uint8_t startPos) {
   explosions_.push_back({.pos = pos, .px = px, .py = py, .length = startPos});
@@ -43,7 +41,7 @@ void ExplosionTracker::Update() {
   static uint8_t update = 0; /* The update time */
 
   update++;
-  if (update != EXPLOAD_UPDATE_TIME) {
+  if (update != UPDATE_TIME) {
     return;
   } else {
     update = 0;

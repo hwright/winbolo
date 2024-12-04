@@ -1,7 +1,6 @@
 /*
- * $Id$
- *
  * Copyright (c) 1998-2008 John Morrison.
+ * Copyright (c) 2024-     Hyrum Wright.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,15 +13,7 @@
  * GNU General Public License for more details.
  */
 
-/*********************************************************
- *Name:          Explosion
- *Filename:      explosion.h
- *Author:        John Morrison
- *Creation Date:  1/1/99
- *Last Modified: 15/1/98
- *Purpose:
- *  Responsable for Explosions
- *********************************************************/
+// Responsable for Explosions
 
 #ifndef EXPLOSIONS_H
 #define EXPLOSIONS_H
@@ -31,9 +22,6 @@
 #include "screentypes.h"
 
 #define EXPLOSION_START 8
-#define EXPLODE_DEATH 1
-/* Explosions should only be updated every 3 ticks */
-#define EXPLOAD_UPDATE_TIME 3
 
 namespace bolo {
 
