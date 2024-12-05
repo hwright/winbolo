@@ -2170,8 +2170,16 @@ bool playersPrepareLogSnapshotForPlayer(players *value, BYTE playerNum,
     strcpy((char *)buff + *len,
            bolo::utilCtoPString((*value)->item[playerNum].location).c_str());
     *len += *(buff + *len) + 1;
-    *len += allianceMakeLogAlliance(&((*value)->item[playerNum].allie),
-                                    buff + *len);
+
+    // alliance logging
+    std::unordered_set<BYTE> allies =
+        allianceGetAllies(&((*value)->item[playerNum].allie));
+    buff[*len] = (BYTE)allies.size();
+    *len += 1;
+    for (BYTE ally : allies) {
+      buff[*len] = ally;
+      *len += 1;
+    }
   }
   return returnValue;
 }

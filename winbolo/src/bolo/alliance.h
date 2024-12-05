@@ -122,23 +122,6 @@ bool allianceExist(alliance *value, BYTE playerNum);
  *********************************************************/
 BYTE allianceNumAllies(alliance *value);
 
-/*********************************************************
- *NAME:          allianceMakeLogAlliance
- *AUTHOR:        John Morrison
- *CREATION DATE: 25/07/04
- *LAST MODIFIED: 25/07/04
- *PURPOSE:
- * Creates the alliance log buffer. Returns the length
- * of the buffer. Format is buff[0] number of allies
- * each byte after is the alliance number.
- *
- *
- *ARGUMENTS:
- *  value - The alliance structure to remove from
- *  buff  - Buffer to write into
- *********************************************************/
-BYTE allianceMakeLogAlliance(alliance *value, BYTE *buff);
-
 std::unordered_set<BYTE> allianceGetAllies(alliance *value);
 
 #endif /* ALLIANCE_H */
