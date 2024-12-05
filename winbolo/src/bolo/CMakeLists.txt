@@ -1,7 +1,6 @@
 cmake_minimum_required(VERSION 3.10)
 
-add_library(bolo STATIC alliance.cc
-                        building.cc
+add_library(bolo STATIC building.cc
                         explosions.cc
                         floodfill.cc
                         grass.cc

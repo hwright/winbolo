@@ -27,7 +27,8 @@
 #ifndef PLAYERS_H
 #define PLAYERS_H
 
-#include "alliance.h"
+#include <unordered_set>
+
 #include "global.h"
 #include "screentypes.h"
 
@@ -82,7 +83,7 @@ typedef struct {
   bool inUse;                       /* Is player slot in use? */
   char playerName[PLAYER_NAME_LEN]; /* Player name */
   char location[512];               /* Location field */
-  alliance allie;                   /* Alliences this player has */
+  std::unordered_set<BYTE> allies;  /* Alliences this player has */
   BYTE mapX;                        /* Map X and Y co-ordinates */
   BYTE mapY;
   BYTE pixelX; /* Pixel X and Y co-ordinates */
