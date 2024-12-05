@@ -28,6 +28,8 @@
 #ifndef ALLIANCE_H
 #define ALLIANCE_H
 
+#include <unordered_set>
+
 #include "global.h"
 
 /* Defines */
@@ -129,20 +131,6 @@ bool allianceExist(alliance *value, BYTE playerNum);
 BYTE allianceNumAllies(alliance *value);
 
 /*********************************************************
- *NAME:          allianceReturnNum
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/2/99
- *LAST MODIFIED: 18/2/99
- *PURPOSE:
- * Returns the player alliance is allied with at num
- *
- *ARGUMENTS:
- *  value - The alliance structure to remove from
- *  num   - Position in the structure to get
- *********************************************************/
-BYTE allianceReturnNum(alliance *value, BYTE num);
-
-/*********************************************************
  *NAME:          allianceMakeLogAlliance
  *AUTHOR:        John Morrison
  *CREATION DATE: 25/07/04
@@ -158,5 +146,7 @@ BYTE allianceReturnNum(alliance *value, BYTE num);
  *  buff  - Buffer to write into
  *********************************************************/
 BYTE allianceMakeLogAlliance(alliance *value, BYTE *buff);
+
+std::unordered_set<BYTE> allianceGetAllies(alliance *value);
 
 #endif /* ALLIANCE_H */

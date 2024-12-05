@@ -180,40 +180,6 @@ BYTE allianceNumAllies(alliance *value) {
 }
 
 /*********************************************************
- *NAME:          allianceReturnNum
- *AUTHOR:        John Morrison
- *CREATION DATE: 18/2/99
- *LAST MODIFIED: 18/2/99
- *PURPOSE:
- * Returns the player alliance is allied with at num
- *
- *ARGUMENTS:
- *  value - The alliance structure to remove from
- *  num   - Position in the structure to get
- *********************************************************/
-BYTE allianceReturnNum(alliance *value, BYTE num) {
-  BYTE returnValue; /* Value to return */
-  BYTE count;
-  alliance q;
-
-  count = 0;
-  returnValue = NEUTRAL;
-
-  if (allianceNumAllies(value) >= num) {
-    q = *value;
-    while (NonEmpty(q) && count < num) {
-      count++;
-      q = AllienceTail(q);
-    }
-    if (NonEmpty(q)) {
-      returnValue = q->playerNum;
-    }
-  }
-
-  return returnValue;
-}
-
-/*********************************************************
  *NAME:          allianceMakeLogAlliance
  *AUTHOR:        John Morrison
  *CREATION DATE: 25/07/04
@@ -241,4 +207,17 @@ BYTE allianceMakeLogAlliance(alliance *value, BYTE *buff) {
 
   buff[0] = returnValue - 1;
   return returnValue;
+}
+
+std::unordered_set<BYTE> allianceGetAllies(alliance *value) {
+  std::unordered_set<BYTE> result;
+  alliance q;
+
+  q = *value;
+  while (NonEmpty(q)) {
+    result.insert(q->playerNum);
+    q = AllienceTail(q);
+  }
+
+  return result;
 }

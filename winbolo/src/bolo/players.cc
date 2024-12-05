@@ -1068,13 +1068,11 @@ BYTE playersIsTankHit(players *plrs, WORLD x, WORLD y, TURNTYPE angle,
  *********************************************************/
 BYTE playersMakeNetAlliences(players *plrs, BYTE playerNum, BYTE *value) {
   BYTE returnValue; /* Value to return */
-  BYTE count;       /* Looping variable */
+  BYTE count = 0;   /* Looping variable */
 
   returnValue = allianceNumAllies(&((*plrs)->item[playerNum].allie));
-  count = 1;
-  while (count <= returnValue) {
-    value[count - 1] =
-        allianceReturnNum(&((*plrs)->item[playerNum].allie), (BYTE)(count - 1));
+  for (BYTE player : allianceGetAllies(&((*plrs)->item[playerNum].allie))) {
+    value[count] = player;
     count++;
   }
   return returnValue;
@@ -1831,18 +1829,12 @@ void playersAcceptAlliance(players *plrs, BYTE acceptedBy, BYTE newMember) {
  * playerNum - The number of the player that has left
  *********************************************************/
 void playersConnectionLost(players *plrs) {
-  BYTE count;   /* Looping variable */
-  BYTE total;   /* Number of alliances acceptedBy has */
-  BYTE current; /* Current Allie we are working on  */
+  BYTE count; /* Looping variable */
 
   /* Move allies stuff to us */
-  count = 0;
-  total = allianceNumAllies(&((*plrs)->item[(*plrs)->myPlayerNum].allie));
-  while (count < total) {
-    current =
-        allianceReturnNum(&((*plrs)->item[(*plrs)->myPlayerNum].allie), count);
-    screenChangeOwnership(current);
-    count++;
+  for (BYTE player :
+       allianceGetAllies(&((*plrs)->item[(*plrs)->myPlayerNum].allie))) {
+    screenChangeOwnership(player);
   }
 
   count = 0;
