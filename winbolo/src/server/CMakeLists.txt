@@ -9,7 +9,6 @@ add_executable(linbolods
                servernet.cc
                servertransport.cc
                threads.cc
-               ../bolo/allience.cc
                ../bolo/backend.cc
                ../bolo/bases.cc
                ../bolo/bolo_map.cc

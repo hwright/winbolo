@@ -35,7 +35,6 @@ add_executable(linbolo
                netclient.cc
                sound.cc
                ../clientmutex.cc
-               ../../bolo/allience.cc
                ../../bolo/backend.cc
                ../../bolo/bases.cc
                ../../bolo/bolo_map.cc
