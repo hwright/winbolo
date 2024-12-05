@@ -32,19 +32,11 @@
 
 #include "global.h"
 
-/* Defines */
-/* Empty / Non Empty / Head / Tail Macros */
-#define IsEmpty(list) ((list) == NULL)
-#define NonEmpty(list) (!IsEmpty(list))
-#define AllienceHead(list) ((list)->playerNum);
-#define AllienceTail(list) ((list)->next);
-
-/* Allience */
+/* Alliance */
 
 typedef struct allianceObj *alliance;
 struct allianceObj {
-  alliance next;  /* Next item */
-  BYTE playerNum; /* The player this person is allied to */
+  std::unordered_set<BYTE> players;
 };
 
 /* Prototypes */

@@ -40,7 +40,7 @@
  *ARGUMENTS:
  *
  *********************************************************/
-alliance allianceCreate(void) { return nullptr; }
+alliance allianceCreate(void) { return new allianceObj; }
 
 /*********************************************************
  *NAME:          allianceDestroy
@@ -53,15 +53,7 @@ alliance allianceCreate(void) { return nullptr; }
  *ARGUMENTS:
  *  value - The alliance structure to destroy
  *********************************************************/
-void allianceDestroy(alliance *value) {
-  alliance q;
-
-  while (!IsEmpty(*value)) {
-    q = *value;
-    *value = AllienceTail(q);
-    delete q;
-  }
-}
+void allianceDestroy(alliance *value) { delete *value; }
 
 /*********************************************************
  *NAME:          allianceAdd
@@ -76,15 +68,7 @@ void allianceDestroy(alliance *value) {
  *  playerNum - The player number to add
  *********************************************************/
 void allianceAdd(alliance *value, BYTE playerNum) {
-  alliance q;
-
-  if (!allianceExist(value, playerNum)) {
-    /* Doesn't exist yet. Add */
-    q = new allianceObj;
-    q->playerNum = playerNum;
-    q->next = *value;
-    *value = q;
-  }
+  (*value)->players.insert(playerNum);
 }
 
 /*********************************************************
@@ -100,29 +84,7 @@ void allianceAdd(alliance *value, BYTE playerNum) {
  *  playerNum - The player number to add
  *********************************************************/
 void allianceRemove(alliance *value, BYTE playerNum) {
-  alliance q;
-  alliance prev;
-  BYTE test;  /* Number we are testing */
-  bool first; /* Is first item */
-
-  first = true;
-  if (allianceExist(value, playerNum)) {
-    q = *value;
-    prev = q;
-    test = AllienceHead(q);
-    while (test != playerNum) {
-      first = false;
-      prev = q;
-      q = AllienceTail(q);
-      test = AllienceHead(q);
-    }
-    if (!first) {
-      prev->next = q->next;
-    } else {
-      (*value) = (*value)->next;
-    }
-    delete q;
-  }
+  (*value)->players.erase(playerNum);
 }
 
 /*********************************************************
@@ -138,20 +100,7 @@ void allianceRemove(alliance *value, BYTE playerNum) {
  *  playerNum - The player number to add
  *********************************************************/
 bool allianceExist(alliance *value, BYTE playerNum) {
-  bool returnValue; /* Value to return */
-  alliance q;
-  BYTE test;
-
-  q = *value;
-  returnValue = false;
-  while (!returnValue && NonEmpty(q)) {
-    test = AllienceHead(q);
-    if (test == playerNum) {
-      returnValue = true;
-    }
-    q = AllienceTail(q);
-  }
-  return returnValue;
+  return (*value)->players.contains(playerNum);
 }
 
 /*********************************************************
@@ -165,19 +114,7 @@ bool allianceExist(alliance *value, BYTE playerNum) {
  *ARGUMENTS:
  *  value     - The alliance structure to remove from
  *********************************************************/
-BYTE allianceNumAllies(alliance *value) {
-  BYTE returnValue; /* Value to return */
-  alliance q;
-
-  q = *value;
-  returnValue = 0;
-  while (NonEmpty(q)) {
-    returnValue++;
-    q = AllienceTail(q);
-  }
-
-  return returnValue;
-}
+BYTE allianceNumAllies(alliance *value) { return (*value)->players.size(); }
 
 /*********************************************************
  *NAME:          allianceMakeLogAlliance
@@ -195,29 +132,17 @@ BYTE allianceNumAllies(alliance *value) {
  *  buff  - Buffer to write into
  *********************************************************/
 BYTE allianceMakeLogAlliance(alliance *value, BYTE *buff) {
-  BYTE returnValue = 1; /* Value to return */
-  alliance q;
+  buff[0] = static_cast<uint8_t>((*value)->players.size());
 
-  q = *value;
-  while (NonEmpty(q)) {
-    buff[returnValue] = q->playerNum;
-    returnValue++;
-    q = AllienceTail(q);
+  int pos = 1;
+  for (const auto &player : (*value)->players) {
+    buff[pos] = player;
+    pos++;
   }
 
-  buff[0] = returnValue - 1;
-  return returnValue;
+  return static_cast<uint8_t>((*value)->players.size()) + 1;
 }
 
 std::unordered_set<BYTE> allianceGetAllies(alliance *value) {
-  std::unordered_set<BYTE> result;
-  alliance q;
-
-  q = *value;
-  while (NonEmpty(q)) {
-    result.insert(q->playerNum);
-    q = AllienceTail(q);
-  }
-
-  return result;
+  return (*value)->players;
 }
