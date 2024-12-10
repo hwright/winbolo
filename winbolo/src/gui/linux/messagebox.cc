@@ -110,10 +110,3 @@ void MessageBox2(const char *label, const char *title, const char *label2,
   MessageBox(label, title);
   MessageBox(label2, title2);
 }
-
-void MessageBox3(const char *label, const char *title, const char *label2,
-                 const char *title2, const char *label3, const char *title3) {
-  MessageBox(label, title);
-  MessageBox(label2, title2);
-  MessageBox(label3, title3);
-}
