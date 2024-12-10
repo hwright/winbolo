@@ -18,6 +18,7 @@
 #ifndef _FRONTEND_H
 #define _FRONTEND_H
 
+#include <format>
 #include <optional>
 
 #include "global.h"
@@ -195,6 +196,16 @@ class Frontend {
   // ARGUMENTS:
   //  pos - Y Position on the map
   virtual bool tutorial(uint8_t pos) = 0;
+
+  // Output the given error text in a suitable venue.
+  virtual void print_error(std::string_view text) = 0;
+  template <class... Args>
+
+  // Output the provided text (formatted per std::format) to a suitable
+  // location.
+  void error(std::format_string<Args...> fmt, Args&&... args) {
+    print_error(std::format(fmt, args...));
+  }
 };
 
 }  // namespace bolo
