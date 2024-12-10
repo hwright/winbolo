@@ -104,9 +104,3 @@ void MessageBox(const char *label, const char *title) {
   gtk_grab_add(mb);
   gtk_main();
 }
-
-void MessageBox2(const char *label, const char *title, const char *label2,
-                 const char *title2) {
-  MessageBox(label, title);
-  MessageBox(label2, title2);
-}

@@ -21,7 +21,4 @@
 
 void MessageBox(const char *label, const char *title);
 
-void MessageBox2(const char *label, const char *title, const char *label2,
-                 const char *title2);
-
 #endif
