@@ -762,7 +762,7 @@ bool LinuxFrontend::tutorial(BYTE pos) {
   return returnValue;
 }
 
-void LinuxFrontend::print_error(std::string_view text) {
+void LinuxFrontend::error(std::string_view text) {
   GtkWidget *mb = create_MessageBox("LinBolo", std::string(text).c_str());
   gtk_widget_show(mb);
   gtk_grab_add(mb);

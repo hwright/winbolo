@@ -198,7 +198,7 @@ class Frontend {
   virtual bool tutorial(uint8_t pos) = 0;
 
   // Output the given error text in a suitable venue.
-  virtual void print_error(std::string_view text) = 0;
+  virtual void error(std::string_view text) = 0;
   template <class... Args>
 
   // Output the provided text (formatted per std::format) to a suitable

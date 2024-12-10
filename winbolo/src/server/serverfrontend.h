@@ -45,7 +45,7 @@ class ServerFrontend : public Frontend {
   void showGunsight(bool isShown) override {}
   void drawAll(void) override {}
   bool tutorial(BYTE pos) override { return false; }
-  void print_error(std::string_view) override{};
+  void error(std::string_view) override{};
 };
 
 }  // namespace bolo

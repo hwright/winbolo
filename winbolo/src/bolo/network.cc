@@ -182,12 +182,7 @@ bool netSetup(netType value, unsigned short myPort, const char *targetIp,
       netUseTracker = useTracker;
       if (useTracker == TRUE) {
         if (netClientSetTracker(trackerAddr, trackerPort) == FALSE) {
-#ifdef _WIN32
-          MessageBox(NULL, langGetText(NETERR_TRACKERDNS), DIALOG_BOX_TITLE,
-                     MB_OK);
-#else
-          MessageBox(langGetText(NETERR_TRACKERDNS), DIALOG_BOX_TITLE);
-#endif
+          screenGetFrontend()->error(langGetText(NETERR_TRACKERDNS));
           netUseTracker = FALSE;
         }
       }
@@ -889,12 +884,7 @@ bool netJoinInit(const char *ip, unsigned short port, bool usCreate,
       buff[BOLO_VERSION_MINORPOS] != BOLO_VERSION_MINOR ||
       buff[BOLO_VERSION_REVISIONPOS] != BOLO_VERSION_REVISION ||
       buff[BOLOPACKET_REQUEST_TYPEPOS] != BOLOPACKET_INFORESPONSE) {
-#ifdef _WIN32
-    int i = sizeof(inf);
-    MessageBox(NULL, langGetText(NETERR_JOININIT), DIALOG_BOX_TITLE, MB_OK);
-#else
-    MessageBox(langGetText(NETERR_JOININIT), DIALOG_BOX_TITLE);
-#endif
+    screenGetFrontend()->error(langGetText(NETERR_JOININIT));
     returnValue = FALSE;
   }
 
@@ -903,11 +893,7 @@ bool netJoinInit(const char *ip, unsigned short port, bool usCreate,
     memcpy(&inf, buff, sizeof(inf));
     if (inf.num_players == MAX_TANKS) {
       returnValue = FALSE;
-#ifdef _WIN32
-      MessageBox(NULL, langGetText(NETERR_GAMEFULL), DIALOG_BOX_TITLE, MB_OK);
-#else
-      MessageBox(langGetText(NETERR_GAMEFULL), DIALOG_BOX_TITLE);
-#endif
+      screenGetFrontend()->error(langGetText(NETERR_GAMEFULL));
     } else {
       /* Extract map name, AI Type and hidden mines and game start and
        * originator */
@@ -969,12 +955,7 @@ bool netJoinInit(const char *ip, unsigned short port, bool usCreate,
                    buff[BOLOPACKET_REQUEST_TYPEPOS] ==
                        BOLOPACKET_PASSWORDFAIL) {
           returnValue = FALSE;
-#ifdef _WIN32
-          MessageBox(NULL, langGetText(NETERR_PASSWORDWRONG), DIALOG_BOX_TITLE,
-                     MB_OK);
-#else
-          MessageBox(langGetText(NETERR_PASSWORDWRONG), DIALOG_BOX_TITLE);
-#endif
+          screenGetFrontend()->error(langGetText(NETERR_PASSWORDWRONG));
         } else {
           packetLen = sizeof(pp);
           memcpy(buff, sendBuff, sizeof(pp));
@@ -984,12 +965,7 @@ bool netJoinInit(const char *ip, unsigned short port, bool usCreate,
         numTries++;
       }
       if (returnValue == FALSE && numTries == 0) {
-#ifdef _WIN32
-        MessageBox(NULL, langGetText(NETERR_NONEWPLAYERS), DIALOG_BOX_TITLE,
-                   MB_OK);
-#else
-        MessageBox(langGetText(NETERR_NONEWPLAYERS), DIALOG_BOX_TITLE);
-#endif
+        screenGetFrontend()->error(langGetText(NETERR_NONEWPLAYERS));
       }
     }
   }
@@ -1062,11 +1038,7 @@ bool netJoinInit(const char *ip, unsigned short port, bool usCreate,
                  "Sorry, the server player limit has been reached");
           msg = (char *)buff;
         }
-#ifdef _WIN32
-        MessageBox(NULL, msg, DIALOG_BOX_TITLE, MB_OK);
-#else
-        MessageBox(msg, DIALOG_BOX_TITLE);
-#endif
+        screenGetFrontend()->error(msg);
       } else {
         packetLen = sizeof(pn);
         memcpy(buff, sendBuff, packetLen);
@@ -1237,27 +1209,12 @@ bool netJoinFinalise(const char *targetip, unsigned short port, bool wantRejoin,
           returnValue = FALSE;
           if (buffLen == sizeof(RSA_PACKET) + BOLO_PACKET_CRC_SIZE &&
               buff[BOLOPACKET_REQUEST_TYPEPOS] == BOLOPACKET_RSAFAIL) {
-#ifdef _WIN32
-            MessageBox(
-                NULL,
+            screenGetFrontend()->error(
                 "The version of WinBolo you are running does not appear to be "
                 "using an authorised set of RSA keys. To play on official "
-                "servers you are required to use the correct client",
-                DIALOG_BOX_TITLE, MB_OK);
-#else
-            MessageBox(
-                "The version of WinBolo you are running does not appear to be "
-                "using an authorised set of RSA keys. To play on official "
-                "servers you are required to use the correct client",
-                DIALOG_BOX_TITLE);
-#endif
+                "servers you are required to use the correct client");
           } else {
-#ifdef _WIN32
-            MessageBox(NULL, langGetText(NETERR_CONNECTNOJOIN),
-                       DIALOG_BOX_TITLE, MB_OK);
-#else
-            MessageBox(langGetText(NETERR_CONNECTNOJOIN), DIALOG_BOX_TITLE);
-#endif
+            screenGetFrontend()->error(langGetText(NETERR_CONNECTNOJOIN));
           }
         } else {
           buffLen = sizeof(prp);
