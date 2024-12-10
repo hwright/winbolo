@@ -2038,7 +2038,7 @@ bool drawSetup() {
   int ret = lzwdecoding((char *)TILES_IMAGE, (char *)buff, 36499);
   if (ret != 80438) {
     free(buff);
-    MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
+    screenGetFrontend()->error("Can't load graphics file");
     return false;
   }
 
@@ -2046,7 +2046,7 @@ bool drawSetup() {
   lpScreen = SDL_SetVideoMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 0, 0);
   if (lpScreen == nullptr) {
     returnValue = false;
-    MessageBox("Can't build main surface", DIALOG_BOX_TITLE);
+    screenGetFrontend()->error("Can't build main surface");
   }
 
   /* Create the tile buffer and copy the bitmap into it */
@@ -2059,20 +2059,20 @@ bool drawSetup() {
     unlink(fileName);
     if (lpTiles == nullptr) {
       returnValue = false;
-      MessageBox("Can't load graphics file", DIALOG_BOX_TITLE);
+      screenGetFrontend()->error("Can't load graphics file");
     } else {
       /* Colour key */
       ret = SDL_SetColorKey(lpTiles, SDL_SRCCOLORKEY,
                             SDL_MapRGB(lpTiles->format, 0, 0xFF, 0));
       if (ret == -1) {
-        MessageBox("Couldn't map colour key", DIALOG_BOX_TITLE);
+        screenGetFrontend()->error("Couldn't map colour key");
         returnValue = false;
       } else {
         //      lpTiles = SDL_DisplayFormat(lpTemp);
         //	SDL_FreeSurface(lpTemp);
         if (lpTiles == nullptr) {
           returnValue = false;
-          MessageBox("Can't build a tile file", DIALOG_BOX_TITLE);
+          screenGetFrontend()->error("Can't build a tile file");
         }
       }
     }
@@ -2089,21 +2089,20 @@ bool drawSetup() {
     lpBackground = IMG_LoadPNG_RW(rw);
     if (lpBackground == nullptr) {
       returnValue = false;
-      MessageBox("Can't load background image", DIALOG_BOX_TITLE);
+      screenGetFrontend()->error("Can't load background image");
     }
     SDL_FreeRW(rw);
   }
   if (returnValue) {
     if (TTF_Init() < 0) {
-      MessageBox("Couldn't init TTF rasteriser", DIALOG_BOX_TITLE);
+      screenGetFrontend()->error("Couldn't init TTF rasteriser");
       returnValue = false;
     } else {
       lpFont = TTF_OpenFont("cour.ttf", 12);
       if (lpFont == nullptr) {
-        MessageBox(
+        screenGetFrontend()->error(
             "Couldn't open font file.\n Please place a courier font\ncalled "
-            "\"cour.ttf\" in your\nLinBolo directory.",
-            DIALOG_BOX_TITLE);
+            "\"cour.ttf\" in your\nLinBolo directory.");
         returnValue = false;
       }
     }

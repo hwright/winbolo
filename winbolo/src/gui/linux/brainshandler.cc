@@ -45,7 +45,6 @@
 #include "../clientmutex.h"
 #include "../lang.h"
 #include "../linresource.h"
-#include "messagebox.h"
 
 typedef GModule *HINSTANCE;
 typedef GtkWidget *HWND;
@@ -273,9 +272,8 @@ bool brainsHandlerLoadBrains(HWND hWnd) {
 
   returnValue = g_module_supported();
   if (returnValue == FALSE) {
-    MessageBox(
-        "Sorry, dynamic loading of modules isn't supported\n on this platform",
-        DIALOG_BOX_TITLE);
+    screenGetFrontend()->error(
+        "Sorry, dynamic loading of modules isn't supported\n on this platform");
   }
 
   /* Look for the 'Brains' directories */
@@ -284,7 +282,7 @@ bool brainsHandlerLoadBrains(HWND hWnd) {
         winUtilWBSubDirExist(brainsLocalDir) == FALSE &&
         brainsLoadedOnce == FALSE) {
       returnValue = FALSE;
-      MessageBox(langGetText(STR_BRAINERR_BRAINDIR), DIALOG_BOX_TITLE);
+      screenGetFrontend()->error(langGetText(STR_BRAINERR_BRAINDIR));
       brainsLoadedOnce = TRUE;
     }
   }
@@ -371,14 +369,14 @@ bool brainsHandlerStart(HWND hWnd, char *str, char *name) {
   returnValue = TRUE;
   brainsInst = LoadLibrary(str);
   if (brainsInst == nullptr) {
-    MessageBox(langGetText(STR_BRAINERR_LAUNCH), DIALOG_BOX_TITLE);
+    screenGetFrontend()->error(langGetText(STR_BRAINERR_LAUNCH));
     returnValue = FALSE;
   }
 
   if (returnValue == TRUE) {
     ret = GetProcAddress(brainsInst, BRAINMAIN_PROC);
     if (ret == FALSE) {
-      MessageBox(langGetText(STR_BRAINERR_LAUNCHMAIN), DIALOG_BOX_TITLE);
+      screenGetFrontend()->error(langGetText(STR_BRAINERR_LAUNCHMAIN));
       returnValue = FALSE;
     }
   }
@@ -397,7 +395,7 @@ bool brainsHandlerStart(HWND hWnd, char *str, char *name) {
       FreeLibrary(brainsInst);
       brainsInst = nullptr;
       returnValue = FALSE;
-      MessageBox(langGetText(STR_BRAINERR_INIT), DIALOG_BOX_TITLE);
+      screenGetFrontend()->error(langGetText(STR_BRAINERR_INIT));
     }
   }
   clientMutexRelease();

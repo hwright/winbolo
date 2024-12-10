@@ -53,6 +53,7 @@ class LinuxFrontend : public Frontend {
   void showGunsight(bool isShown) override;
   void drawAll(void) override;
   bool tutorial(BYTE pos) override;
+  void error(std::string_view) override;
 
  private:
   TankSupply tank_supply_;

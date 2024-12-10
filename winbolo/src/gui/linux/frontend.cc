@@ -90,6 +90,68 @@ const char *DIALOG_BOX_TITLE = "LinBolo";
 const int SCREEN_SIZE_X = 515;
 const int SCREEN_SIZE_Y = 325;
 
+gboolean messageBoxOK(GtkWidget *widget, GdkEventButton *event,
+                      gpointer user_data) {
+  GtkWidget *mb = (GtkWidget *)user_data;
+  gtk_grab_remove(mb);
+  gtk_widget_destroy(mb);
+  gtk_main_quit();
+  return FALSE;
+}
+
+gboolean messageBoxClose(GtkWidget *widget, GdkEventButton *event,
+                         gpointer user_data) {
+  GtkWidget *mb = (GtkWidget *)user_data;
+  gtk_grab_remove(mb);
+  gtk_widget_destroy(mb);
+  gtk_main_quit();
+  return FALSE;
+}
+
+GtkWidget *create_MessageBox(const char *name, const char *label) {
+  GtkWidget *MessageBox;
+  GtkWidget *vbox1;
+  GtkWidget *label1;
+  GtkWidget *idc_messageboxok;
+
+  MessageBox = gtk_dialog_new();
+  gtk_object_set_data(GTK_OBJECT(MessageBox), "name", MessageBox);
+  gtk_window_set_title(GTK_WINDOW(MessageBox), name);
+  gtk_window_set_policy(GTK_WINDOW(MessageBox), FALSE, FALSE, FALSE);
+  gtk_window_set_position(GTK_WINDOW(MessageBox), GTK_WIN_POS_CENTER);
+  gtk_window_set_modal(GTK_WINDOW(MessageBox), TRUE);
+
+  vbox1 = gtk_dialog_get_content_area(GTK_DIALOG(MessageBox));
+  gtk_container_set_border_width(GTK_CONTAINER(vbox1), 5);
+
+  label1 = gtk_label_new(label);
+  gtk_label_set_justify(GTK_LABEL(label1), GTK_JUSTIFY_LEFT);
+  gtk_widget_ref(label1);
+  gtk_object_set_data_full(GTK_OBJECT(MessageBox), "label1", label1,
+                           (GtkDestroyNotify)gtk_widget_unref);
+  gtk_widget_show(label1);
+  gtk_box_pack_start(GTK_BOX(vbox1), label1, FALSE, FALSE, 10);
+
+  idc_messageboxok = gtk_button_new_with_label("OK");
+  gtk_widget_ref(idc_messageboxok);
+  gtk_object_set_data_full(GTK_OBJECT(MessageBox), "idc_messageboxok",
+                           idc_messageboxok,
+                           (GtkDestroyNotify)gtk_widget_unref);
+  gtk_container_set_border_width(GTK_CONTAINER(idc_messageboxok), 5);
+  gtk_widget_show(idc_messageboxok);
+  gtk_box_pack_start(GTK_BOX(vbox1), idc_messageboxok, FALSE, FALSE, 5);
+  GTK_WIDGET_SET_FLAGS(idc_messageboxok, GTK_CAN_DEFAULT);
+
+  gtk_widget_grab_focus(idc_messageboxok);
+  gtk_widget_grab_default(idc_messageboxok);
+
+  gtk_signal_connect(GTK_OBJECT(idc_messageboxok), "clicked",
+                     GTK_SIGNAL_FUNC(messageBoxOK), MessageBox);
+  gtk_signal_connect(GTK_OBJECT(MessageBox), "delete_event",
+                     GTK_SIGNAL_FUNC(messageBoxClose), MessageBox);
+  return MessageBox;
+}
+
 }  // namespace
 
 LinuxFrontend::LinuxFrontend()
@@ -698,6 +760,13 @@ bool LinuxFrontend::tutorial(BYTE pos) {
   }
 
   return returnValue;
+}
+
+void LinuxFrontend::error(std::string_view text) {
+  GtkWidget *mb = create_MessageBox("LinBolo", std::string(text).c_str());
+  gtk_widget_show(mb);
+  gtk_grab_add(mb);
+  gtk_main();
 }
 
 }  // namespace bolo
